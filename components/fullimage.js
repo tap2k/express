@@ -20,7 +20,7 @@ export default function FullImage ({ src, width, height, caption })
     }
   }
 
-  const itemtag = <div><img src={src} style={{width: width, height: height, objectFit: 'contain'}} ref={imgRef} onDoubleClick={fullscreen} /></div>;
+  const itemtag = <div><img src={src} style={{width: width, height: height, objectFit: 'contain'}} ref={imgRef} /></div>;
   return (
     caption ? 
       <div style={{position: 'relative'}}>{itemtag}<div style={{position: 'absolute', top: 50, maxHeight: "20%", overflowY: "auto", width: "70%", left: "15%", backgroundColor: 'rgba(0,0,0,.5)', color: 'rgba(255,255,255,1.0)', textAlign: 'center', whiteSpace: 'pre-wrap', fontSize: "xxx-large"}}>{caption}</div></div>

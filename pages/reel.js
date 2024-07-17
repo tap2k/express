@@ -1,10 +1,10 @@
-/* pages/index.js */
+/* pages/reel.js */
 
 import { use100vh } from 'react-div-100vh';
 import getChannel from "../hooks/getchannel";
 import Slideshow from "../components/slideshow";
 
-export default ( { channel }  ) => {
+export default ({ channel }) => {
     const width = "100vw";
     const height = use100vh();
     //const height = "100vh";
