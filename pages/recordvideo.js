@@ -1,24 +1,23 @@
 /* pages/recordvideo.js */
 
-import { Alert } from "reactstrap";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import PageLayout from "../components/recordlayout";
 
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false, });
 
-export default () => {
+export default function RecordVideoPage() {
   const router = useRouter();
   const channelID = router.query.channelid;
   const useLocation = !(router.query.uselocation === "false");
-
+  
   return (
-  <div>
-    <Alert color="primary">
-      <h1>record video</h1>
-    </Alert>
-    <VideoRecorder channelID = { channelID } useLocation = { useLocation } />
-    <p/>
-  </div>
+    <PageLayout 
+      title="Record Video"
+      subtitle="Capture and share your video moment"
+      bgColor="#007bff"  // You can choose an appropriate color for video recording
+    >
+      <VideoRecorder channelID={channelID} useLocation={useLocation} />
+    </PageLayout>
   );
-};
-
+}

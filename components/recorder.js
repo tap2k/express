@@ -1,13 +1,11 @@
-/* components/recorder.js */
-
 import { useEffect, useState } from "react";
 import { Button, Alert } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
 import uploadContent from "../hooks/uploadcontent";
-
 import { setErrorText } from '../hooks/seterror';
+import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
 async function uploadRecording(blob, lat, long, channelID, status, router) 
 {
@@ -21,32 +19,45 @@ async function uploadRecording(blob, lat, long, channelID, status, router)
   router.push("/" + query);
 }
 
-function Status ({status, ...props}) {
+function Status({ status, ...props }) {
   const [counter, setCounter] = useState(0.0);
 
   useEffect(() => {
-    if (status == "recording")
-      setTimeout(() => setCounter(counter + 1), 1000);
-    else if (status == "stopped")
+    let interval;
+    if (status === "recording") {
+      interval = setInterval(() => setCounter(prev => prev + 0.1), 100);
+    } else if (status === "stopped") {
       setCounter(0);
-  }, [status, counter]);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
 
-  return <Alert color="primary" {...props}><h2>{status} : {counter}</h2></Alert>;
+  return (
+    <Alert color="primary" {...props}>
+      <h2>{status} : {counter.toFixed(1)}s</h2>
+    </Alert>
+  );
 }
 
-function Output({src, ...props}) {
-  if (!src)
-    return;
+function Output({ src, ...props }) {
+  if (!src) return null;
   
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  if (isSafari)
-    return <audio controls {...props}><source src={src} type="audio/aac" /></audio>;
-  else
-    return <audio src={src} controls autoPlay {...props} />;
+  
+  return (
+    <audio 
+      src={src}
+      controls 
+      {...props}
+      style={{ width: '100%', marginBottom: '20px' }}
+    >
+      {isSafari && <source src={src} type="audio/aac" />}
+      Your browser does not support the audio element.
+    </audio>
+  );
 }
 
 export default function Recorder({ channelID, useLocation, ...props }) {
-
   const router = useRouter();
   const [blob, setBlob] = useState();
 
@@ -66,49 +77,61 @@ export default function Recorder({ channelID, useLocation, ...props }) {
     startRecording,
     pauseRecording,
     resumeRecording,
-    isMuted,
-    muteAudio,
-    unMuteAudio,
     stopRecording,
     mediaBlobUrl,
-    clearBlobUrl,
-    previewStream,
-    previewAudioStream
   } = useReactMediaRecorder({
     audio: true,
     askPermissionOnMount: true,
-    //blobPropertyBag: { type: "audio/mp3" },
-    //blobPropertyBag: { type: "audio/wav" },
-    blobPropertyBag: { type: "audio/ogg" },
+    blobPropertyBag: { type: "audio/mp3" },
     onStop: (blobUrl, blob) => {setBlob(blob)}
   });
-
-  /*useEffect(() => {
-    console.info(status);
-  }, [status]);*/
 
   useEffect(() => {
     if (error) setErrorText(error);
   }, [error]);
 
   return (
-    <div {...props}>
-      <Button style={{marginLeft: 5}} color="primary" size="lg" onClick={(e) => {e.preventDefault(); if (status == "paused") resumeRecording(); else startRecording();}}>
-        <h2>start</h2>
+    <RecorderWrapper {...props}>
+      <ButtonGroup>
+        <StyledButton color="primary" size="lg" onClick={(e) => {e.preventDefault(); if (status === "paused") resumeRecording(); else startRecording();}}>
+          {status === "recording" ? "Resume" : "Start"}
+        </StyledButton>
+        <StyledButton color="warning" size="lg" onClick={pauseRecording} disabled={status !== "recording"}>
+          Pause
+        </StyledButton>
+        <StyledButton color="danger" size="lg" onClick={stopRecording} disabled={status === "stopped"}>
+          Stop
+        </StyledButton>
+      </ButtonGroup>
+      
+      <div style={{
+        width: '100%',
+        height: '60px',
+        backgroundColor: '#e9ecef',
+        borderRadius: '30px',
+        overflow: 'hidden',
+        marginBottom: '20px'
+      }}>
+        <div style={{
+          width: status === "recording" ? '100%' : '0',
+          height: '100%',
+          backgroundColor: '#007bff',
+          transition: 'width 0.5s ease-in-out'
+        }} />
+      </div>
+      
+      <Status status={status} style={{marginBottom: 20}} />
+      <Output src={mediaBlobUrl} />
+      
+      <Button 
+        color="success" 
+        size="lg" 
+        block 
+        onClick={(e) => {e.preventDefault(); uploadRecording(blob, lat, long, channelID, status, router);}}
+        disabled={status !== "stopped" || !blob}
+      >
+        Submit
       </Button>
-      <Button style={{marginLeft: 5}} color="primary" size="lg" onClick={pauseRecording}>
-        <h2>pause</h2>
-      </Button>
-      <Button style={{marginLeft: 5}} color="primary" size="lg" onClick={stopRecording}>
-        <h2>stop</h2>
-      </Button>
-      <Status status={status} style={{marginTop: 20}} />
-      <Output src={mediaBlobUrl} style={{marginLeft: 5, marginBottom: 20}} />
-      <br/>
-      <Button style={{marginLeft: 5}} color="primary" size="lg" onClick={(e) => {e.preventDefault(); uploadRecording(blob, lat, long, channelID, status, router)}}>
-        <h2>submit</h2>
-      </Button>
-    </div>
+    </RecorderWrapper>
   );
-
 }

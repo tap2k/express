@@ -1,13 +1,13 @@
 /* components/mycamera.js */
 
 import { useState } from "react";
-import { Button } from "reactstrap";
 import { useRouter } from "next/router";
 import useGeolocation from "react-hook-geolocation";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
+import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
 async function uploadImage (dataURI, lat, long, channelID, router) 
 {
@@ -32,39 +32,59 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   let lat = null;
   let long = null;
 
-  if (useLocation)
-  {
+  if (useLocation) {
     const geolocation = useGeolocation();
     lat = geolocation.latitude;
     long = geolocation.longitude;
   }
 
-  function handleTakePhotoAnimationDone (dataUri) {
+  function handleTakePhotoAnimationDone(dataUri) {
     setDataUri(dataUri);
   }
 
+  function handleRetake() {
+    setDataUri(null);
+  }
+
   return (
-    <div {...props}>
-    {
-      (dataUri)    
-        ? <div>
-            <img style={{marginLeft: 20}} src={dataUri} /><br/>
-            <Button style={{padding: 15, marginLeft: 20, marginTop: 20}} color="primary" size="lg" onClick={(e) => {e.preventDefault(); uploadImage(dataUri, lat, long, channelID, router)}}>
-              <h2>submit</h2>
-            </Button>
-          </div>
-        : <div>
-            <Camera
-              onTakePhotoAnimationDone = { (dataUri) => { handleTakePhotoAnimationDone(dataUri); } }
-              idealFacingMode = {FACING_MODES.ENVIRONMENT} 
-              isFullscreen = {false}
-              imageType = {IMAGE_TYPES.PNG}
-              isDisplayStartCameraError = {true}
-            />
-          </div>  
-    }
-    </div>
+    <RecorderWrapper {...props}>
+      {dataUri ? (
+        <>
+          <img 
+            src={dataUri} 
+            alt="Captured" 
+            style={{
+              width: '100%',
+              height: 'auto',
+              borderRadius: '10px',
+              marginBottom: '20px'
+            }}
+          />
+          <ButtonGroup>
+            <StyledButton color="secondary" onClick={handleRetake}>
+              Retake
+            </StyledButton>
+            <StyledButton
+              color="primary"
+              onClick={() => uploadImage(dataUri, lat, long, channelID, router)}
+            >
+              Submit
+            </StyledButton>
+          </ButtonGroup>
+        </>
+      ) : (
+        <Camera
+          onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
+          idealFacingMode={FACING_MODES.USER}
+          isFullscreen={false}
+          imageType={IMAGE_TYPES.JPG}
+          sizeFactor={1}
+          imageCompression={0.8}
+          isDisplayStartCameraError={true}
+          isImageMirror={false}
+        />
+      )}
+    </RecorderWrapper>
   );
-  
 }
 

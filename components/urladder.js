@@ -27,8 +27,8 @@ export default function URLAdder ({ channelID, contentItem, toggle, jwt, ...prop
     <div {...props}>
       <Form onSubmit={myAddExtUrl} >
         <FormGroup>
-          <Input id="ext_url" name="ext_url" innerRef={inputRef} placeholder="enter URL (youtube, dropbox, vimeo)" style={{display:"inline-block", width: props.style.width ? props.style.width - 75 : 395}} />
-          <Button style={{marginLeft: 5}}color="primary" size="sm">add url</Button>
+          <Input id="ext_url" name="ext_url" innerRef={inputRef} placeholder="enter URL (youtube, dropbox, vimeo)" style={{display:"inline-block", width: '50%'}} />
+          <Button style={{marginLeft: 5}} color="primary" size="lg">add url</Button>
         </FormGroup>
       </Form>
     </div>
