@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/router";
 import Uploader from "../components/uploader";
-import PageLayout from "../components/recordlayout";
+import RecorderLayout from "../components/recorderlayout";
 
 export default () => {
   const router = useRouter();
@@ -10,12 +10,12 @@ export default () => {
   const useLocation = !(router.query.uselocation == "false");
     
   return (
-    <PageLayout 
+    <RecorderLayout 
       title="Upload File"
       subtitle="Share a file from your device"
       bgColor="#007bff"  // You can choose an appropriate color for video recording
     >
       <Uploader channelID = { channelID } useLocation = { useLocation } />
-    </PageLayout>
+    </RecorderLayout>
   );
 }

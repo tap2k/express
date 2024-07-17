@@ -27,7 +27,7 @@ const Subtitle = styled.p`
   opacity: 0.8;
 `;
 
-export default function PageLayout({ title, subtitle, bgColor, children }) {
+export default function RecorderLayout({ title, subtitle, bgColor, children }) {
   return (
     <PageWrapper>
       <Header bgColor={bgColor}>

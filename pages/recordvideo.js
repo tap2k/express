@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import PageLayout from "../components/recordlayout";
+import RecorderLayout from "../components/recorderlayout";
 
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false, });
 
@@ -12,12 +12,12 @@ export default function RecordVideoPage() {
   const useLocation = !(router.query.uselocation === "false");
   
   return (
-    <PageLayout 
+    <RecorderLayout 
       title="Record Video"
       subtitle="Capture and share your video moment"
       bgColor="#007bff"  // You can choose an appropriate color for video recording
     >
       <VideoRecorder channelID={channelID} useLocation={useLocation} />
-    </PageLayout>
+    </RecorderLayout>
   );
 }

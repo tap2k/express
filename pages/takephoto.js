@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import MyCamera from "../components/mycamera";
-import PageLayout from "../components/recordlayout";
+import RecorderLayout from "../components/recorderlayout";
 
 export default function TakePhotoPage() {
   const router = useRouter();
@@ -8,12 +8,12 @@ export default function TakePhotoPage() {
   const useLocation = !(router.query.uselocation === "false");
   
   return (
-    <PageLayout 
+    <RecorderLayout 
       title="Take a Photo"
       subtitle="Capture and share your moment"
-      bgColor="#28a745"
+      bgColor="#007bff"
     >
       <MyCamera channelID={channelID} useLocation={useLocation} />
-    </PageLayout>
+    </RecorderLayout>
   );
 }
