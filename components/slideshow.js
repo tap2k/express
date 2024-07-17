@@ -75,9 +75,7 @@ export default function Slideshow({ channel, height, width, interval, showTitle,
         { showTitle ? 
           <Slide style={{height: height, width: width}}>
           <div style={{filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box', textAlign: 'center'}}>
-            <p>
-              <b style={{fontSize: "xxx-large"}}>{channel.name}</b><br/>
-            </p>
+            <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
           </div>
           </Slide> : "" }
         {
@@ -90,8 +88,6 @@ export default function Slideshow({ channel, height, width, interval, showTitle,
         }
         </Slider>
         { channel.contents.length ? 
-            /*[ <ButtonBack key={1} style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)',left:'1%', opacity:'0.5', width: '10%', minWidth: 5, maxWidth: 50, height: 50, border: '1px solid gray'}}><b>&lt;</b></ButtonBack>, 
-            <ButtonNext key={2} style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)',right:'1%', opacity:'0.5', width: '10%', minWidth: 5, maxWidth: 50, height: 50, border: '1px solid gray'}}><b>&gt;</b></ButtonNext> ]*/
             [
               <ButtonBack key={1} style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />,
               <ButtonNext key={2} style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />

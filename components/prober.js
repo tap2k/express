@@ -14,21 +14,13 @@ export default function Prober({ channelID })
     confirmAlert({
       title: 'URL uploaded',
       message: message,
-      buttons: [
-        { label: 'OK' }
-      ]
+      buttons: [{ label: 'OK' }]
     });
     //router.push("./?channelid=" + router.query.channelid);
   };
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      textAlign: 'center',
-    }}>
+    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
       <LinkWithQuery href="/record">
         <Button style={{fontSize: 'xx-large'}} color="primary" size="lg">record audio</Button>
       </LinkWithQuery>
