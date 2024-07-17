@@ -6,7 +6,7 @@ export default function FullImage ({ src, width, height, caption })
 {
   const imgRef = useRef(null);
 
-  const fullscreen = () => {
+  /*const fullscreen = () => {
     if (imgRef.current.requestFullscreen) {
         imgRef.current.requestFullscreen();
     } else if (imgRef.current.msRequestFullscreen) {
@@ -18,7 +18,7 @@ export default function FullImage ({ src, width, height, caption })
     } else {
         alert("Sorry, your browser is too old and doesn't support fullscreen")
     }
-  }
+  }*/
 
   const itemtag = <div><img src={src} style={{width: width, height: height, objectFit: 'contain'}} ref={imgRef} /></div>;
   return (

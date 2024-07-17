@@ -22,7 +22,7 @@ export default function VideoPlayer({ caption, autoPlay, index, ...props })
         const player = videoRef?.current;
         if (carouselContext.state.currentSlide == index)
         {
-          if ( player.paused && autoPlay)
+          if ( player.paused && autoPlay )
           {
             player.currentTime = 0;
             player.play();
