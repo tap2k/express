@@ -20,10 +20,13 @@ export default function VideoPlayer({ caption, autoPlay, index, ...props })
         // not using videojs
         // const player = videoRef?.player;
         const player = videoRef?.current;
-        if (carouselContext.state.currentSlide == index && autoPlay)
+        if (carouselContext.state.currentSlide == index)
         {
-          player.currentTime = 0;
-          player.play();
+          if ( player.paused && autoPlay)
+          {
+            player.currentTime = 0;
+            player.play();
+          }
         }
         else
         {
@@ -68,10 +71,10 @@ export default function VideoPlayer({ caption, autoPlay, index, ...props })
   </video>
 
   return (
-    <span onClick={(e) => e.stopPropagation()}>
-      caption ? 
+    <div>
+      { caption ? 
         <div style={{position: 'relative'}}>{itemtag}<div style={{position: 'absolute', top: 50, maxHeight: "20%", overflowY: "auto", width: "70%", left: "15%", backgroundColor: 'rgba(0,0,0,.5)', color: 'rgba(255,255,255,1.0)', textAlign: 'center', whiteSpace: 'pre-wrap', fontSize: "xxx-large"}}>{caption}</div></div>
-      : itemtag
-    </span>
+      : itemtag }
+    </div>
   );
 }

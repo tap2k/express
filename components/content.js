@@ -27,7 +27,7 @@ export default function Content({ contentItem, width, height, autoPlay, index })
   if (!Number.isFinite(width) || !Number.isFinite(width)) 
     videostyle = {width: width, height: height};
 
-  let caption = contentItem.title;
+  let caption = contentItem.description;
   let itemtag = null;
 
   if (type.startsWith("image"))

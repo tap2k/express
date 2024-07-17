@@ -8,22 +8,36 @@ import FullImage from '../components/fullimage';
 export default function AudioPlayer({ src, thumbnailItem, caption, width, height, autoPlay, index }) 
 {
   const audioRef = useRef();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
 
   let thumbnailUrl = "";
   if (thumbnailItem?.url)
     thumbnailUrl = getMediaURL() + thumbnailItem.url;
 
-  function toggleAudio()
-  {
-    if (audioRef?.current)
-    {
-      if (audioRef.current.paused)
-        audioRef.current.play();
-      else
-        audioRef.current.pause();
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(error => {
+        console.error("Error playing audio:", error);
+      });
     }
-  }
+  };
+  
+  const pauseAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+  
+  const toggleAudio = () => {
+    if (isPlaying) {
+      pauseAudio();
+    } else {
+      playAudio();
+    }
+  };
 
   const carouselContext = useContext(CarouselContext);
   
@@ -50,14 +64,14 @@ export default function AudioPlayer({ src, thumbnailItem, caption, width, height
           if (audioRef.current?.paused && autoPlay)
           {
             audioRef.current.currentTime = 0;
-            audioRef.current.play();
+            playAudio();
             /* if (autoPlay)
               audioRef.current.onended = nextSlide;*/
           }
         }
         else
         {
-          audioRef.current.pause();
+          pauseAudio();
           audioRef.current.currentTime = 0;
         }
       }
@@ -66,12 +80,12 @@ export default function AudioPlayer({ src, thumbnailItem, caption, width, height
     }, [carouselContext]);
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!audioRef?.current)
       return;
     audioRef.current.onplay = () => {setIsPlaying(true)};
     audioRef.current.onpause = () => {setIsPlaying(false)};
-  }, [audioRef]);
+  }, [audioRef]);*/
 
   if (thumbnailUrl)
     return (
@@ -84,7 +98,7 @@ export default function AudioPlayer({ src, thumbnailItem, caption, width, height
   
   if (caption)
     {
-        let style = {filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box',textAlign: 'center'};
+        let style = {filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box', textAlign: 'center'};
         return(
           <div onClick={() => toggleAudio()} style={{position: 'relative', textAlign: 'center', margin: '0 auto', width: width, height: height}}>
             <div style={style}>
