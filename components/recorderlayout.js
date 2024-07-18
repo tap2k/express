@@ -30,10 +30,10 @@ const Subtitle = styled.p`
 export default function RecorderLayout({ title, subtitle, bgColor, children }) {
   return (
     <PageWrapper>
-      <Header>
+      { false ? <Header>
         <Title>{title}</Title>
         {subtitle && <Subtitle>{subtitle}</Subtitle>}
-      </Header>
+      </Header> : "" }
       {children}
     </PageWrapper>
   );

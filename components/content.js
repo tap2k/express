@@ -1,6 +1,5 @@
 /* components/content.js */
 
-//import dynamic from "next/dynamic";
 import getMediaURL from "../hooks/getmediaurl";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';

@@ -2,23 +2,10 @@
 
 import { Button } from "reactstrap";
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { confirmAlert } from 'react-confirm-alert'; 
-import URLAdder from "./urladder";
 import LinkWithQuery from "./linkwithquery";
 
-export default function Prober({ channelID }) 
+export default function Prober() 
 {
-  const toggleAdd = () => 
-  {
-    let message = 'Thanks for uploading a URL!';
-    confirmAlert({
-      title: 'URL uploaded',
-      message: message,
-      buttons: [{ label: 'OK' }]
-    });
-    //router.push("./?channelid=" + router.query.channelid);
-  };
-
   return (
     <div style={{width: '100%', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
       <LinkWithQuery href="/record">
@@ -37,7 +24,6 @@ export default function Prober({ channelID })
         <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">upload file</Button>
       </LinkWithQuery>
       <br/>
-      { false ? <URLAdder style={{marginTop: 20, fontSize: 'xx-large', width: 300}} channelID={channelID} toggle={toggleAdd} /> : "" }
       <LinkWithQuery href={"/reel"}>
         <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">view reel</Button>
       </LinkWithQuery>
