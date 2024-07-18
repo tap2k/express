@@ -1,6 +1,7 @@
 /* components/mycamera.js */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import useGeolocation from "react-hook-geolocation";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
@@ -9,7 +10,7 @@ import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadImage (dataURI, lat, long, channelID, router) 
+async function uploadImage (dataURI, lat, long, description, channelID, router) 
 {
   const formData = require('form-data');
   const myFormData = new formData();
@@ -20,7 +21,7 @@ async function uploadImage (dataURI, lat, long, channelID, router)
     return; 
   }
   myFormData.append('mediafile', blob, "image.png");
-  await uploadContent({myFormData: myFormData, lat: lat, long: long, channelID: channelID});
+  await uploadContent({myFormData, lat, long, description, published: true, channelID});
   const query = router?.asPath?.slice(router?.pathname?.length);
   router.push("/" + query);
 }
@@ -28,6 +29,7 @@ async function uploadImage (dataURI, lat, long, channelID, router)
 export default function MyCamera({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const [dataUri, setDataUri] = useState(null);
+  const descriptionRef = useRef();
 
   let lat = null;
   let long = null;
@@ -60,13 +62,26 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
               marginBottom: '20px'
             }}
           />
+          <Input
+            type="text"
+            innerRef={descriptionRef}
+            placeholder="Enter text"
+            style={{
+              width: '100%',
+              marginBottom: '10px'
+            }}
+          />
           <ButtonGroup>
             <StyledButton color="secondary" onClick={handleRetake}>
               Retake
             </StyledButton>
             <StyledButton
               color="primary"
-              onClick={() => uploadImage(dataUri, lat, long, channelID, router)}
+              onClick={(e) => {
+                e.preventDefault();
+                const description = descriptionRef.current.value;
+                uploadImage(dataUri, lat, long, description, channelID, router);
+              }}
             >
               Submit
             </StyledButton>

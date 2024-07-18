@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Alert } from "reactstrap";
+import { useEffect, useState, useRef } from "react";
+import { Button, Alert, Input } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
@@ -7,14 +7,14 @@ import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadRecording(blob, lat, long, channelID, status, router) 
+async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
   if (status != "stopped" || !blob)
     return;
   const formData = require('form-data');
   const myFormData = new formData();
   myFormData.append('mediafile', blob, "audio.ogg");
-  await uploadContent({myFormData: myFormData, lat: lat, long: long, channelID: channelID});
+  await uploadContent({myFormData, lat, long, description, published: true, channelID});
   const query = router?.asPath?.slice(router?.pathname?.length);
   router.push("/" + query);
 }
@@ -60,6 +60,7 @@ function Output({ src, ...props }) {
 export default function Recorder({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState();
+  const descriptionRef = useRef();
 
   let lat = null;
   let long = null;
@@ -116,18 +117,32 @@ export default function Recorder({ channelID, useLocation, ...props }) {
           width: status === "recording" ? '100%' : '0',
           height: '100%',
           backgroundColor: '#007bff',
-          transition: 'width 0.5s ease-in-out'
+          transition: 'width 30.0s ease-in-out'
         }} />
       </div>
       
       <Status status={status} style={{marginBottom: 20}} />
       <Output src={mediaBlobUrl} />
+
+      <Input
+        type="text"
+        innerRef={descriptionRef}
+        placeholder="Enter text"
+        style={{
+          width: '100%',
+          marginBottom: '10px'
+        }}
+      />
       
       <Button 
         color="success" 
         size="lg" 
         block 
-        onClick={(e) => {e.preventDefault(); uploadRecording(blob, lat, long, channelID, status, router);}}
+        onClick={(e) => {
+          e.preventDefault();
+          const description = descriptionRef.current.value;
+          uploadRecording(blob, lat, long, description, channelID, status, router);
+        }}
         disabled={status !== "stopped" || !blob}
       >
         Submit

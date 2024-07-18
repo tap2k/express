@@ -1,6 +1,7 @@
 /* components/videorecorder.js */
 
 import { useEffect, useState, useRef } from "react";
+import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
@@ -10,7 +11,7 @@ import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadRecording(blob, lat, long, channelID, status, router) 
+async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
   if (status != "stopped" || !blob)
     return;
@@ -20,7 +21,7 @@ async function uploadRecording(blob, lat, long, channelID, status, router)
       const formData = require('form-data');
       const myFormData = new formData();
       myFormData.append('mediafile', fixedBlob, "video.webm");
-      await uploadContent({myFormData: myFormData, lat: lat, long: long, channelID: channelID});
+      await uploadContent({myFormData, lat, long, description, published: true, channelID});
       const query = router?.asPath?.slice(router?.pathname?.length);
       router.push("/" + query);
     });
@@ -71,6 +72,7 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState();
   const [recordingTime, setRecordingTime] = useState(0);
+  const descriptionRef = useRef();
 
   let lat = null;
   let long = null;
@@ -144,12 +146,26 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
       </ButtonGroup>
 
       <Output src={mediaBlobUrl} stream={previewStream} status={status} />
-
+      
+      <Input
+        type="text"
+        innerRef={descriptionRef}
+        placeholder="Enter text"
+        style={{
+          width: '100%',
+          marginBottom: '10px'
+        }}
+      />
+      
       <StyledButton 
         color="success" 
         size="lg" 
         block 
-        onClick={() => uploadRecording(blob, lat, long, channelID, status, router)}
+        onClick={(e) => {
+          e.preventDefault();
+          const description = descriptionRef.current.value;
+          uploadRecording(blob, lat, long, description, channelID, status, router);
+        }}
         disabled={status !== "stopped" || !blob}
       >
         {status === "recording" || status === "paused"

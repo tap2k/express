@@ -7,16 +7,9 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadContent({myFormData, channelID, contentID, title, description, ext_url, lat, long, published, setProgress, jwt}) 
+export default async function uploadContent({myFormData, channelID, contentID, title, description, ext_url, lat, long, published, setProgress}) 
 { 
-  let url = getBaseURL() + "/api/uploadContentToChannel";
-
-  if (!jwt)
-  {
-    url = getBaseURL() + "/api/uploadSubmission";
-    if (!channelID)
-      channelID = "rx7dzpg";
-  }
+  const url = getBaseURL() + "/api/uploadSubmission";
 
   // TODO: Dont need content?
   if (!channelID /*|| (!myFormData && !ext_url)*/)
@@ -53,13 +46,12 @@ export default async function uploadContent({myFormData, channelID, contentID, t
   if (ext_url)
     myFormData.append("ext_url", ext_url);
 
-  //if (published)
-  myFormData.append("published", "true");
+  if (published)
+    myFormData.append("published", "true");
 
   try {
     return await axios.post(url, myFormData, 
       {
-        headers: jwt ? { 'Authorization': 'Bearer ' + jwt} : {},
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
         onUploadProgress: setProgress ? (progressEvent) => {

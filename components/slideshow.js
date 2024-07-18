@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from "react";
-import { Button } from 'reactstrap';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import Content from "./content";
@@ -58,19 +57,20 @@ export default function Slideshow({ channel, height, width, interval, showTitle,
     lineHeight: 1,
     backgroundColor: 'rgba(128, 128, 128, 0.5)',
     border: 'none',
+    color: 'white', // not needed with reactstrap
   };
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
       <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} >
         <Link href={"/upload?channelid="+channel.uniqueID} passHref>
-          <Button style={{...buttonStyle, left: 'calc(50% - 70px)'}}>
+          <button style={{...buttonStyle, left: 'calc(50% - 70px)'}}>
             +
-          </Button>
+          </button>
         </Link>
-        <Button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% + 0px)'}}>
+        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% + 0px)'}}>
           ⛶
-        </Button>
+        </button>
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>

@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
+import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import useGeolocation from "react-hook-geolocation";
 import uploadContent from "../hooks/uploadcontent";
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function myUploadContent(file, lat, long, channelID, router) {
+async function myUploadContent(file, lat, long, description, channelID, router) {
   const formData = new FormData();
   formData.append('mediafile', file);
-  await uploadContent({ myFormData: formData, lat, long, channelID });
+  await uploadContent({ myFormData: formData, lat, long, description, published: true, channelID });
   const query = router?.asPath?.slice(router?.pathname?.length);
   router.push("/" + query);
 }
@@ -17,6 +18,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const inputRef = useRef();
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const descriptionRef = useRef();
 
   let lat = null;
   let long = null;
@@ -100,9 +102,23 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         onChange={handleFileChange}
       />
 
+      <Input
+        type="text"
+        innerRef={descriptionRef}
+        placeholder="Enter text"
+        style={{
+          width: '100%',
+          marginBottom: '10px'
+        }}
+      />
+
       <StyledButton
         color="success"
-        onClick={() => myUploadContent(file, lat, long, channelID, router)}
+        onClick={(e) => {
+          e.preventDefault();
+          const description = descriptionRef.current.value;
+          myUploadContent(file, lat, long, description, channelID, router);
+        }}
         disabled={!file}
       >
         Submit
