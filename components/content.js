@@ -6,8 +6,6 @@ import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
 
-//const VideoPlayer = dynamic(() => import("./videoplayer.js"), { ssr: false });
-
 export default function Content({ contentItem, width, height, autoPlay, index }) 
 {
   if (!contentItem.mediafile?.url)
@@ -33,7 +31,7 @@ export default function Content({ contentItem, width, height, autoPlay, index })
   if (type.startsWith("image"))
     itemtag = <FullImage src={url} width={width} height={height} caption={caption} />;
   if (type.startsWith("audio"))
-      itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
+    itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
   if (type.startsWith("video"))
     itemtag = <VideoPlayer style={videostyle} width={width} height={height} caption={caption} autoPlay={autoPlay} index={index}><source src={url} type={videotype} /></VideoPlayer>;
 

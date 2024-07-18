@@ -1,30 +1,25 @@
-/* components/fullimage.js */
+// components/fullimage.js
 
 import { useRef } from "react";
+import Caption from "./caption";
 
-export default function FullImage ({ src, width, height, caption }) 
+export default function FullImage({ src, width, height, caption, inverted = false }) 
 {
-  const imgRef = useRef(null);
+  const imgRef = useRef();
 
-  /*const fullscreen = () => {
-    if (imgRef.current.requestFullscreen) {
-        imgRef.current.requestFullscreen();
-    } else if (imgRef.current.msRequestFullscreen) {
-        imgRef.current.msRequestFullscreen();
-    } else if (imgRef.current.mozRequestFullScreen) {
-        imgRef.current.mozRequestFullScreen();
-    } else if (imgRef.current.webkitRequestFullscreen) {
-        imgRef.current.webkitRequestFullscreen();
-    } else {
-        alert("Sorry, your browser is too old and doesn't support fullscreen")
-    }
-  }*/
-
-  const itemtag = <div><img src={src} style={{width: width, height: height, objectFit: 'contain'}} ref={imgRef} /></div>;
   return (
-    caption ? 
-      <div style={{position: 'relative'}}>{itemtag}<div style={{position: 'absolute', top: 50, maxHeight: "20%", overflowY: "auto", width: "70%", left: "15%", backgroundColor: 'rgba(0,0,0,.5)', color: 'rgba(255,255,255,1.0)', textAlign: 'center', whiteSpace: 'pre-wrap', fontSize: "xxx-large"}}>{caption}</div></div>
-      : itemtag
-  )
+    <div style={{ position: 'relative', width, height }}>
+      <img 
+        src={src} 
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain'
+        }} 
+        ref={imgRef}
+        alt={caption}
+      />
+      {caption && <Caption caption={caption} inverted={inverted} />}
+    </div>
+  );
 }
-
