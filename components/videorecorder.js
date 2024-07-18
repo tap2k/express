@@ -1,7 +1,6 @@
 /* components/videorecorder.js */
 
 import { useEffect, useState, useRef } from "react";
-import { Alert } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
@@ -26,30 +25,6 @@ async function uploadRecording(blob, lat, long, channelID, status, router)
       router.push("/" + query);
     });
   });
-}
-
-function Status({ status, ...props }) {
-  const [counter, setCounter] = useState(0);
-
-  useEffect(() => {
-    let interval;
-    if (status === "recording") {
-      interval = setInterval(() => setCounter(prev => prev + 1), 1000);
-    } else if (status === "stopped") {
-      setCounter(0);
-    }
-    return () => clearInterval(interval);
-  }, [status]);
-
-  return (
-    <Alert 
-      color="primary" 
-      style={{ marginBottom: '20px' }}
-      {...props}
-    >
-      <h2>{status.charAt(0).toUpperCase() + status.slice(1)} : {counter}s</h2>
-    </Alert>
-  );
 }
 
 function Output({ src, stream, status, ...props }) {
@@ -95,6 +70,7 @@ function Output({ src, stream, status, ...props }) {
 export default function VideoRecorder({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState();
+  const [recordingTime, setRecordingTime] = useState(0);
 
   let lat = null;
   let long = null;
@@ -125,6 +101,22 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
     if (error) setErrorText(error);
   }, [error]);
 
+  useEffect(() => {
+    let interval;
+    if (status === "recording") {
+      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+    } else if (status === "stopped") {
+      setRecordingTime(0);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <RecorderWrapper {...props}>
       <ButtonGroup>
@@ -133,7 +125,7 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
           onClick={() => status === "paused" ? resumeRecording() : startRecording()}
           disabled={status === "recording"}
         >
-          {status === "recording" ? "Recording..." : "Start"}
+          {status === "recording" ? "Recording..." : recordingTime ? "Resume" : "Start"}
         </StyledButton>
         <StyledButton 
           color="warning" 
@@ -151,8 +143,6 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
         </StyledButton>
       </ButtonGroup>
 
-      <Status status={status} />
-
       <Output src={mediaBlobUrl} stream={previewStream} status={status} />
 
       <StyledButton 
@@ -162,7 +152,9 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
         onClick={() => uploadRecording(blob, lat, long, channelID, status, router)}
         disabled={status !== "stopped" || !blob}
       >
-        Submit
+        {status === "recording" || status === "paused"
+          ? `Recording (${formatTime(recordingTime)})`
+          : "Submit"}
       </StyledButton>
     </RecorderWrapper>
   );
