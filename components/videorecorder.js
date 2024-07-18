@@ -34,10 +34,15 @@ function Output({ src, stream, status, ...props }) {
   useEffect(() => {
     if (videoRef.current) {
       if (stream && status !== "stopped") {
-        videoRef.current.srcObject = stream;
+        if (videoRef.current.srcObject !== stream) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.src = null;
+        }
       } else {
-        videoRef.current.srcObject = null;
-        videoRef.current.src = videoSrc;
+        if (videoRef.current.srcObject) {
+          videoRef.current.srcObject = null;
+          videoRef.current.src = videoSrc;
+        }
       }
     }
   }, [stream, status, videoSrc]);
