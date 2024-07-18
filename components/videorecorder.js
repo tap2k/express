@@ -29,29 +29,17 @@ async function uploadRecording(blob, lat, long, channelID, status, router)
 
 function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
-  const [videoSrc, setVideoSrc] = useState(src);
 
   useEffect(() => {
     if (videoRef.current) {
       if (stream && status !== "stopped") {
-        if (videoRef.current.srcObject !== stream) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.src = null;
-        }
+        videoRef.current.srcObject = stream;
       } else {
-        if (videoRef.current.srcObject) {
-          videoRef.current.srcObject = null;
-          videoRef.current.src = videoSrc;
-        }
+        videoRef.current.srcObject = null;
+        videoRef.current.src = src;
       }
     }
-  }, [stream, status, videoSrc]);
-
-  useEffect(() => {
-    if (src) {
-      setVideoSrc(src);
-    }
-  }, [src]);
+  }, [stream, src, status]);
 
   if (!stream && !src) return null;
 
@@ -65,15 +53,15 @@ function Output({ src, stream, status, ...props }) {
       overflow: 'hidden',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
     }}>
-      <video
-        ref={videoRef}
-        controls={controls}
-        autoPlay
+      <video 
+        ref={videoRef} 
+        controls={controls} 
+        autoPlay 
         style={{
           width: '100%',
           height: 'auto'
         }}
-        {...props}
+        {...props} 
       />
     </div>
   );
