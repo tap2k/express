@@ -41,7 +41,7 @@ function Output({ src, stream, status, ...props }) {
     }
   }, [stream, src, status]);
 
-  if (!stream && !src) return null;
+  //if (!stream && !src) return null;
 
   const controls = src && status === "stopped";
 
