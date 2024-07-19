@@ -50,55 +50,55 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
 
   return (
     <RecorderWrapper {...props}>
-      {dataUri ? (
-        <>
+      <div style={{ marginBottom: '20px' }}>
+        {dataUri ? (
           <img 
             src={dataUri} 
             alt="Captured" 
             style={{
               width: '100%',
               height: 'auto',
-              borderRadius: '10px',
-              marginBottom: '20px'
+              borderRadius: '10px'
             }}
           />
-          <Input
-            type="text"
-            innerRef={descriptionRef}
-            placeholder="Enter text"
-            style={{
-              width: '100%',
-              marginBottom: '10px'
-            }}
+        ) : (
+          <Camera
+            onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
+            idealFacingMode={FACING_MODES.USER}
+            isFullscreen={false}
+            imageType={IMAGE_TYPES.JPG}
+            sizeFactor={1}
+            imageCompression={0.8}
+            isDisplayStartCameraError={true}
+            isImageMirror={false}
           />
-          <ButtonGroup>
-            <StyledButton color="secondary" onClick={handleRetake}>
-              Retake
-            </StyledButton>
-            <StyledButton
-              color="primary"
-              onClick={(e) => {
-                e.preventDefault();
-                const description = descriptionRef.current.value;
-                uploadImage(dataUri, lat, long, description, channelID, router);
-              }}
-            >
-              Submit
-            </StyledButton>
-          </ButtonGroup>
-        </>
-      ) : (
-        <Camera
-          onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
-          idealFacingMode={FACING_MODES.USER}
-          isFullscreen={false}
-          imageType={IMAGE_TYPES.JPG}
-          sizeFactor={1}
-          imageCompression={0.8}
-          isDisplayStartCameraError={true}
-          isImageMirror={false}
-        />
-      )}
+        )}
+      </div>
+      <Input
+        type="text"
+        innerRef={descriptionRef}
+        placeholder="Enter text"
+        style={{
+          width: '100%',
+          marginBottom: '10px'
+        }}
+      />
+      <ButtonGroup>
+        <StyledButton color="secondary" onClick={handleRetake} disabled={dataUri ? false : true}>
+          Retake
+        </StyledButton>
+        <StyledButton
+          color="primary"
+          onClick={(e) => {
+            e.preventDefault();
+            const description = descriptionRef.current.value;
+            uploadImage(dataUri, lat, long, description, channelID, router);
+          }}
+          disabled={dataUri ? false : true}
+        >
+          Submit
+        </StyledButton>
+      </ButtonGroup>
     </RecorderWrapper>
   );
 }
