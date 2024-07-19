@@ -28,92 +28,75 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   });
 }
 
-function Output({ src, stream, status, currentCameraIndex, ...props }) {
+function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
-  const containerRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 16, height: 9 });
-  const [orientation, setOrientation] = useState('landscape');
+  const [aspectRatio, setAspectRatio] = useState(16 / 9); // Default to 16:9
 
   useEffect(() => {
-    if (videoRef.current && stream && status !== "stopped") {
-      videoRef.current.srcObject = stream;
-      const videoTrack = stream.getVideoTracks()[0];
-      if (videoTrack) {
-        const applyDimensions = () => {
+    if (videoRef.current) {
+      if (stream && status !== "stopped") {
+        videoRef.current.srcObject = stream;
+        
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
           const { width, height } = videoTrack.getSettings();
           if (width && height) {
-            const newOrientation = width > height ? 'landscape' : 'portrait';
-            setDimensions({ width, height });
-            setOrientation(newOrientation);
+            setAspectRatio(width / height);
           }
-        };
-
-        // Apply dimensions immediately
-        applyDimensions();
-
-        // And also after a short delay to catch any delayed updates
-        setTimeout(applyDimensions, 500);
+        }
+      } else {
+        videoRef.current.srcObject = null;
+        videoRef.current.src = src;
       }
-    } else if (videoRef.current) {
-      videoRef.current.srcObject = null;
-      videoRef.current.src = src;
     }
-  }, [stream, src, status, currentCameraIndex]);
+  }, [stream, src, status]);
 
   useEffect(() => {
     const handleResize = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        let containerHeight;
-
-        if (orientation === 'landscape') {
-          containerHeight = (containerWidth * dimensions.height) / dimensions.width;
-        } else {
-          // For portrait, we'll set a max-height
-          containerHeight = Math.min((containerWidth * dimensions.height) / dimensions.width, window.innerHeight * 0.7);
+      if (videoRef.current) {
+        const { videoWidth, videoHeight } = videoRef.current;
+        if (videoWidth && videoHeight) {
+          setAspectRatio(videoWidth / videoHeight);
         }
-
-        containerRef.current.style.height = `${containerHeight}px`;
       }
     };
 
-    handleResize();
     window.addEventListener('resize', handleResize);
-
     return () => window.removeEventListener('resize', handleResize);
-  }, [dimensions, orientation]);
+  }, []);
 
   if (!stream && !src) return null;
-
   const controls = src && status === "stopped";
 
   return (
-    <div 
-      ref={containerRef}
-      style={{
-        width: '100%',
-        marginBottom: '20px',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        position: 'relative',
-        transition: 'height 0.3s ease-out', // Smooth transition for height changes
-      }}
-    >
-      <video 
-        ref={videoRef} 
-        controls={controls} 
-        autoPlay 
+    <div style={{
+      width: '100%',
+      marginBottom: '20px',
+      borderRadius: '10px',
+      overflow: 'hidden',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      position: 'relative',
+      paddingTop: `${(1 / aspectRatio) * 100}%`
+    }}>
+      <video
+        ref={videoRef}
+        controls={controls}
+        autoPlay
         style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
+          top: 0,
+          left: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'contain',
-          transform: 'translate(-50%, -50%)',
+          objectFit: 'cover'
         }}
-        {...props} 
+        onLoadedMetadata={() => {
+          const { videoWidth, videoHeight } = videoRef.current;
+          if (videoWidth && videoHeight) {
+            setAspectRatio(videoWidth / videoHeight);
+          }
+        }}
+        {...props}
       />
     </div>
   );
