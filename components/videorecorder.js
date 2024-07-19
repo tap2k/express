@@ -19,20 +19,6 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   router.push("/" + query);
 }
 
-function Output({ videoRef }) {
-  return (
-    <div style={{ width: '100%', marginBottom: '20px' }}>
-      <video 
-        ref={videoRef} 
-        autoPlay
-        playsInline
-        muted
-        style={{ width: '100%', borderRadius: '10px' }}
-      />
-    </div>
-  );
-}
-
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
@@ -113,6 +99,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         recorderType: RecordRTC.MediaStreamRecorder
       });
       recorderRef.current.startRecording();
+      setRecordingTime(0); // Reset recording time
       setStatus('recording');
     } else {
       setErrorText('No camera stream available. Please allow camera access and try again.');
@@ -127,13 +114,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
         setStatus('stopped');
         
         // Add a small delay before updating the video source
-        setTimeout(() => {
+        //setTimeout(() => {
           if (videoRef.current) {
             videoRef.current.srcObject = null;
             videoRef.current.src = URL.createObjectURL(recordedBlob);
             videoRef.current.muted = false;
           }
-        }, 100);
+        //}, 100);
       });
     }
   }
@@ -146,24 +133,63 @@ export default function VideoRecorder({ channelID, useLocation }) {
 
   return (
     <RecorderWrapper>
-      <ButtonGroup>
-        <StyledButton 
-          color="primary" 
-          onClick={startRecording}
-          disabled={status === "recording"}
-        >
-          {status === "recording" ? "Recording..." : "Start"}
-        </StyledButton>
-        <StyledButton 
-          color="danger" 
-          onClick={stopRecording}
-          disabled={status !== "recording"}
-        >
-          Stop
-        </StyledButton>
-      </ButtonGroup>
-
-      <Output videoRef={videoRef} />
+    
+      <div style={{ position: 'relative' }}>
+        <video 
+          ref={videoRef} 
+          autoPlay
+          playsInline
+          muted={status === "recording"}
+          controls={status === "stopped"}
+          style={{ 
+            width: '100%', 
+            borderRadius: '10px', 
+            marginBottom: '10px',
+            pointerEvents: status === 'recording' ? 'none' : 'auto' // Disable interaction during recording
+          }}
+        />
+      <div 
+        onClick={status === 'recording' ? stopRecording : startRecording}
+        style={{
+          position: 'absolute',
+          bottom: '70px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          backgroundColor: 'rgb(255, 255, 255)', 
+          border: '15px solid rgba(128, 128, 128)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+        }}
+    >
+      {status === 'recording' && (
+        <div style={{
+          width: '30px',
+          height: '30px',
+          backgroundColor: 'rgb(255, 255, 255)',
+          flexShrink: 0
+        }} />
+      )}
+    </div>
+        {status === 'recording' && (
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: '#ffffff',
+            padding: '5px 10px',
+            borderRadius: '20px',
+            fontSize: '14px'
+          }}>
+            {formatTime(recordingTime)}
+          </div>
+        )}
+      </div>
       
       <Input
         type="text"
@@ -183,7 +209,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         }}
         disabled={status !== "stopped" || !blob}
       >
-        {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
+        Submit
       </StyledButton>
     </RecorderWrapper>
   );
