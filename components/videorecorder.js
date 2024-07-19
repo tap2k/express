@@ -30,11 +30,21 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
 
 function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
+  const [aspectRatio, setAspectRatio] = useState(16 / 9); // default to 16:9
 
   useEffect(() => {
     if (videoRef.current) {
       if (stream && status !== "stopped") {
         videoRef.current.srcObject = stream;
+        // Get video tracks
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          // Get the settings of the video track
+          const { width, height } = videoTrack.getSettings();
+          if (width && height) {
+            setAspectRatio(width / height);
+          }
+        }
       } else {
         videoRef.current.srcObject = null;
         videoRef.current.src = src;
@@ -52,15 +62,21 @@ function Output({ src, stream, status, ...props }) {
       marginBottom: '20px',
       borderRadius: '10px',
       overflow: 'hidden',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      position: 'relative',
+      paddingTop: `${(1 / aspectRatio) * 100}%` // This creates a responsive container
     }}>
       <video 
         ref={videoRef} 
         controls={controls} 
         autoPlay 
         style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '100%',
-          height: 'auto'
+          height: '100%',
+          objectFit: 'cover'
         }}
         {...props} 
       />
@@ -95,7 +111,7 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
   } = useReactMediaRecorder({
     video: true,
     askPermissionOnMount: true,
-    blobPropertyBag: { type: "video/webm" },
+    blobPropertyBag: { type: "video/mp4" },
     onStop: (blobUrl, blob) => setBlob(blob),
   });
 

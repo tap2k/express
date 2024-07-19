@@ -6,7 +6,7 @@ import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-re
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import Content from "./content";
 
-export default function Slideshow({ channel, height, width, interval, showTitle, autoPlay, ...props }) 
+export default function Slideshow({ channel, height, width, interval, currSlide, showTitle, autoPlay, ...props }) 
 {
   if (!channel)
     return;
@@ -62,7 +62,7 @@ export default function Slideshow({ channel, height, width, interval, showTitle,
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
-      <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} >
+      <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} currentSlide={currSlide}>
         <Link href={"/upload?channelid="+channel.uniqueID} passHref>
           <button style={{...buttonStyle, left: 'calc(50% - 70px)'}}>
             +
