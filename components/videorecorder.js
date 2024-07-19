@@ -28,34 +28,29 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   });
 }
 
-function Output({ src, stream, status, currentCameraIndex, ...props }) {
+function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
-  const [isPortrait, setIsPortrait] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState(16 / 9); // default to 16:9
 
   useEffect(() => {
-    if (videoRef.current && stream && status !== "stopped") {
-      videoRef.current.srcObject = stream;
-      const videoTrack = stream.getVideoTracks()[0];
-      if (videoTrack) {
-        const handleTrackSettings = () => {
+    if (videoRef.current) {
+      if (stream && status !== "stopped") {
+        videoRef.current.srcObject = stream;
+        // Get video tracks
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          // Get the settings of the video track
           const { width, height } = videoTrack.getSettings();
           if (width && height) {
-            setIsPortrait(height > width);
+            setAspectRatio(width / height);
           }
-        };
-
-        handleTrackSettings();
-        videoTrack.addEventListener('settingschanged', handleTrackSettings);
-
-        return () => {
-          videoTrack.removeEventListener('settingschanged', handleTrackSettings);
-        };
+        }
+      } else {
+        videoRef.current.srcObject = null;
+        videoRef.current.src = src;
       }
-    } else if (videoRef.current) {
-      videoRef.current.srcObject = null;
-      videoRef.current.src = src;
     }
-  }, [stream, src, status, currentCameraIndex]);
+  }, [stream, src, status]);
 
   if (!stream && !src) return null;
 
@@ -64,12 +59,12 @@ function Output({ src, stream, status, currentCameraIndex, ...props }) {
   return (
     <div style={{
       width: '100%',
-      paddingTop: '56.25%', // 16:9 Aspect Ratio
       marginBottom: '20px',
       borderRadius: '10px',
       overflow: 'hidden',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       position: 'relative',
+      paddingTop: `${(1 / aspectRatio) * 100}%` // This creates a responsive container
     }}>
       <video 
         ref={videoRef} 
@@ -81,7 +76,7 @@ function Output({ src, stream, status, currentCameraIndex, ...props }) {
           left: 0,
           width: '100%',
           height: '100%',
-          objectFit: isPortrait ? 'contain' : 'cover',
+          objectFit: 'cover'
         }}
         {...props} 
       />
