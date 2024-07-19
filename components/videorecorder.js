@@ -30,15 +30,16 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
 
 function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
-  const [aspectRatio, setAspectRatio] = useState(16 / 9); // Default to 16:9
+  const [aspectRatio, setAspectRatio] = useState(16 / 9); // default to 16:9
 
   useEffect(() => {
     if (videoRef.current) {
       if (stream && status !== "stopped") {
         videoRef.current.srcObject = stream;
-        
+        // Get video tracks
         const videoTrack = stream.getVideoTracks()[0];
         if (videoTrack) {
+          // Get the settings of the video track
           const { width, height } = videoTrack.getSettings();
           if (width && height) {
             setAspectRatio(width / height);
@@ -51,21 +52,8 @@ function Output({ src, stream, status, ...props }) {
     }
   }, [stream, src, status]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (videoRef.current) {
-        const { videoWidth, videoHeight } = videoRef.current;
-        if (videoWidth && videoHeight) {
-          setAspectRatio(videoWidth / videoHeight);
-        }
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   if (!stream && !src) return null;
+
   const controls = src && status === "stopped";
 
   return (
@@ -76,12 +64,12 @@ function Output({ src, stream, status, ...props }) {
       overflow: 'hidden',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       position: 'relative',
-      paddingTop: `${(1 / aspectRatio) * 100}%`
+      paddingTop: `${(1 / aspectRatio) * 100}%` // This creates a responsive container
     }}>
-      <video
-        ref={videoRef}
-        controls={controls}
-        autoPlay
+      <video 
+        ref={videoRef} 
+        controls={controls} 
+        autoPlay 
         style={{
           position: 'absolute',
           top: 0,
@@ -90,13 +78,7 @@ function Output({ src, stream, status, ...props }) {
           height: '100%',
           objectFit: 'cover'
         }}
-        onLoadedMetadata={() => {
-          const { videoWidth, videoHeight } = videoRef.current;
-          if (videoWidth && videoHeight) {
-            setAspectRatio(videoWidth / videoHeight);
-          }
-        }}
-        {...props}
+        {...props} 
       />
     </div>
   );
