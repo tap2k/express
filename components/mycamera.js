@@ -117,7 +117,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
                   transition: 'background 0.3s ease'
                 }}
               >
-                <MdFlipCameraIos size={24} color="rgb(255, 255, 255)" />
+                <MdFlipCameraIos size={24} />
               </button>
             )}
           </>

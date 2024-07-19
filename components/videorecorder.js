@@ -3,6 +3,7 @@ import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
+import { MdFlipCameraIos } from 'react-icons/md';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, StyledButton } from '../components/recorderstyles';
@@ -28,7 +29,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
-  const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0); // Default to landscape
+  const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0);
+  const [facingMode, setFacingMode] = useState('user');
+  const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
 
   let lat = null;
   let long = null;
@@ -39,13 +42,19 @@ export default function VideoRecorder({ channelID, useLocation }) {
     long = geolocation.longitude;
   }
 
+  const checkForMultipleCameras = useCallback(async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    setHasMultipleCameras(videoDevices.length > 1);
+  }, []);
+
   const startStream = useCallback(async () => {
     try {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: { facingMode: facingMode },
         audio: true
       });
       streamRef.current = stream;
@@ -54,7 +63,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
         videoRef.current.onloadedmetadata = async () => {
           try {
             await videoRef.current.play();
-            // Set aspect ratio based on video dimensions
             setAspectRatio(videoRef.current.videoWidth / videoRef.current.videoHeight);
           } catch (playError) {
             console.error('Error playing video:', playError);
@@ -68,7 +76,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
       setErrorText('Failed to access camera. Please try again.');
       throw error;
     }
-  }, []);
+  }, [facingMode]);
 
   const startRecording = async () => {
     try {
@@ -110,14 +118,19 @@ export default function VideoRecorder({ channelID, useLocation }) {
     }
   }
 
+  const flipCamera = useCallback(() => {
+    setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
+  }, []);
+
   useEffect(() => {
+    checkForMultipleCameras();
     startStream();
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, [startStream]);
+  }, [startStream, checkForMultipleCameras]);
 
   useEffect(() => {
     let interval;
@@ -142,7 +155,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
         width: '100%', 
         paddingTop: `${(1 / aspectRatio) * 100}%`,
         marginBottom: '10px'
-        //margin: '0 auto',
       }}>
         <video 
           ref={videoRef} 
@@ -201,6 +213,28 @@ export default function VideoRecorder({ channelID, useLocation }) {
           }}>
             {formatTime(recordingTime)}
           </div>
+        )}
+        {hasMultipleCameras && (
+          <button 
+            onClick={flipCamera}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              zIndex: 1,
+              background: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <MdFlipCameraIos size={24} />
+          </button>
         )}
       </div>
       
