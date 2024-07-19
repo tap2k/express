@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
@@ -7,24 +7,14 @@ import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-function Output({ src, stream, status, videoRef }) {
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream || null;
-      videoRef.current.src = src || '';
-    }
-  }, [stream, src, status]);
-
-  if (!stream && !src) return null;
-
+function Output({ videoRef }) {
   return (
-    <div style={{ width: '100%', marginBottom: '10px' }}>
+    <div style={{ width: '100%', marginBottom: '20px' }}>
       <video 
         ref={videoRef} 
-        controls={status === "stopped"}
         autoPlay
         playsInline
-        muted={status !== "stopped"}
+        muted
         style={{ width: '100%', borderRadius: '10px' }}
       />
     </div>
@@ -40,11 +30,43 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
-  const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
 
   const geolocation = useGeolocation();
   const lat = useLocation ? geolocation.latitude : null;
   const long = useLocation ? geolocation.longitude : null;
+
+  const startPreview = useCallback(async () => {
+    try {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30, max: 60 }
+        },
+        audio: true
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        
+        // Wait for the video to be loaded before playing
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current.play();
+          } catch (playError) {
+            console.error('Error playing video:', playError);
+            setErrorText('Failed to start video preview. Please try again.');
+          }
+        };
+      }
+    } catch (error) {
+      console.error('Error starting preview:', error);
+      setErrorText(error.message);
+    }
+  }, []);
 
   useEffect(() => {
     startPreview();
@@ -53,7 +75,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [startPreview]);
 
   useEffect(() => {
     let interval;
@@ -65,41 +87,41 @@ export default function VideoRecorder({ channelID, useLocation }) {
     return () => clearInterval(interval);
   }, [status]);
 
-  const startPreview = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error('Error starting preview:', error);
-      setErrorText(error.message);
-    }
-  };
-
-  const startRecording = () => {
+  const startRecording = useCallback(() => {
     if (streamRef.current) {
-      recorderRef.current = new RecordRTC(streamRef.current, { type: 'video' });
+      recorderRef.current = new RecordRTC(streamRef.current, {
+        type: 'video',
+        mimeType: 'video/webm;codecs=vp9,opus',
+        frameInterval: 1,
+        recorderType: RecordRTC.MediaStreamRecorder
+      });
       recorderRef.current.startRecording();
       setStatus('recording');
     } else {
       setErrorText('No camera stream available. Please allow camera access and try again.');
     }
-  };
+  }, []);
 
-  const stopRecording = () => {
+  const stopRecording = useCallback(() => {
     if (recorderRef.current) {
       recorderRef.current.stopRecording(() => {
-        const blob = recorderRef.current.getBlob();
-        setBlob(blob);
-        setMediaBlobUrl(URL.createObjectURL(blob));
+        const recordedBlob = recorderRef.current.getBlob();
+        setBlob(recordedBlob);
         setStatus('stopped');
+        
+        // Add a small delay before updating the video source
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = null;
+            videoRef.current.src = URL.createObjectURL(recordedBlob);
+            videoRef.current.muted = false;
+          }
+        }, 100);
       });
     }
-  };
+  }, []);
 
-  const uploadRecording = async () => {
+  const uploadRecording = useCallback(async () => {
     if (status === "stopped" && blob) {
       const formData = new FormData();
       formData.append('mediafile', blob, "video.webm");
@@ -107,13 +129,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
       await uploadContent({formData, lat, long, description, published: true, channelID});
       router.push(router.asPath);
     }
-  };
+  }, [status, blob, lat, long, channelID, router]);
 
-  const formatTime = (seconds) => {
+  const formatTime = useCallback((seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
   return (
     <RecorderWrapper>
@@ -134,7 +156,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         </StyledButton>
       </ButtonGroup>
 
-      <Output src={mediaBlobUrl} stream={streamRef.current} status={status} videoRef={videoRef} />
+      <Output videoRef={videoRef} />
       
       <Input
         type="text"
