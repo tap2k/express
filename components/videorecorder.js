@@ -69,7 +69,8 @@ function Output({ src, stream, status, ...props }) {
       <video 
         ref={videoRef} 
         controls={controls} 
-        autoPlay 
+        autoPlay
+        playsInline
         style={{
           position: 'absolute',
           top: 0,
@@ -109,13 +110,20 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
     mediaBlobUrl,
     previewStream
   } = useReactMediaRecorder({
-    video: true,
+    video: { 
+      width: { ideal: 1920 },
+      height: { ideal: 1080 },
+      aspectRatio: { ideal: 16 / 9 },
+      facingMode: 'user',
+      frameRate: { max: 30 }
+    },
     askPermissionOnMount: true,
     //blobPropertyBag: { type: "video/mp4" },
     onStop: (blobUrl, blob) => setBlob(blob),
     mediaRecorderOptions: {
       mimeType: 'video/webm;codecs=vp9',
-      videoBitsPerSecond: 1000000
+      videoBitsPerSecond: 500000,
+      frameRate: 30
     }
   });
 
