@@ -38,23 +38,18 @@ export default function VideoRecorder({ channelID, useLocation }) {
     long = geolocation.longitude;
   }
 
-  const startPreview = useCallback(async () => {
+  const startStream = useCallback(async () => {
     try {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          frameRate: { ideal: 30, max: 60 }
-        },
+        video: { width: 1280, height: 720, frameRate: 30 },
         audio: true
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        
         // Wait for the video to be loaded before playing
         videoRef.current.onloadedmetadata = async () => {
           try {
@@ -65,64 +60,23 @@ export default function VideoRecorder({ channelID, useLocation }) {
           }
         };
       }
+      return stream;
     } catch (error) {
-      console.error('Error starting preview:', error);
-      setErrorText(error.message);
+      console.error('Error starting stream:', error);
+      setErrorText('Failed to access camera. Please try again.');
+      throw error;
     }
   }, []);
 
-  useEffect(() => {
-    startPreview();
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [startPreview]);
-
-  useEffect(() => {
-    let interval;
-    if (status === "recording") {
-      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
-    } else if (status === "stopped") {
-      setRecordingTime(0);
-    }
-    return () => clearInterval(interval);
-  }, [status]);
-
   const startRecording = async () => {
     try {
-      // Stop any existing stream
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-  
-      // Start a new stream
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          frameRate: { ideal: 30, max: 60 }
-        },
-        audio: true
-      });
-  
-      streamRef.current = stream;
-  
-      // Set the new stream as the video source
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-  
-      // Start recording with the new stream
+      const stream = await startStream();
       recorderRef.current = new RecordRTC(stream, {
         type: 'video',
         mimeType: 'video/webm;codecs=vp9,opus',
         frameInterval: 1,
         recorderType: RecordRTC.MediaStreamRecorder
       });
-  
       recorderRef.current.startRecording();
       setRecordingTime(0);
       setStatus('recording');
@@ -139,17 +93,35 @@ export default function VideoRecorder({ channelID, useLocation }) {
         setBlob(recordedBlob);
         setStatus('stopped');
         
-        // Add a small delay before updating the video source
-        //setTimeout(() => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = null;
-            videoRef.current.src = URL.createObjectURL(recordedBlob);
-            videoRef.current.muted = false;
-          }
-        //}, 100);
+        if (videoRef.current) {
+          const url = URL.createObjectURL(recordedBlob);
+          videoRef.current.src = url;
+          videoRef.current.srcObject = null;
+          videoRef.current.muted = false;
+          videoRef.current.play().catch(error => console.error('Error playing recorded video:', error));
+        }
       });
     }
   }
+
+  useEffect(() => {
+    startStream();
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [startStream]);
+
+  useEffect(() => {
+    let interval;
+    if (status === "recording") {
+      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+    } else if (status === "stopped") {
+      setRecordingTime(0);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -159,8 +131,12 @@ export default function VideoRecorder({ channelID, useLocation }) {
 
   return (
     <RecorderWrapper>
-    
-      <div style={{ position: 'relative' }}>
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        paddingTop: '56.25%', // 16:9 aspect ratio
+        marginBottom: '10px'
+      }}>
         <video 
           ref={videoRef} 
           autoPlay
@@ -168,39 +144,43 @@ export default function VideoRecorder({ channelID, useLocation }) {
           muted={status === "recording"}
           controls={status === "stopped"}
           style={{ 
-            width: '100%', 
-            borderRadius: '10px', 
-            marginBottom: '10px',
-            pointerEvents: status === 'recording' ? 'none' : 'auto' // Disable interaction during recording
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '10px',
+            objectFit: 'cover',
+            pointerEvents: status === 'recording' ? 'none' : 'auto'
           }}
         />
-      <div 
-        onClick={status === 'recording' ? stopRecording : startRecording}
-        style={{
-          position: 'absolute',
-          bottom: '70px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundColor: 'rgb(255, 255, 255)', 
-          border: '15px solid rgba(128, 128, 128)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-        }}
-    >
-      {status === 'recording' && (
-        <div style={{
-          width: '30px',
-          height: '30px',
-          backgroundColor: 'rgb(255, 255, 255)',
-          flexShrink: 0
-        }} />
-      )}
-    </div>
+        <div 
+          onClick={status === 'recording' ? stopRecording : startRecording}
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: 'rgb(255, 255, 255)', 
+            border: '15px solid rgba(128, 128, 128)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+          }}
+        >
+          {status === 'recording' && (
+            <div style={{
+              width: '30px',
+              height: '30px',
+              backgroundColor: 'rgb(255, 255, 255)',
+              flexShrink: 0
+            }} />
+          )}
+        </div>
         {status === 'recording' && (
           <div style={{
             position: 'absolute',
