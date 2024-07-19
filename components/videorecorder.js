@@ -30,7 +30,8 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
 
 function Output({ src, stream, status, ...props }) {
   const videoRef = useRef(null);
-  const [aspectRatio, setAspectRatio] = useState(16 / 9); // default to 16:9
+  const containerRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 16, height: 9 });
 
   useEffect(() => {
     if (videoRef.current) {
@@ -42,7 +43,7 @@ function Output({ src, stream, status, ...props }) {
           // Get the settings of the video track
           const { width, height } = videoTrack.getSettings();
           if (width && height) {
-            setAspectRatio(width / height);
+            setDimensions({ width, height });
           }
         }
       } else {
@@ -52,20 +53,37 @@ function Output({ src, stream, status, ...props }) {
     }
   }, [stream, src, status]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const { width } = containerRef.current.getBoundingClientRect();
+        const height = (width * dimensions.height) / dimensions.width;
+        containerRef.current.style.height = `${height}px`;
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [dimensions]);
+
   if (!stream && !src) return null;
 
   const controls = src && status === "stopped";
 
   return (
-    <div style={{
-      width: '100%',
-      marginBottom: '20px',
-      borderRadius: '10px',
-      overflow: 'hidden',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      position: 'relative',
-      paddingTop: `${(1 / aspectRatio) * 100}%` // This creates a responsive container
-    }}>
+    <div 
+      ref={containerRef}
+      style={{
+        width: '100%',
+        marginBottom: '20px',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        position: 'relative',
+      }}
+    >
       <video 
         ref={videoRef} 
         controls={controls} 
@@ -76,7 +94,7 @@ function Output({ src, stream, status, ...props }) {
           left: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'cover'
+          objectFit: 'contain'
         }}
         {...props} 
       />
