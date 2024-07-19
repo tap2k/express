@@ -1,135 +1,59 @@
-/* components/videorecorder.js */
-
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";
-import { useReactMediaRecorder } from "react-media-recorder";
+import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
-import getBlobDuration from 'get-blob-duration';
-import ysFixWebmDuration from 'fix-webm-duration';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadRecording(blob, lat, long, description, channelID, status, router) 
-{
-  if (status != "stopped" || !blob)
-    return;
-
-  getBlobDuration(blob).then(function(duration) {
-    ysFixWebmDuration(blob, duration, async (fixedBlob) => {
-      const formData = require('form-data');
-      const myFormData = new formData();
-      myFormData.append('mediafile', fixedBlob, "video.webm");
-      await uploadContent({myFormData, lat, long, description, published: true, channelID});
-      const query = router?.asPath?.slice(router?.pathname?.length);
-      router.push("/" + query);
-    });
-  });
-}
-
-function Output({ src, stream, status, ...props }) {
-  const videoRef = useRef(null);
-  const [aspectRatio, setAspectRatio] = useState(16 / 9); // default to 16:9
-
+function Output({ src, stream, status, videoRef }) {
   useEffect(() => {
     if (videoRef.current) {
-      if (stream && status !== "stopped") {
-        videoRef.current.srcObject = stream;
-        // Get video tracks
-        const videoTrack = stream.getVideoTracks()[0];
-        if (videoTrack) {
-          // Get the settings of the video track
-          const { width, height } = videoTrack.getSettings();
-          if (width && height) {
-            setAspectRatio(width / height);
-          }
-        }
-      } else {
-        videoRef.current.srcObject = null;
-        videoRef.current.src = src;
-      }
+      videoRef.current.srcObject = stream || null;
+      videoRef.current.src = src || '';
     }
   }, [stream, src, status]);
 
   if (!stream && !src) return null;
 
-  const controls = src && status === "stopped";
-
   return (
-    <div style={{
-      width: '100%',
-      marginBottom: '20px',
-      borderRadius: '10px',
-      overflow: 'hidden',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      position: 'relative',
-      paddingTop: `${(1 / aspectRatio) * 100}%` // This creates a responsive container
-    }}>
+    <div style={{ width: '100%', marginBottom: '10px' }}>
       <video 
         ref={videoRef} 
-        controls={controls} 
+        controls={status === "stopped"}
         autoPlay
         playsInline
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover'
-        }}
-        {...props} 
+        muted={status !== "stopped"}
+        style={{ width: '100%', borderRadius: '10px' }}
       />
     </div>
   );
 }
 
-export default function VideoRecorder({ channelID, useLocation, ...props }) {
+export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
-  const [blob, setBlob] = useState();
+  const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const descriptionRef = useRef();
+  const videoRef = useRef(null);
+  const recorderRef = useRef(null);
+  const streamRef = useRef(null);
+  const [status, setStatus] = useState('idle');
+  const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
 
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
-
-  const {
-    status,
-    error,
-    startRecording,
-    pauseRecording,
-    resumeRecording,
-    stopRecording,
-    mediaBlobUrl,
-    previewStream
-  } = useReactMediaRecorder({
-    video: { 
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-      aspectRatio: { ideal: 16 / 9 },
-      facingMode: 'user',
-      frameRate: { max: 30 }
-    },
-    askPermissionOnMount: true,
-    //blobPropertyBag: { type: "video/mp4" },
-    onStop: (blobUrl, blob) => setBlob(blob),
-    mediaRecorderOptions: {
-      mimeType: 'video/webm;codecs=vp9',
-      videoBitsPerSecond: 500000,
-      frameRate: 30
-    }
-  });
+  const geolocation = useGeolocation();
+  const lat = useLocation ? geolocation.latitude : null;
+  const long = useLocation ? geolocation.longitude : null;
 
   useEffect(() => {
-    if (error) setErrorText(error);
-  }, [error]);
+    startPreview();
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -141,6 +65,50 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
     return () => clearInterval(interval);
   }, [status]);
 
+  const startPreview = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error starting preview:', error);
+      setErrorText(error.message);
+    }
+  };
+
+  const startRecording = () => {
+    if (streamRef.current) {
+      recorderRef.current = new RecordRTC(streamRef.current, { type: 'video' });
+      recorderRef.current.startRecording();
+      setStatus('recording');
+    } else {
+      setErrorText('No camera stream available. Please allow camera access and try again.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (recorderRef.current) {
+      recorderRef.current.stopRecording(() => {
+        const blob = recorderRef.current.getBlob();
+        setBlob(blob);
+        setMediaBlobUrl(URL.createObjectURL(blob));
+        setStatus('stopped');
+      });
+    }
+  };
+
+  const uploadRecording = async () => {
+    if (status === "stopped" && blob) {
+      const formData = new FormData();
+      formData.append('mediafile', blob, "video.webm");
+      const description = descriptionRef.current.value;
+      await uploadContent({formData, lat, long, description, published: true, channelID});
+      router.push(router.asPath);
+    }
+  };
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -148,57 +116,41 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
   };
 
   return (
-    <RecorderWrapper {...props}>
+    <RecorderWrapper>
       <ButtonGroup>
         <StyledButton 
           color="primary" 
-          onClick={() => status === "paused" ? resumeRecording() : startRecording()}
+          onClick={startRecording}
           disabled={status === "recording"}
         >
-          {status === "recording" ? "Recording..." : recordingTime ? "Resume" : "Start"}
-        </StyledButton>
-        <StyledButton 
-          color="warning" 
-          onClick={pauseRecording}
-          disabled={status !== "recording"}
-        >
-          Pause
+          {status === "recording" ? "Recording..." : "Start"}
         </StyledButton>
         <StyledButton 
           color="danger" 
           onClick={stopRecording}
-          disabled={status === "stopped"}
+          disabled={status !== "recording"}
         >
           Stop
         </StyledButton>
       </ButtonGroup>
 
-      <Output src={mediaBlobUrl} stream={previewStream} status={status} />
+      <Output src={mediaBlobUrl} stream={streamRef.current} status={status} videoRef={videoRef} />
       
       <Input
         type="text"
         innerRef={descriptionRef}
-        placeholder="Enter text"
-        style={{
-          width: '100%',
-          marginBottom: '10px'
-        }}
+        placeholder="Enter description"
+        style={{ width: '100%', marginBottom: '10px' }}
       />
       
       <StyledButton 
         color="success" 
         size="lg" 
         block 
-        onClick={(e) => {
-          e.preventDefault();
-          const description = descriptionRef.current.value;
-          uploadRecording(blob, lat, long, description, channelID, status, router);
-        }}
+        onClick={uploadRecording}
         disabled={status !== "stopped" || !blob}
       >
-        {status === "recording" || status === "paused"
-          ? `Recording (${formatTime(recordingTime)})`
-          : "Submit"}
+        {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
       </StyledButton>
     </RecorderWrapper>
   );
