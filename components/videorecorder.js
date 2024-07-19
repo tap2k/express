@@ -5,7 +5,7 @@ import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import { RecorderWrapper, StyledButton } from '../components/recorderstyles';
 
 async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
@@ -28,6 +28,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
+  const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0); // Default to landscape
 
   let lat = null;
   let long = null;
@@ -44,16 +45,17 @@ export default function VideoRecorder({ channelID, useLocation }) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1280, height: 720, frameRate: 30 },
+        video: true,
         audio: true
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        // Wait for the video to be loaded before playing
         videoRef.current.onloadedmetadata = async () => {
           try {
             await videoRef.current.play();
+            // Set aspect ratio based on video dimensions
+            setAspectRatio(videoRef.current.videoWidth / videoRef.current.videoHeight);
           } catch (playError) {
             console.error('Error playing video:', playError);
             setErrorText('Failed to start video preview. Please try again.');
@@ -134,8 +136,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
       <div style={{ 
         position: 'relative', 
         width: '100%', 
-        paddingTop: '56.25%', // 16:9 aspect ratio
-        marginBottom: '10px'
+        paddingTop: `${(1 / aspectRatio) * 100}%`,
+        marginBottom: '10px',
+        //margin: '0 auto',
       }}>
         <video 
           ref={videoRef} 
