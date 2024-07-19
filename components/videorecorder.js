@@ -90,21 +90,47 @@ export default function VideoRecorder({ channelID, useLocation }) {
     return () => clearInterval(interval);
   }, [status]);
 
-  const startRecording = () => {
-    if (streamRef.current) {
-      recorderRef.current = new RecordRTC(streamRef.current, {
+  const startRecording = async () => {
+    try {
+      // Stop any existing stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+  
+      // Start a new stream
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30, max: 60 }
+        },
+        audio: true
+      });
+  
+      streamRef.current = stream;
+  
+      // Set the new stream as the video source
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+  
+      // Start recording with the new stream
+      recorderRef.current = new RecordRTC(stream, {
         type: 'video',
         mimeType: 'video/webm;codecs=vp9,opus',
         frameInterval: 1,
         recorderType: RecordRTC.MediaStreamRecorder
       });
+  
       recorderRef.current.startRecording();
-      setRecordingTime(0); // Reset recording time
+      setRecordingTime(0);
       setStatus('recording');
-    } else {
-      setErrorText('No camera stream available. Please allow camera access and try again.');
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      setErrorText('Failed to start recording. Please try again.');
     }
-  }
+  };
 
   const stopRecording = () => {
     if (recorderRef.current) {
