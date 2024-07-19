@@ -137,14 +137,14 @@ export default function VideoRecorder({ channelID, useLocation }) {
         position: 'relative', 
         width: '100%', 
         paddingTop: `${(1 / aspectRatio) * 100}%`,
-        marginBottom: '10px',
+        marginBottom: '10px'
         //margin: '0 auto',
       }}>
         <video 
           ref={videoRef} 
           autoPlay
           playsInline
-          muted={status === "recording"}
+          muted={status != "stopped"}
           controls={status === "stopped"}
           style={{ 
             position: 'absolute',
@@ -161,7 +161,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
           onClick={status === 'recording' ? stopRecording : startRecording}
           style={{
             position: 'absolute',
-            bottom: '20px',
+            bottom: '50px',
             left: '50%',
             transform: 'translateX(-50%)',
             width: '60px',
