@@ -28,62 +28,49 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   });
 }
 
-function Output({ src, stream, status, ...props }) {
+function Output({ src, stream, status, currentCameraIndex, ...props }) {
   const videoRef = useRef(null);
-  const containerRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 16, height: 9 });
+  const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
-    if (videoRef.current) {
-      if (stream && status !== "stopped") {
-        videoRef.current.srcObject = stream;
-        // Get video tracks
-        const videoTrack = stream.getVideoTracks()[0];
-        if (videoTrack) {
-          // Get the settings of the video track
+    if (videoRef.current && stream && status !== "stopped") {
+      videoRef.current.srcObject = stream;
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        const handleTrackSettings = () => {
           const { width, height } = videoTrack.getSettings();
           if (width && height) {
-            setDimensions({ width, height });
+            setIsPortrait(height > width);
           }
-        }
-      } else {
-        videoRef.current.srcObject = null;
-        videoRef.current.src = src;
+        };
+
+        handleTrackSettings();
+        videoTrack.addEventListener('settingschanged', handleTrackSettings);
+
+        return () => {
+          videoTrack.removeEventListener('settingschanged', handleTrackSettings);
+        };
       }
+    } else if (videoRef.current) {
+      videoRef.current.srcObject = null;
+      videoRef.current.src = src;
     }
-  }, [stream, src, status]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
-        const height = (width * dimensions.height) / dimensions.width;
-        containerRef.current.style.height = `${height}px`;
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [dimensions]);
+  }, [stream, src, status, currentCameraIndex]);
 
   if (!stream && !src) return null;
 
   const controls = src && status === "stopped";
 
   return (
-    <div 
-      ref={containerRef}
-      style={{
-        width: '100%',
-        marginBottom: '20px',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        position: 'relative',
-      }}
-    >
+    <div style={{
+      width: '100%',
+      paddingTop: '56.25%', // 16:9 Aspect Ratio
+      marginBottom: '20px',
+      borderRadius: '10px',
+      overflow: 'hidden',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      position: 'relative',
+    }}>
       <video 
         ref={videoRef} 
         controls={controls} 
@@ -94,7 +81,7 @@ function Output({ src, stream, status, ...props }) {
           left: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'contain'
+          objectFit: isPortrait ? 'contain' : 'cover',
         }}
         {...props} 
       />
