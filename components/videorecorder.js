@@ -72,7 +72,11 @@ export default function VideoRecorder({ channelID, useLocation }) {
 
   const startRecording = async () => {
     try {
-      const stream = await startStream();
+      let stream = streamRef?.current;
+      if (!stream)
+        stream = await startStream();
+      else
+        videoRef.current.srcObject = stream;
       recorderRef.current = new RecordRTC(stream, {
         type: 'video',
         mimeType: 'video/webm;codecs=vp9,opus',
