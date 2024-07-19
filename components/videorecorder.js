@@ -111,8 +111,12 @@ export default function VideoRecorder({ channelID, useLocation, ...props }) {
   } = useReactMediaRecorder({
     video: true,
     askPermissionOnMount: true,
-    blobPropertyBag: { type: "video/mp4" },
+    //blobPropertyBag: { type: "video/mp4" },
     onStop: (blobUrl, blob) => setBlob(blob),
+    mediaRecorderOptions: {
+      mimeType: 'video/webm;codecs=vp9',
+      videoBitsPerSecond: 1000000
+    }
   });
 
   useEffect(() => {
