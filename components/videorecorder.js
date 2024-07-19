@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
@@ -6,6 +6,18 @@ import useGeolocation from "react-hook-geolocation";
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+
+async function uploadRecording(blob, lat, long, description, channelID, status, router) 
+{
+  if (status != "stopped" || !blob)
+    return;
+  const formData = require('form-data');
+  const myFormData = new formData();
+  myFormData.append('mediafile', blob, "video.webm");
+  await uploadContent({myFormData, lat, long, description, published: true, channelID});
+  const query = router?.asPath?.slice(router?.pathname?.length);
+  router.push("/" + query);
+}
 
 function Output({ videoRef }) {
   return (
@@ -31,9 +43,14 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
 
-  const geolocation = useGeolocation();
-  const lat = useLocation ? geolocation.latitude : null;
-  const long = useLocation ? geolocation.longitude : null;
+  let lat = null;
+  let long = null;
+
+  if (useLocation) {
+    const geolocation = useGeolocation();
+    lat = geolocation.latitude;
+    long = geolocation.longitude;
+  }
 
   const startPreview = useCallback(async () => {
     try {
@@ -87,7 +104,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
     return () => clearInterval(interval);
   }, [status]);
 
-  const startRecording = useCallback(() => {
+  const startRecording = () => {
     if (streamRef.current) {
       recorderRef.current = new RecordRTC(streamRef.current, {
         type: 'video',
@@ -100,9 +117,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
     } else {
       setErrorText('No camera stream available. Please allow camera access and try again.');
     }
-  }, []);
+  }
 
-  const stopRecording = useCallback(() => {
+  const stopRecording = () => {
     if (recorderRef.current) {
       recorderRef.current.stopRecording(() => {
         const recordedBlob = recorderRef.current.getBlob();
@@ -119,23 +136,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
         }, 100);
       });
     }
-  }, []);
+  }
 
-  const uploadRecording = useCallback(async () => {
-    if (status === "stopped" && blob) {
-      const formData = new FormData();
-      formData.append('mediafile', blob, "video.webm");
-      const description = descriptionRef.current.value;
-      await uploadContent({formData, lat, long, description, published: true, channelID});
-      router.push(router.asPath);
-    }
-  }, [status, blob, lat, long, channelID, router]);
-
-  const formatTime = useCallback((seconds) => {
+  const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }, []);
+  }
 
   return (
     <RecorderWrapper>
@@ -169,7 +176,11 @@ export default function VideoRecorder({ channelID, useLocation }) {
         color="success" 
         size="lg" 
         block 
-        onClick={uploadRecording}
+        onClick={(e) => {
+          e.preventDefault();
+          const description = descriptionRef.current.value;
+          uploadRecording(blob, lat, long, description, channelID, status, router);
+        }}
         disabled={status !== "stopped" || !blob}
       >
         {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}

@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
 export default function useMediaControl (mediaRef, index, autoPlay) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const carouselContext = useContext(CarouselContext);
 
-  const play = useCallback(() => {
+  const play = () => {
     if (mediaRef.current) {
       mediaRef.current.play().then(() => {
         setIsPlaying(true);
@@ -13,24 +13,24 @@ export default function useMediaControl (mediaRef, index, autoPlay) {
         console.error("Error playing media:", error);
       });
     }
-  }, [mediaRef]);
+  }
 
-  const pause = useCallback(() => {
+  const pause = () => {
     if (mediaRef.current) {
       mediaRef.current.pause();
       setIsPlaying(false);
     }
-  }, [mediaRef]);
+  }
 
-  const toggle = useCallback(() => {
+  const toggle = () => {
     isPlaying ? pause() : play();
-  }, [isPlaying, pause, play]);
+  }
 
-  const resetMedia = useCallback(() => {
+  const resetMedia = () => {
     if (mediaRef.current) {
       mediaRef.current.currentTime = 0;
     }
-  }, [mediaRef]);
+  }
 
   useEffect(() => {
     if (!carouselContext) return;
