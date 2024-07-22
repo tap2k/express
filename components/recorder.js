@@ -132,7 +132,7 @@ export default function Recorder({ channelID, useLocation }) {
       <Input
         type="text"
         innerRef={descriptionRef}
-        placeholder="Enter description"
+        placeholder="Enter text"
         style={{ width: '100%', marginBottom: '10px' }}
       />
       
