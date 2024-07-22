@@ -1,6 +1,6 @@
 // sharedStyles.js
 import styled from 'styled-components';
-import { Button } from "reactstrap";
+import { Button, Input } from "reactstrap";
 
 export const RecorderWrapper = styled.div`
   max-width: 800px;
