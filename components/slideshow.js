@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import Content from "./content";
-import { FaHeart } from 'react-icons/fa';
+//import { FaHeart } from 'react-icons/fa';
 
 export default function Slideshow({ channel, height, width, interval, currSlide, showTitle, autoPlay, ...props }) 
 {
@@ -63,7 +63,7 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
-      <style>
+      { false ? <style>
         {`
           @keyframes likeAnimation {
             0% { transform: scale(1); }
@@ -84,18 +84,18 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
             animation: likeAnimation 0.3s ease;
           }
         `}
-      </style>
+      </style> : "" }
       <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} currentSlide={currSlide}>
-        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 95px)'}}>⛶</button>
+        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 70px)'}}>⛶</button>
         <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
-          <button style={{...buttonStyle, left: 'calc(50% - 30px)'}}>+</button>
+          <button style={{...buttonStyle, left: 'calc(50% - 0px)'}}>+</button>
         </Link>
-        <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
+        { false ? <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
           <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
           <label htmlFor="heart-checkbox" className="heart-label">
             <FaHeart size={24} />
           </label>
-        </div>
+        </div> : "" }
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>
