@@ -7,7 +7,7 @@ const Recorder = dynamic(() => import("../components/recorder"), { ssr: false })
 export default function RecordAudioPage() {
   const router = useRouter();
   const channelID = router.query.channelid;
-  const useLocation = !(router.query.uselocation === "false");
+  const useLocation = router.query.uselocation === "true";
 
   return (
     <RecorderLayout 

@@ -9,7 +9,7 @@ const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr
 export default function RecordVideoPage() {
   const router = useRouter();
   const channelID = router.query.channelid;
-  const useLocation = !(router.query.uselocation === "false");
+  const useLocation = router.query.uselocation === "true";
   
   return (
     <RecorderLayout 

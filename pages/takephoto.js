@@ -5,7 +5,7 @@ import RecorderLayout from "../components/recorderlayout";
 export default function TakePhotoPage() {
   const router = useRouter();
   const channelID = router.query.channelid;
-  const useLocation = !(router.query.uselocation === "false");
+  const useLocation = router.query.uselocation === "true";
   
   return (
     <RecorderLayout 
