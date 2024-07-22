@@ -3,6 +3,7 @@
 import { Button } from "reactstrap";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import LinkWithQuery from "./linkwithquery";
+import Link from "next/link";
 
 export default function Prober() 
 {
@@ -27,6 +28,10 @@ export default function Prober()
       <LinkWithQuery href={"/reel"}>
         <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">view reel</Button>
       </LinkWithQuery>
+      <br/>
+      { false ? <Link href={"/"}>
+        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">make a new reel</Button>
+      </Link> : "" }
     </div>
   );
 }

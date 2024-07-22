@@ -1,50 +1,44 @@
-import { useRef } from "react";
-import { Input } from "reactstrap";
-import { useRouter } from "next/router";
-import { StyledButton } from '../components/recorderstyles';
-import addChannel from "../hooks/addchannel";
+/* pages/index.js */
 
-export default function AddChannelPage() {
-  const inputRef = useRef();
-  const router = useRouter();
+import { use100vh } from 'react-div-100vh';
+import getChannel from "../hooks/getchannel";
+import Slideshow from "../components/slideshow";
+import Prober from "../components/prober";
+import ChannelAdder from "../components/channeladder";
 
-  const handleAddChannel = async () => {
-    const inputValue = inputRef.current.value;
-    if (inputValue) {
-      const channeldata = await addChannel({name: inputValue});
-      console.log(channeldata);
-      const uniqueID = channeldata["uniqueID"];
-      router.push(`/upload?channelid=${uniqueID}`);
-    }
-  };
+export default ({ channel }) => {  
 
+  if (!channel)
+    return <ChannelAdder />
+    
+  if (channel.contents?.length)
+  {
+    const width = "100vw";
+    const height = use100vh();
+    //const height = "100vh";
+
+    return (
+        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} showTitle autoPlay />
+    );
+  }
+  
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-    }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '200px',
-      }}>
-        <Input
-          type="text"
-          innerRef={inputRef}
-          placeholder="Enter channel name"
-          style={{ marginBottom: '10px', width: '100%' }}
-        />
-        <StyledButton
-          color="primary"
-          onClick={handleAddChannel}
-          style={{ width: '100%' }}
-        >
-          Make a New Reel
-        </StyledButton>
-      </div>
-    </div>
+    <Prober channelID={channel?.uniqueID} /> 
   );
+};
+
+export async function getServerSideProps(ctx) {
+  try {
+      const channelid = ctx.query?.channelid;
+      if (channelid)
+      {
+        let channel = await getChannel({channelID: channelid});
+        return { props: { channel: channel } };
+      }
+  } catch (err) {
+      console.error(err);
+  }
+  return {
+      props: {}
+  }
 }
