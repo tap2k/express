@@ -9,6 +9,9 @@ import FullImage from './fullimage';
 
 export default function AudioPlayer({ src, thumbnailItem, caption, width, height, autoPlay, index }) 
 {
+  // Maustro
+  autoPlay = false;
+  
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
 

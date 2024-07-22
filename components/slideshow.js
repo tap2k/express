@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import Content from "./content";
+import { FaHeart } from 'react-icons/fa';
 
 export default function Slideshow({ channel, height, width, interval, currSlide, showTitle, autoPlay, ...props }) 
 {
@@ -62,15 +63,39 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
+      <style>
+        {`
+          @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+          }
+          .heart-checkbox {
+            display: none;
+          }
+          .heart-label {
+            cursor: pointer;
+            transition: color 0.3s ease;
+          }
+          .heart-checkbox:checked + .heart-label {
+            color: red;
+          }
+          .heart-label:active {
+            animation: likeAnimation 0.3s ease;
+          }
+        `}
+      </style>
       <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} currentSlide={currSlide}>
-        <Link href={"/upload?channelid="+channel.uniqueID} passHref>
-          <button style={{...buttonStyle, left: 'calc(50% - 70px)'}}>
-            +
-          </button>
+        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 95px)'}}>⛶</button>
+        <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
+          <button style={{...buttonStyle, left: 'calc(50% - 30px)'}}>+</button>
         </Link>
-        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% + 0px)'}}>
-          ⛶
-        </button>
+        <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
+          <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
+          <label htmlFor="heart-checkbox" className="heart-label">
+            <FaHeart size={24} />
+          </label>
+        </div>
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>
