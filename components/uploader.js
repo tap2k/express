@@ -8,7 +8,7 @@ import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/record
 
 export default function Uploader({ channelID, useLocation, ...props }) {
   const router = useRouter();
-  const inputRef = useRef();
+  const fileInputRef = useRef();
   const [preview, setPreview] = useState(null);
   const descriptionRef = useRef();
 
@@ -55,20 +55,20 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   }, [files]);
 
   const handleFileChange = (e) => {
-    setFiles(e, 'a');
+    setFiles(e, 'w');
   };
 
   const clearFile = () => {
     clearAllFiles();
-    if (inputRef.current) {
-      inputRef.current.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
   return (
     <RecorderWrapper {...props}>
       <ButtonGroup>
-        <StyledButton color="primary" onClick={() => inputRef.current.click()}>
+        <StyledButton color="primary" onClick={() => fileInputRef.current.click()}>
           Select File
         </StyledButton>
         <StyledButton color="secondary" onClick={clearFile} disabled={!files.length}>
@@ -76,45 +76,66 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         </StyledButton>
       </ButtonGroup>
 
-      <div style={{
-        width: '100%',
-        height: '300px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-        overflow: 'hidden',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: '20px',
-      }}
-      onDragEnter={handleDragDropEvent}
-      onDragOver={handleDragDropEvent}
-      onDrop={(e) => {
-        handleDragDropEvent(e);
-        setFiles(e, 'a');
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '200px',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '20px',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+        onDragEnter={handleDragDropEvent}
+        onDragOver={handleDragDropEvent}
+        onDrop={(e) => {
+          handleDragDropEvent(e);
+          setFiles(e, 'w');
+        }}
+      >
         {files.length > 0 ? (
           <>
             {files[0].type.startsWith('image/') && <img src={preview} alt={files[0].name} style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />}
             {files[0].type.startsWith('video/') && <video src={preview} controls style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />}
             {files[0].type.startsWith('audio/') && <audio src={preview} controls style={{width: '100%'}} />}
+            <button
+              onClick={() => clearAllFiles()}
+              style={{
+                position: 'absolute',
+                top: '5px',
+                right: '5px',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '25px',
+                height: '25px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              ✕
+            </button>
           </>
         ) : (
-          <div style={{color: '#999', fontSize: '1.2em'}}>No file selected</div>
-        )}
-      </div>
-
-      <div style={{marginBottom: '20px'}}>
-        {files.length > 0 && (
-          <>
-            <strong>File:</strong> {files[0].name}<br />
-            <strong>Size:</strong> {(files[0].size / 1024 / 1024).toFixed(2)} MB
-          </>
+            <div style={{ textAlign: 'center' }}>
+              <StyledButton
+                color="secondary"
+                onClick={() => fileInputRef.current.click()}
+              >
+                Add File
+              </StyledButton>
+          </div>
         )}
       </div>
 
       <input
-        ref={inputRef}
+        ref={fileInputRef}
         type="file"
         style={{ display: 'none' }}
         accept="image/*,audio/*,video/*"

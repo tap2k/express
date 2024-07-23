@@ -3,20 +3,24 @@ import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
+import useFileUpload from 'react-use-file-upload';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadRecording(blob, lat, long, description, channelID, status, router) 
+async function uploadRecording(myFormData, lat, long, description, channelID, status, router) 
 {
-  if (status != "stopped" || !blob)
+  if (status !== "stopped" || !myFormData.has('mediafile'))
     return;
-  const formData = require('form-data');
-  const myFormData = new formData();
-  myFormData.append('mediafile', blob, "audio.ogg");
-  await uploadContent({myFormData, lat, long, description, published: true, channelID});
-  const query = router?.asPath?.slice(router?.pathname?.length);
-  router.push("/" + query);
+
+  try {
+    await uploadContent({myFormData, lat, long, description, published: true, channelID});
+    const query = router?.asPath?.slice(router?.pathname?.length);
+    router.push("/" + query);
+  } catch (error) {
+    console.error('Error uploading content:', error);
+    setErrorText('Failed to upload content. Please try again.');
+  }
 }
 
 function Output({ src }) {  
@@ -33,11 +37,31 @@ function Output({ src }) {
   );
 }
 
+const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
 export default function Recorder({ channelID, useLocation }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const descriptionRef = useRef();
+  const fileInputRef = useRef();
+  
+  const {
+    files,
+    fileNames,
+    fileTypes,
+    totalSize,
+    totalSizeInBytes,
+    handleDragDropEvent,
+    clearAllFiles,
+    createFormData,
+    setFiles,
+    removeFile,
+  } = useFileUpload();
 
   let lat = null;
   let long = null;
@@ -87,11 +111,26 @@ export default function Recorder({ channelID, useLocation }) {
     }
   };
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }
+  const handleFileChange = (e) => {
+    setFiles(e, 'w');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!blob)
+      return;
+
+    const description = descriptionRef.current.value;
+    
+    //const formData = createFormData();
+    const formData = new FormData();
+    formData.append('mediafile', blob, 'audio.mp3');
+    
+    if (files.length > 0) 
+      formData.append('thumbnail', files[0], files[0].name);
+    
+    await uploadRecording(formData, lat, long, description, channelID, status, router);
+  };
 
   return (
     <RecorderWrapper>
@@ -113,22 +152,104 @@ export default function Recorder({ channelID, useLocation }) {
 
       <div style={{
         width: '100%',
-        height: '60px',
+        height: '30px',
         backgroundColor: '#e9ecef',
         borderRadius: '30px',
         overflow: 'hidden',
-        marginBottom: '20px'
+        marginBottom: '20px',
+        position: 'relative'
       }}>
         <div style={{
-          width: status === "recording" ? '100%' : '0',
+          width: `${(recordingTime / 60) * 100}%`,
           height: '100%',
           backgroundColor: '#007bff',
-          transition: 'width 30.0s'
+          transition: 'width 1s linear'
         }} />
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          color: recordingTime > 150 ? 'white' : 'black',
+          fontWeight: 'bold',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%'
+        }}>
+          <span style={{ marginRight: '10px' }}>{formatTime(recordingTime)}</span>
+        </div>
       </div>
 
       <Output src={mediaBlobUrl} />
       
+      <div
+        style={{
+          width: '100%',
+          height: '200px',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '20px',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+        onDragEnter={handleDragDropEvent}
+        onDragOver={handleDragDropEvent}
+        onDrop={(e) => {
+          handleDragDropEvent(e);
+          setFiles(e, 'w');
+        }}
+      >
+        {files.length > 0 ? (
+          <>
+            <img
+              src={URL.createObjectURL(files[0])}
+              alt="Preview"
+              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+            />
+            <button
+              onClick={() => clearAllFiles()}
+              style={{
+                position: 'absolute',
+                top: '5px',
+                right: '5px',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '25px',
+                height: '25px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              ✕
+            </button>
+          </>
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
+            <StyledButton
+              color="secondary"
+              onClick={() => fileInputRef.current.click()}
+            >
+              Add Image
+            </StyledButton>
+          </div>
+        )}
+      </div>
+
       <Input
         type="text"
         innerRef={descriptionRef}
@@ -140,11 +261,7 @@ export default function Recorder({ channelID, useLocation }) {
         color="success" 
         size="lg" 
         block 
-        onClick={(e) => {
-          e.preventDefault();
-          const description = descriptionRef.current.value;
-          uploadRecording(blob, lat, long, description, channelID, status, router);
-        }}
+        onClick={handleSubmit}
         disabled={status !== "stopped" || !blob}
       >
         {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
