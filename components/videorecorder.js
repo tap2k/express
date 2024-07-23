@@ -20,6 +20,12 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   router.push("/" + query);
 }
 
+const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
@@ -142,12 +148,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
     return () => clearInterval(interval);
   }, [status]);
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }
-
   return (
     <RecorderWrapper>
       <div style={{ 
@@ -256,7 +256,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         }}
         disabled={status !== "stopped" || !blob}
       >
-        Submit
+        {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
       </StyledButton>
     </RecorderWrapper>
   );
