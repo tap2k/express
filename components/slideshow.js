@@ -61,6 +61,20 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
     cursor: 'pointer'
   };
 
+  const titleStyle = {
+    filter: 'invert(100%) grayscale(100%)',
+    mixBlendMode: 'difference',
+    whiteSpace: 'pre-wrap',
+    width: '100%',
+    position: 'absolute',
+    top: '50%',
+    transform: "translate(0, -50%)",
+    maxHeight: "80%",
+    overflowY: "auto",
+    padding: '0 15%',
+    textAlign: 'center'
+  };
+
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
       <style>
@@ -99,7 +113,7 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>
-            <div style={{filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box', textAlign: 'center'}}>
+            <div style={titleStyle}>
               <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
             </div>
           </Slide> : "" }

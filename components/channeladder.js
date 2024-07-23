@@ -1,7 +1,6 @@
 import { useRef } from "react";
-import { Input } from "reactstrap";
+import { Input, Button } from "reactstrap";
 import { useRouter } from "next/router";
-import { StyledButton } from '../components/recorderstyles';
 import addChannel from "../hooks/addchannel";
 
 export default function ChannelAdder() {
@@ -17,33 +16,47 @@ export default function ChannelAdder() {
     }
   };
 
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    padding: '20px',
+  };
+
+  const inputStyle = {
+    fontSize: 'large',
+    width: '300px',
+    height: '50px',
+    marginBottom: '15px',
+    borderRadius: '12px',
+    border: '1px solid #ccc',
+  };
+
+  const buttonStyle = {
+    fontSize: 'x-large',
+    width: '300px',
+    padding: '5px',
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+  };
+  
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-    }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '200px',
-      }}>
-        <Input
-          type="text"
-          innerRef={inputRef}
-          placeholder="Enter channel name"
-          style={{ marginBottom: '10px', width: '100%' }}
-        />
-        <StyledButton
-          color="primary"
-          onClick={handleAddChannel}
-          style={{ width: '100%' }}
-        >
-          Make a New Reel
-        </StyledButton>
-      </div>
+    <div style={containerStyle}>
+      <Input
+        type="text"
+        innerRef={inputRef}
+        placeholder="Enter your prompt here"
+        style={inputStyle}
+      />
+      <Button
+        onClick={handleAddChannel}
+        style={buttonStyle}
+        color="primary" 
+      >
+        Make a New Reel
+      </Button>
     </div>
   );
 }

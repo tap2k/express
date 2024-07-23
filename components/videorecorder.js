@@ -14,7 +14,8 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
     return;
   const formData = require('form-data');
   const myFormData = new formData();
-  myFormData.append('mediafile', blob, "video.webm");
+  //myFormData.append('mediafile', blob, "video.webm");
+  myFormData.append('mediafile', blob, "video.mp4");
   await uploadContent({myFormData, lat, long, description, published: true, channelID});
   const query = router?.asPath?.slice(router?.pathname?.length);
   router.push("/" + query);
@@ -60,7 +61,16 @@ export default function VideoRecorder({ channelID, useLocation }) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facingMode },
+        video: { 
+            video: {
+              facingMode: facingMode,
+              width: { min: 640, ideal: 1280, max: 1920 },
+              height: { min: 480, ideal: 720, max: 1080 },
+              aspectRatio: { ideal: 16/9 },
+              frameRate: 30,
+              resizeMode: 'crop-and-scale'
+            },
+          },
         audio: true
       });
       streamRef.current = stream;
@@ -93,7 +103,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
         videoRef.current.srcObject = stream;
       recorderRef.current = new RecordRTC(stream, {
         type: 'video',
-        mimeType: 'video/webm;codecs=vp9,opus',
+        //mimeType: 'video/webm;codecs=vp9,opus',
+        mimeType: 'video/mp4',
         frameInterval: 1,
         recorderType: RecordRTC.MediaStreamRecorder
       });
@@ -156,23 +167,24 @@ export default function VideoRecorder({ channelID, useLocation }) {
         paddingTop: `${(1 / aspectRatio) * 100}%`,
         marginBottom: '10px'
       }}>
-        <video 
-          ref={videoRef} 
-          autoPlay
-          playsInline
-          muted={status != "stopped"}
-          controls={status === "stopped"}
-          style={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            borderRadius: '10px',
-            objectFit: 'cover',
-            pointerEvents: status === 'recording' ? 'none' : 'auto'
-          }}
-        />
+      <video 
+        ref={videoRef} 
+        autoPlay
+        playsInline
+        muted={status != "stopped"}
+        controls={status === "stopped"}
+        style={{ 
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          borderRadius: '10px',
+          objectFit: 'cover',
+          pointerEvents: status === 'recording' ? 'none' : 'auto',
+          transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
+        }}
+      />
         <div 
           onClick={status === 'recording' ? stopRecording : startRecording}
           style={{
