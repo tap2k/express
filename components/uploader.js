@@ -156,6 +156,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         color="success"
         onClick={uploadFiles}
         disabled={!files.length}
+        block
       >
         Submit
       </StyledButton>
