@@ -1,3 +1,5 @@
+// components/mycamera.js
+
 import { useState, useRef, useEffect } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import Content from "./content";
-//import { FaHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 
 export default function Slideshow({ channel, height, width, interval, currSlide, showTitle, autoPlay, ...props }) 
 {
@@ -54,16 +54,16 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0,
-    lineHeight: 1,
-    backgroundColor: 'rgba(128, 128, 128, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     border: 'none',
     color: 'white', // not needed with reactstrap
+    borderRadius: '5px',
+    cursor: 'pointer'
   };
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
-      { false ? <style>
+      <style>
         {`
           @keyframes likeAnimation {
             0% { transform: scale(1); }
@@ -84,24 +84,24 @@ export default function Slideshow({ channel, height, width, interval, currSlide,
             animation: likeAnimation 0.3s ease;
           }
         `}
-      </style> : "" }
+      </style>
       <CarouselProvider isIntrinsicHeight totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} touchEnabled={false} dragEnabled={false} infinite isPlaying={interval ? true : false} interval={interval} currentSlide={currSlide}>
-        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 70px)'}}>⛶</button>
+        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 85px)'}}>⛶</button>
         <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
-          <button style={{...buttonStyle, left: 'calc(50% - 0px)'}}>+</button>
+          <button style={{...buttonStyle, left: 'calc(50% - 25px)'}}>+</button>
         </Link>
-        { false ? <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
+        <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
           <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
           <label htmlFor="heart-checkbox" className="heart-label">
             <FaHeart size={24} />
           </label>
-        </div> : "" }
+        </div>
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>
-          <div style={{filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box', textAlign: 'center'}}>
-            <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
-          </div>
+            <div style={{filter: 'invert(100%) grayscale(100%)', mixBlendMode: 'difference', whiteSpace: 'pre-wrap', width: '100%', position: 'absolute', top: '50%', transform: "translate(0, -50%)", maxHeight: "80%", overflowY: "auto", padding: '0 15%', boxSizing: 'border-box', textAlign: 'center'}}>
+              <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
+            </div>
           </Slide> : "" }
         {
           channel.contents && channel.contents.map((contentItem, index) => {

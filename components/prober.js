@@ -1,38 +1,70 @@
 /* components/prober.js */
 
 import { Button } from "reactstrap";
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import LinkWithQuery from "./linkwithquery";
 import Link from "next/link";
 
-export default function Prober() 
-{
+const buttonStyle = {
+  fontSize: 'xx-large',
+  width: 300,
+  marginTop: 15,
+  borderRadius: '12px',
+  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.3s ease',
+  backgroundColor: '#4a90e2',
+  borderColor: '#4a90e2',
+};
+
+const containerStyle = {
+  width: '100%',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: 'center',
+  padding: '20px',
+};
+
+export default function Prober() {
   return (
-    <div style={{width: '100%', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center'}}>
+    <div style={containerStyle}>
       <LinkWithQuery href="/record">
-        <Button style={{fontSize: 'xx-large', width: 300}} color="primary" size="lg">record audio</Button>
+        <Button style={buttonStyle} size="lg">
+          Record Audio
+        </Button>
       </LinkWithQuery>
-      <br/>
-      <LinkWithQuery href={"/takephoto"}>
-        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">take a photo</Button>
+
+      <LinkWithQuery href="/takephoto">
+        <Button style={buttonStyle} size="lg">
+          Take a Photo
+        </Button>
       </LinkWithQuery>
-      <br/>
+
       <LinkWithQuery href="/recordvideo">
-        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">record video</Button>
+        <Button style={buttonStyle} size="lg">
+          Record Video
+        </Button>
       </LinkWithQuery>
-      <br/>
-      <LinkWithQuery href={"/uploadfile"}>
-        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">upload file</Button>
+
+      <LinkWithQuery href="/uploadfile">
+        <Button style={buttonStyle} size="lg">
+          Upload File
+        </Button>
       </LinkWithQuery>
-      <br/>
-      <LinkWithQuery href={"/reel"}>
-        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">view reel</Button>
+
+      <LinkWithQuery href="/reel">
+        <Button style={buttonStyle} size="lg">
+          View Reel
+        </Button>
       </LinkWithQuery>
-      <br/>
-      { false ? <Link href={"/"}>
-        <Button style={{marginTop: 10, fontSize: 'xx-large', width: 300}} color="primary" size="lg">make a new reel</Button>
-      </Link> : "" }
+
+      {false && (
+        <Link href="/">
+          <Button style={buttonStyle} size="lg">
+            Make a New Reel
+          </Button>
+        </Link>
+      )}
     </div>
   );
 }
-
