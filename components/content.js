@@ -5,11 +5,8 @@ import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
 
-export default function Content({ contentItem, width, height, autoPlay, index }) 
+export default function Content({ contentItem, width, height, autoPlay, index, setCurrSlide }) 
 {
-  if (!contentItem.mediafile?.url)
-    return;
-
   const url = getMediaURL() + contentItem.mediafile.url;
 
   const mime = require('mime-types');

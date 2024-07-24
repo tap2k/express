@@ -66,11 +66,11 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
     setHasMultipleCameras(videoDevices.length > 1);
   };
 
-  async function handleTakePhotoAnimationDone(dataUri) {
+  async function handleTakePhotoAnimationDone(myDataUri) {
     // unmirror the image if it was taken with the front camera
     if (facingMode !== FACING_MODES.ENVIRONMENT) {
       const img = new Image();
-      img.src = dataUri;
+      img.src = myDataUri;
       await new Promise((resolve) => { img.onload = resolve; });
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
@@ -78,10 +78,10 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
       const ctx = canvas.getContext('2d');
       ctx.scale(-1, 1);
       ctx.drawImage(img, -img.width, 0);
-      dataUri = canvas.toDataURL('image/png');
+      myDataUri = canvas.toDataURL('image/png');
     }
-    setDataUri(dataUri);
-    const previews = await generateFilterPreviews(dataUri);
+    setDataUri(myDataUri);
+    const previews = await generateFilterPreviews(myDataUri);
     setFilterPreviews(previews);
   }
 
@@ -91,11 +91,10 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   }
 
   async function generateFilterPreviews(imageDataUri) {
-    const previews = {};
-    for (const filter of filterNames) {
-      if (filter === 'normal') {
-        previews[filter] = imageDataUri;
-      } else {
+    const previews = { normal: imageDataUri };
+    for (let i = 0; i < filterNames.length; i++) {
+      const filter = filterNames[i];
+      if (filter !== 'normal') {
         const img = new Image();
         img.src = imageDataUri;
         await new Promise((resolve) => { img.onload = resolve; });
@@ -106,7 +105,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
     }
     return previews;
   }
-
+  
   function handleRetake() {
     setDataUri(null);
     setCurrentFilter('normal');
@@ -150,6 +149,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
                     <img 
                       src={filterPreviews[filterName]}
                       alt={filterName}
+                      data-filter={filterName}
                       style={{
                         width: '80px',
                         height: '80px',

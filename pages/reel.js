@@ -10,7 +10,7 @@ export default ({ channel, currslide }) => {
     //const height = "100vh";
 
     return (
-        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} currSlide={currslide} showTitle autoPlay />
+        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} startSlide={currslide} showTitle autoPlay />
     );
 }
 

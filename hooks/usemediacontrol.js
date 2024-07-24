@@ -51,7 +51,7 @@ export default function useMediaControl (mediaRef, index, autoPlay) {
 
     carouselContext.subscribe(onChange);
     return () => carouselContext.unsubscribe(onChange);
-  }, [carouselContext, mediaRef, index, autoPlay, play, pause, resetMedia]);
+  }, [carouselContext]);
 
   return { isPlaying, play, pause, toggle, resetMedia };
 };
