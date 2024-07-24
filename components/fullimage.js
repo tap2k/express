@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Caption from "./caption";
 
-export default function FullImage({ src, width, height, caption, inverted = false }) 
+export default function FullImage({ src, width, height, caption }) 
 {
   const imgRef = useRef();
 
@@ -19,7 +19,7 @@ export default function FullImage({ src, width, height, caption, inverted = fals
         ref={imgRef}
         alt={caption}
       />
-      {caption && <Caption caption={caption} inverted={inverted} />}
+      {caption && <Caption caption={caption} />}
     </div>
   );
 }

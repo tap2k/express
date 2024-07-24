@@ -40,7 +40,7 @@ export default function AudioPlayer({ src, thumbnailItem, caption, width, height
           inverted={false}
         />
       ) : (
-        <Caption caption={caption} inverted={true} />
+        <Caption caption={caption} />
       )}
       {!isPlaying && <PlayIcon inverted={!thumbnailUrl} />}
       <audio src={src} style={{display: "none"}} ref={audioRef} />

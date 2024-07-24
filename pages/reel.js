@@ -15,16 +15,34 @@ export default ({ channel, currslide }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    const channelid = ctx.query.channelid ? ctx.query.channelid : "rx7dzpg";
+    const { channelid, currslide } = ctx.query;
+
     try {
-        const currslide = ctx.query.currslide ? ctx.query.currslide : 0;
-        const channel = await getChannel({channelID: channelid});
-        return { props: { channel: channel, currslide: currslide } };
+        const channel = await getChannel({ channelID: channelid });
+        
+        if (!channel) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            };
+        }
+
+        return { 
+            props: { 
+                channel: channel, 
+                currslide: currslide ? +currslide : 0
+            } 
+        };
     } catch (err) {
         console.error(err);
-    }
-    return {
-        props: {}
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
     }
 }
   

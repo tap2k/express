@@ -33,7 +33,7 @@ export default function VideoPlayer({ caption, width, height, autoPlay, index, c
       >
         {children}
       </video>
-      <Caption caption={caption} inverted={false} />
+      <Caption caption={caption} />
       {!isPlaying && <PlayIcon inverted={false} />}
     </div>
   );

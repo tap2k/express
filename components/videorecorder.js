@@ -6,7 +6,7 @@ import useGeolocation from "react-hook-geolocation";
 import { MdFlipCameraIos } from 'react-icons/md';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, StyledButton } from '../components/recorderstyles';
+import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
 async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
@@ -195,8 +195,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            backgroundColor: 'rgb(255, 255, 255)', 
-            border: '15px solid rgba(128, 128, 128)',
+            backgroundColor: 'rgb(255, 0, 0)', 
+            border: '15px solid rgba(215, 215, 215)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -207,7 +207,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
             <div style={{
               width: '30px',
               height: '30px',
-              backgroundColor: 'rgb(255, 255, 255)',
+              backgroundColor: 'rgb(0, 0, 0)',
               flexShrink: 0
             }} />
           )}
@@ -257,19 +257,29 @@ export default function VideoRecorder({ channelID, useLocation }) {
         style={{ width: '100%', marginBottom: '10px' }}
       />
       
-      <StyledButton 
-        color="success" 
-        size="lg" 
-        block 
-        onClick={(e) => {
-          e.preventDefault();
-          const description = descriptionRef.current.value;
-          uploadRecording(blob, lat, long, description, channelID, status, router);
-        }}
-        disabled={status !== "stopped" || !blob}
-      >
-        {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
-      </StyledButton>
+      <ButtonGroup>
+        <StyledButton 
+          color="secondary" 
+          size="lg" 
+          onClick={startRecording} 
+          disabled={status !== "stopped"}
+        >
+          Retake
+        </StyledButton>
+        <StyledButton 
+          color="success" 
+          size="lg" 
+          block 
+          onClick={(e) => {
+            e.preventDefault();
+            const description = descriptionRef.current.value;
+            uploadRecording(blob, lat, long, description, channelID, status, router);
+          }}
+          disabled={status !== "stopped" || !blob}
+        >
+          {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
+        </StyledButton>
+      </ButtonGroup>
     </RecorderWrapper>
   );
 }

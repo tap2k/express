@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Input } from "reactstrap";
+import { Input, Button } from "reactstrap";
 import { useRouter } from "next/router";
 import useGeolocation from "react-hook-geolocation";
 import useFileUpload from 'react-use-file-upload';
@@ -152,14 +152,14 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         }}
       />
 
-      <StyledButton
+      <Button
         color="success"
         onClick={uploadFiles}
         disabled={!files.length}
         block
       >
         Submit
-      </StyledButton>
+      </Button>
     </RecorderWrapper>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Input } from "reactstrap";
+import { Input, Button } from "reactstrap";
 import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
@@ -142,9 +142,9 @@ export default function Recorder({ channelID, useLocation }) {
           {status === "recording" ? "Pause" : status === "paused" ? "Resume" : "Start"}
         </StyledButton>
         <StyledButton 
-          color="danger" 
+          color="secondary" 
           onClick={stopRecording}
-          disabled={status === "stopped"}
+          disabled={status != "recording"}
         >
           Stop
         </StyledButton>
@@ -257,15 +257,16 @@ export default function Recorder({ channelID, useLocation }) {
         style={{ width: '100%', marginBottom: '10px' }}
       />
       
-      <StyledButton 
+      <Button 
         color="success" 
         size="lg" 
         block 
         onClick={handleSubmit}
         disabled={status !== "stopped" || !blob}
+        style={{ minWidth: '200px' }}
       >
         {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
-      </StyledButton>
+      </Button>
     </RecorderWrapper>
   );
 }

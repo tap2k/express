@@ -197,11 +197,17 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
         }}
       />
       <ButtonGroup>
-        <StyledButton color="secondary" onClick={handleRetake} disabled={!dataUri}>
+        <StyledButton 
+          color="secondary" 
+          size="lg"
+          onClick={handleRetake} 
+          disabled={!dataUri}
+        >
           Retake
         </StyledButton>
         <StyledButton
-          color="primary"
+          color="success"
+          size="lg"
           onClick={(e) => {
             e.preventDefault();
             const description = descriptionRef.current.value;
