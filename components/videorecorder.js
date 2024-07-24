@@ -147,7 +147,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, [startStream, checkForMultipleCameras]);
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -182,6 +182,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
           borderRadius: '10px',
           objectFit: 'cover',
           pointerEvents: status === 'recording' ? 'none' : 'auto',
+          // mirror preview for front camera
           transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
         }}
       />

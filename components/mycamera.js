@@ -1,5 +1,3 @@
-// components/mycamera.js
-
 import { useState, useRef, useEffect } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";
@@ -67,6 +65,19 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   }, []);
 
   async function handleTakePhotoAnimationDone(dataUri) {
+    // unmirror the image if it was taken with the front camera
+    if (facingMode !== FACING_MODES.ENVIRONMENT) {
+      const img = new Image();
+      img.src = dataUri;
+      await new Promise((resolve) => { img.onload = resolve; });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, -img.width, 0);
+      dataUri = canvas.toDataURL('image/png');
+    }
     setDataUri(dataUri);
     const previews = await generateFilterPreviews(dataUri);
     setFilterPreviews(previews);
@@ -96,7 +107,6 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
 
   function handleRetake() {
     setDataUri(null);
-    setOriginalDataUri(null);
     setCurrentFilter('normal');
     setFilterPreviews({});
   }
