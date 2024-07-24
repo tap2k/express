@@ -148,7 +148,6 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
                     <img 
                       src={filterPreviews[filterName]}
                       alt={filterName}
-                      data-filter="moon"
                       style={{
                         width: '80px',
                         height: '80px',
