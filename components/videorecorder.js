@@ -55,7 +55,14 @@ export default function VideoRecorder({ channelID, useLocation }) {
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: facingMode } },
+        video: {
+          facingMode: { ideal: facingMode } ,
+          width: { min: 640, ideal: 1280, max: 1920 },
+          height: { min: 480, ideal: 720, max: 1080 },
+          aspectRatio: { ideal: 16/9 },
+          frameRate: 30,
+          resizeMode: 'crop-and-scale'
+        },        
         audio: true
       });
 
