@@ -61,7 +61,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
-          facingMode: { exact: facingMode },
+          facingMode: { ideal: facingMode },
           width: { min: 640, ideal: 1280, max: 1920 },
           height: { min: 480, ideal: 720, max: 1080 },
           aspectRatio: { ideal: 16/9 },
@@ -70,7 +70,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
         },
         audio: true
       });
-      //checkForMultipleCameras();
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -137,11 +136,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
   };
 
   useEffect(() => {
-    checkForMultipleCameras();
-  }, []);
-
-  useEffect(() => {
     startStream();
+    checkForMultipleCameras();
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
