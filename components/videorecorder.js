@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Input } from "reactstrap";
 import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
@@ -14,7 +14,6 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
     return;
   const formData = require('form-data');
   const myFormData = new formData();
-  //myFormData.append('mediafile', blob, "video.webm");
   myFormData.append('mediafile', blob, "video.mp4");
   await uploadContent({myFormData, lat, long, description, published: true, channelID});
   const query = router?.asPath?.slice(router?.pathname?.length);
@@ -49,28 +48,26 @@ export default function VideoRecorder({ channelID, useLocation }) {
     long = geolocation.longitude;
   }
 
-  const checkForMultipleCameras = useCallback(async () => {
+  const checkForMultipleCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     setHasMultipleCameras(videoDevices.length > 1);
-  }, [startStream, checkForMultipleCameras]);
+  };
 
-  const startStream = useCallback(async () => {
+  const startStream = async () => {
     try {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
-            video: {
-              facingMode: facingMode,
-              width: { min: 640, ideal: 1280, max: 1920 },
-              height: { min: 480, ideal: 720, max: 1080 },
-              aspectRatio: { ideal: 16/9 },
-              frameRate: 30,
-              resizeMode: 'crop-and-scale'
-            },
-          },
+          facingMode: facingMode,
+          width: { min: 640, ideal: 1280, max: 1920 },
+          height: { min: 480, ideal: 720, max: 1080 },
+          aspectRatio: { ideal: 16/9 },
+          frameRate: 30,
+          resizeMode: 'crop-and-scale'
+        },
         audio: true
       });
       streamRef.current = stream;
@@ -92,7 +89,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
       setErrorText('Failed to access camera. Please try again.');
       throw error;
     }
-  }, [facingMode]);
+  };
 
   const startRecording = async () => {
     try {
@@ -103,7 +100,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
         videoRef.current.srcObject = stream;
       recorderRef.current = new RecordRTC(stream, {
         type: 'video',
-        //mimeType: 'video/webm;codecs=vp9,opus',
         mimeType: 'video/mp4',
         frameInterval: 1,
         recorderType: RecordRTC.MediaStreamRecorder
@@ -135,9 +131,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
     }
   }
 
-  const flipCamera = useCallback(() => {
+  const flipCamera = () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
-  }, []);
+  };
 
   useEffect(() => {
     checkForMultipleCameras();
@@ -147,7 +143,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [facingMode]);
 
   useEffect(() => {
     let interval;
@@ -182,7 +178,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
           borderRadius: '10px',
           objectFit: 'cover',
           pointerEvents: status === 'recording' ? 'none' : 'auto',
-          // mirror preview for front camera
           transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
         }}
       />
