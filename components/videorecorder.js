@@ -48,38 +48,47 @@ export default function VideoRecorder({ channelID, useLocation }) {
     long = geolocation.longitude;
   }
 
+  const checkForMultipleCameras = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    setHasMultipleCameras(videoDevices.length > 1);
+  };
+
   const startStream = async () => {
     try {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
-
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: facingMode } ,
+        video: { 
+          facingMode: { exact: facingMode },
           width: { min: 640, ideal: 1280, max: 1920 },
           height: { min: 480, ideal: 720, max: 1080 },
           aspectRatio: { ideal: 16/9 },
           frameRate: 30,
           resizeMode: 'crop-and-scale'
-        },        
+        },
         audio: true
       });
-
+      //checkForMultipleCameras();
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current.play();
+            setAspectRatio(videoRef.current.videoWidth / videoRef.current.videoHeight);
+          } catch (playError) {
+            console.error('Error playing video:', playError);
+            setErrorText('Failed to start video preview. Please try again.');
+          }
+        };
       }
-
-      // Check for multiple cameras
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
-      setHasMultipleCameras(videoDevices.length > 1);
-
+      return stream;
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      setErrorText('Failed to access camera. Please check your permissions and try again.');
+      console.error('Error starting stream:', error);
+      setErrorText('Failed to access camera. Please try again.');
+      throw error;
     }
   };
 
@@ -123,10 +132,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
     }
   }
 
-  const flipCamera = async () => {
+  const flipCamera = () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
-    await startStream();
   };
+
+  useEffect(() => {
+    checkForMultipleCameras();
+  }, []);
 
   useEffect(() => {
     startStream();
