@@ -137,6 +137,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
 
   useEffect(() => {
     checkForMultipleCameras();
+  }, []);
+
+  useEffect(() => {
     startStream();
     return () => {
       if (streamRef.current) {
