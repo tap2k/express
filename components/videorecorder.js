@@ -26,15 +26,20 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
+function isMobileSafari() {
+  const ua = navigator.userAgent;
+  return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
+}
+
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
-  const [blob, setBlob] = useState(null);
-  const [recordingTime, setRecordingTime] = useState(0);
   const descriptionRef = useRef();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
+  const [blob, setBlob] = useState(null);
+  const [recordingTime, setRecordingTime] = useState(0);
   const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
@@ -48,7 +53,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
     long = geolocation.longitude;
   }
 
+  useEffect(() => {
+    checkForMultipleCameras();
+  }, []);
+
+
   const checkForMultipleCameras = async () => {
+    if (isMobileSafari()) setHasMultipleCameras(true);
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     setHasMultipleCameras(videoDevices.length > 1);
@@ -61,7 +72,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
-          facingMode: { exact: facingMode },
+          facingMode: { ideal: facingMode },
           width: { min: 640, ideal: 1280, max: 1920 },
           height: { min: 480, ideal: 720, max: 1080 },
           aspectRatio: { ideal: 16/9 },
@@ -134,10 +145,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const flipCamera = () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
   };
-
-  useEffect(() => {
-    checkForMultipleCameras();
-  }, []);
 
   useEffect(() => {
     startStream();

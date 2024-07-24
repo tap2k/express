@@ -26,11 +26,17 @@ async function uploadImage(dataUri, lat, long, description, channelID, router)
   router.push("/" + query);
 }
 
+function isMobileSafari() {
+  const ua = navigator.userAgent;
+  return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
+}
+
 export default function MyCamera({ channelID, useLocation, ...props }) {
   const router = useRouter();
-  const [dataUri, setDataUri] = useState(null);
-  const [facingMode, setFacingMode] = useState(FACING_MODES.USER);
   const descriptionRef = useRef();
+  const [dataUri, setDataUri] = useState(null);
+  const [facingMode, setFacingMode] = useState('user');
+  const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
 
@@ -49,20 +55,16 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   }
 
   useEffect(() => {
-    async function checkCameras() {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        if (videoDevices.length <= 1) {
-          setFacingMode(null);
-        }
-      } catch (error) {
-        console.error('Error checking for multiple cameras:', error);
-        setFacingMode(null);
-      }
-    }
-    checkCameras();
+    checkForMultipleCameras();
   }, []);
+
+
+  const checkForMultipleCameras = async () => {
+    if (isMobileSafari()) setHasMultipleCameras(true);
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    setHasMultipleCameras(videoDevices.length > 1);
+  };
 
   async function handleTakePhotoAnimationDone(dataUri) {
     // unmirror the image if it was taken with the front camera
@@ -172,7 +174,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
               isDisplayStartCameraError={true}
               isImageMirror={facingMode !== FACING_MODES.ENVIRONMENT}
             />
-            {facingMode && (
+            {hasMultipleCameras && (
               <button onClick={handleFlipCamera}
                 style={{
                   position: 'absolute',
