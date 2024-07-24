@@ -53,22 +53,23 @@ export default function VideoRecorder({ channelID, useLocation }) {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: facingMode } },
         audio: true
       });
+
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
 
-      // Check for multiple cameras after getting permission
-      const tracks = stream.getVideoTracks();
-      if (tracks.length > 0) {
-        const capabilities = tracks[0].getCapabilities();
-        setHasMultipleCameras(capabilities.facingMode && capabilities.facingMode.length > 1);
-      }
+      // Check for multiple cameras
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setHasMultipleCameras(videoDevices.length > 1);
+
     } catch (error) {
       console.error('Error accessing camera:', error);
       setErrorText('Failed to access camera. Please check your permissions and try again.');
@@ -115,8 +116,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
     }
   }
 
-  const flipCamera = () => {
+  const flipCamera = async () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
+    await startStream();
   };
 
   useEffect(() => {
