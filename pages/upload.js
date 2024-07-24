@@ -4,7 +4,6 @@ import { TabContent, TabPane } from 'reactstrap';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import Uploader from '../components/uploader';
-import LinkWithQuery from "@/components/linkwithquery";
 
 const Recorder = dynamic(() => import("../components/recorder"), { ssr: false, });
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false, });
