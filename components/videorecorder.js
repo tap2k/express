@@ -53,7 +53,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     setHasMultipleCameras(videoDevices.length > 1);
-  }, []);
+  }, [startStream, checkForMultipleCameras]);
 
   const startStream = useCallback(async () => {
     try {
