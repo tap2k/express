@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { Input } from "reactstrap";
+import React, { useEffect, useState, useRef } from "react";
+import styled from 'styled-components';
 import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
@@ -7,6 +7,12 @@ import { MdFlipCameraIos } from 'react-icons/md';
 import uploadContent from "../hooks/uploadcontent";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+
+const StyledVideo = styled.video`
+  &::-webkit-media-controls-start-playback-button {
+    display: none !important;
+  }
+`;
 
 async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
@@ -49,9 +55,31 @@ export default function VideoRecorder({ channelID, useLocation }) {
   }
 
   const checkForMultipleCameras = async () => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-    setHasMultipleCameras(videoDevices.length > 1);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const tracks = stream.getVideoTracks();
+      
+      if (tracks.length > 0) {
+        const track = tracks[0];
+        
+        // Try to switch to the other facing mode
+        const currentFacingMode = facingMode;
+        const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+        
+        await track.applyConstraints({ facingMode: { exact: newFacingMode } });
+        
+        // If we reach here without an error, it means we successfully switched,
+        // implying multiple cameras
+        setHasMultipleCameras(true);
+      }
+      
+      // Stop the temporary stream
+      stream.getTracks().forEach(track => track.stop());
+    } catch (error) {
+      // If we get an error trying to switch, it likely means there's only one camera
+      console.log('Only one camera available or error checking cameras:', error);
+      setHasMultipleCameras(false);
+    }
   };
 
   const startStream = async () => {
@@ -65,8 +93,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
           width: { min: 640, ideal: 1280, max: 1920 },
           height: { min: 480, ideal: 720, max: 1080 },
           aspectRatio: { ideal: 16/9 },
-          frameRate: 30,
-          resizeMode: 'crop-and-scale'
+          frameRate: 30
         },
         audio: true
       });
@@ -83,11 +110,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
           }
         };
       }
-      return stream;
+
+      // Check for multiple cameras after getting the stream
+      await checkForMultipleCameras();
+
     } catch (error) {
       console.error('Error starting stream:', error);
-      setErrorText('Failed to access camera. Please try again.');
-      throw error;
+      setErrorText('Failed to access camera. Please check your camera permissions and try again.');
     }
   };
 
@@ -131,19 +160,19 @@ export default function VideoRecorder({ channelID, useLocation }) {
     }
   }
 
-  const flipCamera = () => {
+  const flipCamera = async () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
+    await startStream();
   };
 
   useEffect(() => {
     startStream();
-    checkForMultipleCameras();
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, [facingMode]);
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -163,24 +192,25 @@ export default function VideoRecorder({ channelID, useLocation }) {
         paddingTop: `${(1 / aspectRatio) * 100}%`,
         marginBottom: '10px'
       }}>
-      <video 
-        ref={videoRef} 
-        autoPlay
-        playsInline
-        muted={status != "stopped"}
-        controls={status === "stopped"}
-        style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          objectFit: 'cover',
-          pointerEvents: status === 'recording' ? 'none' : 'auto',
-          transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
-        }}
-      />
+        <StyledVideo 
+          ref={videoRef} 
+          autoPlay
+          playsInline
+          muted={status != "stopped"}
+          controls={status === "stopped"}
+          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '10px',
+            objectFit: 'cover',
+            pointerEvents: status === 'recording' ? 'none' : 'auto',
+            transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
+          }}
+        />
         <div 
           onClick={status === 'recording' ? stopRecording : startRecording}
           style={{
@@ -246,9 +276,9 @@ export default function VideoRecorder({ channelID, useLocation }) {
         )}
       </div>
       
-      <Input
+      <input
         type="text"
-        innerRef={descriptionRef}
+        ref={descriptionRef}
         placeholder="Enter text"
         style={{ width: '100%', marginBottom: '10px' }}
       />
