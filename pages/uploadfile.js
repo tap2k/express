@@ -1,13 +1,8 @@
 /* pages/uploadfile.js */
 
-import { useRouter } from "next/router";
 import Uploader from "../components/uploader";
 
-export default function UploadFilePage({ channelID, useLocation }) {
-  const router = useRouter();
-  const channelID = router.query.channelid;
-  const useLocation = router.query.uselocation === "true";
-    
+export default function UploadFilePage({ channelID, useLocation }) { 
   return (
     <Uploader channelID = { channelID } useLocation = { useLocation } />
   );
