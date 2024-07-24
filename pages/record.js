@@ -1,4 +1,6 @@
-import Recorder from "../components/recorder";
+import dynamic from "next/dynamic";
+
+const Recorder = dynamic(() => import("../components/recorder"), { ssr: false, });
 
 export default function RecordAudioPage({ channelID, useLocation }) {
   return (
