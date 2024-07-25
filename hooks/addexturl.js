@@ -1,4 +1,4 @@
-/* hooks/uploadcontent.js */
+/* hooks/addexturl.js */
 
 import axios from 'axios';
 import getBaseURL from "./getbaseurl";

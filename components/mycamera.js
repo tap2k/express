@@ -1,11 +1,11 @@
+import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
 import { Input } from "reactstrap";
-import { useRouter } from "next/router";
 import useGeolocation from "react-hook-geolocation";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { MdFlipCameraIos } from 'react-icons/md';
-import uploadContent from "../hooks/uploadcontent";
+import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import { createFilter } from "cc-gram";
@@ -14,16 +14,20 @@ async function uploadImage(dataUri, lat, long, description, channelID, router)
 {
   const formData = require('form-data');
   const myFormData = new formData();
-  const blob = await (await fetch(dataUri)).blob();
-  if (!blob)
-  {
-    setErrorText("No blob found!");
-    return; 
+  try {
+    const blob = await (await fetch(dataUri)).blob();
+    if (!blob)
+    {
+      setErrorText("No blob found!");
+      return; 
+    }
+    myFormData.append('mediafile', blob, "image.png");
+    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
   }
-  myFormData.append('mediafile', blob, "image.png");
-  await uploadContent({myFormData, lat, long, description, published: true, channelID});
-  const query = router?.asPath?.slice(router?.pathname?.length);
-  router.push("/" + query);
+  catch (error) {
+    console.error('Error uploading content:', error);
+    setErrorText('Failed to upload content. Please try again.');
+  }
 }
 
 function isMobileSafari() {

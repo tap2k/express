@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from 'next/router';
+import { useEffect, useState, useRef } from "react";
 import { Input, Button } from "reactstrap";
-import { useRouter } from "next/router";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
 import useFileUpload from 'react-use-file-upload';
-import uploadContent from "../hooks/uploadcontent";
+import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
@@ -14,9 +14,7 @@ async function uploadRecording(myFormData, lat, long, description, channelID, st
     return;
 
   try {
-    await uploadContent({myFormData, lat, long, description, published: true, channelID});
-    const query = router?.asPath?.slice(router?.pathname?.length);
-    router.push("/" + query);
+    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
   } catch (error) {
     console.error('Error uploading content:', error);
     setErrorText('Failed to upload content. Please try again.');

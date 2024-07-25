@@ -1,12 +1,15 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
 import { Input } from "reactstrap";
-import { useRouter } from "next/router";
 import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
 import { MdFlipCameraIos } from 'react-icons/md';
-import uploadContent from "../hooks/uploadcontent";
+import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+
+const fileExt = "mp4";
+//const fileExt = "webm";
 
 async function uploadRecording(blob, lat, long, description, channelID, status, router) 
 {
@@ -14,10 +17,14 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
     return;
   const formData = require('form-data');
   const myFormData = new formData();
-  myFormData.append('mediafile', blob, "video.mp4");
-  await uploadContent({myFormData, lat, long, description, published: true, channelID});
-  const query = router?.asPath?.slice(router?.pathname?.length);
-  router.push("/" + query);
+  try {
+    myFormData.append('mediafile', blob, "video."+fileExt);
+    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
+  }
+  catch (error) {
+    console.error('Error uploading content:', error);
+    setErrorText('Failed to upload content. Please try again.');
+  }
 }
 
 const formatTime = (seconds) => {
@@ -111,7 +118,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         videoRef.current.srcObject = stream;
       recorderRef.current = new RecordRTC(stream, {
         type: 'video',
-        mimeType: 'video/mp4',
+        mimeType: 'video/'+fileExt,
         frameInterval: 1,
         recorderType: RecordRTC.MediaStreamRecorder
       });

@@ -1,20 +1,21 @@
-/* hooks/uploadcontent.js */
+/* hooks/uploadsubmission.js */
 
 import axios from 'axios';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadContent({myFormData, channelID, contentID, title, description, ext_url, lat, long, published, setProgress}) 
+export default async function uploadSubmission({myFormData, channelID, contentID, title, description, ext_url, lat, long, published, setProgress, router}) 
 { 
   const url = getBaseURL() + "/api/uploadSubmission";
 
-  // TODO: Dont need content?
-  if (!channelID /*|| (!myFormData && !ext_url)*/)
+  if (!channelID || !router)
   {
-    setErrorText("No channel provided");
+    setErrorText("No channel or router provided");
     return null;
   }
 
@@ -50,7 +51,7 @@ export default async function uploadContent({myFormData, channelID, contentID, t
     myFormData.append("published", "true");
 
   try {
-    return await axios.post(url, myFormData, 
+    const response = await axios.post(url, myFormData, 
       {
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
@@ -60,9 +61,40 @@ export default async function uploadContent({myFormData, channelID, contentID, t
         } : {},
       },
     );
+
+    if (response.status === 200) {
+      confirmAlert({
+        title: 'Upload Successful',
+        message: 'Your submission has been uploaded successfully.',
+        buttons: [
+          {
+            label: 'Upload Another',
+            onClick: () => {
+              const currentQuery = router.query;
+              router.push({
+                pathname: '/upload',
+                query: currentQuery
+              });
+            }
+          },
+          {
+            label: 'Go to Reel',
+            onClick: () => {
+              const currentQuery = router.query;
+              router.push({
+                pathname: '/reel',
+                query: currentQuery
+              });
+            }
+          }
+        ]
+      });
+    }
+
+    return response;
   } 
   catch (err) {
     setError(err);
     return null;
   }
-} 
+}
