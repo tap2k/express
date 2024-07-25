@@ -32,7 +32,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel, 
-                currslide: currslide ? +currslide : 0
+                currslide: currslide ? currslide : 0
             } 
         };
     } catch (err) {

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect, useContext } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
@@ -23,7 +23,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, interval, startSlide, showTitle, autoPlay, ...props }) 
+export default function Slideshow({ channel, height, width, interval, startSlide, showTitle, autoPlay, admin, ...props }) 
 {
   if (!channel)
     return;
@@ -64,7 +64,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const buttonStyle = {
     position: 'absolute',
-    bottom: '20px',
     zIndex: 1000,
     fontSize: 'xx-large',
     width: 50,
@@ -100,15 +99,14 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       buttons: [
         {
           label: 'Yes',
-          onClick: () => {
+          onClick: async () => {
             const contentIndex = showTitle ? currSlide - 1 : currSlide;
             const contentToDelete = channel.contents[contentIndex];
-            console.log(contentToDelete);
             if (contentToDelete) {
-              updateSubmission({contentID: contentToDelete.id, published: false});
+              await updateSubmission({contentID: contentToDelete.id, published: false});
               const newQuery = { 
                 ...router.query, 
-                slide: Math.min(currSlide, channel.contents.length - 1)
+                currslide: Math.min(currSlide, channel.contents.length - 1)
               };
               router.replace({
                 pathname: router.pathname,
@@ -124,6 +122,24 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       ]
     });
   };
+
+  const moveSlide = async (increment) => {
+    const contentIndex = showTitle ? currSlide - 1 : currSlide;
+    if ((contentIndex + increment) < 0)
+      return;
+    if ((contentIndex + increment) >= channel.contents.length)
+      return;
+    const contentToMove = channel.contents[contentIndex];
+    await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order});
+    const newQuery = { 
+      ...router.query, 
+      currslide: Math.min(currSlide + increment, channel.contents.length)
+    };
+    router.replace({
+      pathname: router.pathname,
+      query: newQuery,
+    });
+  }
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
@@ -160,25 +176,31 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         currentSlide={startSlide}
       >
         <SlideTracker setCurrSlide={setCurrSlide} />
-        <button onClick={toggleFullScreen} style={{...buttonStyle, left: 'calc(50% - 85px)'}}>⛶</button>
+        <button onClick={toggleFullScreen} style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 85px)'}}>
+          <FaExpandArrowsAlt size={24} />
+        </button>
         <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
-          <button style={{...buttonStyle, left: 'calc(50% - 25px)'}}>+</button>
+          <button style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 25px)'}}>
+            <FaPlus size={24} />
+          </button>
         </Link>
-        <div style={{...buttonStyle, left: 'calc(50% + 35px)'}}>
+        <div style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
           <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
           <label htmlFor="heart-checkbox" className="heart-label">
             <FaHeart size={24} />
           </label>
         </div>
-        <button 
-          onClick={handleDelete} 
-          style={{
-            ...buttonStyle,
-            right: '20px', 
-          }}
-        >
-          <FaTrash size={24}/>
-        </button>
+        { (showTitle && currSlide === 0) || !admin? "" : <>
+          <button onClick={handleDelete} style={{...buttonStyle, top: '20px', right: '20px'}}>
+            <FaTrash size={24}/>
+          </button>
+          <button onClick={() => {moveSlide(1)}} style={{...buttonStyle, top: '20px', right: '80px'}}>
+            <FaArrowRight size={24}/>
+          </button>
+          <button onClick={() => {moveSlide(-1)}} style={{...buttonStyle, top: '20px', right: '140px'}}>
+            <FaArrowLeft size={24}/>
+          </button>
+        </> }
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
           <Slide style={{height: height, width: width}}>

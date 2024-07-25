@@ -5,7 +5,7 @@ import getChannel from "../hooks/getchannel";
 import Slideshow from "../components/slideshow";
 import ChannelAdder from "../components/channeladder";
 
-export default ({ channel }) => {  
+export default ({ channel, currslide, admin }) => {  
 
   if (!channel)
     return <ChannelAdder />
@@ -15,22 +15,39 @@ export default ({ channel }) => {
   //const height = "100vh";
 
   return (
-      <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} showTitle autoPlay />
+      <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} startSlide={parseInt(currslide)} showTitle admin={admin} autoPlay />
   );
 };
 
 export async function getServerSideProps(ctx) {
+  const { channelid, currslide, admin } = ctx.query;
+
   try {
-      const channelid = ctx.query?.channelid;
-      if (channelid)
-      {
-        let channel = await getChannel({channelID: channelid});
-        return { props: { channel: channel } };
+      const channel = await getChannel({ channelID: channelid });
+      
+      if (!channel) {
+          return {
+              redirect: {
+                  destination: '/',
+                  permanent: false,
+              },
+          };
       }
+
+      return { 
+          props: { 
+              channel: channel, 
+              currslide: currslide ? currslide : 0,
+              admin : admin ? true : false
+          } 
+      };
   } catch (err) {
       console.error(err);
-  }
-  return {
-      props: {}
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false,
+          },
+      };
   }
 }
