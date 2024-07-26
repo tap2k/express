@@ -7,25 +7,23 @@ export default function ProductLink({ url }) {
 
     const containerStyle = {
         position: 'absolute',
+        width: 250,
         left: '50%',
         transform: 'translateX(-50%)',
         textAlign: 'center',
         bottom: 100,
-        animation: 'float 3s ease-in-out infinite',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: '25px',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+        padding: 20
     };
 
     const linkStyle = {
-        display: 'inline-flex',
-        alignItems: 'center',
-        fontSize: '18px',
+        fontSize: 'x-large',
         fontWeight: 'bold',
-        borderRadius: '25px',
-        padding: '10px 20px',
-        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
         color: 'white',
         textDecoration: 'none',
-        pointerEvents: 'auto',
-        transition: 'all 0.3s ease'
+        pointerEvents: 'auto'
     };
 
     return (
