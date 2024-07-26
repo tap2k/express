@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useRef, useState, useEffect } from "react";
-import { Input, Button } from "reactstrap";
+import { Input, Button, Progress } from "reactstrap";
 import useGeolocation from "react-hook-geolocation";
 import useFileUpload from 'react-use-file-upload';
 import uploadSubmission from "../hooks/uploadsubmission";
@@ -11,6 +11,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const fileInputRef = useRef();
   const [previews, setPreviews] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   const descriptionRef = useRef();
   const extUrlRef = useRef();
@@ -40,7 +41,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const uploadFiles = async (e) => {
     e.preventDefault();
     try {
-      await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, ext_url: extUrlRef.current.value, published: true, router}); 
+      await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, ext_url: extUrlRef.current.value, published: true, setProgress, router}); 
       clearAllFiles();
       setPreviews([]);
       descriptionRef.current.value = "";
@@ -104,7 +105,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: '20px',
+          //marginBottom: 20,
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -163,7 +164,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         onChange={handleFileChange}
         multiple
       />
-
+      <Progress value={progress} style={{marginBottom: 20}}  />
       <Input
         type="text"
         innerRef={descriptionRef}
