@@ -102,60 +102,69 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',
-          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          //marginBottom: 20,
           position: 'relative',
-          overflow: 'hidden',
+          overflow: 'auto',
+          padding: '10px',
         }}
         onDragEnter={handleDragDropEvent}
         onDragOver={handleDragDropEvent}
         onDrop={(e) => {
           handleDragDropEvent(e);
-          setFiles(e, 'w');
+          setFiles(e, 'a');
         }}
       >
-      {previews.length > 0 ? (
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px' }}>
-          {previews.map((preview, index) => (
-            <div key={index} style={{ position: 'relative', width: '150px', height: '150px' }}>
-              {preview.file.type.startsWith('image/') && <img src={preview.preview} alt={preview.file.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
-              {preview.file.type.startsWith('video/') && <video src={preview.preview} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
-              {preview.file.type.startsWith('audio/') && <audio src={preview.preview} controls style={{width: '100%'}} />}
-              <button
-                onClick={() => removePreview(index)}
-                style={{
-                  position: 'absolute',
-                  top: '5px',
-                  right: '5px',
-                  background: 'rgba(255, 255, 255, 0.7)',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '25px',
-                  height: '25px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                }}
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center' }}>
-          <StyledButton
-            color="secondary"
-            onClick={() => fileInputRef.current.click()}
-          >
-            Add Files
-          </StyledButton>
-        </div>
-      )}
+        {previews.length > 0 ? (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / previews.length))}px, 1fr))`,
+            gap: '12px', 
+            width: '100%',
+            height: '100%',
+            padding: '6px',
+          }}>
+            {previews.map((preview, index) => (
+              <div key={index} style={{ position: 'relative', aspectRatio: '1 / 1' }}>
+                {preview.file.type.startsWith('image/') && <img src={preview.preview} alt={preview.file.name} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}} />}
+                {preview.file.type.startsWith('video/') && <video src={preview.preview} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}} />}
+                {preview.file.type.startsWith('audio/') && <audio src={preview.preview} controls style={{width: '100%'}} />}
+                <button
+                  onClick={() => removePreview(index)}
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '5px',
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '22px',
+                    height: '22px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <StyledButton
+              color="secondary"
+              onClick={() => fileInputRef.current.click()}
+            >
+              Add Files
+            </StyledButton>
+          </div>
+        )}
       </div>
+      <Progress value={progress} style={{marginBottom: 20}}  />
+      
       <input
         ref={fileInputRef}
         type="file"
@@ -164,7 +173,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         onChange={handleFileChange}
         multiple
       />
-      <Progress value={progress} style={{marginBottom: 20}}  />
+      
       <Input
         type="text"
         innerRef={descriptionRef}
@@ -174,7 +183,6 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           marginBottom: '10px'
         }}
       />
-
       <Input
         type="text"
         innerRef={extUrlRef}
