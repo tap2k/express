@@ -1,13 +1,10 @@
 // components/fullimage.js
 
-import { useRef } from "react";
 import Caption from "./caption";
 import ProductLink from "./productlink";
 
 export default function FullImage({ src, width, height, caption, url }) 
 {
-  const imgRef = useRef();
-
   return (
     <div style={{ position: 'relative', width, height }}>
       <img 
@@ -17,7 +14,6 @@ export default function FullImage({ src, width, height, caption, url })
           height: '100%',
           objectFit: 'contain'
         }} 
-        ref={imgRef}
         alt={caption}
       />
       <Caption caption={caption} />

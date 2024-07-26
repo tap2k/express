@@ -130,6 +130,8 @@ export default function Recorder({ channelID, useLocation }) {
       formData.append('thumbnail', files[0], files[0].name);
     
     await uploadRecording(formData, lat, long, description, ext_url, channelID, status, router);
+    descriptionRef.current.value = "";
+    extUrlRef.current.value = "";
   };
 
   return (

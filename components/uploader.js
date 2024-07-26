@@ -10,7 +10,8 @@ import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/record
 export default function Uploader({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const fileInputRef = useRef();
-  const [preview, setPreview] = useState(null);
+  const [previews, setPreviews] = useState([]);
+
   const descriptionRef = useRef();
   const extUrlRef = useRef();
 
@@ -38,11 +39,12 @@ export default function Uploader({ channelID, useLocation, ...props }) {
 
   const uploadFiles = async (e) => {
     e.preventDefault();
-    if (!fileNames.length)
-      return;
     try {
       await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, ext_url: extUrlRef.current.value, published: true, router}); 
       clearAllFiles();
+      setPreviews([]);
+      descriptionRef.current.value = "";
+      extUrlRef.current.value = "";
     }
     catch (error) {
       console.error('Error uploading content:', error);
@@ -51,21 +53,31 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   }
 
   useEffect(() => {
-    if (files.length > 0) {
+    const newPreviews = [];
+    files.forEach(file => {
       const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(files[0]);
-    } else {
-      setPreview(null);
-    }
+      reader.onloadend = () => {
+        newPreviews.push({ file, preview: reader.result });
+        if (newPreviews.length === files.length) {
+          setPreviews(newPreviews);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   }, [files]);
 
   const handleFileChange = (e) => {
-    setFiles(e, 'w');
+    setFiles(e, 'a');
+  };
+
+  const removePreview = (index) => {
+    removeFile(index);
+    setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const clearFile = () => {
     clearAllFiles();
+    setPreviews([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -75,10 +87,10 @@ export default function Uploader({ channelID, useLocation, ...props }) {
     <RecorderWrapper {...props}>
       <ButtonGroup>
         <StyledButton color="primary" onClick={() => fileInputRef.current.click()}>
-          Select File
+          Select Files
         </StyledButton>
         <StyledButton color="secondary" onClick={clearFile} disabled={!files.length}>
-          Clear File
+          Clear Files
         </StyledButton>
       </ButtonGroup>
 
@@ -103,49 +115,53 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           setFiles(e, 'w');
         }}
       >
-        {files.length > 0 ? (
-          <>
-            {files[0].type.startsWith('image/') && <img src={preview} alt={files[0].name} style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />}
-            {files[0].type.startsWith('video/') && <video src={preview} controls style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />}
-            {files[0].type.startsWith('audio/') && <audio src={preview} controls style={{width: '100%'}} />}
-            <button
-              onClick={() => clearAllFiles()}
-              style={{
-                position: 'absolute',
-                top: '5px',
-                right: '5px',
-                background: 'rgba(255, 255, 255, 0.7)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '25px',
-                height: '25px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              ✕
-            </button>
-          </>
-        ) : (
-            <div style={{ textAlign: 'center' }}>
-              <StyledButton
-                color="secondary"
-                onClick={() => fileInputRef.current.click()}
+      {previews.length > 0 ? (
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px' }}>
+          {previews.map((preview, index) => (
+            <div key={index} style={{ position: 'relative', width: '150px', height: '150px' }}>
+              {preview.file.type.startsWith('image/') && <img src={preview.preview} alt={preview.file.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
+              {preview.file.type.startsWith('video/') && <video src={preview.preview} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
+              {preview.file.type.startsWith('audio/') && <audio src={preview.preview} controls style={{width: '100%'}} />}
+              <button
+                onClick={() => removePreview(index)}
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '5px',
+                  background: 'rgba(255, 255, 255, 0.7)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '25px',
+                  height: '25px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
               >
-                Add File
-              </StyledButton>
-          </div>
-        )}
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center' }}>
+          <StyledButton
+            color="secondary"
+            onClick={() => fileInputRef.current.click()}
+          >
+            Add Files
+          </StyledButton>
+        </div>
+      )}
       </div>
-
       <input
         ref={fileInputRef}
         type="file"
         style={{ display: 'none' }}
         accept="image/*,audio/*,video/*"
         onChange={handleFileChange}
+        multiple
       />
 
       <Input
@@ -168,7 +184,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       <Button
         color="success"
         onClick={uploadFiles}
-        disabled={!files.length}
+        //disabled={!files.length}
         block
       >
         Submit

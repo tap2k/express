@@ -236,6 +236,8 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
             const description = descriptionRef.current.value;
             const ext_url = extUrlRef.current.value;
             uploadImage(dataUri, lat, long, description, ext_url, channelID, router);
+            descriptionRef.current.value = "";
+            extUrlRef.current.value = "";
           }}
           disabled={!dataUri}
         >

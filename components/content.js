@@ -7,7 +7,7 @@ import VideoPlayer from './videoplayer';
 
 export default function Content({ contentItem, width, height, autoPlay, index }) 
 {
-  const url = getMediaURL() + contentItem.mediafile.url;
+  const url = getMediaURL() + contentItem.mediafile?.url;
 
   const mime = require('mime-types');
   const type = mime.lookup(url) || 'application/octet-stream';
@@ -31,6 +31,8 @@ export default function Content({ contentItem, width, height, autoPlay, index })
     itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption}  url={ext_url} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
   if (type.startsWith("video"))
     itemtag = <VideoPlayer style={videostyle} width={width} height={height} caption={caption} url={ext_url} autoPlay={autoPlay} index={index}><source src={url} type={videotype} /></VideoPlayer>;
+  if (!itemtag)
+    itemtag = <FullImage src="gift.png" width={width} height={height} caption={caption} url={ext_url} />;
 
   return itemtag;
 }
