@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
@@ -100,10 +100,10 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     textAlign: 'center'
   };
 
-  const handleDelete = () => {
+  const handleDelete = (action) => {
     confirmAlert({
-      title: 'Confirm deletion',
-      message: 'Are you sure you want to delete this item?',
+      title: `Confirm ${action}`,
+      message: `Are you sure you want to ${action} this item?`,
       buttons: [
         {
           label: 'Yes',
@@ -220,7 +220,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       { !admin ? "" : 
           <div style={{
             width: '10%', 
-            height: 0, 
+            top: 20,
+            left: 5,
             //backgroundColor: 'red', 
             //display: 'flex', 
             //paddingTop: 10,
@@ -233,7 +234,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <button onClick={() => showTitle && currSlide === 0 ? setIsChannelModalOpen(true) : setIsModalOpen(true)} style={{...buttonStyle, position: 'static', margin: 5}}>
               <FaEdit size={24}/>
             </button>
-            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={{...buttonStyle, position: 'static', margin: 1}}>
+            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete("delete")} style={{...buttonStyle, position: 'static', margin: 5}}>
               <FaTrash size={24}/>
             </button>
             { (showTitle & currSlide === 0) || !admin ? "" : <>
@@ -246,6 +247,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             </> }
           </div>
         }
+
         <style>
           {`
             @keyframes likeAnimation {
@@ -277,12 +279,17 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <FaPlus size={24} />
           </button>
         </Link>
-        <div style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
+        { channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url ? 
+            <button onClick={() => handleDelete("claim")} style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
+              <FaCheck size={24} />
+            </button>
+          : <div style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
           <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
           <label htmlFor="heart-checkbox" className="heart-label">
             <FaHeart size={24} />
           </label>
-        </div>
+        </div> 
+        }
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 

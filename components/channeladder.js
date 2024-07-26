@@ -73,21 +73,21 @@ export default function ChannelAdder() {
           <Card style={linkCardStyle}>
             <CardBody style={{padding: 0}}>
               <Link href={`/reel?channelid=${channelId}&admin=1`} style={linkStyle} rel="noopener noreferrer" target="_blank">
-                <strong>Admin</strong> - Manage your channel
+                <strong>Admin</strong> - Manage your reel
               </Link>
             </CardBody>
           </Card>
-          <Card style={linkCardStyle}>
+          { /* <Card style={linkCardStyle}>
             <CardBody style={{padding: 0}}>
               <Link href={`/upload?channelid=${channelId}`} style={linkStyle} rel="noopener noreferrer" target="_blank">
                 <strong>Upload</strong> - Add content to your channel
               </Link>
             </CardBody>
-          </Card>
+          </Card> */ }
           <Card style={linkCardStyle}>
             <CardBody style={{padding: 0}}>
               <Link href={`/reel?channelid=${channelId}`} style={linkStyle} rel="noopener noreferrer" target="_blank">
-                <strong>Reel</strong> - View your channel
+                <strong>Reel</strong> - Share your reel
               </Link>
             </CardBody>
           </Card>
