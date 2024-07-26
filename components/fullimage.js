@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import Caption from "./caption";
+import ProductLink from "./productlink";
 
-export default function FullImage({ src, width, height, caption }) 
+export default function FullImage({ src, width, height, caption, url }) 
 {
   const imgRef = useRef();
 
@@ -19,7 +20,8 @@ export default function FullImage({ src, width, height, caption })
         ref={imgRef}
         alt={caption}
       />
-      {caption && <Caption caption={caption} />}
+      <Caption caption={caption} />
+      <ProductLink url={url} />
     </div>
   );
 }

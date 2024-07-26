@@ -2,6 +2,9 @@
 
 export default function Caption({ caption }) {
 
+    if (!caption)
+        return;
+
     const captionStyle = {
         top: 30,
         position: 'absolute',

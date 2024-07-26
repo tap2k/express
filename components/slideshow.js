@@ -8,6 +8,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
 import updateSubmission from '../hooks/updatesubmission';
+import updateChannel from '../hooks/updatechannel';
+import deleteChannel from '../hooks/deletechannel';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const SlideTracker = ({ setCurrSlide }) => {
@@ -32,9 +34,11 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const router = useRouter();
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
+  const channelNameRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -127,6 +131,26 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     });
   };
 
+  const handleDeleteChannel = () => {
+    confirmAlert({
+      title: 'Confirm deletion',
+      message: 'Are you sure you want to delete this reel?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+              await deleteChannel(channel.uniqueID);
+              await router.push('/');
+            }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
   const handleSave = async () => {
     const contentIndex = showTitle ? currSlide - 1 : currSlide;
     const contentToEdit = channel.contents[contentIndex];
@@ -140,6 +164,24 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
     setIsModalOpen(false);
     await router.replace(router.asPath);
+  };
+
+  const handleChannelSave = async () => {
+    await updateChannel({
+      channelID: channel.uniqueID,
+      name: channelNameRef.current.value
+    });
+    setIsChannelModalOpen(false);
+    const newQuery = { 
+      ...router.query, 
+      currslide: 0
+    };
+    await router.replace(
+      {
+        pathname: router.pathname,
+        query: newQuery,
+      }
+    );
   };
 
   const moveSlide = async (increment) => {
@@ -174,40 +216,59 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   );
 
   return (
-    <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
-      <style>
-        {`
-          @keyframes likeAnimation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-          }
-          .heart-checkbox {
-            display: none;
-          }
-          .heart-label {
-            cursor: pointer;
-            transition: color 0.3s ease;
-          }
-          .heart-checkbox:checked + .heart-label {
-            color: red;
-          }
-          .heart-label:active {
-            animation: likeAnimation 0.3s ease;
-          }
-        `}
-      </style>
-      <CarouselProvider 
-        isIntrinsicHeight 
-        totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
-        touchEnabled={false} 
-        dragEnabled={false} 
-        infinite 
-        isPlaying={interval ? true : false} 
-        interval={interval} 
-        currentSlide={currSlide}
-      >
-        <SlideTracker setCurrSlide={setCurrSlide} />
+    <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
+      { !admin ? "" : 
+          <div style={{
+            width: '10%', 
+            height: 0, 
+            //backgroundColor: 'red', 
+            //display: 'flex', 
+            //paddingTop: 10,
+            //paddingBottom: 10,
+            //alignItems: 'center', 
+            //justifyContent: 'center',
+            position: 'absolute',
+            zIndex: 1000
+          }}>
+            <button onClick={() => showTitle && currSlide === 0 ? setIsChannelModalOpen(true) : setIsModalOpen(true)} style={{...buttonStyle, position: 'static', margin: 5}}>
+              <FaEdit size={24}/>
+            </button>
+            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={{...buttonStyle, position: 'static', margin: 1}}>
+              <FaTrash size={24}/>
+            </button>
+            { (showTitle & currSlide === 0) || !admin ? "" : <>
+            <button onClick={() => {moveSlide(-1)}} style={{...buttonStyle, position: 'static', margin: 5}}>
+              <FaArrowLeft size={24}/>
+            </button>
+            <button onClick={() => {moveSlide(1)}} style={{...buttonStyle, position: 'static', margin: 5}}>
+              <FaArrowRight size={24}/>
+            </button>
+            </> }
+          </div>
+        }
+        <style>
+          {`
+            @keyframes likeAnimation {
+              0% { transform: scale(1); }
+              50% { transform: scale(1.2); }
+              100% { transform: scale(1); }
+            }
+            .heart-checkbox {
+              display: none;
+            }
+            .heart-label {
+              cursor: pointer;
+              transition: color 0.3s ease;
+            }
+            .heart-checkbox:checked + .heart-label {
+              color: red;
+            }
+            .heart-label:active {
+              animation: likeAnimation 0.3s ease;
+            }
+          `}
+        </style>
+        
         <button onClick={toggleFullScreen} style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 85px)'}}>
           <FaExpandArrowsAlt size={24} />
         </button>
@@ -222,74 +283,97 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <FaHeart size={24} />
           </label>
         </div>
-        { (showTitle && currSlide === 0) || !admin? "" : <>
-          <button onClick={handleDelete} style={{...buttonStyle, top: '20px', right: '20px'}}>
-            <FaTrash size={24}/>
-          </button>
-          <button onClick={() => {moveSlide(1)}} style={{...buttonStyle, top: '20px', right: '80px'}}>
-            <FaArrowRight size={24}/>
-          </button>
-          <button onClick={() => {moveSlide(-1)}} style={{...buttonStyle, top: '20px', right: '140px'}}>
-            <FaArrowLeft size={24}/>
-          </button>
-          <button onClick={() => setIsModalOpen(true)} style={{...buttonStyle, top: '20px', right: '200px'}}>
-            <FaEdit size={24}/>
-          </button>
-        </> }
-        <Slider style={{height: height, width: width}}>
-        { showTitle ? 
-          <Slide style={{height: height, width: width}}>
-            <div style={titleStyle}>
-              <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
-            </div>
-          </Slide> : "" }
-        {
-          channel.contents && channel.contents.map((contentItem, index) => {
-            index = showTitle ? index + 1 : index
-            return <Slide style={{height: height, width: width}} key={index} index={index}>
-                      <Content key={contentItem.id} contentItem={contentItem} width={width} height={height} autoPlay={autoPlay} index={index} setCurrSlide={setCurrSlide} />
-                   </Slide>
-          })
-        }
-        </Slider>
-        { channel.contents.length ? 
-            [
-              <ButtonBack key={1} style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />,
-              <ButtonNext key={2} style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
-            ]
-          : "" }
-      </CarouselProvider>
+
+      <div style={{width: width, height: height, position: "relative"}}>
+        <CarouselProvider 
+          isIntrinsicHeight 
+          totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
+          touchEnabled={false} 
+          dragEnabled={false} 
+          infinite 
+          isPlaying={interval ? true : false} 
+          interval={interval} 
+          currentSlide={currSlide}
+        >
+          <SlideTracker setCurrSlide={setCurrSlide} />
+          <Slider style={{height: height, width: width}}>
+          { showTitle ? 
+            <Slide style={{height: height, width: width}}>
+              <div style={titleStyle}>
+                <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
+              </div>
+            </Slide> : "" }
+          {
+            channel.contents && channel.contents.map((contentItem, index) => {
+              index = showTitle ? index + 1 : index
+              return <Slide style={{height: height, width: width}} key={index} index={index}>
+                        <Content key={contentItem.id} contentItem={contentItem} width={width} height={height} autoPlay={autoPlay} index={index} />
+                    </Slide>
+            })
+          }
+          </Slider>
+          { channel.contents.length ? 
+              [
+                <ButtonBack key={1} style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />,
+                <ButtonNext key={2} style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
+              ]
+            : "" }
+        </CarouselProvider>
+      </div>
+
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
-        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
-        <ModalBody>
-          <Form>
-            <FormGroup>
-              <Label for="description">Description</Label>
-              <Input
-                type="textarea"
-                name="description"
-                id="description"
-                innerRef={descriptionRef}
-                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="extUrl">External URL</Label>
-              <Input
-                type="text"
-                name="extUrl"
-                id="extUrl"
-                innerRef={extUrlRef}
-                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
-              />
-            </FormGroup>
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleSave}>Save</Button>
-          <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-        </ModalFooter>
-      </Modal>
+          <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
+          <ModalBody>
+            <Form>
+              <FormGroup>
+                <Label for="description">Description</Label>
+                <Input
+                  type="textarea"
+                  name="description"
+                  id="description"
+                  innerRef={descriptionRef}
+                  defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="extUrl">External URL</Label>
+                <Input
+                  type="text"
+                  name="extUrl"
+                  id="extUrl"
+                  innerRef={extUrlRef}
+                  defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
+                />
+              </FormGroup>
+            </Form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleSave}>Save</Button>
+            <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
+          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}>Edit Content</ModalHeader>
+          <ModalBody>
+            <Form>
+              <FormGroup>
+                <Label for="description">Prompt</Label>
+                <Input
+                  type="textarea"
+                  name="description"
+                  id="description"
+                  innerRef={channelNameRef}
+                  defaultValue={channel.name}
+                />
+              </FormGroup>
+            </Form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleChannelSave}>Save</Button>
+            <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
     </div>
   );
 }

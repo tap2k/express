@@ -5,7 +5,7 @@ import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
 
-export default function Content({ contentItem, width, height, autoPlay, index, setCurrSlide }) 
+export default function Content({ contentItem, width, height, autoPlay, index }) 
 {
   const url = getMediaURL() + contentItem.mediafile.url;
 
@@ -22,14 +22,15 @@ export default function Content({ contentItem, width, height, autoPlay, index, s
     videostyle = {width: width, height: height};
 
   let caption = contentItem.description;
+  let ext_url = contentItem.ext_url;
   let itemtag = null;
 
   if (type.startsWith("image"))
-    itemtag = <FullImage src={url} width={width} height={height} caption={caption} />;
+    itemtag = <FullImage src={url} width={width} height={height} caption={caption} url={ext_url} />;
   if (type.startsWith("audio"))
-    itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
+    itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption}  url={ext_url} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
   if (type.startsWith("video"))
-    itemtag = <VideoPlayer style={videostyle} width={width} height={height} caption={caption} autoPlay={autoPlay} index={index}><source src={url} type={videotype} /></VideoPlayer>;
+    itemtag = <VideoPlayer style={videostyle} width={width} height={height} caption={caption} url={ext_url} autoPlay={autoPlay} index={index}><source src={url} type={videotype} /></VideoPlayer>;
 
   return itemtag;
 }

@@ -72,7 +72,7 @@ export default function ChannelAdder() {
           <h2 style={{textAlign: 'center', marginBottom: 40}}>Your new reel '{channelName}' has been created</h2>
           <Card style={linkCardStyle}>
             <CardBody style={{padding: 0}}>
-              <Link href={`/?channelid=${channelId}&admin=1`} style={linkStyle}>
+              <Link href={`/reel?channelid=${channelId}&admin=1`} style={linkStyle}>
                 <strong>Admin</strong> - Manage your channel
               </Link>
             </CardBody>

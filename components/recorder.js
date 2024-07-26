@@ -8,13 +8,13 @@ import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-async function uploadRecording(myFormData, lat, long, description, channelID, status, router) 
+async function uploadRecording(myFormData, lat, long, description, ext_url, channelID, status, router) 
 {
   if (status !== "stopped" || !myFormData.has('mediafile'))
     return;
 
   try {
-    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
   } catch (error) {
     console.error('Error uploading content:', error);
     setErrorText('Failed to upload content. Please try again.');
@@ -46,6 +46,7 @@ export default function Recorder({ channelID, useLocation }) {
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const descriptionRef = useRef();
+  const extUrlRef = useRef();
   const fileInputRef = useRef();
   
   const {
@@ -119,6 +120,7 @@ export default function Recorder({ channelID, useLocation }) {
       return;
 
     const description = descriptionRef.current.value;
+    const ext_url = extUrlRef.current.value;
     
     //const formData = createFormData();
     const formData = new FormData();
@@ -127,7 +129,7 @@ export default function Recorder({ channelID, useLocation }) {
     if (files.length > 0) 
       formData.append('thumbnail', files[0], files[0].name);
     
-    await uploadRecording(formData, lat, long, description, channelID, status, router);
+    await uploadRecording(formData, lat, long, description, ext_url, channelID, status, router);
   };
 
   return (
@@ -252,6 +254,13 @@ export default function Recorder({ channelID, useLocation }) {
         type="text"
         innerRef={descriptionRef}
         placeholder="Enter text"
+        style={{ width: '100%', marginBottom: '10px' }}
+      />
+
+      <Input
+        type="text"
+        innerRef={extUrlRef}
+        placeholder="Enter URL"
         style={{ width: '100%', marginBottom: '10px' }}
       />
       

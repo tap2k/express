@@ -10,7 +10,7 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import { createFilter } from "cc-gram";
 
-async function uploadImage(dataUri, lat, long, description, channelID, router) 
+async function uploadImage(dataUri, lat, long, description, ext_url, channelID, router) 
 {
   const formData = require('form-data');
   const myFormData = new formData();
@@ -22,7 +22,7 @@ async function uploadImage(dataUri, lat, long, description, channelID, router)
       return; 
     }
     myFormData.append('mediafile', blob, "image.png");
-    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
   }
   catch (error) {
     console.error('Error uploading content:', error);
@@ -38,6 +38,7 @@ function isMobileSafari() {
 export default function MyCamera({ channelID, useLocation, ...props }) {
   const router = useRouter();
   const descriptionRef = useRef();
+  const extUrlRef = useRef();
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
@@ -212,6 +213,12 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
           marginBottom: '10px'
         }}
       />
+      <Input
+        type="text"
+        innerRef={extUrlRef}
+        placeholder="Enter URL"
+        style={{ width: '100%', marginBottom: '10px' }}
+      />
       <ButtonGroup>
         <StyledButton 
           color="secondary" 
@@ -227,7 +234,8 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
           onClick={(e) => {
             e.preventDefault();
             const description = descriptionRef.current.value;
-            uploadImage(dataUri, lat, long, description, channelID, router);
+            const ext_url = extUrlRef.current.value;
+            uploadImage(dataUri, lat, long, description, ext_url, channelID, router);
           }}
           disabled={!dataUri}
         >

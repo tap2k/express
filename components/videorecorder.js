@@ -11,7 +11,7 @@ import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/record
 const fileExt = "mp4";
 //const fileExt = "webm";
 
-async function uploadRecording(blob, lat, long, description, channelID, status, router) 
+async function uploadRecording(blob, lat, long, description, ext_url, channelID, status, router) 
 {
   if (status != "stopped" || !blob)
     return;
@@ -19,7 +19,7 @@ async function uploadRecording(blob, lat, long, description, channelID, status, 
   const myFormData = new formData();
   try {
     myFormData.append('mediafile', blob, "video."+fileExt);
-    await uploadSubmission({myFormData, lat, long, description, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
   }
   catch (error) {
     console.error('Error uploading content:', error);
@@ -41,6 +41,7 @@ function isMobileSafari() {
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
   const descriptionRef = useRef();
+  const extUrlRef = useRef();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
@@ -269,6 +270,13 @@ export default function VideoRecorder({ channelID, useLocation }) {
         placeholder="Enter text"
         style={{ width: '100%', marginBottom: '10px' }}
       />
+
+      <Input
+        type="text"
+        innerRef={extUrlRef}
+        placeholder="Enter URL"
+        style={{ width: '100%', marginBottom: '10px' }}
+      />
       
       <ButtonGroup>
         <StyledButton 
@@ -286,7 +294,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
           onClick={(e) => {
             e.preventDefault();
             const description = descriptionRef.current.value;
-            uploadRecording(blob, lat, long, description, channelID, status, router);
+            const ext_url = extUrlRef.current.value;
+            uploadRecording(blob, lat, long, description, ext_url, channelID, status, router);
           }}
           disabled={status !== "stopped" || !blob}
         >

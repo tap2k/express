@@ -4,8 +4,9 @@ import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
 import PlayIcon from './playicon';
 import Caption from './caption';
+import ProductLink from "./productlink";
 
-export default function VideoPlayer({ caption, width, height, autoPlay, index, children }) 
+export default function VideoPlayer({ caption, url, width, height, autoPlay, index, children }) 
 {
   const videoRef = useRef();
   const { isPlaying, toggle } = useMediaControl(videoRef, index, autoPlay);
@@ -34,6 +35,7 @@ export default function VideoPlayer({ caption, width, height, autoPlay, index, c
         {children}
       </video>
       <Caption caption={caption} />
+      <ProductLink url={url} />
       {!isPlaying && <PlayIcon inverted={false} />}
     </div>
   );

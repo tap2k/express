@@ -12,6 +12,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const fileInputRef = useRef();
   const [preview, setPreview] = useState(null);
   const descriptionRef = useRef();
+  const extUrlRef = useRef();
 
   const {
     files,
@@ -40,7 +41,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
     if (!fileNames.length)
       return;
     try {
-      await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, published: true, router}); 
+      await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, ext_url: extUrlRef.current.value, published: true, router}); 
       clearAllFiles();
     }
     catch (error) {
@@ -155,6 +156,13 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           width: '100%',
           marginBottom: '10px'
         }}
+      />
+
+      <Input
+        type="text"
+        innerRef={extUrlRef}
+        placeholder="Enter URL"
+        style={{ width: '100%', marginBottom: '10px' }}
       />
 
       <Button

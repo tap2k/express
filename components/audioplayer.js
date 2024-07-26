@@ -3,11 +3,12 @@
 import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
 import getMediaURL from "../hooks/getmediaurl";
-import Caption from './caption';
 import PlayIcon from './playicon';
 import FullImage from './fullimage';
+import Caption from './caption';
+import ProductLink from "./productlink";
 
-export default function AudioPlayer({ src, thumbnailItem, caption, width, height, autoPlay, index }) 
+export default function AudioPlayer({ src, thumbnailItem, caption, url, width, height, autoPlay, index }) 
 {
   // Maustro
   autoPlay = false;
@@ -37,10 +38,14 @@ export default function AudioPlayer({ src, thumbnailItem, caption, width, height
           width={width} 
           height={height} 
           caption={caption}
+          url={url}
           inverted={false}
         />
       ) : (
-        <Caption caption={caption} />
+        <>
+          <Caption caption={caption} />
+          <ProductLink url={url} />
+        </>
       )}
       {!isPlaying && <PlayIcon inverted={!thumbnailUrl} />}
       <audio src={src} style={{display: "none"}} ref={audioRef} />
