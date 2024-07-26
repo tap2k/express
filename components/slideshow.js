@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
 import updateSubmission from '../hooks/updatesubmission';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -29,8 +30,11 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     return;
 
   const router = useRouter();
+  const descriptionRef = useRef(null);
+  const extUrlRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [currSlide, setCurrSlide] = useState(startSlide || 0);
+  const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -106,9 +110,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               await updateSubmission({contentID: contentToDelete.id, published: false});
               const newQuery = { 
                 ...router.query, 
-                currslide: Math.min(currSlide, channel.contents.length - 1)
+                currslide: Math.min(currSlide, showTitle ? channel.contents.length : channel.contents.length - 1)
               };
-              router.replace({
+              await router.replace({
                 pathname: router.pathname,
                 query: newQuery,
               });
@@ -123,6 +127,21 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     });
   };
 
+  const handleSave = async () => {
+    const contentIndex = showTitle ? currSlide - 1 : currSlide;
+    const contentToEdit = channel.contents[contentIndex];
+    if (contentToEdit)
+    {
+      await updateSubmission({
+        contentID: contentToEdit.id,
+        description: descriptionRef.current.value,
+        ext_url: extUrlRef.current.value
+      });
+    }
+    setIsModalOpen(false);
+    await router.replace(router.asPath);
+  };
+
   const moveSlide = async (increment) => {
     const contentIndex = showTitle ? currSlide - 1 : currSlide;
     if ((contentIndex + increment) < 0)
@@ -130,16 +149,29 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     if ((contentIndex + increment) >= channel.contents.length)
       return;
     const contentToMove = channel.contents[contentIndex];
-    await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order});
-    const newQuery = { 
-      ...router.query, 
-      currslide: Math.min(currSlide + increment, channel.contents.length)
-    };
-    router.replace({
-      pathname: router.pathname,
-      query: newQuery,
-    });
+    if (contentToMove)
+    {
+      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order});
+      const newQuery = { 
+        ...router.query, 
+        currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
+      };
+      // TODO to trigger rerender
+      setCurrSlide(currSlide + increment);
+      await router.replace(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        }
+      );
+    }
   }
+
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>
+      &times;
+    </button>
+  );
 
   return (
     <div style={{width: width, height: height, display: "inline-block", position: "relative"}} {...props}>
@@ -173,7 +205,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         infinite 
         isPlaying={interval ? true : false} 
         interval={interval} 
-        currentSlide={startSlide}
+        currentSlide={currSlide}
       >
         <SlideTracker setCurrSlide={setCurrSlide} />
         <button onClick={toggleFullScreen} style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 85px)'}}>
@@ -200,6 +232,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <button onClick={() => {moveSlide(-1)}} style={{...buttonStyle, top: '20px', right: '140px'}}>
             <FaArrowLeft size={24}/>
           </button>
+          <button onClick={() => setIsModalOpen(true)} style={{...buttonStyle, top: '20px', right: '200px'}}>
+            <FaEdit size={24}/>
+          </button>
         </> }
         <Slider style={{height: height, width: width}}>
         { showTitle ? 
@@ -224,6 +259,37 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             ]
           : "" }
       </CarouselProvider>
+      <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
+        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="description">Description</Label>
+              <Input
+                type="textarea"
+                name="description"
+                id="description"
+                innerRef={descriptionRef}
+                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="extUrl">External URL</Label>
+              <Input
+                type="text"
+                name="extUrl"
+                id="extUrl"
+                innerRef={extUrlRef}
+                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleSave}>Save</Button>
+          <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }

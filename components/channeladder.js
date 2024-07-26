@@ -1,18 +1,20 @@
-import { useRef } from "react";
-import { Input, Button } from "reactstrap";
-import { useRouter } from "next/router";
+import { useState, useRef } from "react";
+import { Input, Button, Card, CardBody } from "reactstrap";
+import Link from 'next/link';
 import addChannel from "../hooks/addchannel";
 
 export default function ChannelAdder() {
   const inputRef = useRef();
-  const router = useRouter();
+  const [channelId, setChannelId] = useState(null);
+  const [channelName, setChannelName] = useState(null);
 
   const handleAddChannel = async () => {
     const inputValue = inputRef.current.value;
     if (inputValue) {
       const channeldata = await addChannel({name: inputValue});        
       const uniqueID = channeldata["uniqueID"];
-      router.push(`/upload?channelid=${uniqueID}`);
+      setChannelId(uniqueID);
+      setChannelName(inputValue);
     }
   };
 
@@ -21,42 +23,92 @@ export default function ChannelAdder() {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
+    minHeight: '100vh',
     padding: '20px',
+    maxWidth: '600px',
+    margin: '0 auto',
   };
 
   const inputStyle = {
-    fontSize: 'large',
-    width: '300px',
+    fontSize: '18px',
+    width: '100%',
     height: '50px',
     marginBottom: '15px',
     borderRadius: '12px',
     border: '1px solid #ccc',
+    padding: '0 15px',
   };
 
   const buttonStyle = {
-    fontSize: 'x-large',
-    width: '300px',
-    padding: '5px',
+    fontSize: '18px',
+    width: '100%',
+    padding: '10px',
+    marginBottom: '20px',
     borderRadius: '12px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+  };
+
+  const linkCardStyle = {
+    width: '100%',
+    marginBottom: '15px',
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  };
+
+  const linkStyle = {
+    display: 'block',
+    padding: '20px',
+    fontSize: '18px',
+    color: '#007bff',
+    textDecoration: 'none',
+    transition: 'background-color 0.3s',
+    textAlign: 'center',
   };
   
   return (
     <div style={containerStyle}>
-      <Input
-        type="text"
-        innerRef={inputRef}
-        placeholder="Enter your prompt here"
-        style={inputStyle}
-      />
-      <Button
-        onClick={handleAddChannel}
-        style={buttonStyle}
-        color="primary" 
-      >
-        Make a New Reel
-      </Button>
+      {channelId ? (
+        <div style={{width: '100%'}}>
+          <h2 style={{textAlign: 'center', marginBottom: 40}}>Your new reel '{channelName}' has been created</h2>
+          <Card style={linkCardStyle}>
+            <CardBody style={{padding: 0}}>
+              <Link href={`/?channelid=${channelId}&admin=1`} style={linkStyle}>
+                <strong>Admin</strong> - Manage your channel
+              </Link>
+            </CardBody>
+          </Card>
+          <Card style={linkCardStyle}>
+            <CardBody style={{padding: 0}}>
+              <Link href={`/upload?channelid=${channelId}`} style={linkStyle}>
+                <strong>Upload</strong> - Add content to your channel
+              </Link>
+            </CardBody>
+          </Card>
+          <Card style={linkCardStyle}>
+            <CardBody style={{padding: 0}}>
+              <Link href={`/reel?channelid=${channelId}`} style={linkStyle}>
+                <strong>Reel</strong> - View your channel
+              </Link>
+            </CardBody>
+          </Card>
+        </div>
+      ) : (
+        <>
+          <Input
+            type="text"
+            innerRef={inputRef}
+            placeholder="Enter your prompt here"
+            style={inputStyle}
+          />
+          <Button
+            onClick={handleAddChannel}
+            style={buttonStyle}
+            color="primary" 
+          >
+            Make a New Reel
+          </Button>
+        </>
+      )}
     </div>
   );
 }

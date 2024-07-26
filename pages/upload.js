@@ -69,7 +69,7 @@ export async function getServerSideProps(ctx) {
   if (!uselocation)
     uselocation = false;
 
-  if (!channelid) {
+  if (!channelid | channelid === "null") {
       return {
           redirect: {
               destination: '/',
