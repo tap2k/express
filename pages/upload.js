@@ -22,41 +22,40 @@ export default function UploadPage({ channelID, useLocation }) {
           color={activeTab === '1' ? "primary" : "secondary"}
           onClick={() => { toggle('1'); }}
         >
-          Video
+          Upload
         </StyledButton>
         <StyledButton
           color={activeTab === '2' ? "primary" : "secondary"}
           onClick={() => { toggle('2'); }}
         >
-          Photo
+          Video
         </StyledButton>
         <StyledButton
           color={activeTab === '3' ? "primary" : "secondary"}
           onClick={() => { toggle('3'); }}
         >
-          Audio
+          Photo
         </StyledButton>
         <StyledButton
           color={activeTab === '4' ? "primary" : "secondary"}
           onClick={() => { toggle('4'); }}
         >
-          Upload
+          Audio
         </StyledButton>
-
       </ButtonGroup>
 
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
-          <VideoRecorder channelID={channelID} useLocation={useLocation} />
+          {activeTab === '1' && <Uploader channelID={channelID} useLocation={useLocation} />}
         </TabPane>
         <TabPane tabId="2">
-          <MyCamera channelID={channelID} useLocation={useLocation} />
+          {activeTab === '2' && <VideoRecorder channelID={channelID} useLocation={useLocation} />}
         </TabPane>
         <TabPane tabId="3">
-          <Recorder channelID={channelID} useLocation={useLocation} />
+          {activeTab === '3' && <MyCamera channelID={channelID} useLocation={useLocation} />}
         </TabPane>
         <TabPane tabId="4">
-          <Uploader channelID={channelID} useLocation={useLocation} />
+          {activeTab === '4' && <Recorder channelID={channelID} useLocation={useLocation} />}
         </TabPane>
       </TabContent>
     </RecorderWrapper>
