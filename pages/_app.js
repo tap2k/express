@@ -1,6 +1,7 @@
 /* pages/_app.js */
 import Head from 'next/head'
 import '../styles/global.css';
+import '../styles/bootstrap.min.css';
 
 export default function App({
   Component,
