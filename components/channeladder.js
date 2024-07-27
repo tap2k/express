@@ -4,17 +4,19 @@ import Link from 'next/link';
 import addChannel from "../hooks/addchannel";
 
 export default function ChannelAdder() {
-  const inputRef = useRef();
+  const titleRef = useRef();
+  const subtitleRef = useRef();
   const [channelId, setChannelId] = useState(null);
   const [channelName, setChannelName] = useState(null);
 
   const handleAddChannel = async () => {
-    const inputValue = inputRef.current.value;
-    if (inputValue) {
-      const channeldata = await addChannel({name: inputValue});        
+    const titleValue = titleRef.current.value;
+    const subtitleValue = subtitleRef.current.value;
+    if (titleValue) {
+      const channeldata = await addChannel({name: titleValue, description: subtitleValue});        
       const uniqueID = channeldata["uniqueID"];
       setChannelId(uniqueID);
-      setChannelName(inputValue);
+      setChannelName(titleValue);
     }
   };
 
@@ -96,8 +98,14 @@ export default function ChannelAdder() {
         <>
           <Input
             type="text"
-            innerRef={inputRef}
-            placeholder="Enter your prompt here"
+            innerRef={titleRef}
+            placeholder="Enter your title here"
+            style={inputStyle}
+          />
+          <Input
+            type="text"
+            innerRef={subtitleRef}
+            placeholder="Enter your subtitle here"
             style={inputStyle}
           />
           <Button

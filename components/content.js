@@ -33,6 +33,5 @@ export default function Content({ contentItem, width, height, autoPlay, index })
     itemtag = <VideoPlayer style={videostyle} width={width} height={height} caption={caption} url={ext_url} autoPlay={autoPlay} index={index}><source src={url} type={videotype} /></VideoPlayer>;
   if (!itemtag)
     itemtag = <FullImage src="gift.png" width={width} height={height} caption={caption} url={ext_url} />;
-
   return itemtag;
 }

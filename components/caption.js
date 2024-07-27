@@ -6,7 +6,7 @@ export default function Caption({ caption }) {
         return;
 
     const captionStyle = {
-        top: 30,
+        top: 50,
         position: 'absolute',
         maxHeight: "25%",
         overflowY: "auto",

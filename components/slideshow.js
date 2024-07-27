@@ -3,14 +3,15 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck } from 'react-icons/fa';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
 import updateSubmission from '../hooks/updatesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -26,6 +27,17 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
+const copyUrlToClipboard = () => {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => {
+      // Optionally, you can show a notification that the URL was copied
+      alert('URL copied to clipboard!');
+    })
+    .catch(err => {
+      console.error('Failed to copy URL: ', err);
+    });
+};
+
 export default function Slideshow({ channel, height, width, interval, startSlide, showTitle, autoPlay, admin, ...props }) 
 {
   if (!channel)
@@ -35,6 +47,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
   const channelNameRef = useRef(null);
+  const channelDescRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -169,7 +182,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const handleChannelSave = async () => {
     await updateChannel({
       channelID: channel.uniqueID,
-      name: channelNameRef.current.value
+      name: channelNameRef.current.value,
+      description: channelDescRef.current.value
     });
     setIsChannelModalOpen(false);
     const newQuery = { 
@@ -215,6 +229,14 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     </button>
   );
 
+  const iconButtonStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+    padding: '5px'
+  };
+
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { !admin ? "" : 
@@ -222,12 +244,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             width: '10%', 
             top: 20,
             left: 5,
-            //backgroundColor: 'red', 
-            //display: 'flex', 
-            //paddingTop: 10,
-            //paddingBottom: 10,
-            //alignItems: 'center', 
-            //justifyContent: 'center',
             position: 'absolute',
             zIndex: 1000
           }}>
@@ -271,25 +287,43 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           `}
         </style>
         
-        <button onClick={toggleFullScreen} style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 85px)'}}>
-          <FaExpandArrowsAlt size={24} />
-        </button>
-        <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
-          <button style={{...buttonStyle, bottom: '20px', left: 'calc(50% - 25px)'}}>
-            <FaPlus size={24} />
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '40px',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          padding: '10px',
+          borderRadius: '20px',
+          zIndex: 1000,
+          height: 60
+        }}>
+          <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
+            <FaPaperclip size={36} />
           </button>
-        </Link>
-        { channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url ? 
-            <button onClick={() => handleDelete("claim")} style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
-              <FaCheck size={24} />
+          <button onClick={toggleFullScreen} style={iconButtonStyle}>
+            <FaExpandArrowsAlt size={36} />
+          </button>
+          <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
+            <button style={iconButtonStyle}>
+              <FaPlus size={36} />
             </button>
-          : <div style={{...buttonStyle, bottom: '20px', left: 'calc(50% + 35px)'}}>
-          <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
-          <label htmlFor="heart-checkbox" className="heart-label">
-            <FaHeart size={24} />
-          </label>
-        </div> 
-        }
+          </Link>
+          { channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url ? 
+            <button onClick={() => handleDelete("claim")} style={iconButtonStyle}>
+              <FaCheck size={36} />
+            </button>
+            : 
+            <div style={iconButtonStyle}>
+              <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
+              <label htmlFor="heart-checkbox" className="heart-label">
+                <FaHeart size={36} />
+              </label>
+            </div> 
+          }
+        </div>
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 
@@ -307,9 +341,15 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           { showTitle ? 
             <Slide style={{height: height, width: width}}>
               <div style={titleStyle}>
-                <b style={{fontSize: "xxx-large"}}>{channel.name}</b>
+                <b style={{fontSize: "4em"}}>{channel.name}</b>
+                {channel.description && (
+                  <div style={{fontSize: "2em", marginTop: "0.5em"}}>
+                    {channel.description}
+                  </div>
+                )}
               </div>
-            </Slide> : "" }
+            </Slide> : "" 
+          }
           {
             channel.contents && channel.contents.map((contentItem, index) => {
               index = showTitle ? index + 1 : index
@@ -365,13 +405,21 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <ModalBody>
             <Form>
               <FormGroup>
-                <Label for="description">Prompt</Label>
+                <Label for="title">Title</Label>
                 <Input
                   type="textarea"
-                  name="description"
-                  id="description"
+                  name="title"
+                  id="title"
                   innerRef={channelNameRef}
                   defaultValue={channel.name}
+                />
+                <Label for="subtitle">Subtitle</Label>
+                <Input
+                  type="textarea"
+                  name="subtitle"
+                  id="subtitle"
+                  innerRef={channelDescRef}
+                  defaultValue={channel.description}
                 />
               </FormGroup>
             </Form>
