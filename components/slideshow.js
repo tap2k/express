@@ -55,8 +55,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }, []);
   });
 
-  //const currContent = channel.contents[showTitle ? currSlide - 1 : currSlide];
-
   useEffect(() => {
     const handleFullScreenChange = () => {
       setIsFullScreen(!!document.fullscreenElement);
@@ -117,6 +115,11 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     textAlign: 'center'
   };
 
+  const getCurrentContent = () => {
+    const index = showTitle ? currSlide - 1 : currSlide;
+    return channel.contents[index];
+  };  
+
   const copyUrlToClipboard = () => {
     //navigator.clipboard.writeText(window.location.href)
     const baseurl = new URL(window.location.href);
@@ -142,8 +145,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   };
   
   const handleClaim = async () => {
-    const contentIndex = showTitle ? currSlide - 1 : currSlide;
-    const contentToClaim = channel.contents[contentIndex];
+    const contentToClaim = getCurrentContent();
     if (contentToClaim) {
       const publishedStatus = !claimedSlides.includes(currSlide);
       confirmAlert({
@@ -182,8 +184,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         {
           label: 'Yes',
           onClick: async () => {
-            const contentIndex = showTitle ? currSlide - 1 : currSlide;
-            const contentToDelete = channel.contents[contentIndex];
+            const contentToDelete = getCurrentContent();
             if (contentToDelete) {
               //await updateSubmission({contentID: contentToDelete.id, published: false});
               await deleteSubmission({contentID: contentToDelete.id});
@@ -227,8 +228,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   };
 
   const handleSave = async () => {
-    const contentIndex = showTitle ? currSlide - 1 : currSlide;
-    const contentToEdit = channel.contents[contentIndex];
+    const contentToEdit = getCurrentContent();
     if (contentToEdit)
     {
       await updateSubmission({
@@ -363,7 +363,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               <FaPlus size={36} />
             </button>
           </Link>
-          { channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url ? 
+          { getCurrentContent()?.ext_url ? 
             <button 
               onClick={() => handleClaim()} 
               style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
