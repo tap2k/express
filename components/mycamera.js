@@ -9,6 +9,7 @@ import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import { createFilter } from "cc-gram";
+import axios from 'axios';
 
 async function uploadImage(dataUri, lat, long, description, ext_url, channelID, router) 
 {
@@ -35,19 +36,20 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function MyCamera({ channelID, useLocation, ...props }) {
+export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
   const router = useRouter();
   const descriptionRef = useRef();
   const extUrlRef = useRef();
+  const dallePromptRef = useRef();
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
+  const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
+  const [isDalleImage, setIsDalleImage] = useState(false);
 
   const ccgramFilter = createFilter({ init: false });
-  //const filterNames = ['normal', ...ccgramFilter.filterNames];
-  //const filterNames = ['normal', 'clarendon', 'valencia', 'mayfair', 'hudson', 'lofi', 'xpro2', 'gingham', 'nashville', '1977', 'aden', 'inkwell', 'reyes', 'toaster', 'walden', 'earlybird', 'brooklyn', 'lark', 'moon', 'willow', 'rise', 'slumber', 'brannan', 'maven', 'stinson', 'amaro'];
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
 
   let lat = null;
@@ -62,7 +64,6 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   useEffect(() => {
     checkForMultipleCameras();
   }, []);
-
 
   const checkForMultipleCameras = async () => {
     if (isMobileSafari()) setHasMultipleCameras(true);
@@ -86,16 +87,40 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
       myDataUri = canvas.toDataURL('image/png');
     }
     setDataUri(myDataUri);
+    setIsDalleImage(false);
     const previews = await generateFilterPreviews(myDataUri);
     setFilterPreviews(previews);
   }
 
+  async function handleDalleGeneration() {
+    setIsGeneratingDalle(true);
+    try {
+      const response = await axios.post('/api/dalle', {
+        prompt: dallePromptRef.current.value
+      });
+
+      const imageBase64 = response.data.imageBase64;
+      const myDataUri = `data:image/png;base64,${imageBase64}`;
+
+      setDataUri(myDataUri);
+      setIsDalleImage(true);
+      setFilterPreviews({});
+    } catch (error) {
+      console.error('Error generating DALL-E image:', error);
+      setErrorText('Failed to generate AI image. Please try again.');
+    } finally {
+      setIsGeneratingDalle(false);
+    }
+  }
+
   async function applyFilter(filter) {
+    if (isDalleImage) return; // Don't apply filters to DALL-E images
     setCurrentFilter(filter);
     setDataUri(filterPreviews[filter]);
   }
 
   async function generateFilterPreviews(imageDataUri) {
+    if (isDalleImage) return {}; // Don't generate previews for DALL-E images
     const previews = { normal: imageDataUri };
     for (let i = 0; i < filterNames.length; i++) {
       const filter = filterNames[i];
@@ -115,6 +140,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
     setDataUri(null);
     setCurrentFilter('normal');
     setFilterPreviews({});
+    setIsDalleImage(false);
   }
 
   function handleFlipCamera() {
@@ -130,14 +156,14 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
           <div>
             <img 
               src={dataUri} 
-              alt="Captured" 
+              alt="Captured or Generated" 
               style={{
                 width: '100%',
                 height: 'auto',
                 borderRadius: '10px'
               }}
             />
-            {Object.keys(filterPreviews).length === filterNames.length ? (
+            {!isDalleImage && Object.keys(filterPreviews).length === filterNames.length && (
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: '10px' }}>
                 {filterNames.map(filterName => (
                   <div 
@@ -166,7 +192,19 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
                   </div>
                 ))}
               </div>
-            ) : ""}
+            )}
+          </div>
+        ) : isGeneratingDalle ? (
+          <div style={{
+            width: '100%',
+            minHeight: '600px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#f0f0f0',
+            borderRadius: '10px'
+          }}>
+            <p>Generating DALL-E Image...</p>
           </div>
         ) : (
           <>
@@ -219,15 +257,29 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
         placeholder="Enter URL"
         style={{ width: '100%', marginBottom: '10px' }}
       />
+      { dalle ? <Input
+        type="text"
+        innerRef={dallePromptRef}
+        placeholder="Enter AI prompt"
+        style={{ width: '100%', marginBottom: '10px' }}
+      /> : "" }
       <ButtonGroup>
         <StyledButton 
           color="secondary" 
           size="lg"
           onClick={handleRetake} 
-          disabled={!dataUri}
+          disabled={!dataUri && !isGeneratingDalle}
         >
           Retake
         </StyledButton>
+        { dalle ? <StyledButton
+          color="primary"
+          size="lg"
+          onClick={handleDalleGeneration}
+          disabled={isGeneratingDalle}
+        >
+          {isGeneratingDalle ? 'Generating...' : 'Generate AI Image'}
+        </StyledButton> : "" }
         <StyledButton
           color="success"
           size="lg"
@@ -238,8 +290,9 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
             uploadImage(dataUri, lat, long, description, ext_url, channelID, router);
             descriptionRef.current.value = "";
             extUrlRef.current.value = "";
+            dallePromptRef.current.value = "";
           }}
-          disabled={!dataUri}
+          disabled={!dataUri || isGeneratingDalle}
         >
           Submit
         </StyledButton>

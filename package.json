@@ -14,6 +14,7 @@
     "fix-webm-duration": "^1.0.6",
     "get-blob-duration": "^1.2.0",
     "next": "13.5.1",
+    "openai": "^4.53.2",
     "pure-react-carousel": "^1.30.1",
     "react": "^18.3.1",
     "react-confirm-alert": "^3.0.6",
