@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx) {
     const { channelid, currslide, admin } = ctx.query;
 
     try {
-        const channel = await getChannel({ channelID: channelid });
+        const channel = await getChannel({ channelID: channelid, admin: admin });
         
         if (!channel) {
             return {

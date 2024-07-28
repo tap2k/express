@@ -9,6 +9,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
 import updateSubmission from '../hooks/updatesubmission';
+import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 
@@ -27,17 +28,6 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-const copyUrlToClipboard = () => {
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => {
-      // Optionally, you can show a notification that the URL was copied
-      alert('URL copied to clipboard!');
-    })
-    .catch(err => {
-      console.error('Failed to copy URL: ', err);
-    });
-};
-
 export default function Slideshow({ channel, height, width, interval, startSlide, showTitle, autoPlay, admin, ...props }) 
 {
   if (!channel)
@@ -52,6 +42,20 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+  const [likedSlides, setLikedSlides] = useState([]);
+  const [claimedSlides, setClaimedSlides] = useState(() => {
+    if (!channel || !channel.contents) return [];
+  
+    return channel.contents.reduce((acc, content, index) => {
+      if (!content.publishedAt) {
+        const slideIndex = showTitle ? index + 1 : index;
+        acc.push(slideIndex);
+      }
+      return acc;
+    }, []);
+  });
+
+  //const currContent = channel.contents[showTitle ? currSlide - 1 : currSlide];
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -113,10 +117,67 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     textAlign: 'center'
   };
 
-  const handleDelete = (action) => {
+  const copyUrlToClipboard = () => {
+    //navigator.clipboard.writeText(window.location.href)
+    const baseurl = new URL(window.location.href);
+    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}`;  
+  
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        alert('URL copied to clipboard!');
+      })
+      .catch(err => {
+        console.error('Failed to copy URL: ', err);
+      });
+    };
+
+  const handleHeartClick = () => {
+    setLikedSlides(prevLikedSlides => {
+      if (prevLikedSlides.includes(currSlide)) {
+        return prevLikedSlides.filter(index => index !== currSlide);
+      } else {
+        return [...prevLikedSlides, currSlide];
+      }
+    });
+  };
+  
+  const handleClaim = async () => {
+    const contentIndex = showTitle ? currSlide - 1 : currSlide;
+    const contentToClaim = channel.contents[contentIndex];
+    if (contentToClaim) {
+      const publishedStatus = !claimedSlides.includes(currSlide);
+      confirmAlert({
+        title: `Confirm ${publishedStatus ? 'claim' : 'unclaim'}`,
+        message: `Are you sure you want to ${publishedStatus ? 'claim' : 'unclaim'} this item?`,
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: async () => {
+                await updateSubmission({contentID: contentToClaim.id, published: !publishedStatus});
+                
+                setClaimedSlides(prevClaimedSlides => {
+                  if (publishedStatus) {
+                    return [...prevClaimedSlides, currSlide];
+                  } else {
+                    return prevClaimedSlides.filter(index => index !== currSlide);
+                  }
+                });
+            }
+          },
+          {
+            label: 'No',
+            onClick: () => {}
+          }
+        ]
+      });
+    }
+  };
+
+
+  const handleDelete = () => {
     confirmAlert({
-      title: `Confirm ${action}`,
-      message: `Are you sure you want to ${action} this item?`,
+      title: `Confirm delete`,
+      message: `Are you sure you want to delete this item?`,
       buttons: [
         {
           label: 'Yes',
@@ -124,7 +185,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             const contentIndex = showTitle ? currSlide - 1 : currSlide;
             const contentToDelete = channel.contents[contentIndex];
             if (contentToDelete) {
-              await updateSubmission({contentID: contentToDelete.id, published: false});
+              //await updateSubmission({contentID: contentToDelete.id, published: false});
+              await deleteSubmission({contentID: contentToDelete.id});
               const newQuery = { 
                 ...router.query, 
                 currslide: Math.min(currSlide, showTitle ? channel.contents.length : channel.contents.length - 1)
@@ -250,7 +312,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <button onClick={() => showTitle && currSlide === 0 ? setIsChannelModalOpen(true) : setIsModalOpen(true)} style={{...buttonStyle, position: 'static', margin: 5}}>
               <FaEdit size={24}/>
             </button>
-            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete("delete")} style={{...buttonStyle, position: 'static', margin: 5}}>
+            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...buttonStyle, position: 'static', margin: 5}}>
               <FaTrash size={24}/>
             </button>
             { (showTitle & currSlide === 0) || !admin ? "" : <>
@@ -266,23 +328,13 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
         <style>
           {`
-            @keyframes likeAnimation {
+            @keyframes buttonAnimation {
               0% { transform: scale(1); }
               50% { transform: scale(1.2); }
               100% { transform: scale(1); }
             }
-            .heart-checkbox {
-              display: none;
-            }
-            .heart-label {
-              cursor: pointer;
-              transition: color 0.3s ease;
-            }
-            .heart-checkbox:checked + .heart-label {
-              color: red;
-            }
-            .heart-label:active {
-              animation: likeAnimation 0.3s ease;
+            .heart-button:active, .check-button:active {
+              animation: buttonAnimation 0.3s ease;
             }
           `}
         </style>
@@ -312,16 +364,21 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             </button>
           </Link>
           { channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url ? 
-            <button onClick={() => handleDelete("claim")} style={iconButtonStyle}>
+            <button 
+              onClick={() => handleClaim()} 
+              style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
+              className="check-button"
+            >
               <FaCheck size={36} />
             </button>
             : 
-            <div style={iconButtonStyle}>
-              <input type="checkbox" id="heart-checkbox" className="heart-checkbox" />
-              <label htmlFor="heart-checkbox" className="heart-label">
-                <FaHeart size={36} />
-              </label>
-            </div> 
+            <button 
+              onClick={() => handleHeartClick()} 
+              style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
+              className="heart-button"
+            >
+              <FaHeart size={36} />
+            </button>
           }
         </div>
 
