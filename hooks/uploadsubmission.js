@@ -63,31 +63,38 @@ export default async function uploadSubmission({myFormData, channelID, contentID
     );
 
     if (response.status === 200) {
+
+      const buttons = [
+        {
+          label: 'Upload Another',
+          onClick: () => {
+            const currentQuery = router.query;
+            router.push({
+              pathname: '/upload',
+              query: currentQuery
+            });
+          }
+        }
+      ];
+  
+      // Simplified check for public channel
+      if (response.data?.[0]?.channel?.public === true) {
+        buttons.push({
+          label: 'Go to Reel',
+          onClick: () => {
+            const currentQuery = router.query;
+            router.push({
+              pathname: '/reel',
+              query: currentQuery
+            });
+          }
+        });
+      }
+
       confirmAlert({
         title: 'Upload Successful',
         message: 'Your submission has been uploaded successfully.',
-        buttons: [
-          {
-            label: 'Upload Another',
-            onClick: () => {
-              const currentQuery = router.query;
-              router.push({
-                pathname: '/upload',
-                query: currentQuery
-              });
-            }
-          },
-          {
-            label: 'Go to Reel',
-            onClick: () => {
-              const currentQuery = router.query;
-              router.push({
-                pathname: '/reel',
-                query: currentQuery
-              });
-            }
-          }
-        ]
+        buttons: buttons
       });
     }
 

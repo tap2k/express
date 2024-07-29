@@ -8,6 +8,8 @@ import mime from 'mime-types';
 
 // New function to get media info
 export function getMediaInfo(contentItem) {
+  if (!contentItem)
+    return;
   const url = getMediaURL() + contentItem.mediafile?.url;
   const type = mime.lookup(url) || 'application/octet-stream';
   let videotype = "";

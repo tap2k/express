@@ -96,7 +96,7 @@ export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
     setIsGeneratingDalle(true);
     try {
       const response = await axios.post('/api/dalle', {
-        prompt: dallePromptRef.current.value
+        prompt: dallePromptRef?.current?.value
       });
 
       const imageBase64 = response.data.imageBase64;
@@ -290,7 +290,8 @@ export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
             uploadImage(dataUri, lat, long, description, ext_url, channelID, router);
             descriptionRef.current.value = "";
             extUrlRef.current.value = "";
-            dallePromptRef.current.value = "";
+            if (dallePromptRef?.current)
+              dallePromptRef.current.value = "";
           }}
           disabled={!dataUri || isGeneratingDalle}
         >

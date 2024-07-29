@@ -4,7 +4,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError from "./seterror";
 
-export default async function addChannel({name, description, uniqueID, interval, showTitle, participantsView, picturefile, audiofile}) 
+export default async function addChannel({name, description, uniqueID, interval, showtitle, ispublic, picturefile, audiofile}) 
 {
   const url = getBaseURL() + "/api/createSubmissionChannel";
   var params = {};
@@ -16,10 +16,10 @@ export default async function addChannel({name, description, uniqueID, interval,
     params["uniqueID"] = uniqueID;
   if (interval != undefined)
     params["interval"] = interval;
-  if (showTitle != undefined)
-    params["showtitle"] = showTitle;
-  if (participantsView != undefined)
-    params["public"] = participantsView;
+  if (showtitle != undefined)
+    params["showtitle"] = showtitle;
+  if (ispublic!= undefined)
+    params["public"] = ispublic;
   if (picturefile != undefined)
     params["picturefile"] = picturefile;
   if (audiofile != undefined)

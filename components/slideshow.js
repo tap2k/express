@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content, { getMediaInfo } from "./content";
 import FullImage from "./fullimage";
+import ChannelAdder from './channeladder';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
@@ -24,12 +25,12 @@ const SlideTracker = ({ setCurrSlide }) => {
     };
     carouselContext.subscribe(onChange);
     return () => carouselContext.unsubscribe(onChange);
-  }, [carouselContext, setCurrSlide]);
+  }, [carouselContext]);
 
   return null;
 };
 
-export default function Slideshow({ channel, height, width, interval, startSlide, showTitle, autoPlay, admin, ...props }) 
+export default function Slideshow({ channel, height, width, interval, startSlide, autoPlay, admin, ...props }) 
 {
   if (!channel)
     return;
@@ -37,8 +38,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const router = useRouter();
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
-  const channelNameRef = useRef(null);
-  const channelDescRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,15 +71,19 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     if (!channel.contents) return;
 
     const currentContent = getCurrentContent();
-    if (!currentContent) return;
+    if (!currentContent) 
+    {
+      setAudioVolume(0.8);
+      return;
+    }
 
     const mediaInfo = getMediaInfo(currentContent);
-    if (mediaInfo.mimetype.startsWith('video/') || mediaInfo.mimetype.startsWith('audio/')) {
+    if (mediaInfo?.type?.startsWith('video/') || mediaInfo?.type?.startsWith('audio/')) {
       setAudioVolume(0.2);
     } else {
       setAudioVolume(0.8);
     }
-  }, [currSlide, channel.contents]);
+  }, [currSlide]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -108,7 +111,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
   }
 
-  showTitle = channel.name && showTitle;
+  //showTitle = channel.name && channel.showtitle;
+  const showTitle = channel.showtitle;
 
   const buttonStyle = {
     position: 'absolute',
@@ -128,6 +132,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
+    if (index < 0 || index >= channel.contents.length)
+      return null;
     return channel.contents[index];
   };  
 
@@ -249,12 +255,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     await router.replace(router.asPath);
   };
 
-  const handleChannelSave = async () => {
-    await updateChannel({
-      channelID: channel.uniqueID,
-      name: channelNameRef.current.value,
-      description: channelDescRef.current.value
-    });
+  const handleChannelSave = async (formData) => {
+    formData.channelID = channel.uniqueID;
+    await updateChannel(formData);
     setIsChannelModalOpen(false);
     const newQuery = { 
       ...router.query, 
@@ -328,7 +331,17 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             position: 'absolute',
             zIndex: 1000
           }}>
-            <button onClick={() => showTitle && currSlide === 0 ? setIsChannelModalOpen(true) : setIsModalOpen(true)} style={{...buttonStyle, position: 'static', margin: 5}}>
+            <button 
+              onClick={() => {
+                if (showTitle && currSlide === 0) {
+                  if (isAudioPlaying) toggleAudio();
+                  setIsChannelModalOpen(true);
+                } else {
+                  setIsModalOpen(true);
+                }
+              }} 
+              style={{...buttonStyle, position: 'static', margin: 5}}
+            >
               <FaEdit size={24}/>
             </button>
             <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...buttonStyle, position: 'static', margin: 5}}>
@@ -372,19 +385,19 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           height: 60
         }}>
           <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
-            <FaPaperclip size={36} />
+            <FaPaperclip size={28} />
           </button>
           <button onClick={toggleFullScreen} style={iconButtonStyle}>
-            <FaExpandArrowsAlt size={36} />
+            <FaExpandArrowsAlt size={28} />
           </button>
           <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
             <button style={iconButtonStyle}>
-              <FaPlus size={36} />
+              <FaPlus size={28} />
             </button>
           </Link>
-          {channel.audio?.url && (
+          {channel.audio?.url || channel.audiofile && (
             <button onClick={toggleAudio} style={iconButtonStyle}>
-              {isAudioPlaying ? <FaPause size={36} /> : <FaPlay size={36} />}
+              {isAudioPlaying ? <FaPause size={28} /> : <FaPlay size={28} />}
             </button>
           )}
           { getCurrentContent()?.ext_url ? 
@@ -393,7 +406,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
               className="check-button"
             >
-              <FaCheck size={36} />
+              <FaCheck size={28} />
             </button>
             : 
             <button 
@@ -421,7 +434,20 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <Slider style={{height: height, width: width}}>
           { showTitle ? 
             <Slide style={{height: height, width: width}}>
-              <FullImage src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} width={width} height={height} title={channel.name} subtitle={channel.description} centerVertically />;
+              <FullImage 
+                src={channel.picture?.url 
+                  ? getMediaURL() + channel.picture.url 
+                  : (channel.picturefile 
+                    ? "images/" + channel.picturefile 
+                    : ""
+                  )
+                } 
+                width={width} 
+                height={height} 
+                title={channel.name} 
+                subtitle={channel.description} 
+                centerVertically 
+              />
             </Slide> : "" 
           }
           {
@@ -466,53 +492,37 @@ export default function Slideshow({ channel, height, width, interval, startSlide
                   defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
                 />
               </FormGroup>
+              <Button
+                onClick={handleSave}
+                style={buttonStyle}
+                color="primary" 
+              >
+                Update Slide
+              </Button>
             </Form>
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={handleSave}>Save</Button>
-            <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-          </ModalFooter>
         </Modal>
 
         <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}>Edit Content</ModalHeader>
+          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}>Edit Reel</ModalHeader>
           <ModalBody>
-            <Form>
-              <FormGroup>
-                <Label for="title">Title</Label>
-                <Input
-                  type="textarea"
-                  name="title"
-                  id="title"
-                  innerRef={channelNameRef}
-                  defaultValue={channel.name}
-                />
-                <Label for="subtitle">Subtitle</Label>
-                <Input
-                  type="textarea"
-                  name="subtitle"
-                  id="subtitle"
-                  innerRef={channelDescRef}
-                  defaultValue={channel.description}
-                />
-              </FormGroup>
-            </Form>
+            <ChannelAdder
+              initialData={channel}
+              onSubmit={handleChannelSave}
+              isUpdate={true}
+            />
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={handleChannelSave}>Save</Button>
-            <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-          </ModalFooter>
         </Modal>
 
-      {channel.audio?.url && (
-        <audio
-          ref={audioRef}
-          src={getMediaURL() + channel.audio.url}
-          autoPlay
-          loop
-          style={{ display: 'none' }}
-        />
-      )}
+        {(channel.audio?.url || channel.audiofile) && (
+          <audio
+            ref={audioRef}
+            src={channel.audio?.url ? getMediaURL() + channel.audio.url : "audio/" + channel.audiofile}
+            autoPlay={isAudioPlaying}
+            loop
+            style={{ display: 'none' }}
+          />
+        )}
     </div>
   );
 }

@@ -18,7 +18,7 @@ export default function Caption({ title, subtitle, centerVertically = false }) {
         borderRadius: '15px',
         padding: '20px 40px',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        backgroundColor: 'rgba(0,0,0,0.7)',
+        backgroundColor: centerVertically ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.7)',
         color: 'rgba(255,255,255,0.9)',
         backdropFilter: 'blur(5px)',
     };

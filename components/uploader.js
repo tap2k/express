@@ -44,6 +44,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       await uploadSubmission({myFormData: createFormData(), channelID, lat, long, description: descriptionRef.current.value, ext_url: extUrlRef.current.value, published: true, setProgress, router}); 
       clearAllFiles();
       setPreviews([]);
+      setProgress(0);
       descriptionRef.current.value = "";
       extUrlRef.current.value = "";
     }
