@@ -4,15 +4,16 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import Content from "./content";
+import Content, { getMediaInfo } from "./content";
+import FullImage from "./fullimage";
+import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
-
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -43,6 +44,10 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
+  const [audioVolume, setAudioVolume] = useState(0.8);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(true);
+  const audioRef = useRef(null);
+  
   const [claimedSlides, setClaimedSlides] = useState(() => {
     if (!channel || !channel.contents) return [];
   
@@ -62,6 +67,26 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
   }, []);
+
+  useEffect(() => {
+    if (!channel.contents) return;
+
+    const currentContent = getCurrentContent();
+    if (!currentContent) return;
+
+    const mediaInfo = getMediaInfo(currentContent);
+    if (mediaInfo.mimetype.startsWith('video/') || mediaInfo.mimetype.startsWith('audio/')) {
+      setAudioVolume(0.2);
+    } else {
+      setAudioVolume(0.8);
+    }
+  }, [currSlide, channel.contents]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = audioVolume;
+    }
+  }, [audioVolume]);
 
   const toggleFullScreen = () => {
     if (!isFullScreen) {
@@ -101,27 +126,12 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     cursor: 'pointer'
   };
 
-  const titleStyle = {
-    filter: 'invert(100%) grayscale(100%)',
-    mixBlendMode: 'difference',
-    whiteSpace: 'pre-wrap',
-    width: '100%',
-    position: 'absolute',
-    top: '50%',
-    transform: "translate(0, -50%)",
-    maxHeight: "80%",
-    overflowY: "auto",
-    padding: '0 15%',
-    textAlign: 'center'
-  };
-
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
     return channel.contents[index];
   };  
 
   const copyUrlToClipboard = () => {
-    //navigator.clipboard.writeText(window.location.href)
     const baseurl = new URL(window.location.href);
     const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}`;  
   
@@ -132,7 +142,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       .catch(err => {
         console.error('Failed to copy URL: ', err);
       });
-    };
+  };
 
   const handleHeartClick = () => {
     setLikedSlides(prevLikedSlides => {
@@ -175,7 +185,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
   };
 
-
   const handleDelete = () => {
     confirmAlert({
       title: `Confirm delete`,
@@ -186,7 +195,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           onClick: async () => {
             const contentToDelete = getCurrentContent();
             if (contentToDelete) {
-              //await updateSubmission({contentID: contentToDelete.id, published: false});
               await deleteSubmission({contentID: contentToDelete.id});
               const newQuery = { 
                 ...router.query, 
@@ -299,6 +307,17 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     padding: '5px'
   };
 
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isAudioPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsAudioPlaying(!isAudioPlaying);
+    }
+  };
+
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { !admin ? "" : 
@@ -363,6 +382,11 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               <FaPlus size={36} />
             </button>
           </Link>
+          {channel.audio?.url && (
+            <button onClick={toggleAudio} style={iconButtonStyle}>
+              {isAudioPlaying ? <FaPause size={36} /> : <FaPlay size={36} />}
+            </button>
+          )}
           { getCurrentContent()?.ext_url ? 
             <button 
               onClick={() => handleClaim()} 
@@ -397,14 +421,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <Slider style={{height: height, width: width}}>
           { showTitle ? 
             <Slide style={{height: height, width: width}}>
-              <div style={titleStyle}>
-                <b style={{fontSize: "4em"}}>{channel.name}</b>
-                {channel.description && (
-                  <div style={{fontSize: "2em", marginTop: "0.5em"}}>
-                    {channel.description}
-                  </div>
-                )}
-              </div>
+              <FullImage src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} width={width} height={height} title={channel.name} subtitle={channel.description} centerVertically />;
             </Slide> : "" 
           }
           {
@@ -486,6 +503,16 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <Button color="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
           </ModalFooter>
         </Modal>
+
+      {channel.audio?.url && (
+        <audio
+          ref={audioRef}
+          src={getMediaURL() + channel.audio.url}
+          autoPlay
+          loop
+          style={{ display: 'none' }}
+        />
+      )}
     </div>
   );
 }
