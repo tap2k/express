@@ -4,7 +4,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, {setErrorText} from "./seterror";
 
-export default async function updateChannel( {myFormData, channelID, name, description, interval, showtitle, ispublic, picturefile, audiofile, deletePic, deleteAudio } ) 
+export default async function updateChannel( {name, description, channelID, interval, showtitle, ispublic, picturefile, audiofile, deletePic, deleteAudio } ) 
 {    
   if (!channelID)
   {
@@ -14,33 +14,30 @@ export default async function updateChannel( {myFormData, channelID, name, descr
   
   const url = getBaseURL() + "/api/updateSubmissionChannel";
   
-  if (!myFormData) {
-    myFormData = new FormData();
-  }
-  
-  myFormData.append("uniqueID", channelID);
+  const formData = new FormData();
+  formData.append("uniqueID", channelID);
   
   if (name !== undefined) 
-    myFormData.append("name", name);
+    formData.append("name", name);
   if (description !== undefined) 
-    myFormData.append("description", description);
+    formData.append("description", description);
   if (interval !== undefined) 
-    myFormData.append("interval", interval);
+    formData.append("interval", interval);
   if (showtitle !== undefined) 
-    myFormData.append("showtitle", showtitle);
+    formData.append("showtitle", showtitle);
   if (ispublic !== undefined) 
-    myFormData.append("public", ispublic);
+    formData.append("public", ispublic);
   if (picturefile !== undefined) 
-    myFormData.append("picturefile", picturefile);
+    formData.append("picturefile", picturefile);
   if (audiofile !== undefined) 
-    myFormData.append("audiofile", audiofile);
+    formData.append("audiofile", audiofile);
   if (deletePic !== undefined) 
-    myFormData.append("deletepic", deletePic);
+    formData.append("deletepic", deletePic);
   if (deleteAudio !== undefined) 
-    myFormData.append("deleteaudio", deleteAudio);
+    formData.append("deleteaudio", deleteAudio);
 
   try {
-    return await axios.post(url, myFormData);
+    return await axios.post(url, formData);
   } catch (err) {
     setError(err);
     return null;

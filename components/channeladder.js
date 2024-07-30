@@ -1,19 +1,45 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
-export default function ChannelAdder ({ initialData, onSubmit, isUpdate = false }){
+export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const audioRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.public : true);
   const [selectedImage, setSelectedImage] = useState(initialData?.picturefile || "None");
   const [selectedAudio, setSelectedAudio] = useState(initialData?.audiofile || "None");
+  const [imageFile, setImageFile] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const publicRef = useRef();
 
   const imageOptions = ["None", "flowers5.png", "flowers6.png", "clouds.png", "flowers4.jpg", "meadow.jpg", "robin.jpg", "trees.jpg"];
   const audioOptions = ["None", "entertainer.mp3", "figleaf.mp3", "grammo.mp3", "lumpsuck.mp3", "merrygo.mp3", "runamok.mp3", "fivecards.mp3", "dohdeoh.mp3", "farting.mp3"];
+
+  useEffect(() => {
+    if (selectedImage !== "None") {
+      fetch(`images/${selectedImage}`)
+        .then(res => res.blob())
+        .then(blob => {
+          setImageFile(new File([blob], selectedImage, { type: blob.type }));
+        });
+    } else {
+      setImageFile(null);
+    }
+  }, [selectedImage]);
+
+  useEffect(() => {
+    if (selectedAudio !== "None") {
+      fetch(`audio/${selectedAudio}`)
+        .then(res => res.blob())
+        .then(blob => {
+          setAudioFile(new File([blob], selectedAudio, { type: blob.type }));
+        });
+    } else {
+      setAudioFile(null);
+    }
+  }, [selectedAudio]);
 
   const handleSubmit = () => {
     onSubmit({
@@ -21,8 +47,8 @@ export default function ChannelAdder ({ initialData, onSubmit, isUpdate = false 
       description: subtitleRef.current.value,
       showTitleSlide,
       ispublic: publicRef.current.checked,
-      picturefile: selectedImage === "None" ? "" : selectedImage,
-      audiofile: selectedAudio === "None" ? "" : selectedAudio
+      picturefile: imageFile,
+      audiofile: audioFile
     });
   };
 
@@ -243,4 +269,4 @@ export default function ChannelAdder ({ initialData, onSubmit, isUpdate = false 
       </Button>
     </>
   );
-};
+}

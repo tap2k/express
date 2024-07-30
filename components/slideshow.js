@@ -395,7 +395,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               <FaPlus size={28} />
             </button>
           </Link>
-          {channel.audio?.url || channel.audiofile && (
+          {channel.audio?.url && (
             <button onClick={toggleAudio} style={iconButtonStyle}>
               {isAudioPlaying ? <FaPause size={28} /> : <FaPlay size={28} />}
             </button>
@@ -435,13 +435,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           { showTitle ? 
             <Slide style={{height: height, width: width}}>
               <FullImage 
-                src={channel.picture?.url 
-                  ? getMediaURL() + channel.picture.url 
-                  : (channel.picturefile 
-                    ? "images/" + channel.picturefile 
-                    : ""
-                  )
-                } 
+                src={channel.picture?.url ? getMediaURL() + channel.picture.url : "" }
                 width={width} 
                 height={height} 
                 title={channel.name} 
@@ -514,10 +508,10 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           </ModalBody>
         </Modal>
 
-        {(channel.audio?.url || channel.audiofile) && (
+        {channel.audio?.url && (
           <audio
             ref={audioRef}
-            src={channel.audio?.url ? getMediaURL() + channel.audio.url : "audio/" + channel.audiofile}
+            src={getMediaURL() + channel.audio.url}
             autoPlay={isAudioPlaying}
             loop
             style={{ display: 'none' }}

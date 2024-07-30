@@ -15,8 +15,7 @@ export default async function getChannel({channelID, admin})
     if (admin)
       url = getBaseURL() + "/api/getSubmissionChannel?uniqueID=" + channelID;
     const resp = await axios.get(url);
-    const channel = resp.data;
-    return channel;
+    return resp.data;
 
   } catch (err) {
     setError(err);

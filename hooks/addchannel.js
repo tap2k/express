@@ -4,28 +4,34 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError from "./seterror";
 
-export default async function addChannel({name, description, uniqueID, interval, showtitle, ispublic, picturefile, audiofile}) 
+export default async function addChannel({name, description, channelID, interval, showtitle, ispublic, picturefile, audiofile}) 
 {
   const url = getBaseURL() + "/api/createSubmissionChannel";
-  var params = {};
+  const formData = new FormData();
+
   if (name != undefined)
-    params["name"] = name;
+    formData.append("name", name);
   if (description != undefined)
-    params["description"] = description;
-  if (uniqueID != undefined)
-    params["uniqueID"] = uniqueID;
+    formData.append("description", description);
+  if (channelID != undefined)
+    formData.append("uniqueID", channelID);
   if (interval != undefined)
-    params["interval"] = interval;
+    formData.append("interval", interval);
   if (showtitle != undefined)
-    params["showtitle"] = showtitle;
-  if (ispublic!= undefined)
-    params["public"] = ispublic;
+    formData.append("showtitle", showtitle);
+  if (ispublic != undefined)
+    formData.append("public", ispublic);
   if (picturefile != undefined)
-    params["picturefile"] = picturefile;
+    formData.append("picturefile", picturefile);
   if (audiofile != undefined)
-    params["audiofile"] = audiofile;
+    formData.append("audiofile", audiofile);
+
   try {
-    const res = await axios.post(url, params);
+    const res = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return res.data;
   } catch (err) {
     setError(err);
