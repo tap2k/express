@@ -460,27 +460,26 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="description">Title</Label>
               <Input
                 type="textarea"
                 name="description"
                 id="description"
                 innerRef={descriptionRef}
+                placeholder='Enter caption here'
                 defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
               />
             </FormGroup>
             <FormGroup>
-              <Label for="extUrl">URL Link</Label>
               <Input
                 type="text"
                 name="extUrl"
                 id="extUrl"
                 innerRef={extUrlRef}
+                placeholder='Enter URL here'
                 defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
               />
             </FormGroup>
             <FormGroup>
-              <Label for="textalignment">Text Alignment</Label>
               <Input
                 type="select"
                 name="textalignment"

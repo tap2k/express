@@ -38,7 +38,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             borderRadius: '25px',
             padding: '10px 20px',
             pointerEvents: 'auto',
-            fontSize: 'calc(2vmin + 0.6em)',
+            fontSize: 'calc(1.5vmin + 0.6em)',
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',

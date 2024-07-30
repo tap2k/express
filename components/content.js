@@ -22,7 +22,7 @@ export function getMediaInfo(contentItem) {
   return { url, type, videotype };
 }
 
-export default function Content({ contentItem, width, height, autoPlay, index }) 
+export default function Content({ contentItem, width, height, autoPlay, showCaption = true, index }) 
 {
   const { url, type, videotype } = getMediaInfo(contentItem);
 
@@ -83,11 +83,11 @@ export default function Content({ contentItem, width, height, autoPlay, index })
   return (
     <div style={containerStyle}>
       {mediaElement}
-      <Caption 
+      { showCaption ? <Caption 
         title={contentItem.description}
         url={contentItem.ext_url} 
         textAlignment={contentItem.textalignment} 
-      />
+      /> : "" }
     </div>
   );
 }
