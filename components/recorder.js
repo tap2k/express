@@ -158,7 +158,7 @@ export default function Recorder({ channelID, useLocation }) {
         backgroundColor: '#e9ecef',
         borderRadius: '30px',
         overflow: 'hidden',
-        marginBottom: '20px',
+        marginBottom: '10px',
         position: 'relative'
       }}>
         <div style={{
@@ -195,7 +195,7 @@ export default function Recorder({ channelID, useLocation }) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: '20px',
+          marginBottom: '30px',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -263,7 +263,7 @@ export default function Recorder({ channelID, useLocation }) {
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '10px' }}
+        style={{ width: '100%', marginBottom: '20px' }}
       />
       
       <Button 

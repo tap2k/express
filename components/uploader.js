@@ -228,11 +228,12 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           marginBottom: '10px'
         }}
       />
+      
       <Input
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '10px' }}
+        style={{ width: '100%', marginBottom: '20px' }}
       />
 
       <Button

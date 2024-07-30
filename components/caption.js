@@ -25,7 +25,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         switch (textAlignment) {
             case 'top': return { ...base, top: '30px' };
             case 'bottom': return { ...base, bottom: '90px' };
-            default: return { ...base, top: '50%', transform: 'translate(-50%, -50%)' };
+            default: return { ...base, top: '48%', transform: 'translate(-50%, -50%)' };
         }
     };
 

@@ -255,13 +255,13 @@ export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '10px' }}
+        style={{ width: '100%', marginBottom: '20px' }}
       />
       { dalle ? <Input
         type="text"
         innerRef={dallePromptRef}
         placeholder="Enter AI prompt"
-        style={{ width: '100%', marginBottom: '10px' }}
+        style={{ width: '100%', marginBottom: '20px' }}
       /> : "" }
       <ButtonGroup>
         <StyledButton 

@@ -94,7 +94,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: '10px',
-    marginBottom: '20px',
+    marginBottom: '25px',
     width: '100%',
   };
 
@@ -102,7 +102,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
     gap: '10px',
-    marginBottom: '20px',
+    marginBottom: '15px',
     width: '100%',
   };
 
@@ -146,12 +146,13 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '5px',
+    padding: '10px',
     borderRadius: '8px',
     cursor: 'pointer',
     backgroundColor: '#f8f9fa',
     height: '100%',
-    minHeight: '50px'
+    minHeight: '50px',
+    border: '1px solid #ddd',
   };
 
   const audioNameStyle = {

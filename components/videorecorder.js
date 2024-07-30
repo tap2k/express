@@ -275,7 +275,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '10px' }}
+        style={{ width: '100%', marginBottom: '20px' }}
       />
       
       <ButtonGroup>

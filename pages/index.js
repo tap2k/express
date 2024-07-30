@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
 import ChannelAdder from '../components/channeladder';
 import addChannel from "../hooks/addchannel";
+import { RecorderWrapper } from '@/components/recorderstyles';
 
 export default () => {  
     const [channelId, setChannelId] = useState(null);
@@ -33,7 +34,6 @@ export default () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
         padding: '20px',
         maxWidth: '800px',
         margin: '0 auto'
@@ -57,7 +57,7 @@ export default () => {
     };
 
     return (
-        <>
+        <RecorderWrapper>
             <Navbar color="secondary" style={{ display: 'flex', justifyContent: 'center', minHeight: '60px' }}>
                 <Link href="/" passHref legacyBehavior>
                     <NavbarBrand style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: 'large' }}>
@@ -100,6 +100,6 @@ export default () => {
                 <ChannelAdder onSubmit={handleAddChannel} />
                 )}
             </div>
-        </>
+        </RecorderWrapper>
     );
 };

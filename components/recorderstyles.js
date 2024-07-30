@@ -14,7 +14,7 @@ export const RecorderWrapper = styled.div`
 export const ButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 export const StyledButton = styled(Button)`
