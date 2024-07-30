@@ -58,10 +58,10 @@ export default function Wall({ channel }) {
     <>
         <div style={{
             textAlign: 'center',
-            padding: 20,
             backgroundColor: '#f0f0f0',
-            }}>
-            <h1 style={{ fontSize: '2.5em', marginBottom: '15px' }}>{channel.name}</h1>
+            padding: 30
+        }}>
+            <h1 style={{ fontSize: '2.5em', marginBottom: '20px'}}>{channel.name}</h1>
             {channel.description && <h2 style={{ fontSize: '1.5em', fontWeight: 'normal' }}>{channel.description}</h2>}
         </div>
         <ResponsiveGridLayout
