@@ -330,7 +330,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { !admin ? "" : 
-          <div style={{...iconBarStyle, flexDirection: 'column', top: 30, left: 20, gap: 20}}>
+          <div style={{...iconBarStyle, flexDirection: 'column', top: 30, left: 20, gap: 15}}>
             <button 
               onClick={() => {
                 if (showTitle && currSlide === 0) {
@@ -342,17 +342,17 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               }} 
               style={{...iconButtonStyle, position: 'static', margin: 5}}
             >
-              <FaEdit size={28}/>
+              <FaEdit size={24}/>
             </button>
             <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaTrash size={28}/>
+              <FaTrash size={24}/>
             </button>
             { (showTitle & currSlide === 0) || !admin ? "" : <>
             <button onClick={() => {moveSlide(-1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaArrowLeft size={28}/>
+              <FaArrowLeft size={24}/>
             </button>
             <button onClick={() => {moveSlide(1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaArrowRight size={28}/>
+              <FaArrowRight size={24}/>
             </button>
             </> }
           </div>
@@ -385,7 +385,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           </Link>
           {channel.audio?.url && (
             <button onClick={toggleAudio} style={iconButtonStyle}>
-              {isAudioPlaying ? <FaPause size={28} /> : <FaPlay size={28} />}
+              {isAudioPlaying ? <FaPause size={28} /> : <FaPlay size={24} />}
             </button>
           )}
           { getCurrentContent()?.ext_url ? 
@@ -402,7 +402,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
               className="heart-button"
             >
-              <FaHeart size={36} />
+              <FaHeart size={28} />
             </button>
           }
         </div>
@@ -456,7 +456,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       </div>
 
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
-        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
+        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
@@ -505,7 +505,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       </Modal>
 
         <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}>Edit Reel</ModalHeader>
+          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
           <ModalBody>
             <ChannelAdder
               initialData={channel}

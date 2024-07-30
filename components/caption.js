@@ -1,4 +1,3 @@
-// components/caption.js
 import Link from 'next/link';
 import { FaShoppingBag } from 'react-icons/fa';
 
@@ -15,49 +14,71 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             borderRadius: '15px',
             padding: '20px',
             backdropFilter: 'blur(5px)',
+            width: 'fit-content',
             maxWidth: '80%',
             textAlign: 'center',
             pointerEvents: 'auto',
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word'
         };
-
+    
         switch (textAlignment) {
             case 'top': return { ...base, top: '30px' };
-            case 'bottom': return { ...base, bottom: url ? '180px' : '100px' };
+            case 'bottom': return { ...base, bottom: '90px' };
             default: return { ...base, top: '50%', transform: 'translate(-50%, -50%)' };
         }
     };
 
-    const linkStyle = {
+    const getLinkStyle = () => {
+        const base = {
             position: 'absolute',
             left: '50%',
             transform: 'translateX(-50%)',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '25px',
             padding: '10px 20px',
-            width: '250px',
             pointerEvents: 'auto',
-            fontSize: 'x-large',
+            fontSize: 'calc(2vmin + 0.6em)',
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            bottom: '100px'
+            maxWidth: '80%',
+            textAlign: 'center',
         };
+
+        switch (textAlignment) {
+            case 'bottom': return { ...base, top: '30px' };
+            default: return { ...base, bottom: '90px' };
+        }
+    };
+
+    const titleStyle = {
+        fontSize: 'calc(4vmin + 1.0em)',
+        fontWeight: 'bold',
+        lineHeight: 1.2,
+        marginBottom: '10px'
+    };
+
+    const subtitleStyle = {
+        fontSize: 'calc(2vmin + 1.0em)',
+        lineHeight: 1.3
+    };
 
     return (
         <>
             {(title || subtitle) && (
                 <div style={getCaptionStyle()}>
-                    {title && <div style={{fontSize: '4em', fontWeight: 'bold'}}>{title}</div>}
-                    {subtitle && <div style={{fontSize: '2em'}}>{subtitle}</div>}
+                    {title && <div style={titleStyle}>{title}</div>}
+                    {subtitle && <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
             {url && (
-                <Link href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
-                    <FaShoppingBag style={{marginRight: 8}} />
-                    Product Link
+                <Link href={url} style={getLinkStyle()} rel="noopener noreferrer" target="_blank">
+                    <FaShoppingBag style={{marginRight: '8px'}} />
+                    <span>Product Link</span>
                 </Link>
             )}
         </>
