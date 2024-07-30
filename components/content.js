@@ -73,7 +73,6 @@ export default function Content({ contentItem, width, height, autoPlay, showCapt
   } else {
     mediaElement = (
       <FullImage 
-        src="gift.png" 
         width={width} 
         height={height} 
       />

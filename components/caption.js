@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FaShoppingBag } from 'react-icons/fa';
 
-export default function Caption({ title, subtitle, url, textAlignment = 'center' }) {
+export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false }) {
     if (!title && !subtitle && !url) return null;
     
     const getCaptionStyle = () => {
@@ -17,9 +17,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             width: 'fit-content',
             maxWidth: '80%',
             textAlign: 'center',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
             whiteSpace: 'normal',
-            overflowWrap: 'break-word'
+            overflowWrap: 'break-word',
+            mixBlendMode: inverted ? 'difference' : 'normal',
         };
     
         switch (textAlignment) {
@@ -37,7 +38,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '25px',
             padding: '10px 20px',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
             fontSize: 'calc(1.5vmin + 0.6em)',
             fontWeight: 'bold',
             color: 'white',
@@ -47,6 +48,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             justifyContent: 'center',
             maxWidth: '80%',
             textAlign: 'center',
+            mixBlendMode: inverted ? 'difference' : 'normal',
         };
 
         switch (textAlignment) {

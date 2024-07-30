@@ -8,7 +8,8 @@ export default function PlayIcon({ inverted = false }) {
     transform: 'translate(-50%, -50%)',
     width: '20%',
     maxWidth: 200,
-    pointerEvents: 'none'
+    pointerEvents: 'none',
+    zIndex: 1000
   };
 
   if (inverted) {
