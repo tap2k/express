@@ -1,15 +1,16 @@
-/* components/content.js */
+// components/content.js
 
 import getMediaURL from "../hooks/getmediaurl";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
+import Caption from "./caption";
 import mime from 'mime-types';
 
-// New function to get media info
+// getMediaInfo function
 export function getMediaInfo(contentItem) {
   if (!contentItem)
-    return;
+    return {};
   const url = getMediaURL() + contentItem.mediafile?.url;
   const type = mime.lookup(url) || 'application/octet-stream';
   let videotype = "";
@@ -30,22 +31,63 @@ export default function Content({ contentItem, width, height, autoPlay, index })
     videostyle = {width, height};
   }
 
-  const { description: caption, ext_url } = contentItem;
-  let itemtag = null;
+  const containerStyle = {
+    position: 'relative',
+    width,
+    height,
+  };
+
+  let mediaElement;
 
   if (type.startsWith("image")) {
-    itemtag = <FullImage src={url} width={width} height={height} caption={caption} url={ext_url} />;
+    mediaElement = (
+      <FullImage 
+        src={url} 
+        width={width} 
+        height={height} 
+      />
+    );
   } else if (type.startsWith("audio")) {
-    itemtag = <AudioPlayer src={url} width={width} height={height} caption={caption} url={ext_url} thumbnailItem={contentItem.thumbnail} autoPlay={autoPlay} index={index} />;
+    mediaElement = (
+      <AudioPlayer 
+        src={url} 
+        width={width} 
+        height={height} 
+        thumbnailItem={contentItem.thumbnail} 
+        autoPlay={autoPlay} 
+        index={index} 
+      />
+    );
   } else if (type.startsWith("video")) {
-    itemtag = (
-      <VideoPlayer style={videostyle} width={width} height={height} caption={caption} url={ext_url} autoPlay={autoPlay} index={index}>
+    mediaElement = (
+      <VideoPlayer 
+        style={videostyle} 
+        width={width} 
+        height={height} 
+        autoPlay={autoPlay} 
+        index={index}
+      >
         <source src={url} type={videotype} />
       </VideoPlayer>
     );
   } else {
-    itemtag = <FullImage src="gift.png" width={width} height={height} caption={caption} url={ext_url} />;
+    mediaElement = (
+      <FullImage 
+        src="gift.png" 
+        width={width} 
+        height={height} 
+      />
+    );
   }
 
-  return itemtag;
+  return (
+    <div style={containerStyle}>
+      {mediaElement}
+      <Caption 
+        title={contentItem.description}
+        url={contentItem.ext_url} 
+        textAlignment={contentItem.textalignment} 
+      />
+    </div>
+  );
 }

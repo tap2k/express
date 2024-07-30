@@ -9,6 +9,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content, { getMediaInfo } from "./content";
 import FullImage from "./fullimage";
+import Caption from "./caption";
 import ChannelAdder from './channeladder';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
@@ -38,6 +39,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const router = useRouter();
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
+  const textAlignmentRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +49,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const [isAudioPlaying, setIsAudioPlaying] = useState(true);
   const audioRef = useRef(null);
   
+  //showTitle = channel.name && channel.showtitle;
+  const showTitle = channel.showtitle;
+
   const [claimedSlides, setClaimedSlides] = useState(() => {
     if (!channel || !channel.contents) return [];
   
@@ -111,23 +116,31 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
   }
 
-  //showTitle = channel.name && channel.showtitle;
-  const showTitle = channel.showtitle;
-
   const buttonStyle = {
-    position: 'absolute',
-    zIndex: 1000,
-    fontSize: 'xx-large',
-    width: 50,
-    height: 50,
+    fontSize: 'large',
+    width: '100%',
+    padding: '10px',
+    marginTop: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+  };
+
+  const iconBarStyle = {
+    position: 'fixed',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: '10px',
+    borderRadius: '20px',
+    zIndex: 1000,
+    alignItems: 'center'
+  };
+
+  const iconButtonStyle = {
+    background: 'none',
     border: 'none',
     color: 'white',
-    borderRadius: '5px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    padding: '5px'
   };
 
   const getCurrentContent = () => {
@@ -248,7 +261,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       await updateSubmission({
         contentID: contentToEdit.id,
         description: descriptionRef.current.value,
-        ext_url: extUrlRef.current.value
+        ext_url: extUrlRef.current.value,
+        textAlignment: textAlignmentRef.current.value
       });
     }
     setIsModalOpen(false);
@@ -302,14 +316,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     </button>
   );
 
-  const iconButtonStyle = {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-    padding: '5px'
-  };
-
   const toggleAudio = () => {
     if (audioRef.current) {
       if (isAudioPlaying) {
@@ -324,13 +330,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { !admin ? "" : 
-          <div style={{
-            width: '10%', 
-            top: 20,
-            left: 5,
-            position: 'absolute',
-            zIndex: 1000
-          }}>
+          <div style={{...iconBarStyle, flexDirection: 'column', top: 30, left: 20, gap: 20}}>
             <button 
               onClick={() => {
                 if (showTitle && currSlide === 0) {
@@ -340,19 +340,19 @@ export default function Slideshow({ channel, height, width, interval, startSlide
                   setIsModalOpen(true);
                 }
               }} 
-              style={{...buttonStyle, position: 'static', margin: 5}}
+              style={{...iconButtonStyle, position: 'static', margin: 5}}
             >
-              <FaEdit size={24}/>
+              <FaEdit size={28}/>
             </button>
-            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...buttonStyle, position: 'static', margin: 5}}>
-              <FaTrash size={24}/>
+            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+              <FaTrash size={28}/>
             </button>
             { (showTitle & currSlide === 0) || !admin ? "" : <>
-            <button onClick={() => {moveSlide(-1)}} style={{...buttonStyle, position: 'static', margin: 5}}>
-              <FaArrowLeft size={24}/>
+            <button onClick={() => {moveSlide(-1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+              <FaArrowLeft size={28}/>
             </button>
-            <button onClick={() => {moveSlide(1)}} style={{...buttonStyle, position: 'static', margin: 5}}>
-              <FaArrowRight size={24}/>
+            <button onClick={() => {moveSlide(1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+              <FaArrowRight size={28}/>
             </button>
             </> }
           </div>
@@ -371,19 +371,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           `}
         </style>
         
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: '40px',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          padding: '10px',
-          borderRadius: '20px',
-          zIndex: 1000,
-          height: 60
-        }}>
+        <div style={{...iconBarStyle, bottom: '20px', left: '50%', transform: 'translateX(-50%)', gap: '40px'}}>
           <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
             <FaPaperclip size={28} />
           </button>
@@ -432,17 +420,22 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         >
           <SlideTracker setCurrSlide={setCurrSlide} />
           <Slider style={{height: height, width: width}}>
-          { showTitle ? 
+          {showTitle ? 
             <Slide style={{height: height, width: width}}>
-              <FullImage 
-                src={channel.picture?.url ? getMediaURL() + channel.picture.url : "" }
-                width={width} 
-                height={height} 
-                title={channel.name} 
-                subtitle={channel.description} 
-                centerVertically 
-              />
-            </Slide> : "" 
+              <div style={{position: 'relative', height: '100%', width: '100%'}}>
+                <FullImage 
+                  src={channel.picture?.url ? getMediaURL() + channel.picture.url : ""} 
+                  width={width} 
+                  height={height} 
+                />
+                <Caption 
+                  title={channel.name}
+                  subtitle={channel.description}
+                  textAlignment="center"
+                />
+              </div>
+            </Slide> 
+            : ""
           }
           {
             channel.contents && channel.contents.map((contentItem, index) => {
@@ -463,39 +456,53 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       </div>
 
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
-          <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
-          <ModalBody>
-            <Form>
-              <FormGroup>
-                <Label for="description">Description</Label>
-                <Input
-                  type="textarea"
-                  name="description"
-                  id="description"
-                  innerRef={descriptionRef}
-                  defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="extUrl">External URL</Label>
-                <Input
-                  type="text"
-                  name="extUrl"
-                  id="extUrl"
-                  innerRef={extUrlRef}
-                  defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
-                />
-              </FormGroup>
-              <Button
-                onClick={handleSave}
-                style={buttonStyle}
-                color="primary" 
+        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>Edit Content</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="description">Title</Label>
+              <Input
+                type="textarea"
+                name="description"
+                id="description"
+                innerRef={descriptionRef}
+                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="extUrl">URL Link</Label>
+              <Input
+                type="text"
+                name="extUrl"
+                id="extUrl"
+                innerRef={extUrlRef}
+                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="textalignment">Text Alignment</Label>
+              <Input
+                type="select"
+                name="textalignment"
+                id="textalignment"
+                innerRef={textAlignmentRef}
+                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.textalignment || 'center'}
               >
-                Update Slide
-              </Button>
-            </Form>
-          </ModalBody>
-        </Modal>
+                <option value="top">top</option>
+                <option value="center">center</option>
+                <option value="bottom">bottom</option>
+              </Input>
+            </FormGroup>
+            <Button
+              onClick={handleSave}
+              style={{...buttonStyle}}
+              color="primary" 
+            >
+              Update Slide
+            </Button>
+          </Form>
+        </ModalBody>
+      </Modal>
 
         <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
           <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}>Edit Reel</ModalHeader>

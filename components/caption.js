@@ -1,45 +1,65 @@
 // components/caption.js
+import Link from 'next/link';
+import { FaShoppingBag } from 'react-icons/fa';
 
-export default function Caption({ title, subtitle, centerVertically = false }) {
-    if (!title && !subtitle) return null;
+export default function Caption({ title, subtitle, url, textAlignment = 'center' }) {
+    if (!title && !subtitle && !url) return null;
+    
+    const getCaptionStyle = () => {
+        const base = {
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            borderRadius: '15px',
+            padding: '20px',
+            backdropFilter: 'blur(5px)',
+            maxWidth: '80%',
+            textAlign: 'center',
+            pointerEvents: 'auto',
+        };
 
-    const captionStyle = {
-        //filter: 'invert(100%) grayscale(100%)',
-        //mixBlendMode: 'difference',
-        position: 'absolute',
-        maxHeight: "50%", // Increased to accommodate both title and subtitle
-        overflowY: "auto",
-        width: 'max-content',
-        maxWidth: '80%', 
-        left: '50%',
-        transform: centerVertically ? 'translate(-50%, -50%)' : 'translateX(-50%)',
-        textAlign: 'center',
-        whiteSpace: 'pre-wrap',
-        borderRadius: '15px',
-        padding: '20px 40px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        backgroundColor: centerVertically ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.7)',
-        color: 'rgba(255,255,255,0.9)',
-        backdropFilter: 'blur(5px)',
+        switch (textAlignment) {
+            case 'top': return { ...base, top: '30px' };
+            case 'bottom': return { ...base, bottom: url ? '180px' : '100px' };
+            default: return { ...base, top: '50%', transform: 'translate(-50%, -50%)' };
+        }
     };
 
-    // Adjust top positioning based on centerVertically
-    captionStyle.top = centerVertically ? '50%' : 30;
-
-    const titleStyle = {
-        fontSize: '4em',
-        fontWeight: 'bold',
-        marginBottom: subtitle ? '10px' : '0',
-    };
-
-    const subtitleStyle = {
-        fontSize: '2em',
-    };
+    const linkStyle = {
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            borderRadius: '25px',
+            padding: '10px 20px',
+            width: '250px',
+            pointerEvents: 'auto',
+            fontSize: 'x-large',
+            fontWeight: 'bold',
+            color: 'white',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bottom: '100px'
+        };
 
     return (
-        <div style={captionStyle}>
-            {title && <div style={titleStyle}>{title}</div>}
-            {subtitle && <div style={subtitleStyle}>{subtitle}</div>}
-        </div>
+        <>
+            {(title || subtitle) && (
+                <div style={getCaptionStyle()}>
+                    {title && <div style={{fontSize: '4em', fontWeight: 'bold'}}>{title}</div>}
+                    {subtitle && <div style={{fontSize: '2em'}}>{subtitle}</div>}
+                </div>
+            )}
+            {url && (
+                <Link href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
+                    <FaShoppingBag style={{marginRight: 8}} />
+                    Product Link
+                </Link>
+            )}
+        </>
     );
 }

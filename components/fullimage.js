@@ -1,9 +1,6 @@
 // components/fullimage.js
 
-import Caption from "./caption";
-import ProductLink from "./productlink";
-
-export default function FullImage({ src, width, height, title, subtitle, url, centerVertically = false }) 
+export default function FullImage({ src, width, height }) 
 {
   return (
     <div style={{ position: 'relative', width, height }}>
@@ -14,10 +11,7 @@ export default function FullImage({ src, width, height, title, subtitle, url, ce
           height: '100%',
           objectFit: 'contain'
         }} 
-        alt={title}
       /> : "" }
-      <Caption title={title} subtitle={subtitle} centerVertically={centerVertically} />
-      <ProductLink url={url} />
     </div>
   );
 }

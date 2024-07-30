@@ -5,14 +5,9 @@ import useMediaControl from "../hooks/usemediacontrol";
 import getMediaURL from "../hooks/getmediaurl";
 import PlayIcon from './playicon';
 import FullImage from './fullimage';
-import Caption from './caption';
-import ProductLink from "./productlink";
 
-export default function AudioPlayer({ src, thumbnailItem, caption, url, width, height, autoPlay, index }) 
-{
-  // Maustro
-  autoPlay = false;
-  
+export default function AudioPlayer({ src, thumbnailItem, width, height, autoPlay, index }) 
+{  
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
 
@@ -32,21 +27,11 @@ export default function AudioPlayer({ src, thumbnailItem, caption, url, width, h
       }} 
       onClick={toggle}
     >
-      {thumbnailUrl ? (
-        <FullImage 
-          src={thumbnailUrl} 
-          width={width} 
-          height={height} 
-          caption={caption}
-          url={url}
-          inverted={false}
-        />
-      ) : (
-        <>
-          <Caption caption={caption} />
-          <ProductLink url={url} />
-        </>
-      )}
+      <FullImage 
+        src={thumbnailUrl} 
+        width={width} 
+        height={height} 
+      />
       {!isPlaying && <PlayIcon inverted={!thumbnailUrl} />}
       <audio src={src} style={{display: "none"}} ref={audioRef} />
     </div>

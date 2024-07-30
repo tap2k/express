@@ -4,7 +4,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission( {myFormData, contentID, order, description, published, ext_url, deletePic} ) 
+export default async function updateSubmission( {myFormData, contentID, order, description, published, ext_url, deletePic, textAlignment} ) 
 {  
   if (!contentID)
   {
@@ -27,6 +27,8 @@ export default async function updateSubmission( {myFormData, contentID, order, d
     myFormData.append("published", published);
   if (deletePic)
       myFormData.append("deletepic", deletePic);
+  if (textAlignment)
+    myFormData.append("textalignment", textAlignment);
       
   try {
     return await axios.post(url, myFormData);

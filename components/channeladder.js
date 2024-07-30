@@ -72,7 +72,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   };
 
   const inputStyle = {
-    fontSize: '18px',
+    fontSize: 'large',
     width: '100%',
     height: '50px',
     marginBottom: '15px',
@@ -82,7 +82,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   };
 
   const buttonStyle = {
-    fontSize: '18px',
+    fontSize: 'large',
     width: '100%',
     padding: '10px',
     marginTop: '20px',
@@ -138,7 +138,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
-    fontSize: '24px',
+    fontSize: 'x-large',
   };
 
   const audioItemStyle = {
@@ -201,7 +201,6 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       </div>
       {showTitleSlide && (
         <FormGroup>
-          <Label>Select Image</Label>
           <div style={imageGridStyle}>
             {imageOptions.map((image, index) => (
               <div 
@@ -230,7 +229,6 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         </FormGroup>
       )}
       <FormGroup>
-        <Label>Select Audio</Label>
         <div style={audioGridStyle}>
           {audioOptions.map((audio, index) => (
             <div 
