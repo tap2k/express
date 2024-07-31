@@ -151,7 +151,7 @@ export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
 
   return (
     <RecorderWrapper {...props}>
-      <div style={{ marginBottom: '20px', position: 'relative' }}>
+      <div style={{ marginTop: '10px', marginBottom: '20px', position: 'relative' }}>
         {dataUri ? (
           <div>
             <img 
@@ -255,15 +255,15 @@ export default function MyCamera({ channelID, useLocation, dalle, ...props }) {
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '20px' }}
+        style={{ width: '100%', marginBottom: '25px' }}
       />
       { dalle ? <Input
         type="text"
         innerRef={dallePromptRef}
         placeholder="Enter AI prompt"
-        style={{ width: '100%', marginBottom: '20px' }}
+        style={{ width: '100%', marginBottom: '25px' }}
       /> : "" }
-      <ButtonGroup>
+      <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
           color="secondary" 
           size="lg"

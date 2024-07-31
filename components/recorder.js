@@ -136,7 +136,7 @@ export default function Recorder({ channelID, useLocation }) {
 
   return (
     <RecorderWrapper>
-      <ButtonGroup>
+      <ButtonGroup style={{marginBottom: '10px'}}>
         <StyledButton 
           color="primary" 
           onClick={handleRecordingAction}

@@ -27,7 +27,7 @@ export default function UploadPage({ channelID, useLocation }) {
 
   return (
     <RecorderWrapper>
-      <ButtonGroup style={{ marginBottom: '15px' }}>
+      <ButtonGroup style={{marginBottom: 0}}>
         <StyledButton
           color={activeComponent === 'upload' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('upload')}

@@ -179,7 +179,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
         position: 'relative', 
         width: '100%', 
         paddingTop: `${(1 / aspectRatio) * 100}%`,
-        marginBottom: '10px'
+        marginTop: '10px',
+        marginBottom: '20px'
       }}>
       <video 
         ref={videoRef} 
@@ -275,10 +276,10 @@ export default function VideoRecorder({ channelID, useLocation }) {
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '20px' }}
+        style={{ width: '100%', marginBottom: '25px' }}
       />
       
-      <ButtonGroup>
+      <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
           color="secondary" 
           size="lg" 

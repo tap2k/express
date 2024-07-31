@@ -327,7 +327,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { !admin ? "" : 
-          <div style={{...iconBarStyle, flexDirection: 'column', top: 30, left: 20, gap: 15}}>
+          <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
             <button 
               onClick={() => {
                 if (showTitle && currSlide === 0) {
