@@ -6,6 +6,7 @@ import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ImageGallery from './imagegallery';
+import { imageOptions } from './fileoptions';
 
 export default function Uploader({ channelID, useLocation, ...props }) {
   const router = useRouter();
@@ -27,16 +28,22 @@ export default function Uploader({ channelID, useLocation, ...props }) {
     long = geolocation.longitude;
   }
 
-  const imageOptions = ["flowers5.png", "flowers6.png", "clouds.png", "flowers4.jpg", "meadow.jpg", "robin.jpg", "trees.jpg"];
-
   const uploadContent = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
       if (selectedImage && selectedImage !== "None") {
-        const response = await fetch(`images/${selectedImage}`);
-        const blob = await response.blob();
-        formData.append(selectedImage, blob, selectedImage);
+        if (selectedImage.startsWith('data:image/png;base64,')) {
+          // This is a DALL-E generated image
+          const response = await fetch(selectedImage);
+          const blob = await response.blob();
+          formData.append('dalle-image.png', blob, 'dalle-image.png');
+        } else {
+          // This is a regular gallery image
+          const response = await fetch(`images/${selectedImage}`);
+          const blob = await response.blob();
+          formData.append(selectedImage, blob, selectedImage);
+        }
       }
       if (uploadedFiles.length > 0) {
         uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
@@ -67,7 +74,6 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
     setUploadedFiles(files);
-    //setSelectedImage(null);
   };
 
   const removeFile = (index) => {
@@ -87,23 +93,12 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         <StyledButton color="info" onClick={() => setShowGallery(true)}>
           Show Gallery
         </StyledButton>
-        {/* <StyledButton 
-          color="secondary" 
-          onClick={() => {
-            setSelectedImage(null);
-            setUploadedFiles([]);
-            if (fileInputRef.current) fileInputRef.current.value = '';
-          }} 
-          disabled={!selectedImage && uploadedFiles.length === 0}
-        >
-          Clear All
-        </StyledButton> */}
       </ButtonGroup>
 
       <div
         style={{
           width: '100%',
-          height: '400px',
+          height: '500px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',
@@ -133,8 +128,8 @@ export default function Uploader({ channelID, useLocation, ...props }) {
             {selectedImage && (
               <div style={{ position: 'relative', aspectRatio: '1 / 1' }}>
                 <img 
-                  src={`images/${selectedImage}`} 
-                  alt={selectedImage} 
+                  src={selectedImage.startsWith('data:image/png;base64,') ? selectedImage : `images/${selectedImage}`} 
+                  alt={selectedImage}
                   style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}}
                 />
                 <button
@@ -241,6 +236,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         color="success"
         onClick={uploadContent}
         block
+        disabled={!uploadedFiles.length && !selectedImage}
       >
         Submit
       </Button>

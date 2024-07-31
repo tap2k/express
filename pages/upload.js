@@ -32,25 +32,25 @@ export default function UploadPage({ channelID, useLocation }) {
           color={activeComponent === 'upload' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('upload')}
         >
-          Upload File
+          Upload
         </StyledButton>
         <StyledButton
           color={activeComponent === 'video' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('video')}
         >
-          Record Video
+          Video
         </StyledButton>
         <StyledButton
           color={activeComponent === 'photo' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('photo')}
         >
-          Take Photo
+          Photo
         </StyledButton>
         <StyledButton
           color={activeComponent === 'audio' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('audio')}
         >
-          Record Message
+          Audio
         </StyledButton>
       </ButtonGroup>
 

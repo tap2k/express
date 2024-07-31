@@ -338,31 +338,32 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             right: '20px',
             zIndex: 1000
           }}>
-            <Link href="/">
+            <Link href="/" rel="noopener noreferrer" target="_blank">
               <button 
                 style={{
-                  backgroundColor: 'rgba(0, 100, 200, 0.6)',
-                  color: 'rgba(255, 255, 255, 0.9)',
+                  backgroundColor: 'rgba(0, 128, 185, 0.9)',
+                  color: 'rgba(255, 255, 255, 1)',
                   border: 'none',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
-                  fontSize: 'calc(1.0vmin + 0.6em)',
-                  fontWeight: 'bold',
-                  padding: '10px 20px',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                  fontSize: 'calc(0.8vmin + 0.6em)',
+                  padding: '12px 24px',
+                  boxShadow: '0 3px 6px rgba(0, 0, 0, 0.16)',
+                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'rgba(0, 120, 230, 0.8)';
-                  e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                  e.target.style.backgroundColor = 'rgba(52, 152, 219, 1)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
+                  e.target.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'rgba(0, 100, 200, 0.6)';
-                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                  e.target.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
+                  e.target.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.16)';
+                  e.target.style.transform = 'translateY(0)';
                 }}
               >
-                Make your own reel!
+                <b>Make your own reel!</b>
               </button>
             </Link>
           </div> : 
