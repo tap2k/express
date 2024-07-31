@@ -18,7 +18,6 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             maxWidth: '80%',
             textAlign: 'center',
             pointerEvents: 'none',
-            fontSize: 'calc(1.5vmin + 0.5em)',
             whiteSpace: 'normal',
             overflowWrap: 'break-word',
             mixBlendMode: inverted ? 'difference' : 'normal',
