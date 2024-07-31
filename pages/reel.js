@@ -9,7 +9,7 @@ export default ({ channel, currslide, admin }) => {
     //const height = "100vh";
 
     return (
-        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} startSlide={currslide} autoPlay admin={admin} />
+        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} interval={channel.interval} startSlide={currslide} autoPlay privateID={admin} />
     );
 }
 
@@ -17,7 +17,8 @@ export async function getServerSideProps(ctx) {
     const { channelid, currslide, admin } = ctx.query;
 
     try {
-        const channel = await getChannel({ channelID: channelid, admin: admin });
+        // TODO: Hack for testing
+        const channel = await getChannel({ channelID: channelid, privateID: admin });
         
         if (!channel) {
             return {
@@ -30,7 +31,7 @@ export async function getServerSideProps(ctx) {
 
         return { 
             props: { 
-                channel: channel, 
+                channel: channel,
                 currslide: currslide ? currslide : 0,
                 admin : admin ? true : false
             } 

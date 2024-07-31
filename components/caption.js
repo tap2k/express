@@ -18,6 +18,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             maxWidth: '80%',
             textAlign: 'center',
             pointerEvents: 'none',
+            fontSize: 'calc(1.5vmin + 0.5em)',
             whiteSpace: 'normal',
             overflowWrap: 'break-word',
             mixBlendMode: inverted ? 'difference' : 'normal',
@@ -39,7 +40,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             borderRadius: '25px',
             padding: '10px 20px',
             pointerEvents: 'none',
-            fontSize: 'calc(1vmin + 0.8em)',
+            fontSize: 'calc(1.5vmin + 0.5em)',
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',
@@ -58,14 +59,14 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     };
 
     const titleStyle = {
-        fontSize: 'calc(3.5vmin + 1.0em)',
+        fontSize: 'calc(3.5vmin + 0.8em)',
         fontWeight: 'bold',
         lineHeight: 1.2,
         marginBottom: '10px'
     };
 
     const subtitleStyle = {
-        fontSize: 'calc(1.5vmin + 1.0em)',
+        fontSize: 'calc(1.5vmin + 0.5em)',
         lineHeight: 1.3
     };
 

@@ -331,7 +331,41 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
-      { !privateID ? "" : 
+      { !privateID ?       
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000
+          }}>
+            <Link href="/">
+              <button 
+                style={{
+                  backgroundColor: 'rgba(0, 100, 200, 0.6)',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: 'calc(1.0vmin + 0.6em)',
+                  fontWeight: 'bold',
+                  padding: '10px 20px',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'rgba(0, 120, 230, 0.8)';
+                  e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'rgba(0, 100, 200, 0.6)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                }}
+              >
+                Make your own reel!
+              </button>
+            </Link>
+          </div> : 
           <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
             <button 
               onClick={() => {
@@ -384,7 +418,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <button onClick={toggleFullScreen} style={iconButtonStyle}>
             <FaExpandArrowsAlt size={28} />
           </button>
-          <Link href={`/upload?channelid=${channel.uniqueID}`} passHref>
+          <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
             <button style={iconButtonStyle}>
               <FaPlus size={28} />
             </button>

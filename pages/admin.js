@@ -27,7 +27,7 @@ export async function getServerSideProps(ctx) {
         };
 
     try {
-        const channel = await getChannel({ channelID: publicID });
+        const channel = await getChannel({ channelID: publicID, privateID: channelid });
         
         if (!channel) {
             return {
@@ -41,8 +41,8 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
+                privateID: channelid,
                 currslide: currslide ? currslide : 0,
-                privateID: channelid
             } 
         };
     
