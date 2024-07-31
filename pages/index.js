@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
@@ -38,15 +38,14 @@ export default function Home() {
             });
             const respdata = response.data;
     
-            setChannelID(respdata.uniqueID);
-            setPrivateID(respdata.privateID);
             setChannelName(respdata.name);
+            setPrivateID(respdata.privateID);
+            setChannelID(respdata.uniqueID);
             toggleModal();
         } catch (error) {
             console.error("Error creating channel:", error);
         }
     };
-    
     
     const formatEmailContent = () => {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'; 
@@ -65,7 +64,7 @@ export default function Home() {
     const handleEmailSubmit = async () => {
         if (emailInputRef.current?.value) {
             try {
-                await updateChannel({channelID: channelID, email: emailInputRef.current?.value});
+                await updateChannel({uniqueID: channelID, email: emailInputRef.current?.value});
                 await axios.post('/api/sendemail', {
                     subject: "EXPRESS: " + channelName,
                     recipient: emailInputRef.current?.value,
