@@ -4,7 +4,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content, { getMediaInfo } from "./content";
@@ -50,7 +50,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const audioRef = useRef(null);
   
   //showTitle = channel.name && channel.showtitle;
-  const showTitle = channel.showtitle;
+  const showTitle = channel.showtitle || admin;
 
   const [claimedSlides, setClaimedSlides] = useState(() => {
     if (!channel || !channel.contents) return [];
@@ -83,17 +83,15 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
 
     const mediaInfo = getMediaInfo(currentContent);
-    if (mediaInfo?.type?.startsWith('video/') || mediaInfo?.type?.startsWith('audio/')) {
+    if (mediaInfo?.type?.startsWith('video/') || mediaInfo?.type?.startsWith('audio/'))
       setAudioVolume(0.2);
-    } else {
+    else
       setAudioVolume(0.8);
-    }
-  }, [currSlide]);
+    }, [currSlide]);
 
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current)
       audioRef.current.volume = audioVolume;
-    }
   }, [audioVolume]);
 
   const toggleFullScreen = () => {
@@ -115,33 +113,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       }
     }
   }
-
-  const buttonStyle = {
-    fontSize: 'large',
-    width: '100%',
-    padding: '10px',
-    marginTop: '20px',
-    borderRadius: '12px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-  };
-
-  const iconBarStyle = {
-    position: 'fixed',
-    display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: '10px',
-    borderRadius: '20px',
-    zIndex: 1000,
-    alignItems: 'center'
-  };
-
-  const iconButtonStyle = {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-    padding: '5px'
-  };
 
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
@@ -206,7 +177,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const handleDelete = () => {
     confirmAlert({
-      title: `Confirm delete`,
+      title: `Delete item?`,
       message: `Are you sure you want to delete this item?`,
       buttons: [
         {
@@ -236,7 +207,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const handleDeleteChannel = () => {
     confirmAlert({
-      title: 'Confirm deletion',
+      title: 'Delete reel?',
       message: 'Are you sure you want to delete this reel?',
       buttons: [
         {
@@ -269,9 +240,8 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     await router.replace(router.asPath);
   };
 
-  const handleChannelSave = async (formData) => {
-    formData.channelID = channel.uniqueID;
-    await updateChannel(formData);
+  const handleSaveChannel = async (data) => {
+    await updateChannel(data);
     setIsChannelModalOpen(false);
     const newQuery = { 
       ...router.query, 
@@ -310,12 +280,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
     }
   }
 
-  const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>
-      &times;
-    </button>
-  );
-
   const toggleAudio = () => {
     if (audioRef.current) {
       if (isAudioPlaying) {
@@ -325,6 +289,39 @@ export default function Slideshow({ channel, height, width, interval, startSlide
       }
       setIsAudioPlaying(!isAudioPlaying);
     }
+  };
+
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>
+      &times;
+    </button>
+  );
+
+  const buttonStyle = {
+    fontSize: 'large',
+    width: '100%',
+    padding: '10px',
+    marginTop: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+  };
+
+  const iconBarStyle = {
+    position: 'fixed',
+    display: 'flex',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: '10px',
+    borderRadius: '20px',
+    zIndex: 1000,
+    alignItems: 'center'
+  };
+
+  const iconButtonStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+    padding: '5px'
   };
 
   return (
@@ -347,13 +344,17 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...iconButtonStyle, position: 'static', margin: 5}}>
               <FaTrash size={24}/>
             </button>
-            { (showTitle & currSlide === 0) || !admin ? "" : <>
-            <button onClick={() => {moveSlide(-1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaArrowLeft size={24}/>
-            </button>
-            <button onClick={() => {moveSlide(1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaArrowRight size={24}/>
-            </button>
+            { showTitle && currSlide == 0 ?
+            <button onClick={console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+                <FaDownload size={24}/>
+            </button> : "" }
+            { (showTitle & currSlide == 0) ? "" : <>
+              <button onClick={() => {moveSlide(-1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+                <FaArrowLeft size={24}/>
+              </button>
+              <button onClick={() => {moveSlide(1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+                <FaArrowRight size={24}/>
+              </button>
             </> }
           </div>
         }
@@ -508,7 +509,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           <ModalBody>
             <ChannelAdder
               initialData={channel}
-              onSubmit={handleChannelSave}
+              onSubmit={handleSaveChannel}
               isUpdate={true}
             />
           </ModalBody>

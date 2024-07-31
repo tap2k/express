@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
+const HASH_LENGTH = 8;
 
 // Function to create the private ID
 export function createPrivateID(publicID) {
@@ -12,9 +13,10 @@ export function createPrivateID(publicID) {
     console.error('PRIVATE_SEED not set in environment variables');
     return null;
   }
-  const hash = crypto.createHash('sha256');
+  if (!publicID) return "";
+  const hash = crypto.createHash('sha1');
   hash.update(publicID + privateSeed);
-  const hashHex = hash.digest('hex');
+  const hashHex = hash.digest('hex').substring(0, HASH_LENGTH);
   return `${publicID}:${hashHex}`;
 }
 
@@ -29,9 +31,9 @@ export function getPublicID(privateID) {
   }
 
   // Recreate the hash to verify
-  const hash = crypto.createHash('sha256');
+  const hash = crypto.createHash('sha1');
   hash.update(publicID + privateSeed);
-  const verificationHashHex = hash.digest('hex');
+  const verificationHashHex = hash.digest('hex').substring(0, HASH_LENGTH);
 
   // Check if the hashes match
   if (hashHex !== verificationHashHex) {
@@ -44,5 +46,5 @@ export function getPublicID(privateID) {
 
 // Function to generate a secret seed
 export function generateSecretSeed() {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(HASH_LENGTH).toString('hex');
 }

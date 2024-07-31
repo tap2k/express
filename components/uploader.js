@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Input, Button, Progress } from "reactstrap";
 import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
-import { setErrorText } from '../hooks/seterror';
+import { setError } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ImageGallery from './imagegallery';
 
@@ -36,9 +36,10 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       if (selectedImage && selectedImage !== "None") {
         const response = await fetch(`images/${selectedImage}`);
         const blob = await response.blob();
-        formData.append('mediafile', blob, selectedImage);
-      } else if (uploadedFiles.length > 0) {
-        uploadedFiles.forEach(file => formData.append('mediafile', file));
+        formData.append(selectedImage, blob, selectedImage);
+      }
+      if (uploadedFiles.length > 0) {
+        uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
       }
       await uploadSubmission({
         myFormData: formData, 
@@ -59,14 +60,14 @@ export default function Uploader({ channelID, useLocation, ...props }) {
     }
     catch (error) {
       console.error('Error uploading content:', error);
-      setErrorText('Failed to upload content. Please try again.');
+      setError('Failed to upload content. Please try again.');
     }
   }
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
     setUploadedFiles(files);
-    setSelectedImage(null);
+    //setSelectedImage(null);
   };
 
   const removeFile = (index) => {
@@ -80,7 +81,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   return (
     <RecorderWrapper {...props}>
       <ButtonGroup>
-        <StyledButton color="primary" onClick={() => {setShowGallery(false); /*fileInputRef.current.click()*/}}>
+        <StyledButton color="primary" onClick={() => {if (showGallery) setShowGallery(false); else fileInputRef.current.click()}}>
           Select Files
         </StyledButton>
         <StyledButton color="info" onClick={() => setShowGallery(true)}>

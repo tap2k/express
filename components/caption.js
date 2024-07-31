@@ -39,7 +39,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             borderRadius: '25px',
             padding: '10px 20px',
             pointerEvents: 'none',
-            fontSize: 'calc(1.5vmin + 0.6em)',
+            fontSize: 'calc(1vmin + 0.8em)',
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',
@@ -58,14 +58,14 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     };
 
     const titleStyle = {
-        fontSize: 'calc(4vmin + 1.0em)',
+        fontSize: 'calc(3.5vmin + 1.0em)',
         fontWeight: 'bold',
         lineHeight: 1.2,
         marginBottom: '10px'
     };
 
     const subtitleStyle = {
-        fontSize: 'calc(2vmin + 1.0em)',
+        fontSize: 'calc(1.5vmin + 1.0em)',
         lineHeight: 1.3
     };
 

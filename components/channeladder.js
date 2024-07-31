@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
@@ -6,49 +6,36 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   const titleRef = useRef();
   const subtitleRef = useRef();
   const audioRef = useRef();
-  const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.public : true);
-  const [selectedImage, setSelectedImage] = useState(initialData?.picturefile || "None");
-  const [selectedAudio, setSelectedAudio] = useState(initialData?.audiofile || "None");
-  const [imageFile, setImageFile] = useState(null);
-  const [audioFile, setAudioFile] = useState(null);
+  const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const publicRef = useRef();
 
   const imageOptions = ["None", "flowers5.png", "flowers6.png", "clouds.png", "flowers4.jpg", "meadow.jpg", "robin.jpg", "trees.jpg"];
   const audioOptions = ["None", "entertainer.mp3", "figleaf.mp3", "grammo.mp3", "lumpsuck.mp3", "merrygo.mp3", "runamok.mp3", "fivecards.mp3", "dohdeoh.mp3", "farting.mp3"];
 
-  useEffect(() => {
-    if (selectedImage !== "None") {
-      fetch(`images/${selectedImage}`)
-        .then(res => res.blob())
-        .then(blob => {
-          setImageFile(new File([blob], selectedImage, { type: blob.type }));
-        });
-    } else {
-      setImageFile(null);
-    }
-  }, [selectedImage]);
+  const [selectedImage, setSelectedImage] = useState(() => {
+    if (!initialData?.picture?.url) return "None";
+    const baseName = initialData.picture.url.split('_')[0].split('/').pop();
+    return imageOptions.find(option => option.startsWith(baseName)) || "None";
+  });
 
-  useEffect(() => {
-    if (selectedAudio !== "None") {
-      fetch(`audio/${selectedAudio}`)
-        .then(res => res.blob())
-        .then(blob => {
-          setAudioFile(new File([blob], selectedAudio, { type: blob.type }));
-        });
-    } else {
-      setAudioFile(null);
-    }
-  }, [selectedAudio]);
+  const [selectedAudio, setSelectedAudio] = useState(() => {
+    if (!initialData?.audio?.url) return "None";
+    const baseName = initialData.audio.url.split('_')[0].split('/').pop();
+    return audioOptions.find(option => option.startsWith(baseName)) || "None";
+  });
 
-  const handleSubmit = () => {
-    onSubmit({
+  const handleSubmit = async () => {
+    if (!titleRef.current.value)
+      return;
+    await onSubmit({
+      uniqueID: initialData ? initialData.uniqueID : null,
       name: titleRef.current.value,
       description: subtitleRef.current.value,
-      showTitleSlide,
+      showtitle: showTitleSlide,
       ispublic: publicRef.current.checked,
-      picturefile: imageFile,
-      audiofile: audioFile
+      picturefile: selectedImage,
+      audiofile: selectedAudio
     });
   };
 
@@ -174,7 +161,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       <Input
         type="text"
         innerRef={subtitleRef}
-        placeholder="Enter your subtitle here"
+        placeholder="Enter your prompt here"
         defaultValue={initialData?.description || ""}
         style={inputStyle}
       />
