@@ -29,11 +29,11 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       return;
     await onSubmit({
       uniqueID: initialData ? initialData.uniqueID : null,
-      name: titleRef.current.value,
-      description: subtitleRef.current.value,
-      email: emailRef.current.value,
+      name: titleRef?.current?.value,
+      description: subtitleRef?.current?.value,
+      email: emailRef?.current?.value,
       showtitle: showTitleSlide,
-      ispublic: publicRef.current.checked,
+      ispublic: publicRef?.current?.checked,
       picturefile: selectedImage,
       audiofile: selectedAudio
     });
