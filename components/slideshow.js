@@ -16,6 +16,7 @@ import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
+import sendEmailLinks from '../hooks/sendemaillinks';
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -31,7 +32,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, interval, startSlide, autoPlay, admin, ...props }) 
+export default function Slideshow({ channel, height, width, interval, startSlide, autoPlay, privateID, ...props }) 
 {
   if (!channel)
     return;
@@ -50,7 +51,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const audioRef = useRef(null);
   
   //showTitle = channel.name && channel.showtitle;
-  const showTitle = channel.showtitle || admin;
+  const showTitle = channel.showtitle || privateID;
 
   const [claimedSlides, setClaimedSlides] = useState(() => {
     if (!channel || !channel.contents) return [];
@@ -242,6 +243,10 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const handleSaveChannel = async (data) => {
     await updateChannel(data);
+    if (data.email && data.email != channel.email)
+    {
+      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: data.email});
+    }
     setIsChannelModalOpen(false);
     const newQuery = { 
       ...router.query, 
@@ -326,7 +331,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
-      { !admin ? "" : 
+      { !privateID ? "" : 
           <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
             <button 
               onClick={() => {

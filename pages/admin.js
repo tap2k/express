@@ -4,13 +4,13 @@ import getChannel from "../hooks/getchannel";
 import { getPublicID } from '../hooks/seed';
 
 
-export default ({ channel, currslide }) => {
+export default ({ channel, currslide, privateID }) => {
     const width = "100vw";
     const height = use100vh();
     //const height = "100vh";
 
     return (
-        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} startSlide={currslide} admin />
+        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} startSlide={currslide} privateID={privateID} />
     );
 }
 
@@ -42,6 +42,7 @@ export async function getServerSideProps(ctx) {
             props: { 
                 channel: channel,
                 currslide: currslide ? currslide : 0,
+                privateID: channelid
             } 
         };
     

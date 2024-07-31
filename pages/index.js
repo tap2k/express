@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
 import ChannelAdder from '../components/channeladder';
 import { RecorderWrapper } from '../components/recorderstyles';
 import updateChannel from "../hooks/updatechannel";
+import sendEmailLinks from '../hooks/sendemaillinks';
 
 export default function Home() {
     const [channelID, setChannelID] = useState(null);
@@ -47,31 +48,13 @@ export default function Home() {
         }
     };
     
-    const formatEmailContent = () => {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'; 
-      
-        return `
-        Your channel ${channelName} has been created successfully. Here are your channel links:
-    
-        Admin Link: ${baseUrl}/admin?channelid=${privateID}
-        Upload Link: ${baseUrl}/upload?channelid=${channelID}
-        Share Link: ${baseUrl}/reel?channelid=${channelID}
-    
-        Please save these links securely, especially the Admin Link.
-        `;
-      };
+
 
     const handleEmailSubmit = async () => {
         if (emailInputRef.current?.value) {
             try {
                 await updateChannel({uniqueID: channelID, email: emailInputRef.current?.value});
-                await axios.post('/api/sendemail', {
-                    subject: "EXPRESS: " + channelName,
-                    recipient: emailInputRef.current?.value,
-                    body: formatEmailContent()
-                }, {
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: emailInputRef.current?.value});
                 alert('Email sent successfully!');
             } catch (error) {
                 console.error("Failed to send email:", error);
