@@ -341,7 +341,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
             <Link href="/" rel="noopener noreferrer" target="_blank">
               <button 
                 style={{
-                  backgroundColor: 'rgba(0, 128, 185, 0.9)',
+                  backgroundColor: 'rgba(0, 128, 185, 0.6)',
                   color: 'rgba(255, 255, 255, 1)',
                   border: 'none',
                   borderRadius: '8px',
@@ -363,7 +363,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
                   e.target.style.transform = 'translateY(0)';
                 }}
               >
-                <b>Make your own reel!</b>
+                Make your own!
               </button>
             </Link>
           </div> : 

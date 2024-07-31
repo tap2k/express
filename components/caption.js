@@ -58,7 +58,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     };
 
     const titleStyle = {
-        fontSize: 'calc(3.5vmin + 0.8em)',
+        fontSize: 'calc(2.5vmin + 0.8em)',
         fontWeight: 'bold',
         lineHeight: 1.2,
         marginBottom: '10px'
