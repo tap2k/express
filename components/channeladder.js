@@ -5,6 +5,7 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
+  const emailRef = useRef();
   const audioRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
@@ -32,6 +33,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       uniqueID: initialData ? initialData.uniqueID : null,
       name: titleRef.current.value,
       description: subtitleRef.current.value,
+      email: emailRef.current.value,
       showtitle: showTitleSlide,
       ispublic: publicRef.current.checked,
       picturefile: selectedImage,
@@ -62,7 +64,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     fontSize: 'large',
     width: '100%',
     height: '50px',
-    marginBottom: '15px',
+    marginBottom: '10px',
     borderRadius: '12px',
     border: '1px solid #ccc',
     padding: '0 15px',
@@ -72,7 +74,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     fontSize: 'large',
     width: '100%',
     padding: '10px',
-    marginTop: '20px',
+    marginTop: '10px',
     borderRadius: '12px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
   };
@@ -82,14 +84,6 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: '10px',
     marginBottom: '25px',
-    width: '100%',
-  };
-
-  const audioGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-    gap: '10px',
-    marginBottom: '15px',
     width: '100%',
   };
 
@@ -128,6 +122,14 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     fontSize: 'x-large',
   };
 
+  const audioGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+    gap: '10px',
+    marginBottom: '10px',
+    width: '100%',
+  };
+
   const audioItemStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -138,7 +140,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     cursor: 'pointer',
     backgroundColor: '#f8f9fa',
     height: '100%',
-    minHeight: '50px',
+    minHeight: '40px',
     border: '1px solid #ddd',
   };
 
@@ -165,7 +167,14 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         defaultValue={initialData?.description || ""}
         style={inputStyle}
       />
-      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '15px' }}>
+      { initialData ? <Input
+        type="email"
+        innerRef={emailRef}
+        placeholder="Update your email here"
+        defaultValue={initialData?.email || ""}
+        style={inputStyle}
+      /> : "" }
+      <div style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '5px', marginTop: '20px', marginBottom: '20px' }}>
         <FormGroup check style={{ marginRight: '20px' }}>
           <Label check>
             <Input 

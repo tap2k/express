@@ -15,8 +15,6 @@ export default async function updateChannel({ name, description, uniqueID, inter
   const formData = new FormData();
   formData.append("uniqueID", uniqueID);
 
-  console.log("audiofile = " + audiofile);
-  console.log("picturefile = " + picturefile);
   let audioblob = null;
   let pictureblob = null;
   if (audiofile)
