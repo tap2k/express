@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Input, Button, Progress } from "reactstrap";
 import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
-import { setError } from '../hooks/seterror';
+import setError from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ImageGallery from './imagegallery';
 
