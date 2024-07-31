@@ -1,4 +1,3 @@
-/* hooks/getbaseurl.js */
 
 export default function getBaseURL() 
 {

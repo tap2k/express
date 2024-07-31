@@ -1,8 +1,8 @@
 import React from 'react';
+import { imageOptions } from './fileoptions';
 
 export default function ImageGallery({ selectedImage, setSelectedImage, showNoneOption = true }) {
-  const imageOptions = ["flowers5.png", "flowers6.png", "clouds.png", "flowers4.jpg", "meadow.jpg", "robin.jpg", "trees.jpg"];
-  
+
   if (showNoneOption) {
     imageOptions.unshift("None");
   }

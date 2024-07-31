@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
+import { imageOptions, audioOptions } from './fileoptions';
 
 export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }) {
   const titleRef = useRef();
@@ -10,9 +11,6 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const publicRef = useRef();
-
-  const imageOptions = ["None", "flowers5.png", "flowers6.png", "clouds.png", "flowers4.jpg", "meadow.jpg", "robin.jpg", "trees.jpg"];
-  const audioOptions = ["None", "entertainer.mp3", "figleaf.mp3", "grammo.mp3", "lumpsuck.mp3", "merrygo.mp3", "runamok.mp3", "fivecards.mp3", "dohdeoh.mp3", "farting.mp3"];
 
   const [selectedImage, setSelectedImage] = useState(() => {
     if (!initialData?.picture?.url) return "None";

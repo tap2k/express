@@ -69,6 +69,7 @@ async function sendemail(subject, body, recipient) {
 export default async function handler(req, res) {
   // Check if the request method is POST
   if (req.method !== 'POST') {
+    res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 

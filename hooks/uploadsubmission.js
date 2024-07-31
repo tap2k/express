@@ -1,5 +1,3 @@
-/* hooks/uploadsubmission.js */
-
 import axios from 'axios';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -77,7 +75,6 @@ export default async function uploadSubmission({myFormData, channelID, contentID
         }
       ];
   
-      // Simplified check for public channel
       if (response.data?.[0]?.channel?.public) {
         buttons.push({
           label: 'Go to Reel',

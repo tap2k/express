@@ -1,4 +1,3 @@
-/* hooks/getbaseurl.js */
 import getBaseURL from "../hooks/getbaseurl";
 
 export default function getMediaURL() 

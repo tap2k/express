@@ -4,7 +4,7 @@ import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
 import PlayIcon from './playicon';
 
-export default function VideoPlayer({ caption, url, width, height, autoPlay, index, children }) 
+export default function VideoPlayer({ width, height, autoPlay, index, children }) 
 {
   const videoRef = useRef();
   const { isPlaying, toggle } = useMediaControl(videoRef, index, autoPlay);

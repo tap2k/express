@@ -1,4 +1,3 @@
-/* hooks/seterror.js */
 
 export function setErrorText(text) 
 {

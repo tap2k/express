@@ -1,5 +1,3 @@
-/* hooks/deletechannel.js */
-
 import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
