@@ -38,7 +38,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '25px',
             padding: '10px 20px',
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
             fontSize: 'calc(1.5vmin + 0.5em)',
             fontWeight: 'bold',
             color: 'white',
@@ -48,7 +48,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             justifyContent: 'center',
             maxWidth: '80%',
             textAlign: 'center',
-            mixBlendMode: inverted ? 'difference' : 'normal',
+            mixBlendMode: inverted ? 'difference' : 'normal'
         };
 
         switch (textAlignment) {
