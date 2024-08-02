@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
-export default function useMediaControl (mediaRef, index, autoPlay) {
+export default function useMediaControl(mediaRef, index, autoPlay) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const carouselContext = useContext(CarouselContext);
 
@@ -32,6 +32,13 @@ export default function useMediaControl (mediaRef, index, autoPlay) {
     }
   }
 
+  const goToNextSlide = () => {
+    if (carouselContext) {
+      const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
+      carouselContext.setStoreState({ currentSlide: nextSlideIndex });
+    }
+  }
+
   useEffect(() => {
     if (!carouselContext) return;
 
@@ -39,7 +46,7 @@ export default function useMediaControl (mediaRef, index, autoPlay) {
       if (!mediaRef.current) return;
 
       if (carouselContext.state.currentSlide === index) {
-        if (mediaRef.current.paused && autoPlay) {
+        if (autoPlay) {
           resetMedia();
           play();
         }
@@ -49,10 +56,22 @@ export default function useMediaControl (mediaRef, index, autoPlay) {
       }
     };
 
+    const onEnded = () => {
+      goToNextSlide();
+    };
+
+    if (mediaRef.current && autoPlay) {
+      mediaRef.current.addEventListener('ended', onEnded);
+    }
+
     carouselContext.subscribe(onChange);
-    return () => carouselContext.unsubscribe(onChange);
+    return () => {
+      carouselContext.unsubscribe(onChange);
+      if (mediaRef.current) {
+        mediaRef.current.removeEventListener('ended', onEnded);
+      }
+    };
   }, [carouselContext]);
 
   return { isPlaying, play, pause, toggle, resetMedia };
 };
-

@@ -36,7 +36,6 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 {
   if (!channel)
     return;
-
   const router = useRouter();
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
@@ -47,7 +46,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [audioVolume, setAudioVolume] = useState(0.8);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(true);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(autoPlay);
   const audioRef = useRef(null);
   
   //showTitle = channel.name && channel.showtitle;
@@ -385,7 +384,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
               <FaTrash size={24}/>
             </button>
             { showTitle && currSlide == 0 ?
-            <button onClick={console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+            <button onClick={() => console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
                 <FaDownload size={24}/>
             </button> : "" }
             { (showTitle & currSlide == 0) ? "" : <>
