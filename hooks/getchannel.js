@@ -13,6 +13,7 @@ export default async function getChannel({channelID, privateID})
     if (privateID)
       url = getBaseURL() + "/api/getSubmissionChannel?uniqueID=" + channelID;
     const resp = await axios.get(url);
+    console.log(resp.data);
     return resp.data;
 
   } catch (err) {

@@ -51,6 +51,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
+  const [countdown, setCountdown] = useState(null);
 
   let lat = null;
   let long = null;
@@ -64,7 +65,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
   useEffect(() => {
     checkForMultipleCameras();
   }, []);
-
 
   const checkForMultipleCameras = async () => {
     if (isMobileSafari()) setHasMultipleCameras(true);
@@ -117,15 +117,31 @@ export default function VideoRecorder({ channelID, useLocation }) {
         stream = await startStream();
       else
         videoRef.current.srcObject = stream;
-      recorderRef.current = new RecordRTC(stream, {
-        type: 'video',
-        mimeType: 'video/'+fileExt,
-        frameInterval: 1,
-        recorderType: RecordRTC.MediaStreamRecorder
-      });
-      recorderRef.current.startRecording();
-      setRecordingTime(0);
-      setStatus('recording');
+      
+      // Start countdown
+      setCountdown(4);
+      const countdownInterval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev === 1) {
+            clearInterval(countdownInterval);
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Wait for countdown to finish
+      setTimeout(() => {
+        setStatus('recording');
+        recorderRef.current = new RecordRTC(stream, {
+          type: 'video',
+          mimeType: 'video/'+fileExt,
+          frameInterval: 1,
+          recorderType: RecordRTC.MediaStreamRecorder
+        });
+        recorderRef.current.startRecording();
+        setRecordingTime(0);
+      }, 4000);
     } catch (error) {
       console.error('Error starting recording:', error);
       setErrorText('Failed to start recording. Please try again.');
@@ -182,26 +198,26 @@ export default function VideoRecorder({ channelID, useLocation }) {
         marginTop: '10px',
         marginBottom: '20px'
       }}>
-      <video 
-        ref={videoRef} 
-        autoPlay
-        playsInline
-        muted={status != "stopped"}
-        controls={status === "stopped"}
-        style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          objectFit: 'cover',
-          pointerEvents: status === 'recording' ? 'none' : 'auto',
-          transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
-        }}
-      />
+        <video 
+          ref={videoRef} 
+          autoPlay
+          playsInline
+          muted={status != "stopped"}
+          controls={status === "stopped"}
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '10px',
+            objectFit: 'cover',
+            pointerEvents: status === 'recording' ? 'none' : 'auto',
+            transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
+          }}
+        />
         <div 
-          onClick={status === 'recording' ? stopRecording : startRecording}
+          onClick={status === 'recording' ? stopRecording : (countdown === null ? startRecording : null)}
           style={{
             position: 'absolute',
             bottom: '50px',
@@ -216,6 +232,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
             justifyContent: 'center',
             alignItems: 'center',
             boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+            cursor: countdown !== null ? 'default' : 'pointer',
           }}
         >
           {status === 'recording' && (
@@ -262,6 +279,20 @@ export default function VideoRecorder({ channelID, useLocation }) {
           >
             <MdFlipCameraIos size={24} />
           </button>
+        )}
+        {countdown !== null && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '72px',
+            fontWeight: 'bold',
+            color: 'white',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+          }}>
+            {countdown}
+          </div>
         )}
       </div>
       
