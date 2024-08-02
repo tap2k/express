@@ -9,7 +9,6 @@ import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import { createFilter } from "cc-gram";
-import axios from 'axios';
 
 async function uploadImage(dataUri, lat, long, description, ext_url, channelID, router) 
 {
