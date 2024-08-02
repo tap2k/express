@@ -44,6 +44,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
+  const [countdown, setCountdown] = useState(null);
 
   const ccgramFilter = createFilter({ init: false });
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
@@ -66,6 +67,22 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     setHasMultipleCameras(videoDevices.length > 1);
+  };
+
+  const startCountdown = () => {
+    setCountdown(4);
+    
+    const countdownInterval = setInterval(() => {
+      setCountdown(prevCount => {
+        if (prevCount <= 1) {
+          clearInterval(countdownInterval);
+          // Trigger photo capture when countdown reaches 0
+          document.querySelector('#outer-circle').click();
+          return null;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
   };
 
   async function handleTakePhotoAnimationDone(myDataUri) {
@@ -112,6 +129,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
     setDataUri(null);
     setCurrentFilter('normal');
     setFilterPreviews({});
+    setCountdown(null);
   }
 
   function handleFlipCamera() {
@@ -165,7 +183,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
             )}
           </div>
           : 
-          <>
+          <div style={{ position: 'relative' }}>
             <Camera
               onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
               idealFacingMode={facingMode || FACING_MODES.USER}
@@ -175,6 +193,44 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
               isDisplayStartCameraError={true}
               isImageMirror={facingMode !== FACING_MODES.ENVIRONMENT}
             />
+            {countdown !== null && (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: '72px',
+                fontWeight: 'bold',
+                color: 'white',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+              }}>
+                {countdown}
+              </div>
+            )}
+            <button
+              onClick={startCountdown}
+              disabled={countdown !== null}
+              style={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1,
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '60px',
+                height: '60px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                cursor: 'pointer',
+                fontSize: '24px',
+                fontWeight: 'bold',
+              }}
+            >
+              {countdown === null ? /*'📷'*/ null : countdown}
+            </button>
             {hasMultipleCameras && (
               <button onClick={handleFlipCamera}
                 style={{
@@ -197,7 +253,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
                 <MdFlipCameraIos size={24} />
               </button>
             )}
-          </>
+          </div>
         }
       </div>
       <Input
