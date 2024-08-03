@@ -7,6 +7,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
+  const intervalRef = useRef();
   const audioRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
@@ -33,6 +34,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       description: subtitleRef?.current?.value,
       email: emailRef?.current?.value,
       showtitle: showTitleSlide,
+      interval: intervalRef?.current?.value,
       ispublic: publicRef?.current?.checked,
       picturefile: selectedImage,
       audiofile: selectedAudio
@@ -172,27 +174,54 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         defaultValue={initialData?.email || ""}
         style={inputStyle}
       /> : "" }
-      <div style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '5px', marginTop: '20px', marginBottom: '20px' }}>
-        <FormGroup check style={{ marginRight: '20px' }}>
-          <Label check>
-            <Input 
-              type="checkbox" 
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          marginBottom: '15px'
+        }}
+      >
+        <FormGroup check style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>
+          <Label check style={{ display: 'flex', alignItems: 'center' }}>
+            <Input
+              type="checkbox"
               checked={showTitleSlide}
               onChange={(e) => setShowTitleSlide(e.target.checked)}
-            />{' '}
-            Show title slide
+              style={{ marginRight: '5px' }}
+            />
+            <span>Show title slide</span>
           </Label>
         </FormGroup>
-        <FormGroup check>
-          <Label check>
-            <Input 
-              type="checkbox" 
+
+        <FormGroup check style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>
+          <Label check style={{ display: 'flex', alignItems: 'center' }}>
+            <Input
+              type="checkbox"
               innerRef={publicRef}
               defaultChecked={initialData ? initialData.public : true}
-            />{' '}
-            Let participants view
+              style={{ marginRight: '5px' }}
+            />
+            <span>Let participants view</span>
           </Label>
         </FormGroup>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Label for="interval" style={{ marginRight: '10px', margin: 0 }}>
+            Timer:
+          </Label>
+          <Input
+            type="number"
+            id="interval"
+            innerRef={intervalRef}
+            defaultValue={initialData?.interval || 0}
+            style={{
+              width: '100px',
+              height: '32px'
+            }}
+            min="0"
+          />
+        </div>
       </div>
       {showTitleSlide && (
         <FormGroup>

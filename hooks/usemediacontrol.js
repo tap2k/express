@@ -73,5 +73,12 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
     };
   }, [carouselContext]);
 
+  useEffect(() => {
+    if (autoPlay && carouselContext.state.currentSlide === index)
+      play();
+    else
+      pause();
+  }, [autoPlay]);
+
   return { isPlaying, play, pause, toggle, resetMedia };
 };

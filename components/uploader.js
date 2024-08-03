@@ -72,8 +72,8 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   }
 
   const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setUploadedFiles(files);
+    const newFiles = Array.from(e.target.files);
+    setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
   };
 
   const removeFile = (index) => {

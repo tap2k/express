@@ -1,17 +1,16 @@
 // components/content.js
 
+import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
-import Caption from "./caption";
-import mime from 'mime-types';
+import useSlideAdvance from '../hooks/useslideadvance';
 
 // getMediaInfo function
-export function getMediaInfo(contentItem) {
-  if (!contentItem)
-    return {};
-  const url = getMediaURL() + contentItem.mediafile?.url;
+export function getMediaInfo(url) {
+  if (!url)
+    return {url: "", type: "", videotype: ""};
   const type = mime.lookup(url) || 'application/octet-stream';
   let videotype = "";
   
@@ -19,12 +18,12 @@ export function getMediaInfo(contentItem) {
     videotype = type;
   }
 
-  return { url, type, videotype };
+  return { url: getMediaURL() + url, type, videotype };
 }
 
-export default function Content({ contentItem, width, height, autoPlay, showCaption = true, index }) 
+export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay, interval, index }) 
 {
-  const { url, type, videotype } = getMediaInfo(contentItem);
+  const { url, type, videotype } = getMediaInfo(itemUrl);
 
   let videostyle = {};
   if (!Number.isFinite(width) || !Number.isFinite(height)) {
@@ -38,6 +37,12 @@ export default function Content({ contentItem, width, height, autoPlay, showCapt
   };
 
   let mediaElement;
+
+  useSlideAdvance(
+    index, 
+    autoPlay && !type.startsWith("audio") && !type.startsWith("video"), 
+    interval
+  );
 
   if (type.startsWith("image")) {
     mediaElement = (
@@ -53,7 +58,7 @@ export default function Content({ contentItem, width, height, autoPlay, showCapt
         src={url} 
         width={width} 
         height={height} 
-        thumbnailItem={contentItem.thumbnail} 
+        thumbnailItem={thumbnailUrl} 
         autoPlay={autoPlay} 
         index={index} 
       />
@@ -82,11 +87,6 @@ export default function Content({ contentItem, width, height, autoPlay, showCapt
   return (
     <div style={containerStyle}>
       {mediaElement}
-      { showCaption ? <Caption 
-        title={contentItem.description}
-        url={contentItem.ext_url} 
-        textAlignment={contentItem.textalignment} 
-      /> : "" }
     </div>
   );
 }

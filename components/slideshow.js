@@ -3,12 +3,11 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Input } from 'reactstrap';
 import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content, { getMediaInfo } from "./content";
-import FullImage from "./fullimage";
 import Caption from "./caption";
 import ChannelAdder from './channeladder';
 import getMediaURL from "../hooks/getmediaurl";
@@ -17,6 +16,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import useSlideAdvance from '../hooks/useslideadvance';
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -32,10 +32,10 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, interval, startSlide, autoPlay, privateID, ...props }) 
+export default function Slideshow({ channel, height, width, startSlide, autoPlay, privateID, ...props }) 
 {
-  if (!channel)
-    return;
+  if (!channel) return null;
+
   const router = useRouter();
   const descriptionRef = useRef(null);
   const extUrlRef = useRef(null);
@@ -46,10 +46,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [audioVolume, setAudioVolume] = useState(0.8);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(autoPlay);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
   const audioRef = useRef(null);
   
-  //showTitle = channel.name && channel.showtitle;
   const showTitle = channel.showtitle || privateID;
 
   const [claimedSlides, setClaimedSlides] = useState(() => {
@@ -73,75 +72,43 @@ export default function Slideshow({ channel, height, width, interval, startSlide
   }, []);
 
   useEffect(() => {
-    if (!channel.contents) return;
-
-    const currentContent = getCurrentContent();
-    if (!currentContent) 
-    {
-      setAudioVolume(0.8);
-      return;
-    }
-
-    const mediaInfo = getMediaInfo(currentContent);
-    if (mediaInfo?.type?.startsWith('video/') || mediaInfo?.type?.startsWith('audio/'))
-      setAudioVolume(0.2);
-    else
-      setAudioVolume(0.8);
-    }, [currSlide]);
+    const mediaType = channel.contents && getMediaInfo(getCurrentContent())?.type;
+    setAudioVolume(mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') ? 0.2 : 0.8);
+  }, [currSlide, channel.contents]);
 
   useEffect(() => {
-    if (audioRef.current)
+    if (audioRef.current) {
       audioRef.current.volume = audioVolume;
+    }
   }, [audioVolume]);
 
   const toggleFullScreen = () => {
     if (!isFullScreen) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
-        document.documentElement.msRequestFullscreen();
-      }
+      document.documentElement.requestFullscreen();
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
-      }
+      document.exitFullscreen();
     }
   }
 
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
-    if (index < 0 || index >= channel.contents.length)
-      return null;
-    return channel.contents[index];
+    return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
   };  
 
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
     const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}`;  
-  
     navigator.clipboard.writeText(url)
-      .then(() => {
-        alert('URL copied to clipboard!');
-      })
-      .catch(err => {
-        console.error('Failed to copy URL: ', err);
-      });
+      .then(() => alert('URL copied to clipboard!'))
+      .catch(err => console.error('Failed to copy URL: ', err));
   };
 
   const handleHeartClick = () => {
-    setLikedSlides(prevLikedSlides => {
-      if (prevLikedSlides.includes(currSlide)) {
-        return prevLikedSlides.filter(index => index !== currSlide);
-      } else {
-        return [...prevLikedSlides, currSlide];
-      }
-    });
+    setLikedSlides(prevLikedSlides => 
+      prevLikedSlides.includes(currSlide)
+        ? prevLikedSlides.filter(index => index !== currSlide)
+        : [...prevLikedSlides, currSlide]
+    );
   };
   
   const handleClaim = async () => {
@@ -155,15 +122,12 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           {
             label: 'Yes',
             onClick: async () => {
-                await updateSubmission({contentID: contentToClaim.id, published: !publishedStatus});
-                
-                setClaimedSlides(prevClaimedSlides => {
-                  if (publishedStatus) {
-                    return [...prevClaimedSlides, currSlide];
-                  } else {
-                    return prevClaimedSlides.filter(index => index !== currSlide);
-                  }
-                });
+              await updateSubmission({contentID: contentToClaim.id, published: !publishedStatus});
+              setClaimedSlides(prevClaimedSlides => 
+                publishedStatus
+                  ? [...prevClaimedSlides, currSlide]
+                  : prevClaimedSlides.filter(index => index !== currSlide)
+              );
             }
           },
           {
@@ -213,9 +177,9 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         {
           label: 'Yes',
           onClick: async () => {
-              await deleteChannel(channel.uniqueID);
-              await router.push('/');
-            }
+            await deleteChannel(channel.uniqueID);
+            await router.push('/');
+          }
         },
         {
           label: 'No',
@@ -227,8 +191,7 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const handleSave = async () => {
     const contentToEdit = getCurrentContent();
-    if (contentToEdit)
-    {
+    if (contentToEdit) {
       await updateSubmission({
         contentID: contentToEdit.id,
         description: descriptionRef.current.value,
@@ -242,63 +205,39 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   const handleSaveChannel = async (data) => {
     await updateChannel(data);
-    if (data.email && data.email != channel.email)
-    {
+    if (data.email && data.email != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: data.email});
     }
     setIsChannelModalOpen(false);
-    const newQuery = { 
-      ...router.query, 
-      currslide: 0
-    };
-    await router.replace(
-      {
-        pathname: router.pathname,
-        query: newQuery,
-      }
-    );
+    const newQuery = { ...router.query, currslide: 0 };
+    await router.replace({ pathname: router.pathname, query: newQuery });
   };
 
   const moveSlide = async (increment) => {
     const contentIndex = showTitle ? currSlide - 1 : currSlide;
-    if ((contentIndex + increment) < 0)
-      return;
-    if ((contentIndex + increment) >= channel.contents.length)
-      return;
+    if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
+    
     const contentToMove = channel.contents[contentIndex];
-    if (contentToMove)
-    {
+    if (contentToMove) {
       await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order});
       const newQuery = { 
         ...router.query, 
         currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
       };
-      // TODO to trigger rerender
       setCurrSlide(currSlide + increment);
-      await router.replace(
-        {
-          pathname: router.pathname,
-          query: newQuery,
-        }
-      );
+      await router.replace({ pathname: router.pathname, query: newQuery });
     }
   }
 
-  const toggleAudio = () => {
-    if (audioRef.current) {
-      if (isAudioPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsAudioPlaying(!isAudioPlaying);
-    }
+  const togglePlayPause = () => {
+    setIsPlaying(isPlaying => {
+      audioRef.current?.[isPlaying ? 'pause' : 'play']();
+      return !isPlaying;
+    });
   };
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>
-      &times;
-    </button>
+    <button className="close" onClick={toggle}>&times;</button>
   );
 
   const buttonStyle = {
@@ -330,122 +269,124 @@ export default function Slideshow({ channel, height, width, interval, startSlide
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
-      { !privateID ?       
-          <div style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            zIndex: 1000
-          }}>
-            <Link href="/" rel="noopener noreferrer" target="_blank">
-              <button 
-                style={{
-                  backgroundColor: 'rgba(0, 128, 185, 0.6)',
-                  color: 'rgba(255, 255, 255, 1)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: 'calc(0.8vmin + 0.6em)',
-                  padding: '12px 24px',
-                  boxShadow: '0 3px 6px rgba(0, 0, 0, 0.16)',
-                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'rgba(52, 152, 219, 1)';
-                  e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
-                  e.target.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.16)';
-                  e.target.style.transform = 'translateY(0)';
-                }}
-              >
-                Make your own!
-              </button>
-            </Link>
-          </div> : 
-          <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
+      {!privateID ? (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          zIndex: 1000
+        }}>
+          <Link href="/" rel="noopener noreferrer" target="_blank">
             <button 
-              onClick={() => {
-                if (showTitle && currSlide === 0) {
-                  if (isAudioPlaying) toggleAudio();
-                  setIsChannelModalOpen(true);
-                } else {
-                  setIsModalOpen(true);
-                }
-              }} 
-              style={{...iconButtonStyle, position: 'static', margin: 5}}
+              style={{
+                backgroundColor: 'rgba(0, 128, 185, 0.6)',
+                color: 'rgba(255, 255, 255, 1)',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: 'calc(0.8vmin + 0.6em)',
+                padding: '12px 24px',
+                boxShadow: '0 3px 6px rgba(0, 0, 0, 0.16)',
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'rgba(52, 152, 219, 1)';
+                e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
+                e.target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
+                e.target.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.16)';
+                e.target.style.transform = 'translateY(0)';
+              }}
             >
-              <FaEdit size={24}/>
-            </button>
-            <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : () => handleDelete()} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaTrash size={24}/>
-            </button>
-            { showTitle && currSlide == 0 ?
-            <button onClick={() => console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-                <FaDownload size={24}/>
-            </button> : "" }
-            { (showTitle & currSlide == 0) ? "" : <>
-              <button onClick={() => {moveSlide(-1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-                <FaArrowLeft size={24}/>
-              </button>
-              <button onClick={() => {moveSlide(1)}} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-                <FaArrowRight size={24}/>
-              </button>
-            </> }
-          </div>
-        }
-
-        <style>
-          {`
-            @keyframes buttonAnimation {
-              0% { transform: scale(1); }
-              50% { transform: scale(1.2); }
-              100% { transform: scale(1); }
-            }
-            .heart-button:active, .check-button:active {
-              animation: buttonAnimation 0.3s ease;
-            }
-          `}
-        </style>
-        
-        <div style={{...iconBarStyle, bottom: '20px', left: '50%', transform: 'translateX(-50%)', gap: '40px'}}>
-          <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
-            <FaPaperclip size={28} />
-          </button>
-          <button onClick={toggleFullScreen} style={iconButtonStyle}>
-            <FaExpandArrowsAlt size={28} />
-          </button>
-          <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
-            <button style={iconButtonStyle}>
-              <FaPlus size={28} />
+              Make your own!
             </button>
           </Link>
-          {channel.audio?.url && (
-            <button onClick={toggleAudio} style={iconButtonStyle}>
-              {isAudioPlaying ? <FaPause size={28} /> : <FaPlay size={24} />}
+        </div>
+      ) : (
+        <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
+          <button 
+            onClick={() => {
+              if (showTitle && currSlide === 0) {
+                if (isPlaying) togglePlayPause();
+                setIsChannelModalOpen(true);
+              } else {
+                setIsModalOpen(true);
+              }
+            }} 
+            style={{...iconButtonStyle, position: 'static', margin: 5}}
+          >
+            <FaEdit size={24}/>
+          </button>
+          <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+            <FaTrash size={24}/>
+          </button>
+          {showTitle && currSlide === 0 && (
+            <button onClick={() => console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+              <FaDownload size={24}/>
             </button>
           )}
-          { getCurrentContent()?.ext_url ? 
-            <button 
-              onClick={() => handleClaim()} 
-              style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
-              className="check-button"
-            >
-              <FaCheck size={28} />
-            </button>
-            : 
-            <button 
-              onClick={() => handleHeartClick()} 
-              style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
-              className="heart-button"
-            >
-              <FaHeart size={28} />
-            </button>
-          }
+          {!(showTitle && currSlide === 0) && (
+            <>
+              <button onClick={() => moveSlide(-1)} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+                <FaArrowLeft size={24}/>
+              </button>
+              <button onClick={() => moveSlide(1)} style={{...iconButtonStyle, position: 'static', margin: 5}}>
+                <FaArrowRight size={24}/>
+              </button>
+            </>
+          )}
         </div>
+      )}
+
+      <style>
+        {`
+          @keyframes buttonAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+          }
+          .heart-button:active, .check-button:active {
+            animation: buttonAnimation 0.3s ease;
+          }
+        `}
+      </style>
+      
+      <div style={{...iconBarStyle, bottom: '20px', left: '50%', transform: 'translateX(-50%)', gap: '40px'}}>
+        <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
+          <FaPaperclip size={28} />
+        </button>
+        <button onClick={toggleFullScreen} style={iconButtonStyle}>
+          <FaExpandArrowsAlt size={28} />
+        </button>
+        <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
+          <button style={iconButtonStyle}>
+            <FaPlus size={28} />
+          </button>
+        </Link>
+        <button onClick={togglePlayPause} style={iconButtonStyle}>
+          {isPlaying ? <FaPause size={28} /> : <FaPlay size={24} />}
+        </button>
+        {getCurrentContent()?.ext_url ? (
+          <button 
+            onClick={handleClaim} 
+            style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
+            className="check-button"
+          >
+            <FaCheck size={28} />
+          </button>
+        ) : (
+          <button 
+            onClick={handleHeartClick} 
+            style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
+            className="heart-button"
+          >
+            <FaHeart size={28} />
+          </button>
+        )}
+      </div>
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 
@@ -454,44 +395,60 @@ export default function Slideshow({ channel, height, width, interval, startSlide
           touchEnabled={false} 
           dragEnabled={false} 
           infinite 
-          isPlaying={interval ? true : false} 
-          interval={interval} 
           currentSlide={currSlide}
         >
           <SlideTracker setCurrSlide={setCurrSlide} />
           <Slider style={{height: height, width: width}}>
-          {showTitle ? 
-            <Slide style={{height: height, width: width}}>
-              <div style={{position: 'relative', height: '100%', width: '100%'}}>
-                <FullImage 
-                  src={channel.picture?.url ? getMediaURL() + channel.picture.url : ""} 
-                  width={width} 
-                  height={height} 
-                />
-                <Caption 
-                  title={channel.name}
-                  subtitle={channel.description}
-                  textAlignment="center"
-                />
-              </div>
-            </Slide> 
-            : ""
-          }
-          {
-            channel.contents && channel.contents.map((contentItem, index) => {
-              index = showTitle ? index + 1 : index
-              return <Slide style={{height: height, width: width}} key={index} index={index}>
-                        <Content key={contentItem.id} contentItem={contentItem} width={width} height={height} autoPlay={autoPlay} index={index} />
-                    </Slide>
-            })
-          }
+            {showTitle && (
+              <Slide style={{height: height, width: width}}>
+                <div style={{position: 'relative', height: '100%', width: '100%'}}>
+                  <Content 
+                    itemUrl={channel.picture?.url} 
+                    width={width} 
+                    height={height} 
+                    autoPlay={isPlaying} 
+                    interval={channel.interval} 
+                    index={0}
+                    audioVolume={audioVolume}
+                  />
+                  <Caption 
+                    title={channel.name}
+                    subtitle={channel.description}
+                    textAlignment="center"
+                  />
+                </div>
+              </Slide> 
+            )}
+            {channel.contents && channel.contents.map((contentItem, index) => {
+              index = showTitle ? index + 1 : index;
+              return (
+                <Slide style={{height: height, width: width}} key={index} index={index}>
+                  <Content 
+                    key={contentItem.id} 
+                    itemUrl={contentItem.mediafile?.url} 
+                    thumbnailUrl={contentItem.thumbnail?.url}
+                    width={width} 
+                    height={height} 
+                    autoPlay={isPlaying} 
+                    interval={channel.interval} 
+                    index={index}
+                    audioVolume={audioVolume}
+                  />
+                  <Caption 
+                      title={contentItem.description}
+                      url={contentItem.ext_url} 
+                      textAlignment={contentItem.textalignment} 
+                  />
+                </Slide>
+              );
+            })}
           </Slider>
-          { channel.contents.length ? 
-              [
-                <ButtonBack key={1} style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />,
-                <ButtonNext key={2} style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
-              ]
-            : "" }
+          {channel.contents.length > 0 && (
+            <>
+              <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />
+              <ButtonNext style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
+            </>
+          )}
         </CarouselProvider>
       </div>
 
@@ -543,26 +500,25 @@ export default function Slideshow({ channel, height, width, interval, startSlide
         </ModalBody>
       </Modal>
 
-        <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-          <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
-          <ModalBody>
-            <ChannelAdder
-              initialData={channel}
-              onSubmit={handleSaveChannel}
-              isUpdate={true}
-            />
-          </ModalBody>
-        </Modal>
-
-        {channel.audio?.url && (
-          <audio
-            ref={audioRef}
-            src={getMediaURL() + channel.audio.url}
-            autoPlay={isAudioPlaying}
-            loop
-            style={{ display: 'none' }}
+      <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
+        <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <ChannelAdder
+            initialData={channel}
+            onSubmit={handleSaveChannel}
+            isUpdate={true}
           />
-        )}
+        </ModalBody>
+      </Modal>
+
+      {channel.audio?.url && (
+        <audio
+          ref={audioRef}
+          src={getMediaURL() + channel.audio.url}
+          loop
+          style={{ display: 'none' }}
+        />
+      )}
     </div>
   );
 }

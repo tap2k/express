@@ -31,7 +31,6 @@ export default function Home() {
                 return acc;
             }, {});
     
-            // Send the data as JSON
             const response = await axios.post('/api/addchannel', cleanedData, {
                 headers: {
                     'Content-Type': 'application/json'
