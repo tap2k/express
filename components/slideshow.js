@@ -75,8 +75,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     }
-    const mediaType = channel.contents && getMediaInfo(getCurrentContent())?.type;
-    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/' ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8);
+    const mediaType = channel.contents && getMediaInfo(getCurrentContent()?.mediafile?.url).type;
+    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8;
   }, [currSlide]);
 
   const toggleFullScreen = () => {
