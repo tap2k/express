@@ -16,7 +16,6 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import useSlideAdvance from '../hooks/useslideadvance';
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -45,7 +44,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
-  const [audioVolume, setAudioVolume] = useState(0.8);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const audioRef = useRef(null);
   
@@ -72,15 +70,14 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   }, []);
 
   useEffect(() => {
-    const mediaType = channel.contents && getMediaInfo(getCurrentContent())?.type;
-    setAudioVolume(mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') ? 0.2 : 0.8);
-  }, [currSlide, channel.contents]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = audioVolume;
+    if (isPlaying && currSlide === 1 && audioRef.current)
+    {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
     }
-  }, [audioVolume]);
+    const mediaType = channel.contents && getMediaInfo(getCurrentContent())?.type;
+    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/' ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8);
+  }, [currSlide]);
 
   const toggleFullScreen = () => {
     if (!isFullScreen) {
@@ -409,7 +406,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     autoPlay={isPlaying} 
                     interval={channel.interval} 
                     index={0}
-                    audioVolume={audioVolume}
                   />
                   <Caption 
                     title={channel.name}
@@ -432,7 +428,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     autoPlay={isPlaying} 
                     interval={channel.interval} 
                     index={index}
-                    audioVolume={audioVolume}
                   />
                   <Caption 
                       title={contentItem.description}
