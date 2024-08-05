@@ -6,8 +6,12 @@ import 'react-grid-layout/css/styles.css';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function Wall({ channel }) {
+
+  if (!channel || !channel.contents)
+    return;
+  
   const getLayouts = () => {
-    if (!channel.contents) return {};
+    if (!channel?.contents) return {};
 
     const layouts = {
       lg: [],
@@ -56,35 +60,37 @@ export default function Wall({ channel }) {
 
   return (
     <>
-        <div style={{
-            textAlign: 'center',
-            backgroundColor: '#f0f0f0',
-            padding: 30
-        }}>
-            <h1 style={{ fontSize: '2.5em', marginBottom: '20px'}}>{channel.name}</h1>
-            {channel.description && <h2 style={{ fontSize: '1.5em', fontWeight: 'normal' }}>{channel.description}</h2>}
-        </div>
-        <ResponsiveGridLayout
-            className="layout"
-            layouts={getLayouts()}
-            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
-            rowHeight={100}
-            isDraggable={false}
-            isResizable={false}
-            >
-            {channel.contents.map((contentItem, index) => (
-                <div key={index} style={{ width: '100%', padding: 0 }}>
-                    <Content 
-                        contentItem={contentItem} 
-                        width="100%" 
-                        height="100%" 
-                        autoPlay={false} 
-                        index={index}
-                        showCaption={false}
-                    />
-                </div>
-            ))}
-        </ResponsiveGridLayout>
+      <div style={{
+        textAlign: 'center',
+        backgroundColor: '#f0f0f0',
+        padding: 30
+      }}>
+        <h1 style={{ fontSize: '2.5em', marginBottom: '20px' }}>{channel.name}</h1>
+        {channel.description && <h2 style={{ fontSize: '1.5em', fontWeight: 'normal' }}>{channel.description}</h2>}
+      </div>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={getLayouts()}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 12 }}
+        rowHeight={100}
+        isDraggable={false}
+        isResizable={false}
+      >
+        {channel.contents.map((contentItem, index) => (
+          <div key={index} style={{ width: '100%', height: '100%', padding: 0 }}>
+            <Content 
+              itemUrl={contentItem.mediafile?.url}
+              thumbnailUrl={contentItem.thumbnail?.url} 
+              width="100%" 
+              height="100%" 
+              autoPlay={false} 
+              index={index}
+              showCaption={false}
+            />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
     </>
   );
 }

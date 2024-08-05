@@ -2,19 +2,13 @@
 
 import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
-import getMediaURL from "../hooks/getmediaurl";
 import PlayIcon from './playicon';
 import FullImage from './fullimage';
 
-export default function AudioPlayer({ src, thumbnailItem, width, height, autoPlay, index }) 
+export default function AudioPlayer({ src, thumbnailUrl, width, height, autoPlay, index }) 
 {  
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
-
-  let thumbnailUrl = "";
-  if (thumbnailItem?.url) {
-    thumbnailUrl = getMediaURL() + thumbnailItem.url;
-  }
 
   return (
     <div 

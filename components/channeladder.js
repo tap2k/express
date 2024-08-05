@@ -207,7 +207,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         </FormGroup>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Label for="interval" style={{ marginRight: '10px', margin: 0 }}>
+          <Label for="interval" style={{ margin: 0 }}>
             Timer:
           </Label>
           <Input
@@ -216,8 +216,9 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
             innerRef={intervalRef}
             defaultValue={initialData?.interval || 0}
             style={{
-              width: '100px',
-              height: '32px'
+              width: '80px',
+              height: '32px',
+              marginLeft: '5px'
             }}
             min="0"
           />

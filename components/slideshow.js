@@ -17,6 +17,27 @@ import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
 
+const downloadURL = async (dlurl) => {
+  if (!dlurl) return;
+
+  try {
+    const response = await fetch(getMediaURL() + dlurl);
+    const blob = await response.blob();
+    
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = url.split('/').pop();
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.log("Download failed: " + err);
+  }
+}
+
+
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
 
@@ -44,7 +65,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
@@ -70,14 +91,15 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   }, []);
 
   useEffect(() => {
-    if (isPlaying && currSlide === 1 && audioRef.current)
-    {
-      audioRef.current.currentTime = 0;
+    if (!audioRef.current)
+      return;
+    if (isPlaying)
       audioRef.current.play();
-    }
+    else
+      audioRef.current.pause();
     const mediaType = channel.contents && getMediaInfo(getCurrentContent()?.mediafile?.url).type;
     mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8;
-  }, [currSlide]);
+  }, [currSlide, isPlaying]);
 
   const toggleFullScreen = () => {
     if (!isFullScreen) {
@@ -227,10 +249,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   }
 
   const togglePlayPause = () => {
-    setIsPlaying(isPlaying => {
-      audioRef.current?.[isPlaying ? 'pause' : 'play']();
-      return !isPlaying;
-    });
+    setIsPlaying(!isPlaying);
   };
 
   const closeBtn = (toggle) => (
@@ -320,11 +339,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={{...iconButtonStyle, position: 'static', margin: 5}}>
             <FaTrash size={24}/>
           </button>
-          {showTitle && currSlide === 0 && (
-            <button onClick={() => console.log("DOWNLOAD")} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-              <FaDownload size={24}/>
-            </button>
-          )}
           {!(showTitle && currSlide === 0) && (
             <>
               <button onClick={() => moveSlide(-1)} style={{...iconButtonStyle, position: 'static', margin: 5}}>
@@ -383,6 +397,23 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
             <FaHeart size={28} />
           </button>
         )}
+        <button 
+          onClick={async () => {
+            if (showTitle && currSlide == 0)
+            {
+              console.log("DOWNLOAD");
+              return;
+            }
+            const currentContent = getCurrentContent();
+            if (currentContent) {
+              await downloadURL(currentContent.mediafile?.url);
+              //await downloadURL(currentContent.thumbnail?.url);
+            } 
+          }} 
+          style={{...iconButtonStyle, position: 'static', margin: 5}}
+        >
+          <FaDownload size={24}/>
+        </button>
       </div>
 
       <div style={{width: width, height: height, position: "relative"}}>

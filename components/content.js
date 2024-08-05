@@ -24,6 +24,8 @@ export function getMediaInfo(url) {
 export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay, interval, index }) 
 {
   const { url, type, videotype } = getMediaInfo(itemUrl);
+  if (thumbnailUrl)
+    thumbnailUrl = getMediaURL() + thumbnailUrl;
 
   let videostyle = {};
   if (!Number.isFinite(width) || !Number.isFinite(height)) {
@@ -58,7 +60,7 @@ export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay
         src={url} 
         width={width} 
         height={height} 
-        thumbnailItem={thumbnailUrl} 
+        thumbnailUrl={thumbnailUrl} 
         autoPlay={autoPlay} 
         index={index} 
       />

@@ -3,10 +3,12 @@ import { useEffect, useState, useRef } from "react";
 import { Input, Button } from "reactstrap";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
-import useFileUpload from 'react-use-file-upload';
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+
+const fileExt = "webm";
+//const fileExt = "mp3";
 
 async function uploadRecording(myFormData, lat, long, description, ext_url, channelID, status, router) 
 {
@@ -45,22 +47,10 @@ export default function Recorder({ channelID, useLocation }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [imageFile, setImageFile] = useState(null);
   const descriptionRef = useRef();
   const extUrlRef = useRef();
   const fileInputRef = useRef();
-  
-  const {
-    files,
-    fileNames,
-    fileTypes,
-    totalSize,
-    totalSizeInBytes,
-    handleDragDropEvent,
-    clearAllFiles,
-    createFormData,
-    setFiles,
-    removeFile,
-  } = useFileUpload();
 
   let lat = null;
   let long = null;
@@ -82,7 +72,7 @@ export default function Recorder({ channelID, useLocation }) {
   } = useReactMediaRecorder({
     audio: true,
     askPermissionOnMount: true,
-    blobPropertyBag: { type: "audio/mp3" },
+    blobPropertyBag: { type: "audio/" + fileExt },
     onStop: (blobUrl, blob) => setBlob(blob)
   });
 
@@ -111,7 +101,16 @@ export default function Recorder({ channelID, useLocation }) {
   };
 
   const handleFileChange = (e) => {
-    setFiles(e, 'w');
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImageFile(e.dataTransfer.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -122,16 +121,16 @@ export default function Recorder({ channelID, useLocation }) {
     const description = descriptionRef.current.value;
     const ext_url = extUrlRef.current.value;
     
-    //const formData = createFormData();
     const formData = new FormData();
-    formData.append('mediafile', blob, 'audio.mp3');
+    formData.append('mediafile', blob, 'audio.' + fileExt);
     
-    if (files.length > 0) 
-      formData.append('thumbnail', files[0], files[0].name);
+    if (imageFile) 
+      formData.append('thumbnail', imageFile, imageFile.name);
     
     await uploadRecording(formData, lat, long, description, ext_url, channelID, status, router);
     descriptionRef.current.value = "";
     extUrlRef.current.value = "";
+    setImageFile(null);
   };
 
   return (
@@ -199,22 +198,19 @@ export default function Recorder({ channelID, useLocation }) {
           position: 'relative',
           overflow: 'hidden',
         }}
-        onDragEnter={handleDragDropEvent}
-        onDragOver={handleDragDropEvent}
-        onDrop={(e) => {
-          handleDragDropEvent(e);
-          setFiles(e, 'w');
-        }}
+        onDragEnter={(e) => e.preventDefault()}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
       >
-        {files.length > 0 ? (
+        {imageFile ? (
           <>
             <img
-              src={URL.createObjectURL(files[0])}
+              src={URL.createObjectURL(imageFile)}
               alt="Preview"
               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
             />
             <button
-              onClick={() => clearAllFiles()}
+              onClick={() => setImageFile(null)}
               style={{
                 position: 'absolute',
                 top: '5px',
