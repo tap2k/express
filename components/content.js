@@ -21,11 +21,11 @@ export function getMediaInfo(url) {
   return { url: getMediaURL() + url, type, videotype };
 }
 
-export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay, interval, index }) 
+export default function Content({ itemUrl, audioUrl, width, height, autoPlay, interval, index }) 
 {
   const { url, type, videotype } = getMediaInfo(itemUrl);
-  if (thumbnailUrl)
-    thumbnailUrl = getMediaURL() + thumbnailUrl;
+  if (audioUrl)
+    audioUrl = getMediaURL() + audioUrl;
 
   let videostyle = {};
   if (!Number.isFinite(width) || !Number.isFinite(height)) {
@@ -38,29 +38,19 @@ export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay
     height,
   };
 
-  let mediaElement;
-
   useSlideAdvance(
     index, 
     autoPlay && !type.startsWith("audio") && !type.startsWith("video"), 
     interval
   );
 
-  if (type.startsWith("image")) {
-    mediaElement = (
-      <FullImage 
-        src={url} 
-        width={width} 
-        height={height} 
-      />
-    );
-  } else if (type.startsWith("audio")) {
+  let mediaElement;
+  if (type.startsWith("audio")) {
     mediaElement = (
       <AudioPlayer 
         src={url} 
         width={width} 
         height={height} 
-        thumbnailUrl={thumbnailUrl} 
         autoPlay={autoPlay} 
         index={index} 
       />
@@ -80,8 +70,12 @@ export default function Content({ itemUrl, thumbnailUrl, width, height, autoPlay
   } else {
     mediaElement = (
       <FullImage 
+        src={url} 
         width={width} 
         height={height} 
+        audioUrl={audioUrl}
+        autoPlay={autoPlay} 
+        index={index} 
       />
     );
   }

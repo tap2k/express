@@ -6,7 +6,7 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
   const carouselContext = useContext(CarouselContext);
 
   const play = () => {
-    if (mediaRef.current) {
+    if (mediaRef?.current) {
       mediaRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch(error => {
@@ -16,7 +16,7 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
   }
 
   const pause = () => {
-    if (mediaRef.current) {
+    if (mediaRef?.current) {
       mediaRef.current.pause();
       setIsPlaying(false);
     }
@@ -27,7 +27,7 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
   }
 
   const resetMedia = () => {
-    if (mediaRef.current) {
+    if (mediaRef?.current) {
       mediaRef.current.currentTime = 0;
     }
   }
@@ -43,7 +43,7 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
     if (!carouselContext) return;
 
     const onChange = () => {
-      if (!mediaRef.current) return;
+      if (!mediaRef?.current) return;
 
       if (carouselContext.state.currentSlide === index) {
         if (autoPlay) {
@@ -60,14 +60,14 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
       goToNextSlide();
     };
 
-    if (mediaRef.current && autoPlay) {
+    if (mediaRef?.current && autoPlay) {
       mediaRef.current.addEventListener('ended', onEnded);
     }
 
     carouselContext.subscribe(onChange);
     return () => {
       carouselContext.unsubscribe(onChange);
-      if (mediaRef.current) {
+      if (mediaRef?.current) {
         mediaRef.current.removeEventListener('ended', onEnded);
       }
     };

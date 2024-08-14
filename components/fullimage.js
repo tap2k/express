@@ -1,9 +1,26 @@
-export default function FullImage({ src, width, height }) 
+import { useRef } from "react";
+import useMediaControl from "../hooks/usemediacontrol";
+import getMediaURL from "../hooks/getmediaurl";
+import PlayIcon from './playicon';
+
+export default function FullImage({ src, width, height, audioUrl, index, autoPlay }) 
 {
+  const audioRef = useRef();
+  const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
+
   //if (!src)
   //  src = "images/flowers6.png";
+  
   return (
-    <div style={{ position: 'relative', width, height }}>
+        <div 
+          style={{
+            position: 'relative',
+            width,
+            height,
+            cursor: 'pointer'
+          }} 
+          onClick={toggle}
+        >
        { src ? <img 
         src={src} 
         style={{
@@ -12,6 +29,11 @@ export default function FullImage({ src, width, height })
           objectFit: 'contain'
         }} 
       /> : "" }
+      { audioUrl ? <>
+          {!isPlaying && <PlayIcon />}
+          <audio src={audioUrl} style={{display: "none"}} ref={audioRef} />
+        </> : ""
+      }
     </div>
   );
 }

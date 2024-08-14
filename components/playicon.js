@@ -1,5 +1,3 @@
-// components/playicon.js
-
 export default function PlayIcon({ inverted = false }) {
   const iconStyle = {
     position: 'absolute',

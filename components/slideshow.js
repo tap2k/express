@@ -19,11 +19,9 @@ import sendEmailLinks from '../hooks/sendemaillinks';
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
-
   try {
     const response = await fetch(getMediaURL() + dlurl);
     const blob = await response.blob();
-    
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -36,7 +34,6 @@ const downloadURL = async (dlurl) => {
     console.log("Download failed: " + err);
   }
 }
-
 
 const SlideTracker = ({ setCurrSlide }) => {
   const carouselContext = useContext(CarouselContext);
@@ -407,7 +404,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
             const currentContent = getCurrentContent();
             if (currentContent) {
               await downloadURL(currentContent.mediafile?.url);
-              //await downloadURL(currentContent.thumbnail?.url);
+              await downloadURL(currentContent.audiofile?.url);
             } 
           }} 
           style={{...iconButtonStyle, position: 'static', margin: 5}}
@@ -453,7 +450,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                   <Content 
                     key={contentItem.id} 
                     itemUrl={contentItem.mediafile?.url} 
-                    thumbnailUrl={contentItem.thumbnail?.url}
+                    audioUrl={contentItem.audiofile?.url}
                     width={width} 
                     height={height} 
                     autoPlay={isPlaying} 
@@ -537,10 +534,10 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </ModalBody>
       </Modal>
 
-      {channel.audio?.url && (
+      {channel.audiofile?.url && (
         <audio
           ref={audioRef}
-          src={getMediaURL() + channel.audio.url}
+          src={getMediaURL() + channel.audiofile.url}
           loop
           style={{ display: 'none' }}
         />
