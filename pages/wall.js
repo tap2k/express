@@ -84,6 +84,7 @@ export default function Wall({ channel }) {
               thumbnailUrl={contentItem.thumbnail?.url} 
               width="100%" 
               height="100%" 
+              cover
               autoPlay={false} 
               index={index}
               showCaption={false}

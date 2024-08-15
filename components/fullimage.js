@@ -1,9 +1,8 @@
 import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
-import getMediaURL from "../hooks/getmediaurl";
 import PlayIcon from './playicon';
 
-export default function FullImage({ src, width, height, audioUrl, index, autoPlay }) 
+export default function FullImage({ src, width, height, audioUrl, index, cover, autoPlay }) 
 {
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
@@ -26,7 +25,7 @@ export default function FullImage({ src, width, height, audioUrl, index, autoPla
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'contain'
+          objectFit: cover ? 'cover' : 'contain'
         }} 
       /> : "" }
       { audioUrl ? <>

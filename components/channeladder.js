@@ -179,11 +179,11 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
-          marginBottom: '15px'
+          margin: '15px'
         }}
       >
-        <FormGroup check style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>
-          <Label check style={{ display: 'flex', alignItems: 'center' }}>
+        <FormGroup check style={{ marginRight: '20px'}}>
+          <Label check>
             <Input
               type="checkbox"
               checked={showTitleSlide}
@@ -194,8 +194,8 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
           </Label>
         </FormGroup>
 
-        <FormGroup check style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>
-          <Label check style={{ display: 'flex', alignItems: 'center' }}>
+        <FormGroup check>
+          <Label check>
             <Input
               type="checkbox"
               innerRef={publicRef}
@@ -206,7 +206,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
           </Label>
         </FormGroup>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center' }}>
           <Label for="interval" style={{ margin: 0 }}>
             Timer:
           </Label>
@@ -222,7 +222,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
             }}
             min="0"
           />
-        </div>
+        </div> */}
       </div>
       {showTitleSlide && (
         <FormGroup>

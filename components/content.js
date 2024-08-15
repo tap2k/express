@@ -21,7 +21,7 @@ export function getMediaInfo(url) {
   return { url: getMediaURL() + url, type, videotype };
 }
 
-export default function Content({ itemUrl, audioUrl, width, height, autoPlay, interval, index }) 
+export default function Content({ itemUrl, audioUrl, width, height, cover, autoPlay, interval, index }) 
 {
   const { url, type, videotype } = getMediaInfo(itemUrl);
   if (audioUrl)
@@ -74,6 +74,7 @@ export default function Content({ itemUrl, audioUrl, width, height, autoPlay, in
         width={width} 
         height={height} 
         audioUrl={audioUrl}
+        cover={cover}
         autoPlay={autoPlay} 
         index={index} 
       />
