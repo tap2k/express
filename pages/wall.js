@@ -75,18 +75,18 @@ export default function Wall({ channel }) {
         cols={{ lg: 12, md: 12, sm: 12, xs: 12 }}
         rowHeight={100}
         isDraggable={false}
-        isResizable={false}
+        isResizable={true}
       >
         {channel.contents.map((contentItem, index) => (
-          <div key={index} style={{ width: '100%', height: '100%', padding: 0 }}>
+          <div key={index}>
             <Content 
               itemUrl={contentItem.mediafile?.url}
               thumbnailUrl={contentItem.thumbnail?.url} 
               width="100%" 
               height="100%" 
               cover
-              autoPlay={false} 
               index={index}
+              autoPlay={false} 
               showCaption={false}
             />
           </div>

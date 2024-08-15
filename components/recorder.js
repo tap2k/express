@@ -122,10 +122,13 @@ export default function Recorder({ channelID, useLocation }) {
     const ext_url = extUrlRef.current.value;
     
     const formData = new FormData();
-    formData.append('mediafile', blob, 'audio.' + fileExt);
-    
     if (imageFile) 
-      formData.append('thumbnail', imageFile, imageFile.name);
+    {
+      formData.append('mediafile', imageFile, imageFile.name);
+      formData.append('audiofile', blob, 'audio.' + fileExt);
+    }
+    else
+      formData.append('mediafile', blob, 'audio.' + fileExt);
     
     await uploadRecording(formData, lat, long, description, ext_url, channelID, status, router);
     descriptionRef.current.value = "";
