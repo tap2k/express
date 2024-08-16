@@ -1,24 +1,30 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
-import { Alert, Container } from 'reactstrap';
+import { Alert, Container, Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Input } from 'reactstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import { FaGripVertical } from 'react-icons/fa';
-import Content from './content';
+import { FaGripVertical, FaTrash, FaEdit } from 'react-icons/fa';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import Content from "./content";
 import updateSubmission from '../hooks/updatesubmission';
+import deleteSubmission from '../hooks/deletesubmission';
 import setError from '../hooks/seterror';
 
-const DragItem = ({ id, index, moveItem, handleDragEnd, children }) => {
+const DragItem = ({ id, index, moveItem, onDragEnd, children }) => {
   const ref = useRef(null);
-  const [, drag] = useDrag({
+  const [{ isDragging }, drag] = useDrag({
     type: 'ITEM',
     item: { id, index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
     end: (item, monitor) => {
-      const dropResult = monitor.getDropResult();
-      if (item && dropResult) {
-        handleDragEnd(item.id, dropResult.index);
+      if (!monitor.didDrop()) {
+        return;
       }
+      onDragEnd();
     },
   });
 
@@ -36,7 +42,6 @@ const DragItem = ({ id, index, moveItem, handleDragEnd, children }) => {
       moveItem(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
-    drop: () => ({ index }),
   });
 
   drag(drop(ref));
@@ -85,15 +90,42 @@ export default function Wall ({ channel, style, width, privateID }) {
     });
   };
 
-  const handleDragEnd = async (id, newIndex) => {
+  const handleDragEnd = async () => {
     try {
-      await updateSubmission({ contentID: id, order: newIndex });
+      const updates = contents.map((content, index) => 
+        updateSubmission({ contentID: content.id, order: index })
+      );
+      await Promise.all(updates);
       await router.replace(router.asPath);
     } catch (error) {
       setError(error);
-      // Revert the state if the update fails
       setContents(channel.contents);
     }
+  };
+
+  const handleDelete = (id) => {
+    confirmAlert({
+      title: 'Delete item?',
+      message: 'Are you sure you want to delete this item?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteSubmission({contentID: id});
+              setContents(contents.filter(content => content.id !== id));
+              await router.replace(router.asPath);
+            } catch (error) {
+              setError(error);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
   };
 
   const Backend = typeof window !== 'undefined' && 'ontouchstart' in window ? TouchBackend : HTML5Backend;
@@ -114,7 +146,7 @@ export default function Wall ({ channel, style, width, privateID }) {
               id={contentItem.id} 
               index={index} 
               moveItem={moveItem}
-              handleDragEnd={handleDragEnd}
+              onDragEnd={handleDragEnd}
             >
               <div style={{ position: 'relative', height: '250px' }}>
                 <Content 
@@ -126,19 +158,36 @@ export default function Wall ({ channel, style, width, privateID }) {
                   index={index}
                 />
                 {privateID && (
-                  <div 
-                    style={{ 
-                      position: 'absolute', 
-                      top: 5, 
-                      right: 5, 
-                      cursor: 'move',
-                      background: 'rgba(255, 255, 255, 0.5)',
-                      borderRadius: '50%',
-                      padding: 5,
-                      zIndex: 1000
-                    }}
-                  >
-                    <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
+                  <div style={{
+                    position: 'absolute',
+                    top: 5,
+                    right: 5,
+                    display: 'flex',
+                    gap: '10px',
+                    zIndex: 1000
+                  }}>
+                    <button 
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.5)', 
+                        border: 'none', 
+                        borderRadius: '50%', 
+                        padding: '5px',
+                        cursor: 'move'
+                      }}
+                    >
+                      <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(contentItem.id)} 
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.7)', 
+                        border: 'none', 
+                        borderRadius: '50%', 
+                        padding: '5px' 
+                      }}
+                    >
+                      <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
+                    </button>
                   </div>
                 )}
               </div>
