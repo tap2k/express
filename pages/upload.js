@@ -7,7 +7,7 @@ import Uploader from '../components/uploader';
 const Recorder = dynamic(() => import("../components/recorder"), { ssr: false });
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
 
-export default function UploadPage({ channelID, useLocation }) {
+export default ({ channelID, useLocation }) => {
   const [activeComponent, setActiveComponent] = useState('upload');
 
   const renderComponent = () => {

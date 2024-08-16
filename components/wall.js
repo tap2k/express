@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Alert, Container } from 'reactstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -61,7 +60,7 @@ const Grid = ({ children, columns }) => (
   </div>
 );
 
-export default function Wall ({ channel, style, width, privateID }) {
+export default function Wall ({ channel, privateID, ...props }) {
   const [contents, setContents] = useState(channel.contents);
   const [prevContents, setPrevContents] = useState(channel.contents);
   const [columns, setColumns] = useState(1);
@@ -146,13 +145,7 @@ export default function Wall ({ channel, style, width, privateID }) {
 
   return (
     <DndProvider backend={Backend}>
-      <div ref={containerRef} style={{ ...style, width: width || '100%' }}>
-        <Alert color="light" className="mb-2 py-4">
-          <Container className="text-center">
-            <h1>{channel.name}</h1>
-            {channel.description && <h3>{channel.description}</h3>}
-          </Container>
-        </Alert>
+      <div ref={containerRef} {...props}>
         <Grid columns={columns}>
           {contents.map((contentItem, index) => (
             <DragItem 
