@@ -103,9 +103,26 @@ export default function Home() {
     return (
         <>
             <RecorderWrapper>
-                <Navbar style={{ backgroundColor: 'rgba(41, 128, 185, 0.4)', color: 'white', display: 'flex', justifyContent: 'center', minHeight: '60px' }}>
-                    <NavbarBrand style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)'}}>
-                        <b style={{fontSize: 'xx-large'}}>EXPRESS</b>
+                <Navbar style={{ 
+                    backgroundColor: 'rgba(26, 95, 122, 0.9)', // Darker blue matching the Banner title color
+                    color: 'white', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    minHeight: '60px',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Subtle shadow for depth
+                }}>
+                    <NavbarBrand style={{ 
+                        position: 'absolute', 
+                        left: '50%', 
+                        transform: 'translateX(-50%)'
+                    }}>
+                        <b style={{
+                            fontSize: 'xx-large',
+                            color: '#ffffff', // Pure white for contrast
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' // Subtle text shadow for emphasis
+                        }}>
+                            EXPRESS
+                        </b>
                     </NavbarBrand>
                 </Navbar>
                 <div style={containerStyle}>

@@ -9,7 +9,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             position: 'absolute',
             left: '50%',
             transform: 'translateX(-50%)',
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(0,0,0,0.2)',
             color: 'white',
             borderRadius: '15px',
             padding: '20px',
@@ -35,11 +35,11 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             position: 'absolute',
             left: '50%',
             transform: 'translateX(-50%)',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
             borderRadius: '25px',
             padding: '10px 20px',
             pointerEvents: 'auto',
-            fontSize: 'calc(1.5vmin + 0.5em)',
+            fontSize: 'clamp(12px, 1.5vw, 18px)',
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',
@@ -58,14 +58,13 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     };
 
     const titleStyle = {
-        fontSize: 'calc(2.5vmin + 0.8em)',
-        fontWeight: 'bold',
+        fontSize: 'clamp(16px, 2.5vw, 32px)',
         lineHeight: 1.2,
         marginBottom: '10px'
     };
 
     const subtitleStyle = {
-        fontSize: 'calc(1.5vmin + 0.5em)',
+        fontSize: 'clamp(14px, 1.5vw, 24px)',
         lineHeight: 1.3
     };
 
@@ -77,7 +76,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
                     {subtitle && <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            {url && (
+            {false && url && (
                 <Link href={url} style={getLinkStyle()} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link

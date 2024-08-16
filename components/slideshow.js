@@ -265,7 +265,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const iconBarStyle = {
     position: 'fixed',
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     padding: '10px',
     borderRadius: '20px',
     zIndex: 1000,

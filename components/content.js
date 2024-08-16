@@ -1,11 +1,11 @@
 // components/content.js
 
 import mime from 'mime-types';
+import useSlideAdvance from '../hooks/useslideadvance';
 import getMediaURL from "../hooks/getmediaurl";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
-import useSlideAdvance from '../hooks/useslideadvance';
 
 // getMediaInfo function
 export function getMediaInfo(url) {

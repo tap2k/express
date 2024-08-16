@@ -1,30 +1,26 @@
 import getChannel from "../hooks/getchannel";
 import Banner from '../components/banner';
-import Wall from "../components/wall";
+import Board from "../components/board";
 
-export default ({ channel, admin }) => {
-    const width = "100vw";
+export default ({ channel }) => {
     return (
         <>
             <Banner 
                 title={channel.name} 
                 subtitle={channel.description} 
             />
-            <Wall 
+            <Board 
                 channel={channel} 
-                width={width} 
-                privateID={admin} 
             />
         </>
     );
 }
 
 export async function getServerSideProps(ctx) {
-    const { channelid, admin } = ctx.query;
+    const { channelid } = ctx.query;
 
     try {
-        // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: admin });
+        const channel = await getChannel({ channelID: channelid });
         
         if (!channel) {
             return {
@@ -37,8 +33,7 @@ export async function getServerSideProps(ctx) {
 
         return { 
             props: { 
-                channel: channel,
-                admin: admin ? true : false
+                channel: channel
             } 
         };
     } catch (err) {
