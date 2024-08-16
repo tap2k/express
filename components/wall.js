@@ -68,14 +68,10 @@ export default function Wall ({ channel, style, width, privateID }) {
   const containerRef = useRef(null);
   const router = useRouter();
 
-  const updateContents = useCallback(() => {
+  useEffect(() => {
     setContents(channel.contents);
     setPrevContents(channel.contents);
-  }, [channel.contents]);
-
-  useEffect(() => {
-    updateContents();
-  }, [router.asPath, updateContents]);
+  }, [router.asPath]);
 
   const updateColumns = () => {
     if (containerRef.current) {
@@ -111,7 +107,7 @@ export default function Wall ({ channel, style, width, privateID }) {
   const handleDragEnd = async (id, dropIndex) => {
     try {
       await updateSubmission({ contentID: id, order: prevContents[dropIndex].order })
-      await router.replace(router.asPath);
+      await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
     }
@@ -128,7 +124,7 @@ export default function Wall ({ channel, style, width, privateID }) {
             try {
               await deleteSubmission({contentID: id});
               setContents(contents.filter(content => content.id !== id));
-              await router.replace(router.asPath);
+              await router.replace(router.asPath, undefined, { scroll: false });
             } catch (error) {
               setError(error);
             }
