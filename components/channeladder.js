@@ -73,10 +73,14 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
   const buttonStyle = {
     fontSize: 'large',
     width: '100%',
-    padding: '10px',
-    marginTop: '10px',
-    borderRadius: '12px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+    padding: '12px',
+    marginTop: '15px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#5dade2', 
+    border: 'none',
+    color: '#ffffff',
+    fontWeight: 'bold',
   };
 
   const imageGridStyle = {
@@ -160,13 +164,13 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         defaultValue={initialData?.name || ""}
         style={inputStyle}
       />
-      <Input
+      { false && <Input
         type="text"
         innerRef={subtitleRef}
         placeholder="Enter your subtitle here"
         defaultValue={initialData?.description || ""}
         style={inputStyle}
-      />
+      /> }
       { initialData ? <Input
         type="email"
         innerRef={emailRef}
@@ -174,7 +178,8 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
         defaultValue={initialData?.email || ""}
         style={inputStyle}
       /> : "" }
-      <div
+      
+      {false && <div
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -223,7 +228,9 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
             min="0"
           />
         </div> */}
-      </div>
+
+      </div>}
+
       {showTitleSlide && (
         <FormGroup>
           <div style={imageGridStyle}>
@@ -286,9 +293,8 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       <Button
         onClick={handleSubmit}
         style={buttonStyle}
-        color="primary" 
       >
-        {isUpdate ? 'Update Reel' : 'Make a New Reel'}
+        {initialData ? 'Update Reel' : 'Make a New Reel'}
       </Button>
     </>
   );

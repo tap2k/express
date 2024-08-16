@@ -529,7 +529,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           <ChannelAdder
             initialData={channel}
             onSubmit={handleSaveChannel}
-            isUpdate={true}
           />
         </ModalBody>
       </Modal>
