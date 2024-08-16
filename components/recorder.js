@@ -7,8 +7,8 @@ import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 
-const fileExt = "webm";
-//const fileExt = "mp3";
+//const fileExt = "webm";
+const fileExt = "mp3";
 
 async function uploadRecording(myFormData, lat, long, description, ext_url, channelID, status, router) 
 {

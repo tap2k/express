@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
-import { Alert, Container, Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Input } from 'reactstrap';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Alert, Container } from 'reactstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import { FaGripVertical, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaGripVertical, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
@@ -12,19 +12,23 @@ import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
 import setError from '../hooks/seterror';
 
-const DragItem = ({ id, index, moveItem, onDragEnd, children }) => {
+const DragItem = ({ id, index, moveItem, onDragStart, onDragEnd, children }) => {
   const ref = useRef(null);
+  
   const [{ isDragging }, drag] = useDrag({
     type: 'ITEM',
-    item: { id, index },
+    item: () => {
+      onDragStart(id, index);
+      return { id, index };
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    end: (item, monitor) => {
-      if (!monitor.didDrop()) {
-        return;
+    end: async (item, monitor) => {
+      const dropResult = monitor.getDropResult();
+      if (dropResult) {
+        await onDragEnd(item.id, item.index);
       }
-      onDragEnd();
     },
   });
 
@@ -42,12 +46,14 @@ const DragItem = ({ id, index, moveItem, onDragEnd, children }) => {
       moveItem(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
+    drop: (item) => ({ id, index: item.index }),
   });
 
   drag(drop(ref));
 
-  return <div ref={ref}>{children}</div>;
+  return <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>{children}</div>;
 };
+
 
 const Grid = ({ children, columns }) => (
   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '10px' }}>
@@ -57,19 +63,19 @@ const Grid = ({ children, columns }) => (
 
 export default function Wall ({ channel, style, width, privateID }) {
   const [contents, setContents] = useState(channel.contents);
+  const [prevContents, setPrevContents] = useState(channel.contents);
   const [columns, setColumns] = useState(1);
   const containerRef = useRef(null);
   const router = useRouter();
 
+  const updateContents = useCallback(() => {
+    setContents(channel.contents);
+    setPrevContents(channel.contents);
+  }, [channel.contents]);
+
   useEffect(() => {
-    updateColumns();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', updateColumns);
-    }
-    return () => {
-      window.removeEventListener('resize', updateColumns);
-    };
-  }, []);
+    updateContents();
+  }, [router.asPath, updateContents]);
 
   const updateColumns = () => {
     if (containerRef.current) {
@@ -81,25 +87,33 @@ export default function Wall ({ channel, style, width, privateID }) {
     }
   };
 
+  useEffect(() => {
+    updateColumns();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', updateColumns);
+    }
+    return () => {
+      window.removeEventListener('resize', updateColumns);
+    };
+  }, []);
+
   const moveItem = (dragIndex, hoverIndex) => {
-    setContents((prevContents) => {
-      const newContents = [...prevContents];
-      const [removed] = newContents.splice(dragIndex, 1);
-      newContents.splice(hoverIndex, 0, removed);
-      return newContents;
-    });
+    const newContents = [...contents];
+    const [removed] = newContents.splice(dragIndex, 1);
+    newContents.splice(hoverIndex, 0, removed);
+    setContents(newContents);
   };
 
-  const handleDragEnd = async () => {
+  const handleDragStart = () => {
+    setPrevContents([...contents])
+  };
+
+  const handleDragEnd = async (id, dropIndex) => {
     try {
-      const updates = contents.map((content, index) => 
-        updateSubmission({ contentID: content.id, order: index })
-      );
-      await Promise.all(updates);
+      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order })
       await router.replace(router.asPath);
     } catch (error) {
       setError(error);
-      setContents(channel.contents);
     }
   };
 
@@ -144,8 +158,10 @@ export default function Wall ({ channel, style, width, privateID }) {
             <DragItem 
               key={contentItem.id} 
               id={contentItem.id} 
+              order={contentItem.order}
               index={index} 
               moveItem={moveItem}
+              onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
               <div style={{ position: 'relative', height: '250px' }}>
