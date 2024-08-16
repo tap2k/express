@@ -163,7 +163,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
       <Input
         type="text"
         innerRef={subtitleRef}
-        placeholder="Enter your prompt here"
+        placeholder="Enter your subtitle here"
         defaultValue={initialData?.description || ""}
         style={inputStyle}
       />
