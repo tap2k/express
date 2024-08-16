@@ -68,10 +68,14 @@ export default function Wall ({ channel, style, width, privateID }) {
   const containerRef = useRef(null);
   const router = useRouter();
 
-  useEffect(() => {
+  const updateContents = useCallback(() => {
     setContents(channel.contents);
     setPrevContents(channel.contents);
-  }, [router.asPath]);
+  }, [channel.contents]);
+
+  useEffect(() => {
+    updateContents();
+  }, [router.asPath, updateContents]);
 
   const updateColumns = () => {
     if (containerRef.current) {
