@@ -19,8 +19,9 @@ export default function Banner({ title, subtitle }) {
         <div style={{
           backgroundColor: 'rgba(230, 240, 255, 0.4)', // Light blue background
           borderRadius: '10px',
-          padding: '1.5rem 5rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+          padding: '1.5rem 10rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(5px)',
         }}>
           <h1 style={{
             color: '#0a4f6a', // Darker blue for better readability

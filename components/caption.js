@@ -12,7 +12,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             backgroundColor: 'rgba(0,0,0,0.2)',
             color: 'white',
             borderRadius: '15px',
-            padding: '20px',
+            padding: '30px',
             backdropFilter: 'blur(5px)',
             width: 'fit-content',
             maxWidth: '80%',
