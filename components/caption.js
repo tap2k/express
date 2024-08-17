@@ -75,12 +75,12 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
                     {subtitle && <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            url && (
+            {url && (
                 <Link href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link
                 </Link>
-            )
+            )}
         </>
     );
 }

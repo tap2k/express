@@ -17,7 +17,7 @@ export default function Banner({ title, subtitle }) {
         textAlign: 'center'
       }}>
         <div style={{
-          backgroundColor: 'rgba(230, 240, 255, 0.4)', // Light blue background
+          backgroundColor: 'rgba(230, 240, 255, 0.8)', // Light blue background
           borderRadius: '10px',
           padding: '1.5rem 10rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',

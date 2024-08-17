@@ -162,11 +162,20 @@ export default function Board({ channel, privateID, ...props }) {
                       contentID={contentItem.id} 
                     />
                   )}
+                  {contentItem.description && (
+                    <div 
+                      className="content-description" 
+                      style={{ 
+                        padding: '10px', 
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        lineHeight: '1.4',
+                      }}
+                    >
+                      {contentItem.description}
+                    </div>
+                  )}
                 </div>
-                <Caption 
-                  title={contentItem.description}
-                  textAlignment={contentItem.textAlignment}
-                />
               </Card>
             </DraggableItem>
           ))}
