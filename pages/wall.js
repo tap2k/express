@@ -29,7 +29,6 @@ export default ({ channel, admin }) => {
                 <Banner 
                     title={channel.name} 
                     subtitle={channel.description}
-                    transparent={channel.picture?.url ? true : false}
                 />
                 <Wall 
                     channel={channel}

@@ -1,10 +1,10 @@
 import { Alert } from 'reactstrap';
 
-export default function Banner({ title, subtitle, transparent = false }) {
+export default function Banner({ title, subtitle }) {
   return (
     <Alert 
       style={{
-        backgroundColor: !transparent ? 'rgba(41, 128, 185, 0.1)' : 'transparent',
+        backgroundColor: 'transparent',
         marginBottom: '0rem',
         padding: '2rem 0.5rem',
         border: 'none'
