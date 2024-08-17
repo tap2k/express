@@ -3,7 +3,7 @@ import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
 
-export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }) {
+export default function ChannelAdder({ initialData, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
@@ -64,7 +64,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     fontSize: 'large',
     width: '100%',
     height: '50px',
-    marginBottom: '10px',
+    marginBottom: '15px',
     borderRadius: '12px',
     border: '1px solid #ccc',
     padding: '0 15px',
@@ -74,7 +74,7 @@ export default function ChannelAdder({ initialData, onSubmit, isUpdate = false }
     fontSize: 'large',
     width: '100%',
     padding: '12px',
-    marginTop: '15px',
+    marginTop: '10px',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     backgroundColor: '#5dade2', 

@@ -17,6 +17,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const descriptionRef = useRef();
+  const nameRef = useRef();
   const extUrlRef = useRef();
 
   let lat = null;
@@ -98,7 +99,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       <div
         style={{
           width: '100%',
-          height: '500px',
+          height: '480px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',
@@ -216,21 +217,30 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       />
       
       <Input
-        type="text"
+        type="textarea"
         innerRef={descriptionRef}
-        placeholder="Enter text"
+        placeholder="Enter text here"
         style={{
           width: '100%',
-          marginBottom: '10px'
+          marginBottom: '5px',
+          minHeight: '80px',  // Set a minimum height
+          resize: 'vertical'   // Allow vertical resizing
         }}
+        rows={2}  // Set initial number of visible text lines
+      />
+      <Input
+        type="text"
+        innerRef={nameRef}
+        placeholder="Enter your name"
+        style={{ width: '100%', marginBottom: '25px' }}
       />
       
-      <Input
+      { false && <Input
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
         style={{ width: '100%', marginBottom: '20px' }}
-      />
+      /> }
 
       <Button
         color="success"

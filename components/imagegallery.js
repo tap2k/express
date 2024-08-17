@@ -12,7 +12,7 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
     gridTemplateColumns: 'repeat(4, 1fr)',
     gridAutoRows: 'min-content',
     gap: '10px',
-    marginBottom: '20px',
+    marginBottom: '10px',
     width: '100%',
     alignContent: 'start'
   };
@@ -52,7 +52,6 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
   };
 
   const dalleContainerStyle = {
-    marginTop: 'auto',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',

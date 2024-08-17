@@ -1,4 +1,6 @@
 import getChannel from "../hooks/getchannel";
+import MakeButton from "../components/makebutton";
+import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Board from "../components/board";
 
@@ -12,6 +14,8 @@ export default ({ channel }) => {
             <Board 
                 channel={channel} 
             />
+            <MakeButton />
+            <AddButton channelID={channel.uniqueID}/>
         </>
     );
 }

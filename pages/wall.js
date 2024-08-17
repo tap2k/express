@@ -1,4 +1,6 @@
 import getChannel from "../hooks/getchannel";
+import MakeButton from "../components/makebutton";
+import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
@@ -15,6 +17,8 @@ export default ({ channel, admin }) => {
                 width={width} 
                 privateID={admin} 
             />
+            {!admin && <MakeButton />}
+            <AddButton channelID={channel.uniqueID}/>
         </>
     );
 }

@@ -1,5 +1,6 @@
 import { use100vh } from 'react-div-100vh';
 import Slideshow from "../components/slideshow";
+import MakeButton from "../components/makebutton";
 import getChannel from "../hooks/getchannel";
 
 
@@ -9,7 +10,10 @@ export default ({ channel, currslide, admin }) => {
     //const height = "100vh";
 
     return (
-        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={admin} autoPlay />
+        <>
+            <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={admin} autoPlay />
+            { !admin && <MakeButton channel={channel} /> }
+        </>
     );
 }
 

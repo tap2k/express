@@ -41,6 +41,7 @@ function isMobileSafari() {
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
   const descriptionRef = useRef();
+  const nameRef = useRef();
   const extUrlRef = useRef();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
@@ -297,16 +298,29 @@ export default function VideoRecorder({ channelID, useLocation }) {
       </div>
       
       <Input
-        type="text"
+        type="textarea"
         innerRef={descriptionRef}
-        placeholder="Enter text"
-        style={{ width: '100%', marginBottom: '10px' }}
+        placeholder="Enter text here"
+        style={{
+          width: '100%',
+          marginBottom: '5px',
+          minHeight: '80px',  // Set a minimum height
+          resize: 'vertical'   // Allow vertical resizing
+        }}
+        rows={2}  // Set initial number of visible text lines
       />
 
-      <Input
+      { false && <Input
         type="text"
         innerRef={extUrlRef}
         placeholder="Enter URL"
+        style={{ width: '100%', marginBottom: '25px' }}
+      /> }
+
+      <Input
+        type="text"
+        innerRef={nameRef}
+        placeholder="Enter your name"
         style={{ width: '100%', marginBottom: '25px' }}
       />
       
