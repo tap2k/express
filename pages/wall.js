@@ -1,3 +1,4 @@
+import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import MakeButton from "../components/makebutton";
 import AddButton from "../components/addbutton";
@@ -5,21 +6,39 @@ import Banner from '../components/banner';
 import Wall from "../components/wall";
 
 export default ({ channel, admin }) => {
-    const width = "100vw";
+    const backgroundStyle = channel.picture?.url 
+        ? {
+            backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+          }
+        : {};
+
     return (
-        <>
-            <Banner 
-                title={channel.name} 
-                subtitle={channel.description} 
-            />
-            <Wall 
-                channel={channel} 
-                width={width} 
-                privateID={admin} 
-            />
-            {!admin && <MakeButton />}
-            <AddButton channelID={channel.uniqueID}/>
-        </>
+        <div style={{
+            minHeight: '100vh',
+            ...backgroundStyle
+        }}>
+            <div style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                minHeight: '100vh',
+                padding: '2rem',
+            }}>
+                <Banner 
+                    title={channel.name} 
+                    subtitle={channel.description}
+                    transparent={channel.picture?.url ? true : false}
+                />
+                <Wall 
+                    channel={channel}
+                    privateID={admin}
+                />
+                {!admin && <MakeButton />}
+                <AddButton channelID={channel.uniqueID}/>
+            </div>
+        </div>
     );
 }
 

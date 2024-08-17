@@ -1,14 +1,13 @@
 import { Alert } from 'reactstrap';
 
-export default function Banner({ title, subtitle }) {
+export default function Banner({ title, subtitle, transparent = false }) {
   return (
     <Alert 
       style={{
-        backgroundColor: 'rgba(41, 128, 185, 0.1)',
-        marginBottom: '1rem',
-        padding: '2rem 1rem',
-        borderRadius: '0.5rem',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+        backgroundColor: !transparent ? 'rgba(41, 128, 185, 0.1)' : 'transparent',
+        marginBottom: '0rem',
+        padding: '2rem 0.5rem',
+        border: 'none'
       }}
     >
       <div style={{
@@ -18,7 +17,7 @@ export default function Banner({ title, subtitle }) {
         textAlign: 'center'
       }}>
         <h1 style={{
-          color: '#1a5f7a', // Darker blue for better readability
+          color: '#0a4f6a', // Darker blue for better readability
           fontSize: '2.5rem',
           fontWeight: 'bold',
           marginBottom: '0.5rem'
@@ -27,7 +26,7 @@ export default function Banner({ title, subtitle }) {
         </h1>
         {subtitle && (
           <h3 style={{
-            color: '#34495e', // Deep gray for subtitle
+            color: '#24394e', // Deep gray for subtitle
             fontSize: '1.25rem',
             fontWeight: 'normal'
           }}>

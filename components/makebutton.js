@@ -16,8 +16,8 @@ export default function MakeButton() {
 
   const containerStyle = {
     position: 'absolute',
-    top: '20px',
-    right: '20px',
+    top: '10px',
+    right: '10px',
     zIndex: 1000
   };
 

@@ -7,7 +7,6 @@ import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
 
-// getMediaInfo function
 export function getMediaInfo(url) {
   if (!url)
     return {url: "", type: "", videotype: ""};
