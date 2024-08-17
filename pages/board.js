@@ -4,7 +4,7 @@ import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Board from "../components/board";
 
-export default ({ channel }) => {
+export default ({ channel, admin }) => {
     return (
         <>
             <Banner 
@@ -12,7 +12,8 @@ export default ({ channel }) => {
                 subtitle={channel.description} 
             />
             <Board 
-                channel={channel} 
+                channel={channel}
+                privateID={admin}
             />
             <MakeButton />
             <AddButton channelID={channel.uniqueID}/>
@@ -21,10 +22,11 @@ export default ({ channel }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    const { channelid } = ctx.query;
+    const { channelid, admin } = ctx.query;
 
     try {
-        const channel = await getChannel({ channelID: channelid });
+        // TODO: Hack for testing
+        const channel = await getChannel({ channelID: channelid, privateID: admin });
         
         if (!channel) {
             return {
@@ -37,7 +39,8 @@ export async function getServerSideProps(ctx) {
 
         return { 
             props: { 
-                channel: channel
+                channel: channel,
+                admin: admin ? true : false
             } 
         };
     } catch (err) {
