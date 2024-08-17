@@ -5,8 +5,8 @@ export default function Banner({ title, subtitle }) {
     <Alert 
       style={{
         backgroundColor: 'transparent',
-        marginBottom: '0rem',
-        padding: '2rem 0.5rem',
+        marginTop: '2.5rem',
+        padding: '0rem',
         border: 'none'
       }}
     >
@@ -16,23 +16,30 @@ export default function Banner({ title, subtitle }) {
         alignItems: 'center',
         textAlign: 'center'
       }}>
-        <h1 style={{
-          color: '#0a4f6a', // Darker blue for better readability
-          fontSize: '2.5rem',
-          fontWeight: 'bold',
-          marginBottom: '0.5rem'
+        <div style={{
+          backgroundColor: 'rgba(230, 240, 255, 0.4)', // Light blue background
+          borderRadius: '10px',
+          padding: '1.5rem 5rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
         }}>
-          {title}
-        </h1>
-        {subtitle && (
-          <h3 style={{
-            color: '#24394e', // Deep gray for subtitle
-            fontSize: '1.25rem',
-            fontWeight: 'normal'
+          <h1 style={{
+            color: '#0a4f6a', // Darker blue for better readability
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem'
           }}>
-            {subtitle}
-          </h3>
-        )}
+            {title}
+          </h1>
+          {subtitle && (
+            <h3 style={{
+              color: '#24394e', // Deep gray for subtitle
+              fontSize: '1.25rem',
+              fontWeight: 'normal'
+            }}>
+              {subtitle}
+            </h3>
+          )}
+        </div>
       </div>
     </Alert>
   );

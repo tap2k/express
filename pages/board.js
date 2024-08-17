@@ -6,6 +6,8 @@ import Banner from '../components/banner';
 import Board from "../components/board";
 
 export default ({ channel, admin }) => {
+    
+    //channel.picture.url = null;
     const backgroundStyle = channel.picture?.url 
         ? {
             backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
