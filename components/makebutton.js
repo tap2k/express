@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function MakeButton() {
+export default function MakeButton({...props}) {
   const buttonStyle = {
     backgroundColor: 'rgba(41, 128, 185, 0.8)',
     color: 'rgba(255, 255, 255, 1)',
@@ -12,17 +12,11 @@ export default function MakeButton() {
     boxShadow: '0 3px 6px rgba(0, 0, 0, 0.16)',
     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)',
     transition: 'all 0.3s ease',
-  };
-
-  const containerStyle = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    zIndex: 1000
+    cursor: 'pointer'
   };
 
   return (
-    <div style={containerStyle}>
+    <div {...props}>
       <Link href="/" rel="noopener noreferrer" target="_blank">
         <button 
           style={buttonStyle}

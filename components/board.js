@@ -165,15 +165,37 @@ export default function Board({ channel, privateID, ...props }) {
                   )}
                   {contentItem.description && (
                     <div 
-                      className="content-description" 
                       style={{ 
-                        padding: '10px', 
+                        padding: '20px 10px', 
                         fontSize: '14px',
                         fontWeight: 'bold',
                         lineHeight: '1.4',
                       }}
                     >
                       {contentItem.description}
+                    </div>
+                  )}
+                  {contentItem.ext_url && (
+                    <div 
+                      style={{ 
+                        padding: '10px', 
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        lineHeight: '1.4',
+                        backgroundColor: '#f0f0f0'
+                      }}
+                    >
+                      <a 
+                        href={contentItem.ext_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: '#0066cc', // Change this to your preferred color
+                          textDecoration: 'none',
+                        }}
+                      >
+                        Product Link
+                      </a>
                     </div>
                   )}
                 </div>

@@ -52,8 +52,7 @@ export default function Banner({ channel, admin }) {
       <Alert 
         style={{
           backgroundColor: 'transparent',
-          marginTop: '2.5rem',
-          padding: '0rem',
+          padding: '1rem',
           border: 'none'
         }}
       >
@@ -61,12 +60,12 @@ export default function Banner({ channel, admin }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          textAlign: 'center'
+          textAlign: 'center',
         }}>
           <div style={{
             backgroundColor: 'rgba(230, 240, 255, 0.6)', // Light blue background
             borderRadius: '10px',
-            padding: '1.5rem 10rem',
+            padding: '1.5rem 3rem',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             backdropFilter: 'blur(5px)',
           }}>

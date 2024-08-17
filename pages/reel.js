@@ -3,6 +3,12 @@ import Slideshow from "../components/slideshow";
 import MakeButton from "../components/makebutton";
 import getChannel from "../hooks/getchannel";
 
+const makeStyle = {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    zIndex: 1000
+  };
 
 export default ({ channel, currslide, admin }) => {
     const width = "100vw";
@@ -12,7 +18,7 @@ export default ({ channel, currslide, admin }) => {
     return (
         <>
             <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={admin} autoPlay />
-            { !admin && <MakeButton channel={channel} /> }
+            { !admin && <MakeButton style={makeStyle} /> }
         </>
     );
 }

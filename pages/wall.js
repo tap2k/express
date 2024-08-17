@@ -5,6 +5,13 @@ import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
+const makeStyle = {
+    position: 'absolute',
+    top: '10px',
+    right: '20px',
+    zIndex: 1000
+  };
+
 export default ({ channel, admin }) => {
     const backgroundStyle = channel.picture?.url 
         ? {
@@ -24,7 +31,7 @@ export default ({ channel, admin }) => {
             <div style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.3)',
                 minHeight: '100vh',
-                padding: '2rem',
+                padding: '4rem',
             }}>
                 <Banner 
                     channel={channel}
@@ -34,7 +41,7 @@ export default ({ channel, admin }) => {
                     channel={channel}
                     privateID={admin}
                 />
-                {!admin && <MakeButton />}
+                {!admin && <MakeButton style={makeStyle} />}
                 <AddButton channelID={channel.uniqueID}/>
             </div>
         </div>

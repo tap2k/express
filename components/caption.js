@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { FaShoppingBag } from 'react-icons/fa';
 
 export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false }) {
@@ -76,10 +75,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
                 </div>
             )}
             {url && (
-                <Link href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
+                <a href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link
-                </Link>
+                </a>
             )}
         </>
     );

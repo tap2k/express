@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { FaPlus } from 'react-icons/fa';
 
-const AddItemButton = ({ channelID }) => {
+export default function AddButton ({ channelID }) {
   const buttonStyle = {
     position: 'fixed',
-    bottom: '20px',
-    right: '20px',
+    bottom: '25px',
+    right: '10px',
     width: '50px',
     height: '50px',
     borderRadius: '50%',
@@ -34,7 +34,7 @@ const AddItemButton = ({ channelID }) => {
             e.target.style.transform = 'translateY(-2px) scale(1.05)';
         }}
         onMouseLeave={(e) => {
-            e.target.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
+            e.target.style.backgroundColor = 'rgba(0, 128, 185, 0.6)';
             e.target.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.16)';
             e.target.style.transform = 'translateY(0) scale(1)';
         }}
@@ -43,5 +43,3 @@ const AddItemButton = ({ channelID }) => {
     </Link>
   );
 };
-
-export default AddItemButton;
