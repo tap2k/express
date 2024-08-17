@@ -16,10 +16,10 @@ export default ({ channelID, useLocation }) => {
         return <Uploader channelID={channelID} useLocation={useLocation} />;
       case 'video':
         return <VideoRecorder channelID={channelID} useLocation={useLocation} />;
-      /*case 'photo':
+      case 'photo':
         return <MyCamera channelID={channelID} useLocation={useLocation} />;
       case 'audio':
-        return <Recorder channelID={channelID} useLocation={useLocation} />;*/
+        return <Recorder channelID={channelID} useLocation={useLocation} />;
       default:
         return null;
     }
@@ -32,26 +32,26 @@ export default ({ channelID, useLocation }) => {
           color={activeComponent === 'upload' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('upload')}
         >
-          Make a Card
+          Upload
         </StyledButton>
         <StyledButton
           color={activeComponent === 'video' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('video')}
         >
-          Record a Video
+          Video
         </StyledButton>
-        {false && <StyledButton
+        <StyledButton
           color={activeComponent === 'photo' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('photo')}
         >
           Photo
-        </StyledButton> }
-        {false && <StyledButton
+        </StyledButton>
+        <StyledButton
           color={activeComponent === 'audio' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('audio')}
         >
           Audio
-        </StyledButton>} 
+        </StyledButton>
       </ButtonGroup>
 
       <div>

@@ -12,11 +12,9 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
     const handleResize = () => {
       if (window.innerWidth < 600) {
         setColumns(3);
-      } else if (window.innerWidth < 900) {
-        setColumns(4);
       } else {
-        setColumns(6);
-      }
+        setColumns(4);
+      } 
     };
 
     handleResize();
@@ -29,7 +27,7 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
     gridTemplateColumns: `repeat(${columns}, 1fr)`,
     gridAutoRows: 'min-content',
     gap: '10px',
-    marginBottom: '10px',
+    margin: '10px',
     width: '100%',
     alignContent: 'start'
   };

@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Input, Button, Progress } from "reactstrap";
+import { Button, Progress } from "reactstrap";
 import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ImageGallery from './imagegallery';
 import { imageOptions } from './fileoptions';
+import ContentInputs from "./contentinputs";
 
 export default function Uploader({ channelID, useLocation, ...props }) {
   const router = useRouter();
@@ -15,10 +16,10 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-
   const descriptionRef = useRef();
-  const nameRef = useRef();
   const extUrlRef = useRef();
+  const nameRef = useRef();
+  const locationRef = useRef();
 
   let lat = null;
   let long = null;
@@ -54,7 +55,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         channelID, 
         lat, 
         long, 
-        description: descriptionRef.current.value, 
+        description: descriptionRef?.current?.value, 
         ext_url: extUrlRef?.current?.value, 
         published: true, 
         setProgress, 
@@ -63,7 +64,8 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       setSelectedImage(null);
       setUploadedFiles([]);
       setProgress(0);
-      descriptionRef.current.value = "";
+      if (descriptionRef?.current) 
+        descriptionRef.current.value = "";
       if (extUrlRef?.current)
         extUrlRef.current.value = "";
     }
@@ -208,40 +210,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       </div>
       <Progress value={progress} style={{marginBottom: 20}}  />
       
-      <input
-        ref={fileInputRef}
-        type="file"
-        style={{ display: 'none' }}
-        accept="image/*,audio/*,video/*"
-        onChange={handleFileUpload}
-        multiple
-      />
-      
-      <Input
-        type="textarea"
-        innerRef={descriptionRef}
-        placeholder="Enter text here"
-        style={{
-          width: '100%',
-          marginBottom: '5px',
-          minHeight: '80px',  // Set a minimum height
-          resize: 'vertical'   // Allow vertical resizing
-        }}
-        rows={2}  // Set initial number of visible text lines
-      />
-      <Input
-        type="text"
-        innerRef={nameRef}
-        placeholder="Enter your name"
-        style={{ width: '100%', marginBottom: '25px' }}
-      />
-      
-      { false && <Input
-        type="text"
-        innerRef={extUrlRef}
-        placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '20px' }}
-      /> }
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
 
       <Button
         color="success"

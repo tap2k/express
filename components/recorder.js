@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
-import { Input, Button } from "reactstrap";
+import { Button } from "reactstrap";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import ContentInputs from "./contentinputs";
 
 //const fileExt = "webm";
 const fileExt = "mp3";
@@ -48,9 +49,11 @@ export default function Recorder({ channelID, useLocation }) {
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [imageFile, setImageFile] = useState(null);
+  const fileInputRef = useRef();
   const descriptionRef = useRef();
   const extUrlRef = useRef();
-  const fileInputRef = useRef();
+  const nameRef = useRef();
+  const locationRef = useRef();
 
   let lat = null;
   let long = null;
@@ -251,19 +254,7 @@ export default function Recorder({ channelID, useLocation }) {
         )}
       </div>
 
-      <Input
-        type="text"
-        innerRef={descriptionRef}
-        placeholder="Enter text"
-        style={{ width: '100%', marginBottom: '10px' }}
-      />
-
-      <Input
-        type="text"
-        innerRef={extUrlRef}
-        placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '20px' }}
-      />
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
       
       <Button 
         color="success" 

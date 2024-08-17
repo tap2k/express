@@ -165,7 +165,7 @@ export default function Board({ channel, privateID, ...props }) {
                 </div>
                 <Caption 
                   title={contentItem.description}
-                  textAlignment={contentItem.textAlignment} 
+                  textAlignment={contentItem.textAlignment}
                 />
               </Card>
             </DraggableItem>

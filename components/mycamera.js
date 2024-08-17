@@ -1,14 +1,13 @@
-import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
-import { Input } from "reactstrap";
 import useGeolocation from "react-hook-geolocation";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { MdFlipCameraIos } from 'react-icons/md';
+import { createFilter } from "cc-gram";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
-import { createFilter } from "cc-gram";
+import ContentInputs from "./contentinputs";
 
 async function uploadImage(dataUri, lat, long, description, ext_url, channelID, router) 
 {
@@ -36,15 +35,16 @@ function isMobileSafari() {
 }
 
 export default function MyCamera({ channelID, useLocation, ...props }) {
-  const router = useRouter();
-  const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
+  const descriptionRef = useRef();
+  const extUrlRef = useRef();
+  const nameRef = useRef();
+  const locationRef = useRef();
 
   const ccgramFilter = createFilter({ init: false });
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
@@ -256,21 +256,9 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
           </div>
         }
       </div>
-      <Input
-        type="text"
-        innerRef={descriptionRef}
-        placeholder="Enter text"
-        style={{
-          width: '100%',
-          marginBottom: '10px'
-        }}
-      />
-      <Input
-        type="text"
-        innerRef={extUrlRef}
-        placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '25px' }}
-      />
+
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
+
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
           color="secondary" 

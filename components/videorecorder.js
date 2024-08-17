@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
-import { Input } from "reactstrap";
 import RecordRTC from 'recordrtc';
 import useGeolocation from "react-hook-geolocation";
 import { MdFlipCameraIos } from 'react-icons/md';
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import ContentInputs from "./contentinputs";
 
 const fileExt = "mp4";
 //const fileExt = "webm";
@@ -40,9 +40,6 @@ function isMobileSafari() {
 
 export default function VideoRecorder({ channelID, useLocation }) {
   const router = useRouter();
-  const descriptionRef = useRef();
-  const nameRef = useRef();
-  const extUrlRef = useRef();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
   const streamRef = useRef(null);
@@ -53,6 +50,10 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [countdown, setCountdown] = useState(null);
+  const descriptionRef = useRef();
+  const extUrlRef = useRef();
+  const nameRef = useRef();
+  const locationRef = useRef();
 
   let lat = null;
   let long = null;
@@ -297,33 +298,8 @@ export default function VideoRecorder({ channelID, useLocation }) {
         )}
       </div>
       
-      <Input
-        type="textarea"
-        innerRef={descriptionRef}
-        placeholder="Enter text here"
-        style={{
-          width: '100%',
-          marginBottom: '5px',
-          minHeight: '80px',  // Set a minimum height
-          resize: 'vertical'   // Allow vertical resizing
-        }}
-        rows={2}  // Set initial number of visible text lines
-      />
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />      
 
-      { false && <Input
-        type="text"
-        innerRef={extUrlRef}
-        placeholder="Enter URL"
-        style={{ width: '100%', marginBottom: '25px' }}
-      /> }
-
-      <Input
-        type="text"
-        innerRef={nameRef}
-        placeholder="Enter your name"
-        style={{ width: '100%', marginBottom: '25px' }}
-      />
-      
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
           color="secondary" 
@@ -339,10 +315,11 @@ export default function VideoRecorder({ channelID, useLocation }) {
           block 
           onClick={(e) => {
             e.preventDefault();
-            const description = descriptionRef.current.value;
+            const description = descriptionRef?.current?.value;
             const ext_url = extUrlRef?.current?.value;
             uploadRecording(blob, lat, long, description, ext_url, channelID, status, router);
-            descriptionRef.current.value = "";
+            if (descriptionRef?.current)
+              descriptionRef.current.value = "";
             if (extUrlRef?.current)
               extUrlRef.current.value = "";
           }}
