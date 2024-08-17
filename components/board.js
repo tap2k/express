@@ -7,7 +7,7 @@ import { Card } from 'reactstrap';
 import Masonry from 'react-masonry-css';
 import Content from './content';
 import Caption from './caption';
-import { FaGripVertical, FaTrash } from 'react-icons/fa';
+import ItemControls from './itemcontrols';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateSubmission from '../hooks/updatesubmission';
@@ -146,7 +146,7 @@ export default function Board({ channel, privateID, ...props }) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <Card className="mb-1">
+              <Card className="mb-2">
                 <div style={{ position: 'relative' }}>
                   <Content 
                     itemUrl={contentItem.mediafile?.url}
@@ -157,37 +157,10 @@ export default function Board({ channel, privateID, ...props }) {
                     index={index}
                   />
                   {privateID && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 5,
-                      right: 5,
-                      display: 'flex',
-                      gap: '5px',
-                      zIndex: 1000
-                    }}>
-                      <button 
-                        style={{ 
-                          background: 'rgba(255, 255, 255, 0.5)', 
-                          border: 'none', 
-                          borderRadius: '50%', 
-                          padding: '5px',
-                          cursor: 'move'
-                        }}
-                      >
-                        <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(contentItem.id)} 
-                        style={{ 
-                          background: 'rgba(255, 255, 255, 0.7)', 
-                          border: 'none', 
-                          borderRadius: '50%', 
-                          padding: '5px' 
-                        }}
-                      >
-                        <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
-                      </button>
-                    </div>
+                    <ItemControls 
+                      onDelete={handleDelete} 
+                      contentID={contentItem.id} 
+                    />
                   )}
                 </div>
                 <Caption 
@@ -204,7 +177,7 @@ export default function Board({ channel, privateID, ...props }) {
             width: auto;
           }
           .my-masonry-grid_column {
-            padding-left: 5px;
+            padding-left: 10px;
             background-clip: padding-box;
           }
         `}</style>

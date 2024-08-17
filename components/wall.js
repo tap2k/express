@@ -3,10 +3,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import { FaGripVertical, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
+import ItemControls from './itemcontrols';
 import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
 import setError from '../hooks/seterror';
@@ -167,37 +167,10 @@ export default function Wall ({ channel, privateID, ...props }) {
                   index={index}
                 />
                 {privateID && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 5,
-                    right: 5,
-                    display: 'flex',
-                    gap: '10px',
-                    zIndex: 1000
-                  }}>
-                    <button 
-                      style={{ 
-                        background: 'rgba(255, 255, 255, 0.5)', 
-                        border: 'none', 
-                        borderRadius: '50%', 
-                        padding: '5px',
-                        cursor: 'move'
-                      }}
-                    >
-                      <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(contentItem.id)} 
-                      style={{ 
-                        background: 'rgba(255, 255, 255, 0.7)', 
-                        border: 'none', 
-                        borderRadius: '50%', 
-                        padding: '5px' 
-                      }}
-                    >
-                      <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
-                    </button>
-                  </div>
+                  <ItemControls 
+                    onDelete={handleDelete} 
+                    contentID={contentItem.id} 
+                  />
                 )}
               </div>
             </DragItem>
