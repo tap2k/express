@@ -168,8 +168,8 @@ export default function Wall ({ channel, privateID, ...props }) {
                 />
                 {privateID && (
                   <ItemControls 
+                    contentItem={contentItem} 
                     onDelete={handleDelete} 
-                    contentID={contentItem.id} 
                   />
                 )}
               </div>

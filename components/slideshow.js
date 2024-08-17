@@ -445,7 +445,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
         <ModalBody>
-              <ContentInputs style={{marginBottom: '5px'}} descriptionRef={descriptionRef} extUrlRef={extUrlRef} />
+              <ContentInputs style={{marginBottom: '5px'}} contentItem={getCurrentContent()} descriptionRef={descriptionRef} extUrlRef={extUrlRef} />
               <Input
                 type="select"
                 name="textalignment"

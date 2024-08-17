@@ -6,7 +6,6 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import { Card } from 'reactstrap';
 import Masonry from 'react-masonry-css';
 import Content from './content';
-import Caption from './caption';
 import ItemControls from './itemcontrols';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -87,6 +86,8 @@ export default function Board({ channel, privateID, ...props }) {
   };
 
   const handleDragEnd = async (id, dropIndex) => {
+    if (id == prevContents[dropIndex].id)
+      return;
     try {
       await updateSubmission({ contentID: id, order: prevContents[dropIndex].order });
       await router.replace(router.asPath, undefined, { scroll: false });
@@ -158,8 +159,8 @@ export default function Board({ channel, privateID, ...props }) {
                   />
                   {privateID && (
                     <ItemControls 
+                      contentItem={contentItem} 
                       onDelete={handleDelete} 
-                      contentID={contentItem.id} 
                     />
                   )}
                   {contentItem.description && (

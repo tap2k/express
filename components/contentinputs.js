@@ -1,6 +1,6 @@
 import { Input } from 'reactstrap'; 
 
-export default function ContentInputs ({ descriptionRef, extUrlRef, nameRef, locationRef, ...props }) {
+export default function ContentInputs ({ contentItem, descriptionRef, extUrlRef, nameRef, locationRef, ...props }) {
   return (
     <div {...props}>
       {descriptionRef && (
@@ -8,6 +8,7 @@ export default function ContentInputs ({ descriptionRef, extUrlRef, nameRef, loc
           type="textarea"
           innerRef={descriptionRef}
           placeholder="Enter text here"
+          defaultValue={contentItem?.description}
           style={{
             width: '100%',
             marginBottom: '5px',
@@ -23,6 +24,7 @@ export default function ContentInputs ({ descriptionRef, extUrlRef, nameRef, loc
           type="text"
           innerRef={extUrlRef}
           placeholder="Enter URL"
+          defaultValue={contentItem?.ext_url}
           style={{ width: '100%', marginBottom: '5px' }}
         />
       )}
