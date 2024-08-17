@@ -3,19 +3,20 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, Button, Form, FormGroup, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, Input } from 'reactstrap';
 import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import Content, { getMediaInfo } from "./content";
-import Caption from "./caption";
-import ChannelAdder from './channeladder';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import Content, { getMediaInfo } from "./content";
+import Caption from "./caption";
+import ContentInputs from "./contentinputs";
+import ChannelAdder from './channeladder';
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -51,12 +52,9 @@ const SlideTracker = ({ setCurrSlide }) => {
 
 export default function Slideshow({ channel, height, width, startSlide, autoPlay, privateID, ...props }) 
 {
-  if (!channel) return null;
+  if (!channel) return;
 
   const router = useRouter();
-  const descriptionRef = useRef(null);
-  const extUrlRef = useRef(null);
-  const textAlignmentRef = useRef(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,6 +62,11 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
+  const descriptionRef = useRef();
+  const extUrlRef = useRef();
+  const nameRef = useRef();
+  const locationRef = useRef();
+  const textAlignmentRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
 
@@ -442,28 +445,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <Form>
-            <FormGroup>
-              <Input
-                type="textarea"
-                name="description"
-                id="description"
-                innerRef={descriptionRef}
-                placeholder='Enter caption here'
-                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.description || ''}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                name="extUrl"
-                id="extUrl"
-                innerRef={extUrlRef}
-                placeholder='Enter URL here'
-                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.ext_url || ''}
-              />
-            </FormGroup>
-            <FormGroup>
+              <ContentInputs style={{marginBottom: '5px'}} descriptionRef={descriptionRef} extUrlRef={extUrlRef} />
               <Input
                 type="select"
                 name="textalignment"
@@ -475,7 +457,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                 <option value="center">center</option>
                 <option value="bottom">bottom</option>
               </Input>
-            </FormGroup>
             <Button
               onClick={handleSave}
               style={{...buttonStyle}}
@@ -483,7 +464,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
             >
               Update Slide
             </Button>
-          </Form>
         </ModalBody>
       </Modal>
 
