@@ -401,6 +401,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     autoPlay={isPlaying} 
                     interval={channel.interval} 
                     index={0}
+                    cover
                   />
                   <Caption 
                     title={channel.name}
