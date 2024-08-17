@@ -340,10 +340,11 @@ export default function VideoRecorder({ channelID, useLocation }) {
           onClick={(e) => {
             e.preventDefault();
             const description = descriptionRef.current.value;
-            const ext_url = extUrlRef.current.value;
+            const ext_url = extUrlRef?.current?.value;
             uploadRecording(blob, lat, long, description, ext_url, channelID, status, router);
             descriptionRef.current.value = "";
-            extUrlRef.current.value = "";
+            if (extUrlRef?.current)
+              extUrlRef.current.value = "";
           }}
           disabled={status !== "stopped" || !blob}
         >

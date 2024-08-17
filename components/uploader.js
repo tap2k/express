@@ -55,7 +55,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         lat, 
         long, 
         description: descriptionRef.current.value, 
-        ext_url: extUrlRef.current.value, 
+        ext_url: extUrlRef?.current?.value, 
         published: true, 
         setProgress, 
         router
@@ -64,7 +64,8 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       setUploadedFiles([]);
       setProgress(0);
       descriptionRef.current.value = "";
-      extUrlRef.current.value = "";
+      if (extUrlRef?.current)
+        extUrlRef.current.value = "";
     }
     catch (error) {
       console.error('Error uploading content:', error);

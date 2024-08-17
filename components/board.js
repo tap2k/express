@@ -146,7 +146,7 @@ export default function Board({ channel, privateID, ...props }) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <Card className="mb-4">
+              <Card className="mb-1">
                 <div style={{ position: 'relative' }}>
                   <Content 
                     itemUrl={contentItem.mediafile?.url}
@@ -162,7 +162,7 @@ export default function Board({ channel, privateID, ...props }) {
                       top: 5,
                       right: 5,
                       display: 'flex',
-                      gap: '10px',
+                      gap: '5px',
                       zIndex: 1000
                     }}>
                       <button 
@@ -201,11 +201,10 @@ export default function Board({ channel, privateID, ...props }) {
         <style jsx global>{`
           .my-masonry-grid {
             display: flex;
-            margin-left: -30px;
             width: auto;
           }
           .my-masonry-grid_column {
-            padding-left: 10px;
+            padding-left: 5px;
             background-clip: padding-box;
           }
         `}</style>

@@ -13,7 +13,9 @@ export default function AudioPlayer({ src, width, height, autoPlay, index })
         position: 'relative',
         width,
         height,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        minHeight: '150px',
+        backgroundColor: 'black'
       }} 
       onClick={toggle}
     >
