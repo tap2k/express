@@ -1,15 +1,32 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { StyledButton } from './recorderstyles';
 
 export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage }) {
   const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
   const [dalleImage, setDalleImage] = useState(null);
+  const [columns, setColumns] = useState(6);
   const dallePromptRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) {
+        setColumns(3);
+      } else if (window.innerWidth < 900) {
+        setColumns(4);
+      } else {
+        setColumns(6);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const imageGridStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
+    gridTemplateColumns: `repeat(${columns}, 1fr)`,
     gridAutoRows: 'min-content',
     gap: '10px',
     marginBottom: '10px',
@@ -34,7 +51,8 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
 
   const imageStyle = {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    objectFit: 'cover',
   };
 
   const selectedOverlayStyle = {
@@ -93,45 +111,44 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
 
   return (
     <>
-      { dalleImage ? 
+      {dalleImage ? (
         <div 
-        style={itemStyle}
-        onClick={() => setSelectedImage(dalleImage)}
-      >
-        <img 
-          src={dalleImage} 
-          alt="DALL-E generated" 
-          style={{...imageStyle, objectFit: "contain", height: '90%'}}
-        />
-        {/*selectedImage === dalleImage && (
-          <div style={selectedOverlayStyle}>✓</div>
-        )*/}
-      </div> : 
-      <div style={imageGridStyle}>
-        {imageOptions.map((image, index) => (
-          <div 
-            key={index} 
-            style={{
-              ...itemStyle,
-              backgroundColor: image === "None" ? '#f8f9fa' : 'transparent',
-            }}
-            onClick={() => setSelectedImage(image)}
-          >
-            {image === "None" ? (
-              <span>None</span>
-            ) : (
-              <img 
-                src={`images/${image}`} 
-                alt={image} 
-                style={imageStyle}
-              />
-            )}
-            {selectedImage === image && (
-              <div style={selectedOverlayStyle}>✓</div>
-            )}
-          </div>
-        ))}
-      </div> }
+          style={itemStyle}
+          onClick={() => setSelectedImage(dalleImage)}
+        >
+          <img 
+            src={dalleImage} 
+            alt="DALL-E generated" 
+            style={{...imageStyle, objectFit: "contain", height: '90%'}}
+          />
+        </div>
+      ) : (
+        <div style={imageGridStyle}>
+          {imageOptions.map((image, index) => (
+            <div 
+              key={index} 
+              style={{
+                ...itemStyle,
+                backgroundColor: image === "None" ? '#f8f9fa' : 'transparent',
+              }}
+              onClick={() => setSelectedImage(image)}
+            >
+              {image === "None" ? (
+                <span>None</span>
+              ) : (
+                <img 
+                  src={`images/${image}`} 
+                  alt={image} 
+                  style={imageStyle}
+                />
+              )}
+              {selectedImage === image && (
+                <div style={selectedOverlayStyle}>✓</div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={dalleContainerStyle}>
         <input 

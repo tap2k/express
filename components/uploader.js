@@ -99,7 +99,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
       <div
         style={{
           width: '100%',
-          height: '480px',
+          height: '500px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',
