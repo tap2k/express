@@ -29,14 +29,14 @@ export default ({ channel, admin }) => {
                 padding: '2rem',
             }}>
                 <Banner 
-                    title={channel.name} 
-                    subtitle={channel.description}
+                    channel={channel}
+                    admin={admin}
                 />
                 <Board 
                     channel={channel}
                     privateID={admin}
                 />
-                <MakeButton />
+                {!admin && <MakeButton />}
                 <AddButton channelID={channel.uniqueID}/>
             </div>
         </div>

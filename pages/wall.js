@@ -27,8 +27,8 @@ export default ({ channel, admin }) => {
                 padding: '2rem',
             }}>
                 <Banner 
-                    title={channel.name} 
-                    subtitle={channel.description}
+                    channel={channel}
+                    admin={admin}
                 />
                 <Wall 
                     channel={channel}

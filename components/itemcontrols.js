@@ -53,7 +53,7 @@ export default function itemControls ({ contentItem, onDelete }) {
       }}>
         <button 
           style={{ 
-            background: 'rgba(255, 255, 255, 0.5)', 
+            background: 'rgba(255, 255, 255, 0.7)', 
             border: 'none', 
             borderRadius: '50%', 
             padding: '5px',
