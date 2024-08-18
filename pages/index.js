@@ -152,8 +152,16 @@ export default function Home() {
                             <Card style={linkCardStyle}>
                                 <CardBody style={{padding: '15px'}}>
                                     <Link href={`/reel?channelid=${channelID}`} style={{...linkStyle, color: '#007bff'}} rel="noopener noreferrer" target="_blank">
-                                        <strong style={{fontSize: 'x-large'}}>Share</strong>
+                                        <strong style={{fontSize: 'x-large'}}>Reel</strong>
                                         <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your reel</p>
+                                    </Link>
+                                </CardBody>
+                            </Card>
+                            <Card style={linkCardStyle}>
+                                <CardBody style={{padding: '15px'}}>
+                                    <Link href={`/board?channelid=${channelID}`} style={{...linkStyle, color: '#007bff'}} rel="noopener noreferrer" target="_blank">
+                                        <strong style={{fontSize: 'x-large'}}>Board</strong>
+                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your board</p>
                                     </Link>
                                 </CardBody>
                             </Card>

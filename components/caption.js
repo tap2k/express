@@ -2,14 +2,14 @@ import { FaShoppingBag } from 'react-icons/fa';
 
 export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false }) {
     if (!title && !url) return null;
-    
+
     const captionStyleBase = {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor: 'rgba(0,0,0,0.4)',
         color: 'white',
-        borderRadius: '15px',
+        borderRadius: '10px',
         padding: '30px',
         backdropFilter: 'blur(5px)',
         width: 'fit-content',
@@ -34,11 +34,11 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',
-        fontSize: 'clamp(12px, 1.5vw, 18px)',
+        fontSize: 'clamp(14px, 1.5vw, 18px)',
         fontWeight: 'bold',
         color: 'white',
         textDecoration: 'none',
@@ -50,20 +50,21 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleTop = { ...linkStyleBase, bottom: '90px' };
+    const linkStyleTop = { ...linkStyleBase, bottom: '100px' };
     const linkStyleBottom = { ...linkStyleBase, top: '30px' };
     
     const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
-        fontSize: 'clamp(16px, 2.5vw, 32px)',
+        fontSize: 'clamp(24px, 2.5vw, 32px)',
         lineHeight: 1.2,
-        marginBottom: '10px'
+        fontWeight: 'bold'
     };
 
     const subtitleStyle = {
-        fontSize: 'clamp(14px, 1.5vw, 24px)',
-        lineHeight: 1.3
+        fontSize: 'clamp(18px, 1.5vw, 24px)',
+        lineHeight: 1.3,
+        marginTop: '10px',
     };
 
     return (

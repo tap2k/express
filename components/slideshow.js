@@ -269,10 +269,10 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     position: 'fixed',
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    padding: '10px',
-    borderRadius: '20px',
+    padding: 'clamp(10px, 1vw, 15px)',
+    borderRadius: 'clamp(10px, 2vw, 20px)',
     zIndex: 1000,
-    alignItems: 'center'
+    alignItems: 'center',
   };
 
   const iconButtonStyle = {
@@ -280,13 +280,23 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     border: 'none',
     color: 'white',
     cursor: 'pointer',
-    padding: '5px'
+    padding: 'clamp(10px, 0.5vw, 20px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 'clamp(16px, 2.5vw, 32px)',
   };
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
       { privateID && 
-        <div style={{...iconBarStyle, flexDirection: 'column', top: 20, left: 15, gap: 15}}>
+        <div style={{
+          ...iconBarStyle, 
+          flexDirection: 'column', 
+          top: 'clamp(10px, 2vh, 20px)', 
+          left: 'clamp(7px, 1.5vw, 15px)', 
+          gap: 'clamp(7px, 1.5vh, 15px)'
+        }}>
           <button 
             onClick={() => {
               if (showTitle && currSlide === 0) {
@@ -296,75 +306,65 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                 setIsModalOpen(true);
               }
             }} 
-            style={{...iconButtonStyle, position: 'static', margin: 5}}
+            style={iconButtonStyle}
           >
-            <FaEdit size={24}/>
+            <FaEdit />
           </button>
-          <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-            <FaTrash size={24}/>
+          <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={iconButtonStyle}>
+            <FaTrash />
           </button>
           {!(showTitle && currSlide === 0) && (
             <>
-              <button onClick={() => moveSlide(-1)} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-                <FaArrowLeft size={24}/>
+              <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
+                <FaArrowLeft />
               </button>
-              <button onClick={() => moveSlide(1)} style={{...iconButtonStyle, position: 'static', margin: 5}}>
-                <FaArrowRight size={24}/>
+              <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
+                <FaArrowRight />
               </button>
             </>
           )}
         </div>
       }
-
-      <style>
-        {`
-          @keyframes buttonAnimation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-          }
-          .heart-button:active, .check-button:active {
-            animation: buttonAnimation 0.3s ease;
-          }
-        `}
-      </style>
       
-      <div style={{...iconBarStyle, bottom: '20px', left: '50%', transform: 'translateX(-50%)', gap: '40px'}}>
+      <div style={{
+        ...iconBarStyle, 
+        bottom: 'clamp(10px, 2vh, 20px)', 
+        left: '50%', 
+        transform: 'translateX(-50%)', 
+        gap: 'clamp(10px, 2vw, 20px)'
+      }}>
         <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
-          <FaPaperclip size={28} />
+          <FaPaperclip />
         </button>
         <button onClick={toggleFullScreen} style={iconButtonStyle}>
-          <FaExpandArrowsAlt size={28} />
+          <FaExpandArrowsAlt />
         </button>
         <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
           <button style={iconButtonStyle}>
-            <FaPlus size={28} />
+            <FaPlus />
           </button>
         </Link>
         <button onClick={togglePlayPause} style={iconButtonStyle}>
-          {isPlaying ? <FaPause size={28} /> : <FaPlay size={24} />}
+          {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
         {getCurrentContent()?.ext_url ? (
           <button 
             onClick={handleClaim} 
             style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
-            className="check-button"
           >
-            <FaCheck size={28} />
+            <FaCheck />
           </button>
         ) : (
           <button 
             onClick={handleHeartClick} 
             style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
-            className="heart-button"
           >
-            <FaHeart size={28} />
+            <FaHeart />
           </button>
         )}
         <button 
           onClick={async () => {
-            if (showTitle && currSlide == 0)
-            {
+            if (showTitle && currSlide == 0) {
               console.log("DOWNLOAD");
               return;
             }
@@ -374,9 +374,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
               await downloadURL(currentContent.audiofile?.url);
             } 
           }} 
-          style={{...iconButtonStyle, position: 'static', margin: 5}}
+          style={iconButtonStyle}
         >
-          <FaDownload size={24}/>
+          <FaDownload />
         </button>
       </div>
 

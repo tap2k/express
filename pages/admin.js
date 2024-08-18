@@ -10,7 +10,8 @@ export default ({ channel, currslide, privateID }) => {
     //const height = "100vh";
 
     return (
-        <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} startSlide={currslide} privateID={privateID} />
+        //<Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} startSlide={currslide} privateID={privateID} />
+        <Wall channel={channel} privateID={privateID} />
     );
 }
 
