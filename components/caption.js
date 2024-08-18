@@ -10,7 +10,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         backgroundColor: 'rgba(0,0,0,0.4)',
         color: 'white',
         borderRadius: '10px',
-        padding: '30px',
+        padding: '25px',
         backdropFilter: 'blur(5px)',
         width: 'fit-content',
         maxWidth: '80%',
@@ -21,8 +21,8 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal',
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '30px' };
-    const captionStyleBottom = { ...captionStyleBase, bottom: '90px' };
+    const captionStyleTop = { ...captionStyleBase, top: '4vh' };
+    const captionStyleBottom = { ...captionStyleBase, bottom: '15vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '48%', transform: 'translate(-50%, -50%)' };
     
     const captionStyle = 
@@ -38,7 +38,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',
-        fontSize: 'clamp(14px, 1.5vw, 18px)',
+        fontSize: 'clamp(16px, 2vh, 24px)',
         fontWeight: 'bold',
         color: 'white',
         textDecoration: 'none',
@@ -50,19 +50,19 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleTop = { ...linkStyleBase, bottom: '100px' };
+    const linkStyleTop = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 200px)' };
     const linkStyleBottom = { ...linkStyleBase, top: '30px' };
     
     const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
-        fontSize: 'clamp(24px, 2.5vw, 32px)',
+        fontSize: 'clamp(18px, 3vh, 32px)',
         lineHeight: 1.2,
         fontWeight: 'bold'
     };
 
     const subtitleStyle = {
-        fontSize: 'clamp(18px, 1.5vw, 24px)',
+        fontSize: 'clamp(14px, 1.5vh, 24px)',
         lineHeight: 1.3,
         marginTop: '10px',
     };

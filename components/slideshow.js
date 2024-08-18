@@ -269,8 +269,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     position: 'fixed',
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    padding: 'clamp(10px, 1vw, 15px)',
-    borderRadius: 'clamp(10px, 2vw, 20px)',
+    padding: 'clamp(8px, 0.5vh, 20px)',
+    borderRadius: 'clamp(10px, 2vh, 20px)',
     zIndex: 1000,
     alignItems: 'center',
   };
@@ -280,11 +280,11 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     border: 'none',
     color: 'white',
     cursor: 'pointer',
-    padding: 'clamp(10px, 0.5vw, 20px)',
+    padding: 'clamp(8px, 1.5vh, 20px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 'clamp(16px, 2.5vw, 32px)',
+    fontSize: 'clamp(20px, 2.5vh, 32px)',
   };
 
   return (
