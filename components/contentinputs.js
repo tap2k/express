@@ -1,6 +1,17 @@
 import { Input } from 'reactstrap'; 
 
-export default function ContentInputs ({ contentItem, descriptionRef, nameRef, emailRef, locationRef, extUrlRef, ...props }) {
+export default function ContentInputs ({ contentItem, descriptionRef, nameRef, emailRef, locationRef, extUrlRef, textAlignmentRef, ...props }) {
+  
+  const inputStyle = {
+    fontSize: 'large',
+    width: '100%',
+    height: '50px',
+    marginBottom: '10px',
+    borderRadius: '12px',
+    border: '1px solid #ccc',
+    padding: '0 15px',
+  };
+  
   return (
     <div {...props}>
       {descriptionRef && (
@@ -9,12 +20,7 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
           innerRef={descriptionRef}
           placeholder="Enter text here"
           defaultValue={contentItem?.description}
-          style={{
-            width: '100%',
-            marginBottom: '5px',
-            minHeight: '80px',
-            resize: 'vertical'
-          }}
+          style={inputStyle}
           rows={2}
         />
       )}
@@ -24,7 +30,8 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
           type="text"
           innerRef={nameRef}
           placeholder="Enter your name"
-          style={{ width: '100%', marginBottom: '5px' }}
+          defaultValue={contentItem?.name}
+          style={inputStyle}
         />
       )}
 
@@ -33,16 +40,18 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
           type="text"
           innerRef={emailRef}
           placeholder="Enter your email"
-          style={{ width: '100%', marginBottom: '5px' }}
+          defaultValue={contentItem?.email}
+          style={inputStyle}
         />
       )}
       
-      {false && locationRef && (
+      {locationRef && (
         <Input
           type="text"
           innerRef={locationRef}
           placeholder="Enter your location"
-          style={{ width: '100%' }}
+          defaultValue={contentItem?.location}
+          style={inputStyle}
         />
       )}
 
@@ -52,8 +61,22 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
           innerRef={extUrlRef}
           placeholder="Enter URL"
           defaultValue={contentItem?.ext_url}
-          style={{ width: '100%', marginBottom: '5px' }}
+          style={inputStyle}
         />
+      )}
+
+      {textAlignmentRef && (
+        <Input
+          type="select"
+          name="textalignment"
+          id="textalignment"
+          innerRef={textAlignmentRef}
+          defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.textalignment || 'center'}
+        >
+          <option value="top">top</option>
+          <option value="center">center</option>
+          <option value="bottom">bottom</option>
+        </Input>
       )}
     </div>
   );

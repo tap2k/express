@@ -4,7 +4,7 @@ import { Alert, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
-import ChannelAdder from './channeladder';
+import ChannelEditor from './channeleditor';
 
 export default function Banner({ channel, admin }) {
 
@@ -127,7 +127,7 @@ export default function Banner({ channel, admin }) {
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ChannelAdder
+          <ChannelEditor
             initialData={channel}
             onSubmit={handleSaveChannel}
           />

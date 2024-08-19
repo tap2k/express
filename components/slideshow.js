@@ -17,7 +17,7 @@ import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Caption from "./caption";
 import ContentInputs from "./contentinputs";
-import ChannelAdder from './channeladder';
+import ChannelEditor from './channeleditor';
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -63,9 +63,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const descriptionRef = useRef();
-  const extUrlRef = useRef();
-  const textAlignmentRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
 
@@ -207,20 +204,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     });
   };
 
-  const handleSave = async () => {
-    const contentToEdit = getCurrentContent();
-    if (contentToEdit) {
-      await updateSubmission({
-        contentID: contentToEdit.id,
-        description: descriptionRef.current.value,
-        ext_url: extUrlRef.current.value,
-        textAlignment: textAlignmentRef.current.value
-      });
-    }
-    setIsModalOpen(false);
-    await router.replace(router.asPath);
-  };
-
   const handleSaveChannel = async (data) => {
     await updateChannel(data);
     if (data.email && data.email != channel.email) {
@@ -254,15 +237,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
-
-  const buttonStyle = {
-    fontSize: 'large',
-    width: '100%',
-    padding: '10px',
-    marginTop: '20px',
-    borderRadius: '12px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-  };
 
   const iconBarStyle = {
     position: 'fixed',
@@ -442,40 +416,18 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </CarouselProvider>
       </div>
 
-      <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
-        <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
-        <ModalBody>
-              <ContentInputs style={{marginBottom: '5px'}} contentItem={getCurrentContent()} descriptionRef={descriptionRef} extUrlRef={extUrlRef} />
-              <Input
-                type="select"
-                name="textalignment"
-                id="textalignment"
-                innerRef={textAlignmentRef}
-                defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.textalignment || 'center'}
-              >
-                <option value="top">top</option>
-                <option value="center">center</option>
-                <option value="bottom">bottom</option>
-              </Input>
-            <Button
-              onClick={handleSave}
-              style={{...buttonStyle}}
-              color="primary" 
-            >
-              Update Slide
-            </Button>
-        </ModalBody>
-      </Modal>
 
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ChannelAdder
+          <ChannelEditor
             initialData={channel}
             onSubmit={handleSaveChannel}
           />
         </ModalBody>
       </Modal>
+
+      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} slideshow />
 
       {channel.audiofile?.url && (
         <audio

@@ -40,7 +40,8 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
   }
 
   useEffect(() => {
-    if (!carouselContext) return;
+    if (!carouselContext)
+      return;
 
     const onChange = () => {
       if (!mediaRef?.current) return;
@@ -75,11 +76,21 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
   }, [carouselContext, mediaRef, autoPlay]);
 
   useEffect(() => {
+    if (!carouselContext)
+    {
+      if (autoPlay && mediaRef?.current)
+      {
+        resetMedia();
+        play();
+      }
+      return;
+    }  
+    
     if (autoPlay && carouselContext.state.currentSlide === index)
       play();
     else
       pause();
-  }, [autoPlay, mediaRef]);
+  }, [autoPlay, mediaRef, carouselContext]);
 
   return { isPlaying, play, pause, toggle, resetMedia };
 };

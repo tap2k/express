@@ -6,7 +6,6 @@ import getMediaURL from "../hooks/getmediaurl";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
-//import MyReactPlayer from './myreactplayer';
 
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
 

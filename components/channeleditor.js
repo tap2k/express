@@ -3,7 +3,7 @@ import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
 
-export default function ChannelAdder({ initialData, onSubmit }) {
+export default function ChannelEditor({ initialData, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
@@ -260,6 +260,7 @@ export default function ChannelAdder({ initialData, onSubmit }) {
           </div>
         </FormGroup>
       )}
+      
       <FormGroup>
         <div style={audioGridStyle}>
           {audioOptions.map((audio, index) => (
@@ -287,9 +288,11 @@ export default function ChannelAdder({ initialData, onSubmit }) {
           ))}
         </div>
       </FormGroup>
+      
       <audio ref={audioRef} style={{ display: 'none' }}>
         Your browser does not support the audio element.
       </audio>
+      
       <Button
         onClick={handleSubmit}
         style={buttonStyle}

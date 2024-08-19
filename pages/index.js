@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
-import ChannelAdder from '../components/channeladder';
+import ChannelEditor from '../components/channeleditor';
 import { RecorderWrapper } from '../components/recorderstyles';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
@@ -46,8 +46,6 @@ export default function Home() {
             console.error("Error creating channel:", error);
         }
     };
-    
-
 
     const handleEmailSubmit = async () => {
         if (emailInputRef.current?.value) {
@@ -167,7 +165,7 @@ export default function Home() {
                             </Card>
                         </div>
                     ) : (
-                        <ChannelAdder onSubmit={handleAddChannel} />
+                        <ChannelEditor onSubmit={handleAddChannel} />
                     )}
                 </div>
             </RecorderWrapper>

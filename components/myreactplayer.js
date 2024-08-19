@@ -73,6 +73,16 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     }, [autoPlay, videoRef, carouselContext]);
 
     useEffect(() => {
+        if (!carouselContext)
+        {
+            if (autoPlay && mediaRef?.current)
+            {
+            resetMedia();
+            play();
+            }
+            return;
+        }  
+
         if (autoPlay && carouselContext.state.currentSlide === index)
             play();
         else
