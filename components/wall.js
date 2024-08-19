@@ -159,8 +159,7 @@ export default function Wall ({ channel, privateID, ...props }) {
             >
               <div style={{ position: 'relative', height: '250px' }}>
                 <Content 
-                  itemUrl={contentItem.mediafile?.url}
-                  audioUrl={contentItem.audiofile?.url}
+                  contentItem={contentItem}
                   width="100%" 
                   height="100%"
                   cover

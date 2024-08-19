@@ -4,7 +4,7 @@ import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
 import PlayIcon from './playicon';
 
-export default function VideoPlayer({ width, height, autoPlay, index, children }) 
+export default function VideoPlayer({ width, height, controls, autoPlay, index, children }) 
 {
   const videoRef = useRef();
   const { isPlaying, toggle } = useMediaControl(videoRef, index, autoPlay);
@@ -29,6 +29,7 @@ export default function VideoPlayer({ width, height, autoPlay, index, children }
         }}
         playsInline
         preload='metadata'
+        controls={controls}
       >
         {children}
       </video>

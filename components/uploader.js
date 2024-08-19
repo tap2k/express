@@ -209,6 +209,15 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         )}
       </div>
       <Progress value={progress} style={{marginBottom: 20}}  />
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        style={{ display: 'none' }}
+        accept="image/*,audio/*,video/*"
+        onChange={handleFileUpload}
+        multiple
+      />
       
       <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
 
@@ -216,7 +225,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         color="success"
         onClick={uploadContent}
         block
-        disabled={!uploadedFiles.length && !selectedImage}
+        //disabled={!uploadedFiles.length && !selectedImage}
       >
         Submit
       </Button>

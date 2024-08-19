@@ -1,4 +1,5 @@
 import { FaShoppingBag } from 'react-icons/fa';
+import { isMediaFile } from './content';
 
 export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, small = false }) 
 {
@@ -76,7 +77,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
                     {subtitle && !small & <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            {url && !small && (
+            {url && !small && !isMediaFile(url) && (
                 <a href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link

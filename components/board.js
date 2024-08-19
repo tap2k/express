@@ -5,7 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { Card } from 'reactstrap';
 import Masonry from 'react-masonry-css';
-import Content from './content';
+import Content, { isMediaFile } from './content';
 import Caption from './caption';
 import ItemControls from './itemcontrols';
 import { confirmAlert } from 'react-confirm-alert';
@@ -152,8 +152,7 @@ export default function Board({ channel, privateID, ...props }) {
                 <div style={{ position: 'relative' }}>
                   <div style={{ position: 'relative' }}>
                     <Content 
-                      itemUrl={contentItem.mediafile?.url}
-                      audioUrl={contentItem.audiofile?.url}
+                      contentItem={contentItem}
                       width="100%" 
                       height="auto"
                       cover
@@ -185,7 +184,7 @@ export default function Board({ channel, privateID, ...props }) {
                       {contentItem.description}
                     </div>
                   }
-                  {contentItem.ext_url &&
+                  {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
                     <div 
                       style={{ 
                         padding: '15px 10px', 

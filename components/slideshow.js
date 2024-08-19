@@ -13,6 +13,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Caption from "./caption";
 import ContentInputs from "./contentinputs";
@@ -97,8 +98,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       audioRef.current.play();
     else
       audioRef.current.pause();
-    const mediaType = channel.contents && getMediaInfo(getCurrentContent()?.mediafile?.url).type;
-    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8;
+    const mediaType = getMediaInfo(getCurrentContent()).type;
+    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') || mediaType?.startsWith('youtube') ? audioRef.current.volume = 0.2 :  audioRef.current.volume = 0.8;
   }, [currSlide, isPlaying]);
 
   const toggleFullScreen = () => {
@@ -394,14 +395,14 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
             {showTitle && (
               <Slide style={{height: height, width: width}}>
                 <div style={{position: 'relative', height: '100%', width: '100%'}}>
-                  <Content 
-                    itemUrl={channel.picture?.url} 
+                  <FullImage 
+                    src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
                     width={width} 
                     height={height} 
-                    autoPlay={isPlaying} 
-                    interval={channel.interval} 
                     index={0}
                     cover
+                    autoPlay={isPlaying}
+                    interval={channel.interval} 
                   />
                   <Caption 
                     title={channel.name}
@@ -417,8 +418,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                 <Slide style={{height: height, width: width}} key={index} index={index}>
                   <Content 
                     key={contentItem.id} 
-                    itemUrl={contentItem.mediafile?.url} 
-                    audioUrl={contentItem.audiofile?.url}
+                    contentItem={contentItem}
                     width={width} 
                     height={height} 
                     autoPlay={isPlaying} 

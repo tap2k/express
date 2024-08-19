@@ -1,12 +1,12 @@
-import { useEffect, useContext, useCallback } from 'react';
+import { useEffect, useContext } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
 export default function useSlideAdvance(index, autoPlay, interval) {
     const carouselContext = useContext(CarouselContext);
     const advanceSlide = () => {
-            if (carouselContext) {
-            const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
-            carouselContext.setStoreState({ currentSlide: nextSlideIndex });
+                if (carouselContext) {
+                const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
+                carouselContext.setStoreState({ currentSlide: nextSlideIndex });
             }
         };
 
@@ -25,8 +25,8 @@ export default function useSlideAdvance(index, autoPlay, interval) {
         onChange(); 
 
         return () => {
-        clearInterval(timer);
-        carouselContext.unsubscribe(onChange);
+            clearInterval(timer);
+            carouselContext.unsubscribe(onChange);
         };
     }, [carouselContext, autoPlay, interval]);
 }

@@ -1,14 +1,18 @@
 import { useRef } from "react";
+import useSlideAdvance from '../hooks/useslideadvance';
 import useMediaControl from "../hooks/usemediacontrol";
 import PlayIcon from './playicon';
 
-export default function FullImage({ src, width, height, audioUrl, index, cover, autoPlay }) 
+export default function FullImage({ src, width, height, audioUrl, index, cover, controls, autoPlay, interval }) 
 {
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
 
-  //if (!src)
-  //  src = "images/flowers6.png";
+  useSlideAdvance(
+    index, 
+    autoPlay && !audioUrl, 
+    interval ? interval : 5000
+  );
   
   return (
         <div 

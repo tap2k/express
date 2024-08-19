@@ -2,7 +2,7 @@ import { useRef } from "react";
 import useMediaControl from "../hooks/usemediacontrol";
 import PlayIcon from './playicon';
 
-export default function AudioPlayer({ src, width, height, autoPlay, index }) 
+export default function AudioPlayer({ src, width, height, controls, autoPlay, index }) 
 {  
   const audioRef = useRef();
   const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
