@@ -424,6 +424,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     autoPlay={isPlaying} 
                     interval={channel.interval} 
                     index={index}
+                    cover={contentItem.mediafile?.url?.includes("maustrocard")}
                   />
                   <Caption 
                       title={contentItem.description}

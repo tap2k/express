@@ -44,7 +44,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
           // This is a regular gallery image
           const response = await fetch(`images/${selectedImage}`);
           const blob = await response.blob();
-          formData.append(selectedImage, blob, selectedImage);
+          formData.append(selectedImage, blob, "maustrocard-"+selectedImage);
         }
       }
       if (uploadedFiles.length > 0) {

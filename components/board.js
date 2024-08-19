@@ -6,6 +6,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import { Card } from 'reactstrap';
 import Masonry from 'react-masonry-css';
 import Content from './content';
+import Caption from './caption';
 import ItemControls from './itemcontrols';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -149,24 +150,33 @@ export default function Board({ channel, privateID, ...props }) {
             >
               <Card className="mb-2">
                 <div style={{ position: 'relative' }}>
-                  <Content 
-                    itemUrl={contentItem.mediafile?.url}
-                    audioUrl={contentItem.audiofile?.url}
-                    width="100%" 
-                    height="auto"
-                    cover
-                    index={index}
-                  />
-                  {privateID && (
+                  <div style={{ position: 'relative' }}>
+                    <Content 
+                      itemUrl={contentItem.mediafile?.url}
+                      audioUrl={contentItem.audiofile?.url}
+                      width="100%" 
+                      height="auto"
+                      cover
+                      index={index}
+                    />
+                    {contentItem.description && contentItem.mediafile?.url?.includes("maustrocard") &&
+                      <Caption 
+                        title={contentItem.description}
+                        textAlignment="center"
+                        small
+                      />
+                    }
+                  </div>
+                  {privateID && 
                     <ItemControls 
                       contentItem={contentItem} 
                       onDelete={handleDelete} 
                     />
-                  )}
-                  {contentItem.description && (
+                  }
+                  {contentItem.description && !contentItem.mediafile?.url?.includes("maustrocard") &&
                     <div 
                       style={{ 
-                        padding: '20px 10px', 
+                        padding: '15px 10px', 
                         fontSize: '14px',
                         fontWeight: 'bold',
                         lineHeight: '1.4',
@@ -174,11 +184,11 @@ export default function Board({ channel, privateID, ...props }) {
                     >
                       {contentItem.description}
                     </div>
-                  )}
-                  {contentItem.ext_url && (
+                  }
+                  {contentItem.ext_url &&
                     <div 
                       style={{ 
-                        padding: '10px', 
+                        padding: '15px 10px', 
                         fontSize: '14px',
                         fontWeight: 'bold',
                         lineHeight: '1.4',
@@ -197,7 +207,7 @@ export default function Board({ channel, privateID, ...props }) {
                         Product Link
                       </a>
                     </div>
-                  )}
+                  }
                 </div>
               </Card>
             </DraggableItem>

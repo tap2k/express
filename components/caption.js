@@ -1,6 +1,7 @@
 import { FaShoppingBag } from 'react-icons/fa';
 
-export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false }) {
+export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, small = false }) 
+{
     if (!title && !url) return null;
 
     const captionStyleBase = {
@@ -23,7 +24,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     
     const captionStyleTop = { ...captionStyleBase, top: '4vh' };
     const captionStyleBottom = { ...captionStyleBase, bottom: '15vh' };
-    const captionStyleCenter = { ...captionStyleBase, top: '48%', transform: 'translate(-50%, -50%)' };
+    const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     
     const captionStyle = 
         textAlignment === 'top' ? captionStyleTop :
@@ -56,7 +57,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
-        fontSize: 'clamp(18px, 3vh, 32px)',
+        fontSize: small ? '16px' : 'clamp(18px, 3vh, 32px)',
         lineHeight: 1.2,
         fontWeight: 'bold'
     };
@@ -72,10 +73,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             {(title || subtitle) && (
                 <div style={captionStyle}>
                     {title && <div style={titleStyle}>{title}</div>}
-                    {subtitle && <div style={subtitleStyle}>{subtitle}</div>}
+                    {subtitle && !small & <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            {url && (
+            {url && !small && (
                 <a href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link
