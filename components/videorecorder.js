@@ -11,7 +11,7 @@ import ContentInputs from "./contentinputs";
 const fileExt = "mp4";
 //const fileExt = "webm";
 
-async function uploadRecording(blob, lat, long, description, ext_url, channelID, status, router) 
+async function uploadRecording(blob, lat, long, description, name, email, location, ext_url, channelID, status, router) 
 {
   if (status != "stopped" || !blob)
     return;
@@ -19,7 +19,7 @@ async function uploadRecording(blob, lat, long, description, ext_url, channelID,
   const myFormData = new formData();
   try {
     myFormData.append('mediafile', blob, "video."+fileExt);
-    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
   }
   catch (error) {
     console.error('Error uploading content:', error);
@@ -51,9 +51,10 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const nameRef = useRef();
+  const emailRef = useRef();
   const locationRef = useRef();
+  const extUrlRef = useRef();
 
   let lat = null;
   let long = null;
@@ -298,7 +299,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
         )}
       </div>
       
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />      
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
@@ -315,9 +316,7 @@ export default function VideoRecorder({ channelID, useLocation }) {
           block 
           onClick={(e) => {
             e.preventDefault();
-            const description = descriptionRef?.current?.value;
-            const ext_url = extUrlRef?.current?.value;
-            uploadRecording(blob, lat, long, description, ext_url, channelID, status, router);
+            uploadRecording(blob, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, status, router);
             if (descriptionRef?.current)
               descriptionRef.current.value = "";
             if (extUrlRef?.current)

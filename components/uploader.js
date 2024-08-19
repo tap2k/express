@@ -17,9 +17,10 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const nameRef = useRef();
+  const emailRef = useRef();
   const locationRef = useRef();
+  const extUrlRef = useRef();
 
   let lat = null;
   let long = null;
@@ -55,7 +56,10 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         channelID, 
         lat, 
         long, 
-        description: descriptionRef?.current?.value, 
+        description: descriptionRef?.current?.value,
+        name: nameRef?.current?.value,
+        email: emailRef?.current?.value,
+        location: locationRef?.current?.value,
         ext_url: extUrlRef?.current?.value, 
         published: true, 
         setProgress, 
@@ -219,7 +223,7 @@ export default function Uploader({ channelID, useLocation, ...props }) {
         multiple
       />
       
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
 
       <Button
         color="success"

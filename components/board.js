@@ -184,6 +184,21 @@ export default function Board({ channel, privateID, ...props }) {
                       {contentItem.description}
                     </div>
                   }
+                  {contentItem.name &&
+                    <div 
+                      style={{ 
+                        padding: '15px 10px', 
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        lineHeight: '1.4',
+                        textAlign: 'right',
+                        marginRight: '10px',
+                        color: '#aaaaaa'
+                      }}
+                    >
+                      From: {contentItem.name}
+                    </div>
+                  }
                   {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
                     <div 
                       style={{ 

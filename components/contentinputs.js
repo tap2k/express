@@ -1,6 +1,6 @@
 import { Input } from 'reactstrap'; 
 
-export default function ContentInputs ({ contentItem, descriptionRef, extUrlRef, nameRef, locationRef, ...props }) {
+export default function ContentInputs ({ contentItem, descriptionRef, nameRef, emailRef, locationRef, extUrlRef, ...props }) {
   return (
     <div {...props}>
       {descriptionRef && (
@@ -19,21 +19,20 @@ export default function ContentInputs ({ contentItem, descriptionRef, extUrlRef,
         />
       )}
 
-      {extUrlRef && (
-        <Input
-          type="text"
-          innerRef={extUrlRef}
-          placeholder="Enter URL"
-          defaultValue={contentItem?.ext_url}
-          style={{ width: '100%', marginBottom: '5px' }}
-        />
-      )}
-
-      {false && nameRef && (
+      {nameRef && (
         <Input
           type="text"
           innerRef={nameRef}
           placeholder="Enter your name"
+          style={{ width: '100%', marginBottom: '5px' }}
+        />
+      )}
+
+      {emailRef && (
+        <Input
+          type="text"
+          innerRef={emailRef}
+          placeholder="Enter your email"
           style={{ width: '100%', marginBottom: '5px' }}
         />
       )}
@@ -44,6 +43,16 @@ export default function ContentInputs ({ contentItem, descriptionRef, extUrlRef,
           innerRef={locationRef}
           placeholder="Enter your location"
           style={{ width: '100%' }}
+        />
+      )}
+
+      {extUrlRef && (
+        <Input
+          type="text"
+          innerRef={extUrlRef}
+          placeholder="Enter URL"
+          defaultValue={contentItem?.ext_url}
+          style={{ width: '100%', marginBottom: '5px' }}
         />
       )}
     </div>

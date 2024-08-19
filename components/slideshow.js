@@ -65,8 +65,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const audioRef = useRef(null);
   const descriptionRef = useRef();
   const extUrlRef = useRef();
-  const nameRef = useRef();
-  const locationRef = useRef();
   const textAlignmentRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;

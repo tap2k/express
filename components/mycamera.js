@@ -9,7 +9,7 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import ContentInputs from "./contentinputs";
 
-async function uploadImage(dataUri, lat, long, description, ext_url, channelID, router) 
+async function uploadImage(dataUri, lat, long, description, name, email, location, ext_url, channelID, router) 
 {
   const formData = require('form-data');
   const myFormData = new formData();
@@ -21,7 +21,7 @@ async function uploadImage(dataUri, lat, long, description, ext_url, channelID, 
       return; 
     }
     myFormData.append('mediafile', blob, "image.png");
-    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
   }
   catch (error) {
     console.error('Error uploading content:', error);
@@ -42,9 +42,10 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
   const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const nameRef = useRef();
+  const emailRef = useRef();
   const locationRef = useRef();
+  const extUrlRef = useRef();
 
   const ccgramFilter = createFilter({ init: false });
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
@@ -257,7 +258,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
         }
       </div>
 
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
@@ -273,9 +274,7 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
           size="lg"
           onClick={(e) => {
             e.preventDefault();
-            const description = descriptionRef.current.value;
-            const ext_url = extUrlRef.current.value;
-            uploadImage(dataUri, lat, long, description, ext_url, channelID, router);
+            uploadImage(dataUri, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, router);
             descriptionRef.current.value = "";
             extUrlRef.current.value = "";
           }}

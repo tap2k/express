@@ -11,13 +11,13 @@ import ContentInputs from "./contentinputs";
 //const fileExt = "webm";
 const fileExt = "mp3";
 
-async function uploadRecording(myFormData, lat, long, description, ext_url, channelID, status, router) 
+async function uploadRecording(myFormData, lat, long, description, name, email, location, ext_url, channelID, status, router) 
 {
   if (status !== "stopped" || !myFormData.has('mediafile'))
     return;
 
   try {
-    await uploadSubmission({myFormData, lat, long, description, ext_url, published: true, channelID, router});
+    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
   } catch (error) {
     console.error('Error uploading content:', error);
     setErrorText('Failed to upload content. Please try again.');
@@ -51,9 +51,10 @@ export default function Recorder({ channelID, useLocation }) {
   const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef();
   const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const nameRef = useRef();
   const locationRef = useRef();
+  const emailRef = useRef();
+  const extUrlRef = useRef();
 
   let lat = null;
   let long = null;
@@ -120,9 +121,6 @@ export default function Recorder({ channelID, useLocation }) {
     e.preventDefault();
     if (!blob)
       return;
-
-    const description = descriptionRef.current.value;
-    const ext_url = extUrlRef.current.value;
     
     const formData = new FormData();
     if (imageFile) 
@@ -133,7 +131,7 @@ export default function Recorder({ channelID, useLocation }) {
     else
       formData.append('mediafile', blob, 'audio.' + fileExt);
     
-    await uploadRecording(formData, lat, long, description, ext_url, channelID, status, router);
+    await uploadRecording(formData, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, status, router);
     descriptionRef.current.value = "";
     extUrlRef.current.value = "";
     setImageFile(null);
@@ -254,7 +252,7 @@ export default function Recorder({ channelID, useLocation }) {
         )}
       </div>
 
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} extUrlRef={extUrlRef} locationRef={locationRef} />
+      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
       
       <Button 
         color="success" 

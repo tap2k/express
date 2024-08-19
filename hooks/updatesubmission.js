@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission( {myFormData, contentID, order, description, published, ext_url, deletePic, textAlignment} ) 
+export default async function updateSubmission( {myFormData, contentID, order, description, name, email, location, ext_url, published, deletePic, textAlignment} ) 
 {  
   if (!contentID)
   {
@@ -19,6 +19,12 @@ export default async function updateSubmission( {myFormData, contentID, order, d
     myFormData.append("order", order);
   if (description != undefined)
     myFormData.append("description", description);
+  if (name)
+    myFormData.append("name", name);
+  if (email)
+    myFormData.append("email", email);
+  if (location)
+    myFormData.append("location", location);
   if (ext_url != undefined)
     myFormData.append("ext_url", ext_url);
   if (published != undefined)

@@ -12,10 +12,11 @@ export default function itemControls ({ contentItem, onDelete }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const descriptionRef = useRef();
-  const extUrlRef = useRef();
   const nameRef = useRef();
+  const emailRef = useRef();
   const locationRef = useRef();
-
+  const extUrlRef = useRef();
+  
   const router = useRouter();
 
   const buttonStyle = {
@@ -30,8 +31,11 @@ export default function itemControls ({ contentItem, onDelete }) {
   const handleSave = async () => {
     await updateSubmission({
       contentID: contentItem.id,
-      description: descriptionRef.current.value,
-      ext_url: extUrlRef.current.value
+      description: descriptionRef?.current?.value,
+      name: nameRef?.current?.value,
+      email: emailRef?.current?.value,
+      location: locationRef?.current?.value,
+      ext_url: extUrlRef?.current?.value, 
     });
     setIsModalOpen(false);
     await router.replace(router.asPath);
@@ -91,7 +95,7 @@ export default function itemControls ({ contentItem, onDelete }) {
       <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ContentInputs style={{marginBottom: '5px'}} contentItem={contentItem} descriptionRef={descriptionRef} extUrlRef={extUrlRef} />
+          <ContentInputs style={{marginBottom: '5px'}} contentItem={contentItem} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
           <Button
             onClick={handleSave}
             style={{...buttonStyle}}
