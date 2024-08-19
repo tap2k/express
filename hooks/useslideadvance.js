@@ -2,6 +2,9 @@ import { useEffect, useContext } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
 export default function useSlideAdvance(index, autoPlay, interval) {
+    if (!interval)
+        interval = 5000;
+
     const carouselContext = useContext(CarouselContext);
     const advanceSlide = () => {
                 if (carouselContext) {

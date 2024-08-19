@@ -11,7 +11,7 @@ export default function FullImage({ src, width, height, audioUrl, index, cover, 
   useSlideAdvance(
     index, 
     autoPlay && !audioUrl, 
-    interval ? interval : 5000
+    interval
   );
   
   return (

@@ -115,7 +115,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
 
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
-    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}`;  
+    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${currSlide}`;  
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
       .catch(err => console.error('Failed to copy URL: ', err));
@@ -346,7 +346,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <button onClick={togglePlayPause} style={iconButtonStyle}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
-        {getCurrentContent()?.ext_url ? (
+        {/*getCurrentContent()?.ext_url ? (
           <button 
             onClick={handleClaim} 
             style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
@@ -360,7 +360,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           >
             <FaHeart />
           </button>
-        )}
+        )*/}
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
