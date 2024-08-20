@@ -1,14 +1,41 @@
 import { useState } from "react";
 import { FaGripVertical, FaEdit, FaTrash } from 'react-icons/fa';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import deleteSubmission from '../hooks/deletesubmission';
 import ContentEditor from "./contenteditor";
 
-export default function itemControls ({ contentItem, onDelete, drag }) {
+export default function ItemControls ({ contentItem, drag }) {
 
   if (!contentItem)
     return;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
+  const handleDelete = () => {
+    confirmAlert({
+      title: 'Delete item?',
+      message: 'Are you sure you want to delete this item?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteSubmission({contentID: contentItem.id});
+              await router.replace(router.asPath, undefined, { scroll: false });
+            } catch (error) {
+              setError(error);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
   return (
     <>
       <div style={{
@@ -44,7 +71,7 @@ export default function itemControls ({ contentItem, onDelete, drag }) {
           <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
         </button>
         <button 
-          onClick={() => onDelete(contentItem.id)} 
+          onClick={handleDelete} 
           style={{ 
             background: 'rgba(255, 255, 255, 0.7)', 
             border: 'none', 

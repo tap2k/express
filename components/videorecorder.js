@@ -38,7 +38,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function VideoRecorder({ channelID, useLocation }) {
+export default function VideoRecorder({ channelID, lat, long }) {
   const router = useRouter();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
@@ -55,15 +55,6 @@ export default function VideoRecorder({ channelID, useLocation }) {
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
-
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
 
   useEffect(() => {
     checkForMultipleCameras();

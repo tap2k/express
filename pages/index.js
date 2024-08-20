@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
+import { StyledInput } from '../components/recorderstyles';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
 import ChannelEditor from '../components/channeleditor';
 import { RecorderWrapper } from '../components/recorderstyles';
@@ -175,7 +176,7 @@ export default function Home() {
                 </ModalHeader>
                 <ModalBody>
                     <p>Your channel has been created successfully. Please enter your email address below to receive links to manage and view your reel.</p>
-                    <Input 
+                    <StyledInput 
                         type="email" 
                         placeholder="Enter your email address" 
                         innerRef={emailInputRef}

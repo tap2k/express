@@ -8,7 +8,6 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
 import ItemControls from './itemcontrols';
 import updateSubmission from '../hooks/updatesubmission';
-import deleteSubmission from '../hooks/deletesubmission';
 import setError from '../hooks/seterror';
 
 const DragItem = ({ id, index, moveItem, onDragStart, onDragEnd, children }) => {
@@ -116,31 +115,6 @@ export default function Wall ({ channel, privateID, ...props }) {
     }
   };
 
-  const handleDelete = (id) => {
-    confirmAlert({
-      title: 'Delete item?',
-      message: 'Are you sure you want to delete this item?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-            try {
-              await deleteSubmission({contentID: id});
-              setContents(contents.filter(content => content.id !== id));
-              await router.replace(router.asPath, undefined, { scroll: false });
-            } catch (error) {
-              setError(error);
-            }
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
   const Backend = typeof window !== 'undefined' && 'ontouchstart' in window ? TouchBackend : HTML5Backend;
 
   return (
@@ -168,7 +142,6 @@ export default function Wall ({ channel, privateID, ...props }) {
                 {privateID && (
                   <ItemControls 
                     contentItem={contentItem} 
-                    onDelete={handleDelete}
                     drag
                   />
                 )}

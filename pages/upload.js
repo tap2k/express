@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { useState } from 'react';
+import useGeolocation from "react-hook-geolocation";
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import Uploader from '../components/uploader';
@@ -10,16 +11,25 @@ const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr
 export default ({ channelID, useLocation }) => {
   const [activeComponent, setActiveComponent] = useState('upload');
 
+  let lat = null;
+  let long = null;
+
+  if (useLocation) {
+    const geolocation = useGeolocation();
+    lat = geolocation.latitude;
+    long = geolocation.longitude;
+  }
+
   const renderComponent = () => {
     switch(activeComponent) {
       case 'upload':
-        return <Uploader channelID={channelID} useLocation={useLocation} />;
+        return <Uploader channelID={channelID} lat={lat} long={long} />;
       case 'video':
-        return <VideoRecorder channelID={channelID} useLocation={useLocation} />;
+        return <VideoRecorder channelID={channelID} lat={lat} long={long} />;
       case 'photo':
-        return <MyCamera channelID={channelID} useLocation={useLocation} />;
+        return <MyCamera channelID={channelID} lat={lat} long={long} />;
       case 'audio':
-        return <Recorder channelID={channelID} useLocation={useLocation} />;
+        return <Recorder channelID={channelID} lat={lat} long={long} />;
       default:
         return null;
     }

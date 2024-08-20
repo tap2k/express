@@ -44,7 +44,7 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function Recorder({ channelID, useLocation }) {
+export default function Recorder({ channelID, lat, long }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -55,15 +55,6 @@ export default function Recorder({ channelID, useLocation }) {
   const locationRef = useRef();
   const emailRef = useRef();
   const extUrlRef = useRef();
-
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
 
   const {
     status,

@@ -1,37 +1,10 @@
 import { Card } from 'reactstrap';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import deleteSubmission from '../hooks/deletesubmission';
 import Content, { isMediaFile } from './content';
 import Caption from './caption';
 import ItemControls from './itemcontrols';
 
 export default function ContentCard({ contentItem, privateID, controls, autoPlay, drag }) 
 {
-  const handleDelete = (id) => {
-    confirmAlert({
-      title: 'Delete item?',
-      message: 'Are you sure you want to delete this item?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-            try {
-              await deleteSubmission({contentID: id});
-              await router.replace(router.asPath, undefined, { scroll: false });
-            } catch (error) {
-              setError(error);
-            }
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
   return (
     <Card className="mb-2">
       <div style={{ position: 'relative' }}>
@@ -55,7 +28,6 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
         {privateID && 
           <ItemControls 
             contentItem={contentItem} 
-            onDelete={handleDelete}
             drag={drag}
           />
         }

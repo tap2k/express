@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
 import { Button, Progress } from "reactstrap";
-import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
@@ -9,7 +8,7 @@ import ImageGallery from './imagegallery';
 import { imageOptions } from './fileoptions';
 import ContentInputs from "./contentinputs";
 
-export default function Uploader({ channelID, useLocation, ...props }) {
+export default function Uploader({ channelID, lat, long, ...props }) {
   const router = useRouter();
   const fileInputRef = useRef();
   const [progress, setProgress] = useState(0);
@@ -21,15 +20,6 @@ export default function Uploader({ channelID, useLocation, ...props }) {
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
-
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
 
   const uploadContent = async (e) => {
     e.preventDefault();

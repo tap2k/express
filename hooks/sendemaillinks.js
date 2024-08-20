@@ -24,7 +24,7 @@ export default async function sendEmailLinks({channelID, privateID, channelName,
     subject: "EXPRESS: " + channelName,
     recipient: email,
     body: body
-}, {
-    headers: { 'Content-Type': 'application/json' }
-});
+  }, {
+      headers: { 'Content-Type': 'application/json' }
+  });
 }  

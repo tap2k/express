@@ -38,22 +38,16 @@ export default async function uploadSubmission({myFormData, channelID, contentID
 
   if (title)
     myFormData.append("title", title);
-
   if (description)
     myFormData.append("description", description);
-
   if (name)
     myFormData.append("name", name);
-
   if (email)
     myFormData.append("email", email);
-
   if (location)
     myFormData.append("location", location);
-
   if (ext_url)
     myFormData.append("ext_url", ext_url);
-
   if (published)
     myFormData.append("published", "true");
 

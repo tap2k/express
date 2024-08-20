@@ -34,7 +34,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function MyCamera({ channelID, useLocation, ...props }) {
+export default function MyCamera({ channelID, lat, long, ...props }) {
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
@@ -49,15 +49,6 @@ export default function MyCamera({ channelID, useLocation, ...props }) {
 
   const ccgramFilter = createFilter({ init: false });
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
-
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
 
   useEffect(() => {
     checkForMultipleCameras();
