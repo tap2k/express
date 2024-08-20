@@ -9,8 +9,8 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        color: 'white',
+        backgroundColor: 'rgba(200,200,200,0.7)',
+        color: 'rgba(255,255,255,1.0)',
         borderRadius: '10px',
         padding: '25px',
         backdropFilter: 'blur(5px)',
@@ -26,23 +26,21 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     const captionStyleTop = { ...captionStyleBase, top: '4vh' };
     const captionStyleBottom = { ...captionStyleBase, bottom: '15vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
-    
     const captionStyle = 
         textAlignment === 'top' ? captionStyleTop :
-        textAlignment === 'bottom' ? captionStyleBottom :
-        captionStyleCenter;
+        textAlignment === 'bottom' ? captionStyleBottom : captionStyleCenter;
     
     const linkStyleBase = {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(200,200,200,0.7)',
+        color: 'rgba(255,255,255,1.0)',
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',
         fontSize: 'clamp(16px, 2vh, 24px)',
         fontWeight: 'bold',
-        color: 'white',
         textDecoration: 'none',
         display: 'flex',
         alignItems: 'center',
@@ -54,7 +52,6 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     
     const linkStyleTop = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 200px)' };
     const linkStyleBottom = { ...linkStyleBase, top: '30px' };
-    
     const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {

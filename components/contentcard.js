@@ -34,7 +34,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
         {contentItem.description && !contentItem.mediafile?.url?.includes("maustrocard") &&
           <div 
             style={{ 
-              padding: '15px 10px', 
+              padding: '10px 15px', 
               fontSize: '14px',
               fontWeight: 'bold',
               lineHeight: '1.4',
@@ -46,7 +46,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
         {contentItem.name &&
           <div 
             style={{ 
-              padding: '15px 10px', 
+              padding: '5px 10px', 
               fontSize: '14px',
               fontWeight: 'bold',
               lineHeight: '1.4',

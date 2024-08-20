@@ -25,8 +25,7 @@ export default ({ channel, privateID }) => {
             <PageMenu privateID={privateID} />
             {!privateID && <MakeButton style={makeStyle} />}
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
-            <AddButton channelID={channel.uniqueID}/>
-
+            <AddButton channel={channel}/>
         </>
     );
 }

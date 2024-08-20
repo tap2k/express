@@ -34,7 +34,7 @@ export default ({ channel, privateID }) => {
                     channel={channel}
                     privateID={privateID}
                 />
-                <AddButton channelID={channel.uniqueID} />
+                <AddButton channel={channel} />
             </div>
         </div>
     );
