@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaGripVertical, FaEdit, FaTrash } from 'react-icons/fa';
 import ContentEditor from "./contenteditor";
 
-export default function itemControls ({ contentItem, onDelete }) {
+export default function itemControls ({ contentItem, onDelete, drag }) {
 
   if (!contentItem)
     return;
@@ -19,7 +19,7 @@ export default function itemControls ({ contentItem, onDelete }) {
         gap: '5px',
         zIndex: 1000
       }}>
-        <button 
+        { drag && <button 
           style={{ 
             background: 'rgba(255, 255, 255, 0.7)', 
             border: 'none', 
@@ -29,7 +29,7 @@ export default function itemControls ({ contentItem, onDelete }) {
           }}
         >
           <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
-        </button>
+        </button> }
         <button 
           onClick={() => {
             setIsModalOpen(true);

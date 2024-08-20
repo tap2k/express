@@ -1,0 +1,115 @@
+import { Card } from 'reactstrap';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import deleteSubmission from '../hooks/deletesubmission';
+import Content, { isMediaFile } from './content';
+import Caption from './caption';
+import ItemControls from './itemcontrols';
+
+export default function ContentCard({ contentItem, privateID, controls, autoPlay, drag }) 
+{
+  const handleDelete = (id) => {
+    confirmAlert({
+      title: 'Delete item?',
+      message: 'Are you sure you want to delete this item?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteSubmission({contentID: id});
+              await router.replace(router.asPath, undefined, { scroll: false });
+            } catch (error) {
+              setError(error);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
+  return (
+    <Card className="mb-2">
+      <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }}>
+          <Content 
+            contentItem={contentItem}
+            width="100%" 
+            height="auto"
+            cover
+            controls={controls}
+            autoPlay={autoPlay}
+          />
+          {contentItem.description && contentItem.mediafile?.url?.includes("maustrocard") &&
+            <Caption 
+              title={contentItem.description}
+              textAlignment="center"
+              small
+            />
+          }
+        </div>
+        {privateID && 
+          <ItemControls 
+            contentItem={contentItem} 
+            onDelete={handleDelete}
+            drag={drag}
+          />
+        }
+        {contentItem.description && !contentItem.mediafile?.url?.includes("maustrocard") &&
+          <div 
+            style={{ 
+              padding: '15px 10px', 
+              fontSize: '14px',
+              fontWeight: 'bold',
+              lineHeight: '1.4',
+            }}
+          >
+            {contentItem.description}
+          </div>
+        }
+        {contentItem.name &&
+          <div 
+            style={{ 
+              padding: '15px 10px', 
+              fontSize: '14px',
+              fontWeight: 'bold',
+              lineHeight: '1.4',
+              textAlign: 'right',
+              marginRight: '10px',
+              color: '#aaaaaa'
+            }}
+          >
+            From: {contentItem.name}
+          </div>
+        }
+        {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
+          <div 
+            style={{ 
+              padding: '15px 10px', 
+              fontSize: '14px',
+              fontWeight: 'bold',
+              lineHeight: '1.4',
+              backgroundColor: '#f0f0f0'
+            }}
+          >
+            <a 
+              href={contentItem.ext_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#0066cc', // Change this to your preferred color
+                textDecoration: 'none',
+              }}
+            >
+              Product Link
+            </a>
+          </div>
+        }
+      </div>
+    </Card>
+  );
+}

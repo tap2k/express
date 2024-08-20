@@ -1,7 +1,6 @@
-import { Input } from 'reactstrap'; 
+import { Input } from 'reactstrap';
 
-export default function ContentInputs ({ contentItem, descriptionRef, nameRef, emailRef, locationRef, extUrlRef, textAlignmentRef, ...props }) {
-  
+export default function ContentInputs({ contentItem, descriptionRef, nameRef, emailRef, locationRef, extUrlRef, textAlignmentRef, ...props }) {
   const inputStyle = {
     fontSize: 'large',
     width: '100%',
@@ -11,7 +10,7 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
     border: '1px solid #ccc',
     padding: '0 15px',
   };
-  
+
   return (
     <div {...props}>
       {descriptionRef && (
@@ -68,17 +67,16 @@ export default function ContentInputs ({ contentItem, descriptionRef, nameRef, e
       {textAlignmentRef && (
         <Input
           type="select"
-          name="textalignment"
-          id="textalignment"
           innerRef={textAlignmentRef}
-          defaultValue={channel.contents[showTitle ? currSlide - 1 : currSlide]?.textalignment || 'center'}
+          placeholder="Select text alignment"
+          defaultValue={contentItem?.textalignment || 'center'}
+          style={inputStyle}
         >
-          <option value="top">top</option>
-          <option value="center">center</option>
-          <option value="bottom">bottom</option>
+          <option value="top">Top</option>
+          <option value="center">Center</option>
+          <option value="bottom">Bottom</option>
         </Input>
       )}
     </div>
   );
-};
-
+}

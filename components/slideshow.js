@@ -16,7 +16,7 @@ import sendEmailLinks from '../hooks/sendemaillinks';
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Caption from "./caption";
-import ContentInputs from "./contentinputs";
+import ContentEditor from "./contenteditor";
 import ChannelEditor from './channeleditor';
 
 const downloadURL = async (dlurl) => {
@@ -427,7 +427,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </ModalBody>
       </Modal>
 
-      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} slideshow />
+      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} slideshow />
 
       {channel.audiofile?.url && (
         <audio

@@ -3,16 +3,10 @@ import { useRouter } from 'next/router';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import { Card } from 'reactstrap';
 import Masonry from 'react-masonry-css';
-import Content, { isMediaFile } from './content';
-import Caption from './caption';
-import ItemControls from './itemcontrols';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateSubmission from '../hooks/updatesubmission';
-import deleteSubmission from '../hooks/deletesubmission';
 import setError from '../hooks/seterror';
+import ContentCard from './contentcard';
 
 const DraggableItem = ({ id, index, moveItem, onDragStart, onDragEnd, children }) => {
   const ref = useRef(null);
@@ -97,31 +91,6 @@ export default function Board({ channel, privateID, ...props }) {
     }
   };
 
-  const handleDelete = (id) => {
-    confirmAlert({
-      title: 'Delete item?',
-      message: 'Are you sure you want to delete this item?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-            try {
-              await deleteSubmission({contentID: id});
-              setContents(contents.filter(content => content.id !== id));
-              await router.replace(router.asPath, undefined, { scroll: false });
-            } catch (error) {
-              setError(error);
-            }
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
@@ -148,82 +117,7 @@ export default function Board({ channel, privateID, ...props }) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <Card className="mb-2">
-                <div style={{ position: 'relative' }}>
-                  <div style={{ position: 'relative' }}>
-                    <Content 
-                      contentItem={contentItem}
-                      width="100%" 
-                      height="auto"
-                      cover
-                      index={index}
-                    />
-                    {contentItem.description && contentItem.mediafile?.url?.includes("maustrocard") &&
-                      <Caption 
-                        title={contentItem.description}
-                        textAlignment="center"
-                        small
-                      />
-                    }
-                  </div>
-                  {privateID && 
-                    <ItemControls 
-                      contentItem={contentItem} 
-                      onDelete={handleDelete} 
-                    />
-                  }
-                  {contentItem.description && !contentItem.mediafile?.url?.includes("maustrocard") &&
-                    <div 
-                      style={{ 
-                        padding: '15px 10px', 
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        lineHeight: '1.4',
-                      }}
-                    >
-                      {contentItem.description}
-                    </div>
-                  }
-                  {contentItem.name &&
-                    <div 
-                      style={{ 
-                        padding: '15px 10px', 
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        lineHeight: '1.4',
-                        textAlign: 'right',
-                        marginRight: '10px',
-                        color: '#aaaaaa'
-                      }}
-                    >
-                      From: {contentItem.name}
-                    </div>
-                  }
-                  {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
-                    <div 
-                      style={{ 
-                        padding: '15px 10px', 
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        lineHeight: '1.4',
-                        backgroundColor: '#f0f0f0'
-                      }}
-                    >
-                      <a 
-                        href={contentItem.ext_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: '#0066cc', // Change this to your preferred color
-                          textDecoration: 'none',
-                        }}
-                      >
-                        Product Link
-                      </a>
-                    </div>
-                  }
-                </div>
-              </Card>
+              <ContentCard contentItem={contentItem} privateID={privateID} drag />
             </DraggableItem>
           ))}
         </Masonry>

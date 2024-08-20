@@ -124,6 +124,7 @@ export default function Banner({ channel, admin }) {
           </div>
         </div>
       </Alert>
+      
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>

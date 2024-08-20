@@ -7,20 +7,16 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import 'leaflet-defaulticon-compatibility';
 import updateSubmission from "../hooks/updatesubmission";
 import getContentMarkerIcon from "../hooks/getcontentmarkericon";
-import ContentEditor from "./contenteditor";
-import Content from "./content";
-import Caption from "./caption";
+import ContentCard from "./contentcard";
 
 const ContentMarker = forwardRef(function ContentMarker(props, fwdRef) 
 {
-  const { contentItem, itemWidth, itemHeight, privateID, autoPlay } = props;
+  const { contentItem, itemWidth, privateID, autoPlay } = props;
 
   if (!contentItem)
     return;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const markerRef = useRef();
-  const router = useRouter();
 
   // TODO: What about 0,0?
   if (!contentItem.lat || !contentItem.long)
@@ -37,14 +33,6 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
     click() {
       markerRef.current.closeTooltip();
     },
-    dblclick() {
-      if (privateID)
-      {
-        markerRef.current.closeTooltip();
-        markerRef.current.closePopup();
-        setIsModalOpen(true);
-      }
-    },
   };
 
   const icon = getContentMarkerIcon(contentItem);
@@ -58,18 +46,10 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
         }
         <Popup>
           <div style={{minWidth: itemWidth}}>
-            <Content contentItem={contentItem} width={itemWidth} height={itemHeight} controls autoPlay={autoPlay} />
-            {contentItem.description &&
-                <Caption 
-                  title={contentItem.description}
-                  textAlignment="center"
-                  small
-                />
-            }
+            <ContentCard contentItem={contentItem} controls autoPlay={autoPlay} privateID={privateID} />
           </div>
         </Popup>
       </Marker>
-      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </>
   );
 });
