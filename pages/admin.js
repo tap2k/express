@@ -39,7 +39,7 @@ export default ({ channel, privateID }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    const { channelid, currslide } = ctx.query;
+    const { channelid } = ctx.query;
     
     const publicID = getPublicID(channelid);
     if (!channelid || !publicID)

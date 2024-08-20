@@ -1,4 +1,5 @@
 import { use100vh } from 'react-div-100vh';
+import { getPublicID } from '../hooks/seed';
 import Slideshow from "../components/slideshow";
 import PageMenu from "../components/pagemenu";
 import MakeButton from "../components/makebutton";
@@ -20,7 +21,13 @@ export default ({ channel, currslide, admin }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    const { channelid, currslide, admin } = ctx.query;
+    let { channelid, currslide, admin } = ctx.query;
+    const publicID = getPublicID(channelid);
+    if (publicID)
+    {
+        channelid = publicID;
+        admin = true;
+    }
 
     try {
         // TODO: Hack for testing

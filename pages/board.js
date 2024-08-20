@@ -1,3 +1,4 @@
+import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import AddButton from "../components/addbutton";
@@ -42,7 +43,13 @@ export default ({ channel, admin }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    const { channelid, admin } = ctx.query;
+    let { channelid, admin } = ctx.query;
+    const publicID = getPublicID(channelid);
+    if (publicID)
+    {
+        channelid = publicID;
+        admin = true;
+    }
 
     try {
         // TODO: Hack for testing
