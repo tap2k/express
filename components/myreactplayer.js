@@ -113,6 +113,8 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 playsInline
                 url={url}
                 controls={controls}
+                // TODO: autoplay doesnt work with light
+                light
             />
         </div>
   );
