@@ -1,16 +1,8 @@
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
-import MakeButton from "../components/makebutton";
 import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Board from "../components/board";
-
-const makeStyle = {
-    position: 'absolute',
-    top: '10px',
-    right: '20px',
-    zIndex: 1000
-  };
 
 export default ({ channel, admin }) => {
     
@@ -43,7 +35,6 @@ export default ({ channel, admin }) => {
                     channel={channel}
                     privateID={admin}
                 />
-                {!admin && <MakeButton style={makeStyle} />}
                 <AddButton channelID={channel.uniqueID}/>
             </div>
         </div>

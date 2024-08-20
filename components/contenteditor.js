@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router';
 import { useRef } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateSubmission from "../hooks/updatesubmission";
-import deleteSubmission from "../hooks/deletesubmission";
 import ContentInputs from "./contentinputs";
 
 export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, slideshow=false }) {
@@ -44,27 +41,6 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     await router.replace(router.asPath);
   };
   
-  const handleDelete = () => {
-    setIsModalOpen(false);
-    confirmAlert({
-      title: `Delete item?`,
-      message: `Are you sure you want to delete this item?`,
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-              await deleteSubmission({contentID: contentItem.id});
-              await router.replace(router.asPath);
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
@@ -81,13 +57,6 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
         >
           Update Slide
         </Button>
-        { !slideshow && <Button
-          onClick={handleDelete}
-          style={{...buttonStyle}}
-          color="primary" 
-        >
-          Delete Slide
-        </Button> }
       </ModalBody>
     </Modal>
   );

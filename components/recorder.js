@@ -5,7 +5,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ContentInputs from "./contentinputs";
 
 //const fileExt = "webm";

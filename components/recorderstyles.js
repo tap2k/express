@@ -1,6 +1,6 @@
 // sharedStyles.js
 import styled from 'styled-components';
-import { Button } from "reactstrap";
+import { Button, Input } from "reactstrap";
 
 export const RecorderWrapper = styled.div`
   max-width: 800px;
@@ -21,3 +21,41 @@ export const StyledButton = styled(Button)`
   margin: 0 5px;
 `;
 
+export const StyledInput = styled(Input)`
+  font-size: large;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 0 15px;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+`;
+
+export const MenuButton = styled(Button)`
+  background-color: rgba(230, 240, 255, 0.6);
+  color: #0a4f6a;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: calc(0.8vmin + 0.6em);
+  padding: 6px 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  margin: 0 3px;
+  font-weight: bold;
+
+  &:hover {
+    background-color: rgba(200, 220, 255, 0.8);
+    color: #083d54;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+`;

@@ -4,7 +4,23 @@ import { Alert, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
+import PageMenu from "./pagemenu";
+import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
+
+const menuStyle = {
+  position: 'absolute',
+  top: '10px',
+  left: '20px',
+  zIndex: 1000
+};
+
+const makeStyle = {
+  position: 'absolute',
+  top: '25px',
+  right: '30px',
+  zIndex: 1000
+};
 
 export default function Banner({ channel, admin }) {
 
@@ -49,6 +65,8 @@ export default function Banner({ channel, admin }) {
 
   return (
     <>
+      <PageMenu style={menuStyle} />
+      {!admin && <MakeButton style={makeStyle} />}
       <Alert 
         style={{
           backgroundColor: 'transparent',

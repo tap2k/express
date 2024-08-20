@@ -47,7 +47,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
     if (locationArray.length)
     {
       const bounds = L.latLngBounds(locationArray);
-      mapRef.fitBounds(bounds, {padding: [100, 100]});
+      mapRef.fitBounds(bounds, {padding: [150, 150]});
     }
     else
       mapRef.setView({lat: channel.lat? channel.lat : 40.7736, lng: channel.long ? channel.long : -73.941}, channel.zoom ? channel.zoom : 11.2);

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { StyledInput } from './recorderstyles';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
@@ -60,16 +61,6 @@ export default function ChannelEditor({ initialData, onSubmit }) {
     setSelectedAudio(audioOptions[index]);
   };
 
-  const inputStyle = {
-    fontSize: 'large',
-    width: '100%',
-    height: '50px',
-    marginBottom: '15px',
-    borderRadius: '12px',
-    border: '1px solid #ccc',
-    padding: '0 15px',
-  };
-
   const buttonStyle = {
     fontSize: 'large',
     width: '100%',
@@ -87,6 +78,7 @@ export default function ChannelEditor({ initialData, onSubmit }) {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: '10px',
+    marginTop: '20px',
     marginBottom: '25px',
     width: '100%',
   };
@@ -130,7 +122,8 @@ export default function ChannelEditor({ initialData, onSubmit }) {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
     gap: '10px',
-    marginBottom: '10px',
+    marginTop: '20px',
+    marginBottom: '20px',
     width: '100%',
   };
 
@@ -157,26 +150,23 @@ export default function ChannelEditor({ initialData, onSubmit }) {
 
   return (
     <>
-      <Input
+      <StyledInput
         type="text"
         innerRef={titleRef}
         placeholder="Enter your title here"
         defaultValue={initialData?.name || ""}
-        style={inputStyle}
       />
-      { false && <Input
+      { false && <StyledInput
         type="text"
         innerRef={subtitleRef}
         placeholder="Enter your subtitle here"
         defaultValue={initialData?.description || ""}
-        style={inputStyle}
       /> }
-      { initialData ? <Input
+      { initialData ? <StyledInput
         type="email"
         innerRef={emailRef}
         placeholder="Update your email here"
         defaultValue={initialData?.email || ""}
-        style={inputStyle}
       /> : "" }
       
       {false && <div
@@ -193,9 +183,9 @@ export default function ChannelEditor({ initialData, onSubmit }) {
               type="checkbox"
               checked={showTitleSlide}
               onChange={(e) => setShowTitleSlide(e.target.checked)}
-              style={{ marginRight: '5px' }}
+              style={{ marginRight: '5px', fontSize: 'large'}}
             />
-            <span>Show title slide</span>
+            <span style={{fontSize: 'large'}}>Show title slide</span>
           </Label>
         </FormGroup>
 
@@ -205,9 +195,9 @@ export default function ChannelEditor({ initialData, onSubmit }) {
               type="checkbox"
               innerRef={publicRef}
               defaultChecked={initialData ? initialData.public : true}
-              style={{ marginRight: '5px' }}
+              style={{ marginRight: '5px', fontSize: 'large' }}
             />
-            <span>Let participants view</span>
+            <span style={{fontSize: 'large'}}>Let participants view</span>
           </Label>
         </FormGroup>
 
