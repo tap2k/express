@@ -20,7 +20,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         pointerEvents: 'none',
         whiteSpace: 'normal',
         overflowWrap: 'break-word',
-        mixBlendMode: inverted ? 'difference' : 'normal',
+        mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
     const captionStyleTop = { ...captionStyleBase, top: '4vh' };

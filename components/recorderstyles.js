@@ -39,22 +39,22 @@ export const StyledInput = styled(Input)`
 `;
 
 export const MenuButton = styled(Button)`
-  background-color: rgba(230, 240, 255, 0.6);
-  color: #0a4f6a;
+  background-color: rgba(92, 131, 156, 0.6);
+  color: rgba(240, 240, 240, 1);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: calc(0.8vmin + 0.6em);
   padding: 6px 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   margin: 0 3px;
-  font-weight: bold;
+  font-weight: 600;
 
   &:hover {
-    background-color: rgba(200, 220, 255, 0.8);
-    color: #083d54;
+    background-color: rgba(92, 131, 156, 0.8);
+    color: rgba(250, 250, 250, 1);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
   }

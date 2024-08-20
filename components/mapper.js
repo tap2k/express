@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/leaflet.js';
@@ -14,10 +14,17 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
   const [currSlide, setCurrSlide] = useState(-1);
   const markerRefs = [];
 
-  //tileset = "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
-  //attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href= "https://carto.com/about-carto/">CARTO</a>`;
-  let tileset = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-  let attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+  //  TODO: to make sure it loads
+  const [mapKey, setMapKey] = useState(0);
+
+  useEffect(() => {
+    setMapKey(prevKey => prevKey + 1);
+  }, []);
+
+  let tileset = "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
+  let attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href= "https://carto.com/about-carto/">CARTO</a>`;
+  //let tileset = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  //let attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
 
   if (channel.tileset?.urlformatstring)
   {
@@ -27,7 +34,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
 
   useEffect(() => {   
     resetMap();
-  }, [mapRef]);
+  }, [mapRef, channel]);
 
   function resetMap()
   {
@@ -93,7 +100,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
 
   return (
     <div {...props}>
-      <MapContainer ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} style={{height: '100%', width: '100%', zIndex: 1}}>
+      <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
         {
           channel.contents && channel.contents.map((contentItem) => {
@@ -105,6 +112,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
             <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
           </span> : ""}
+        <ZoomControl position="bottomleft" /> 
       </MapContainer>
     </div>
   );

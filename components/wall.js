@@ -3,9 +3,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import Content from "./content";
+import Caption from "./caption";
 import ItemControls from './itemcontrols';
 import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
@@ -131,7 +130,13 @@ export default function Wall ({ channel, privateID, ...props }) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div style={{ position: 'relative', height: '250px' }}>
+              <div style={{
+                  position: 'relative',
+                  height: '250px',
+                  border: '1px solid #999999',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                }}>
                 <Content 
                   contentItem={contentItem}
                   width="100%" 
@@ -143,6 +148,13 @@ export default function Wall ({ channel, privateID, ...props }) {
                   <ItemControls 
                     contentItem={contentItem} 
                     drag
+                  />
+                )}
+                {contentItem.description && (
+                  <Caption 
+                    title={contentItem.description}
+                    textAlignment="center"
+                    small
                   />
                 )}
               </div>

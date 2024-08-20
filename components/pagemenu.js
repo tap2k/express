@@ -2,8 +2,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MenuButton } from '../components/recorderstyles';
 
-export default function PageMenu({...props}) {
+export default function PageMenu() {
   const router = useRouter();
+
+  const menuStyle = {
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    zIndex: 1000
+  };
 
   const rowStyle = {
     display: 'flex',
@@ -16,21 +23,21 @@ export default function PageMenu({...props}) {
   const pages = ['reel', 'board', 'map'];
 
   return (
-    <div {...props}>
+    <div style={menuStyle}>
         <div style={rowStyle}>
-        {pages.map((page) => (
-            <Link
-            key={page}
-            href={{
-                pathname: `./${page}`,
-                query: router.query,
-            }}
-            >
-                <MenuButton>
-                    {page.charAt(0).toUpperCase() + page.slice(1)}
-                </MenuButton>
-            </Link>
-        ))}
+          {pages.map((page) => (
+              <Link
+              key={page}
+              href={{
+                  pathname: `./${page}`,
+                  query: router.query,
+              }}
+              >
+                  <MenuButton>
+                      {page.charAt(0).toUpperCase() + page.slice(1)}
+                  </MenuButton>
+              </Link>
+          ))}
         </div>
     </div>
   );

@@ -8,20 +8,6 @@ import PageMenu from "./pagemenu";
 import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
 
-const menuStyle = {
-  position: 'absolute',
-  top: '10px',
-  left: '20px',
-  zIndex: 1000
-};
-
-const makeStyle = {
-  position: 'absolute',
-  top: '25px',
-  right: '30px',
-  zIndex: 1000
-};
-
 export default function Banner({ channel, admin }) {
 
   if (!channel)
@@ -65,8 +51,8 @@ export default function Banner({ channel, admin }) {
 
   return (
     <>
-      <PageMenu style={menuStyle} />
-      {!admin && <MakeButton style={makeStyle} />}
+      <PageMenu />
+      {!admin && <MakeButton />}
       <Alert 
         style={{
           backgroundColor: 'transparent',

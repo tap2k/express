@@ -266,9 +266,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <div style={{
           ...iconBarStyle, 
           flexDirection: 'column', 
-          top: 'clamp(10px, 2vh, 20px)', 
-          left: 'clamp(7px, 1.5vw, 15px)', 
-          gap: 'clamp(7px, 1.5vh, 15px)'
+          top: '15px', 
+          right: '15px'
         }}>
           <button 
             onClick={() => {

@@ -73,6 +73,9 @@ export function getMediaInfo(contentItem) {
 
 export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, index }) 
 {
+  if (!contentItem)
+    return;
+  
   const { url, type, videotype } = getMediaInfo(contentItem);
     
   let videostyle = {};

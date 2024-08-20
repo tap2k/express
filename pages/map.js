@@ -2,20 +2,14 @@ import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
 import PageMenu from "../components/pagemenu";
 import MakeButton from "../components/makebutton";
+import AddButton from "../components/addbutton";
 import getChannel from "../hooks/getchannel";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
-const menuStyle = {
-    position: 'absolute',
-    top: '15px',
-    left: '40px',
-    zIndex: 1000
-  };
-
 const makeStyle = {
     position: 'absolute',
-    top: '25px',
+    top: '35px',
     right: '20px',
     zIndex: 1000
   };
@@ -27,9 +21,11 @@ export default ({ channel, admin }) => {
 
     return (
         <>
-            <PageMenu style={menuStyle} />
+            <PageMenu />
             {!admin && <MakeButton style={makeStyle} />}
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} itemHeight={250} height={height} privateID={admin} autoPlay tour />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={admin} autoPlay tour />
+            <AddButton channelID={channel.uniqueID}/>
+
         </>
     );
 }
