@@ -22,9 +22,9 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledInput = styled(Input)`
-  font-size: large;
+  font-size: medium;
   width: 100%;
-  height: 50px;
+  height: 40px;
   margin-bottom: 10px;
   border-radius: 12px;
   border: 1px solid #ccc;

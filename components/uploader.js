@@ -96,7 +96,7 @@ export default function Uploader({ channelID, lat, long, ...props }) {
       <div
         style={{
           width: '100%',
-          height: '500px',
+          minHeight: '450px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',
@@ -104,7 +104,7 @@ export default function Uploader({ channelID, lat, long, ...props }) {
           justifyContent: (showGallery || selectedImage || uploadedFiles.length > 0) ? 'start' : 'center',
           alignItems: 'center',
           position: 'relative',
-          overflow: 'auto',
+          overflow: 'hidden', // Changed from 'auto' to 'hidden'
           padding: '10px',
         }}
       >

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { StyledButton } from './recorderstyles';
+import ImageGrid from './imagegrid';
 
 export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage }) {
   const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
@@ -11,7 +12,7 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) {
-        setColumns(3);
+        setColumns(4);
       } else {
         setColumns(4);
       } 
@@ -21,16 +22,6 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const imageGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(${columns}, 1fr)`,
-    gridAutoRows: 'min-content',
-    gap: '10px',
-    margin: '10px',
-    width: '100%',
-    alignContent: 'start'
-  };
 
   const itemStyle = {
     position: 'relative',
@@ -51,20 +42,6 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-  };
-
-  const selectedOverlayStyle = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontSize: '24px',
   };
 
   const dalleContainerStyle = {
@@ -109,57 +86,37 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
 
   return (
     <>
-      {dalleImage ? (
-        <div 
-          style={itemStyle}
-          onClick={() => setSelectedImage(dalleImage)}
-        >
-          <img 
-            src={dalleImage} 
-            alt="DALL-E generated" 
-            style={{...imageStyle, objectFit: "contain", height: '90%'}}
+        <div style={{ flex: 1, width: '100%', overflowY: 'auto', marginBottom: '10px' }}>
+        {dalleImage ? (
+          <div style={itemStyle} onClick={() => setSelectedImage(dalleImage)}>
+            <img
+              src={dalleImage}
+              alt="DALL-E generated"
+              style={{...imageStyle, objectFit: "contain", height: '90%'}}
+            />
+          </div>
+        ) : (
+          <ImageGrid
+            imageOptions={imageOptions}
+            columns={columns}
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
           />
-        </div>
-      ) : (
-        <div style={imageGridStyle}>
-          {imageOptions.map((image, index) => (
-            <div 
-              key={index} 
-              style={{
-                ...itemStyle,
-                backgroundColor: image === "None" ? '#f8f9fa' : 'transparent',
-              }}
-              onClick={() => setSelectedImage(image)}
-            >
-              {image === "None" ? (
-                <span>None</span>
-              ) : (
-                <img 
-                  src={`images/${image}`} 
-                  alt={image} 
-                  style={imageStyle}
-                />
-              )}
-              {selectedImage === image && (
-                <div style={selectedOverlayStyle}>✓</div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div style={dalleContainerStyle}>
-        <input 
-          type="text" 
+        )}
+      </div>
+      
+      <div style={{...dalleContainerStyle, width: '100%'}}>
+        <input
+          type="text"
           ref={dallePromptRef}
           placeholder="Enter AI prompt"
-          style={dallePromptStyle}
+          style={{...dallePromptStyle, width: '100%'}}
         />
-        <StyledButton 
-          color="info" 
+        <StyledButton
+          color="info"
           onClick={handleDalleGeneration}
           disabled={isGeneratingDalle}
-          style={{ width: '100%'}}
+          style={{ width: '100%', marginTop: '10px'}}
         >
           {isGeneratingDalle ? 'Generating...' : 'Generate AI Image'}
         </StyledButton>
