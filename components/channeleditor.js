@@ -3,6 +3,7 @@ import { StyledInput } from './recorderstyles';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
+import ImageGrid from './imagegrid';
 
 export default function ChannelEditor({ initialData, onSubmit }) {
   const titleRef = useRef();
@@ -74,56 +75,11 @@ export default function ChannelEditor({ initialData, onSubmit }) {
     fontWeight: 'bold',
   };
 
-  const imageGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '10px',
-    marginTop: '20px',
-    marginBottom: '25px',
-    width: '100%',
-  };
-
-  const itemStyle = {
-    position: 'relative',
-    aspectRatio: '1',
-    overflow: 'hidden',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    width: '100%',
-    border: '1px solid #ccc',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-  };
-
-  const imageStyle = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  };
-
-  const selectedOverlayStyle = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontSize: 'x-large',
-  };
-
   const audioGridStyle = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
     gap: '10px',
     marginTop: '20px',
-    marginBottom: '20px',
     width: '100%',
   };
 
@@ -149,25 +105,29 @@ export default function ChannelEditor({ initialData, onSubmit }) {
   };
 
   return (
-    <>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px',
+    }}>
       <StyledInput
         type="text"
         innerRef={titleRef}
         placeholder="Enter your title here"
         defaultValue={initialData?.name || ""}
       />
-      { false && <StyledInput
+      {false && <StyledInput
         type="text"
         innerRef={subtitleRef}
         placeholder="Enter your subtitle here"
         defaultValue={initialData?.description || ""}
-      /> }
-      { initialData ? <StyledInput
+      />}
+      {initialData && <StyledInput
         type="email"
         innerRef={emailRef}
         placeholder="Update your email here"
         defaultValue={initialData?.email || ""}
-      /> : "" }
+      />}
       
       {false && <div
         style={{
@@ -201,7 +161,7 @@ export default function ChannelEditor({ initialData, onSubmit }) {
           </Label>
         </FormGroup>
 
-        {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Label for="interval" style={{ margin: 0 }}>
             Timer:
           </Label>
@@ -217,67 +177,43 @@ export default function ChannelEditor({ initialData, onSubmit }) {
             }}
             min="0"
           />
-        </div> */}
-
+        </div> 
       </div>}
 
       {showTitleSlide && (
-        <FormGroup>
-          <div style={imageGridStyle}>
-            {imageOptions.map((image, index) => (
-              <div 
-                key={index} 
-                style={{
-                  ...itemStyle,
-                  backgroundColor: image === "None" ? '#f8f9fa' : 'transparent',
-                }}
-                onClick={() => setSelectedImage(image)}
-              >
-                {image === "None" ? (
-                  <span>None</span>
-                ) : (
-                  <img 
-                    src={`images/${image}`} 
-                    alt={image} 
-                    style={imageStyle}
-                  />
-                )}
-                {selectedImage === image && (
-                  <div style={selectedOverlayStyle}>✓</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </FormGroup>
+        <ImageGrid
+          imageOptions={imageOptions}
+          columns={4}
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+        />
       )}
       
-      <FormGroup>
-        <div style={audioGridStyle}>
-          {audioOptions.map((audio, index) => (
-            <div 
-              key={index} 
-              style={{
-                ...audioItemStyle,
-                backgroundColor: selectedAudio === audio ? '#e6f2ff' : '#f8f9fa',
-              }}
-              onClick={() => handleAudioToggle(index)}
-            >
-              {audio === "None" ? (
-                <span>None</span>
-              ) : (
-                <>
-                  {playingAudioIndex === index ? (
-                    <FaPause size={20} />
-                  ) : (
-                    <FaPlay size={20} />
-                  )}
-                  <span style={audioNameStyle}>{audio}</span>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      </FormGroup>
+      <div style={{...audioGridStyle, marginBottom: '10px'}}>
+        {audioOptions.map((audio, index) => (
+          <div 
+            key={index} 
+            style={{
+              ...audioItemStyle,
+              backgroundColor: selectedAudio === audio ? '#e6f2ff' : '#f8f9fa',
+            }}
+            onClick={() => handleAudioToggle(index)}
+          >
+            {audio === "None" ? (
+              <span>None</span>
+            ) : (
+              <>
+                {playingAudioIndex === index ? (
+                  <FaPause size={20} />
+                ) : (
+                  <FaPlay size={20} />
+                )}
+                <span style={audioNameStyle}>{audio}</span>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
       
       <audio ref={audioRef} style={{ display: 'none' }}>
         Your browser does not support the audio element.
@@ -289,6 +225,6 @@ export default function ChannelEditor({ initialData, onSubmit }) {
       >
         {initialData ? 'Update Reel' : 'Make a New Reel'}
       </Button>
-    </>
+    </div>
   );
 }
