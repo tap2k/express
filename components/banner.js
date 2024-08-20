@@ -8,7 +8,7 @@ import PageMenu from "./pagemenu";
 import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
 
-export default function Banner({ channel, admin }) {
+export default function Banner({ channel, privateID }) {
 
   if (!channel)
     return;
@@ -52,7 +52,7 @@ export default function Banner({ channel, admin }) {
   return (
     <>
       <PageMenu />
-      {!admin && <MakeButton />}
+      {!privateID && <MakeButton />}
       <Alert 
         style={{
           backgroundColor: 'transparent',
@@ -90,7 +90,7 @@ export default function Banner({ channel, admin }) {
                 {channel.description}
               </h3>
             )}
-              { admin &&       
+              { privateID &&       
                 <div style={{
                     position: 'absolute',
                     top: 5,

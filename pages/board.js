@@ -29,7 +29,7 @@ export default ({ channel, admin }) => {
             }}>
                 <Banner 
                     channel={channel}
-                    admin={admin}
+                    privateID={admin}
                 />
                 <Board 
                     channel={channel}

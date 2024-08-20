@@ -30,6 +30,10 @@ export function isMediaFile(url)
 }
 
 export function getMediaInfo(contentItem) {
+
+  if (!contentItem)
+    return { url: "", type: "" };
+
   let url = contentItem.mediafile?.url;
   if (!url)
     url = contentItem.ext_url;
@@ -75,7 +79,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
 {
   if (!contentItem)
     return;
-  
+
   const { url, type, videotype } = getMediaInfo(contentItem);
     
   let videostyle = {};

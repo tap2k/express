@@ -1,17 +1,40 @@
-import { use100vh } from 'react-div-100vh';
-import Slideshow from "../components/slideshow";
-import getChannel from "../hooks/getchannel";
 import { getPublicID } from '../hooks/seed';
+import getChannel from "../hooks/getchannel";
+import getMediaURL from "../hooks/getmediaurl";
+import Banner from "../components/banner";
+import Wall from "../components/wall";
 
-
-export default ({ channel, currslide, privateID }) => {
-    const width = "100vw";
-    const height = use100vh();
-    //const height = "100vh";
+export default ({ channel, privateID }) => {
+    const backgroundStyle = channel.picture?.url 
+        ? {
+            backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+          }
+        : {};
 
     return (
-        //<Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height} startSlide={currslide} privateID={privateID} />
-        <Wall channel={channel} privateID={privateID} />
+        <div style={{
+            minHeight: '100vh',
+            ...backgroundStyle
+        }}>
+            <div style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                minHeight: '100vh',
+                padding: '4rem',
+            }}>
+                <Banner 
+                    channel={channel}
+                    privateID={privateID}
+                />
+                <Wall 
+                    channel={channel}
+                    privateID={privateID}
+                />
+            </div>
+        </div>
     );
 }
 
@@ -42,8 +65,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: channelid,
-                currslide: currslide ? currslide : 0,
+                privateID: channelid
             } 
         };
     

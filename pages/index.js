@@ -103,12 +103,12 @@ export default function Home() {
         <>
             <RecorderWrapper>
                 <Navbar style={{ 
-                    backgroundColor: 'rgba(26, 95, 122, 0.9)', // Darker blue matching the Banner title color
+                    backgroundColor: 'rgba(26, 95, 122, 0.9)', 
                     color: 'white', 
                     display: 'flex', 
                     justifyContent: 'center', 
                     minHeight: '60px',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Subtle shadow for depth
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' 
                 }}>
                     <NavbarBrand style={{ 
                         position: 'absolute', 
@@ -117,8 +117,8 @@ export default function Home() {
                     }}>
                         <b style={{
                             fontSize: 'xx-large',
-                            color: '#ffffff', // Pure white for contrast
-                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' // Subtle text shadow for emphasis
+                            color: '#ffffff', 
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' 
                         }}>
                             EXPRESS
                         </b>
