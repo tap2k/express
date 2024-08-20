@@ -5,7 +5,7 @@ import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Board from "../components/board";
 
-export default ({ channel, admin }) => {
+export default ({ channel, privateID }) => {
     
     //channel.picture.url = null;
     const backgroundStyle = channel.picture?.url 
@@ -30,11 +30,11 @@ export default ({ channel, admin }) => {
             }}>
                 <Banner 
                     channel={channel}
-                    privateID={admin}
+                    privateID={privateID}
                 />
                 <Board 
                     channel={channel}
-                    privateID={admin}
+                    privateID={privateID}
                 />
                 <AddButton channelID={channel.uniqueID}/>
             </div>
@@ -44,16 +44,20 @@ export default ({ channel, admin }) => {
 
 export async function getServerSideProps(ctx) {
     let { channelid, admin } = ctx.query;
+    let privateID = null;
+    if (!admin)
+        admin = false;
+
     const publicID = getPublicID(channelid);
     if (publicID)
     {
+        privateID = channelid;
         channelid = publicID;
-        admin = true;
     }
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
         
         if (!channel) {
             return {
@@ -67,7 +71,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                admin: admin ? true : false
+                privateID: privateID ? privateID : admin
             } 
         };
     } catch (err) {

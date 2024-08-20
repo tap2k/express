@@ -1,12 +1,11 @@
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
-import MakeButton from "../components/makebutton";
 import AddButton from "../components/addbutton";
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
-export default ({ channel, admin }) => {
+export default ({ channel, privateID }) => {
     const backgroundStyle = channel.picture?.url 
         ? {
             backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
@@ -29,13 +28,12 @@ export default ({ channel, admin }) => {
             }}>
                 <Banner 
                     channel={channel}
-                    privateID={admin}
+                    privateID={privateID}
                 />
                 <Wall 
                     channel={channel}
-                    privateID={admin}
+                    privateID={privateID}
                 />
-                {!admin && <MakeButton />}
                 <AddButton channelID={channel.uniqueID} />
             </div>
         </div>
@@ -44,16 +42,20 @@ export default ({ channel, admin }) => {
 
 export async function getServerSideProps(ctx) {
     let { channelid, admin } = ctx.query;
+    let privateID = null;
+    if (!admin)
+        admin = false;
+
     const publicID = getPublicID(channelid);
     if (publicID)
     {
+        privateID = channelid;
         channelid = publicID;
-        admin = true;
     }
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
         
         if (!channel) {
             return {
@@ -67,7 +69,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                admin: admin ? true : false
+                privateID: privateID ? privateID : admin
             } 
         };
     } catch (err) {

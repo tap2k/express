@@ -35,7 +35,7 @@ export function getPublicID(privateID) {
 
   // Check if the hashes match
   if (hashHex !== verificationHashHex) {
-    console.error('Invalid private ID or tampered data');
+    //console.error('Invalid private ID or tampered data');
     return null;
   }
 

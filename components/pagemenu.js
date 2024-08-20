@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MenuButton } from '../components/recorderstyles';
 
-export default function PageMenu() {
+export default function PageMenu({ privateID }) {
   const router = useRouter();
 
   const menuStyle = {
@@ -21,6 +21,8 @@ export default function PageMenu() {
   };
 
   const pages = ['reel', 'board', 'map'];
+  if (privateID)
+    pages.push('admin');
 
   return (
     <div style={menuStyle}>

@@ -5,7 +5,7 @@ import PageMenu from "../components/pagemenu";
 import MakeButton from "../components/makebutton";
 import getChannel from "../hooks/getchannel";
 
-export default ({ channel, currslide, admin }) => {
+export default ({ channel, currslide, privateID }) => {
 
     const width = "100vw";
     const height = use100vh();
@@ -13,25 +13,29 @@ export default ({ channel, currslide, admin }) => {
 
     return (
         <>
-            <PageMenu />
-            { !admin && <MakeButton /> }
-            <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={admin} autoPlay />
+            <PageMenu privateID={privateID} />
+            { !privateID && <MakeButton /> }
+            <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={privateID} autoPlay />
         </>
     );
 }
 
 export async function getServerSideProps(ctx) {
     let { channelid, currslide, admin } = ctx.query;
+    let privateID = null;
+    if (!admin)
+        admin = false;
+
     const publicID = getPublicID(channelid);
     if (publicID)
     {
+        privateID = channelid;
         channelid = publicID;
-        admin = true;
     }
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
         
         if (!channel) {
             return {
@@ -45,8 +49,8 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                currslide: currslide ? currslide : 0,
-                admin : admin ? true : false
+                currslide : currslide ? currslide : 0,
+                privateID: privateID ? privateID : admin
             } 
         };
     } catch (err) {

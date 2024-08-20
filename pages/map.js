@@ -15,16 +15,16 @@ const makeStyle = {
     zIndex: 1000
   };
 
-export default ({ channel, admin }) => {
+export default ({ channel, privateID }) => {
     const width = "100vw";
     const height = use100vh();
     //const height = "100vh";
 
     return (
         <>
-            <PageMenu />
-            {!admin && <MakeButton style={makeStyle} />}
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={admin} autoPlay tour />
+            <PageMenu privateID={privateID} />
+            {!privateID && <MakeButton style={makeStyle} />}
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
             <AddButton channelID={channel.uniqueID}/>
 
         </>
@@ -33,16 +33,20 @@ export default ({ channel, admin }) => {
 
 export async function getServerSideProps(ctx) {
     let { channelid, admin } = ctx.query;
+    let privateID = null;
+    if (!admin)
+        admin = false;
+
     const publicID = getPublicID(channelid);
     if (publicID)
     {
+        privateID = channelid;
         channelid = publicID;
-        admin = true;
     }
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
         
         if (!channel) {
             return {
@@ -56,7 +60,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                admin : admin ? true : false
+                privateID: privateID ? privateID : admin
             } 
         };
     } catch (err) {

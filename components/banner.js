@@ -51,7 +51,7 @@ export default function Banner({ channel, privateID }) {
 
   return (
     <>
-      <PageMenu />
+      <PageMenu privateID={privateID} />
       {!privateID && <MakeButton />}
       <Alert 
         style={{
