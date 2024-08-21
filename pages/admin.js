@@ -2,7 +2,7 @@ import { getPublicID } from '../hooks/seed';
 import getChannel from "../hooks/getchannel";
 import getMediaURL from "../hooks/getmediaurl";
 import Banner from "../components/banner";
-import Board from "../components/board";
+import Wall from "../components/wall";
 
 export default ({ channel, privateID }) => {
     const backgroundStyle = channel.picture?.url 
@@ -29,7 +29,7 @@ export default ({ channel, privateID }) => {
                     channel={channel}
                     privateID={privateID}
                 />
-                <Board 
+                <Wall 
                     channel={channel}
                     privateID={privateID}
                 />

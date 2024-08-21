@@ -341,6 +341,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     title={channel.name}
                     subtitle={channel.description}
                     textAlignment="center"
+                    size="big"
                   />
                 </div>
               </Slide> 

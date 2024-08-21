@@ -1,7 +1,7 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
 
-export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, small = false }) 
+export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, size = "medium" }) 
 {
     if (!title && !url) return null;
 
@@ -9,10 +9,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(200,200,200,0.7)',
+        backgroundColor: 'rgba(200,200,200,0.4)',
         color: 'rgba(255,255,255,1.0)',
         borderRadius: '10px',
-        padding: '25px',
+        padding: '35px',
         backdropFilter: 'blur(5px)',
         width: 'fit-content',
         maxWidth: '80%',
@@ -55,14 +55,16 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
-        fontSize: small ? '16px' : 'clamp(18px, 3vh, 32px)',
-        lineHeight: 1.2,
+        fontSize: size === "small" ? '16px' : 
+                  size === "big" ? 'clamp(24px, 4vh, 48px)' : 
+                  'clamp(18px, 3vh, 32px)',
+        lineHeight: size === "big" ? 1.1 : 1.2,
         fontWeight: 'bold'
     };
-
+    
     const subtitleStyle = {
-        fontSize: 'clamp(14px, 1.5vh, 24px)',
-        lineHeight: 1.3,
+        fontSize: size === "big" ? 'clamp(18px, 2vh, 32px)' : 'clamp(14px, 1.5vh, 24px)',
+        lineHeight: size === "big" ? 1.2 : 1.3,
         marginTop: '10px',
     };
 
@@ -71,10 +73,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
             {(title || subtitle) && (
                 <div style={captionStyle}>
                     {title && <div style={titleStyle}>{title}</div>}
-                    {subtitle && !small & <div style={subtitleStyle}>{subtitle}</div>}
+                    {subtitle && !size === "small" & <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            {url && !small && !isMediaFile(url) && (
+            {url && !size === "small" && !isMediaFile(url) && (
                 <a href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
                     Product Link

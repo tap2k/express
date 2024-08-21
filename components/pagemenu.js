@@ -28,7 +28,7 @@ export default function PageMenu({ privateID, isSlideshow=false }) {
     if (channelid && channelid.includes(':'))
         [channelid] = channelid.split(':');
     let pathname = baseurl.pathname;
-    if (pathname === "/admin")
+    if (pathname === "/admin" || pathname === "/wall")
       pathname = "/board";
     const url = `${baseurl.origin}${pathname}?channelid=${channelid}`;  
     navigator.clipboard.writeText(url)

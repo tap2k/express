@@ -154,7 +154,7 @@ export default function Wall ({ channel, privateID, ...props }) {
                   <Caption 
                     title={contentItem.description}
                     textAlignment="center"
-                    small
+                    size="small"
                   />
                 )}
               </div>

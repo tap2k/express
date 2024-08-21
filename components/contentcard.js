@@ -21,7 +21,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
             <Caption 
               title={contentItem.description}
               textAlignment="center"
-              small
+              size="small"
             />
           }
         </div>
