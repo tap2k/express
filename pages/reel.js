@@ -1,7 +1,7 @@
 import { use100vh } from 'react-div-100vh';
 import { getPublicID } from '../hooks/seed';
 import Slideshow from "../components/slideshow";
-import PageMenu from "../components/pagemenu";
+import Banner from "../components/banner";
 import MakeButton from "../components/makebutton";
 import getChannel from "../hooks/getchannel";
 
@@ -13,8 +13,7 @@ export default ({ channel, currslide, privateID }) => {
 
     return (
         <>
-            <PageMenu privateID={privateID} />
-            { !privateID && <MakeButton /> }
+            <Banner channel={channel} privateID={privateID} isSlideshow />
             <Slideshow style={{backgroundColor: "black"}} channel={channel} width={width} height={height}startSlide={currslide} privateID={privateID} autoPlay />
         </>
     );

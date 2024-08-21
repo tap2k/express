@@ -1,8 +1,7 @@
 import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
 import { getPublicID } from '../hooks/seed';
-import PageMenu from "../components/pagemenu";
-import MakeButton from "../components/makebutton";
+import Banner from "../components/banner";
 import AddButton from "../components/addbutton";
 import getChannel from "../hooks/getchannel";
 
@@ -22,8 +21,12 @@ export default ({ channel, privateID }) => {
 
     return (
         <>
-            <PageMenu privateID={privateID} />
-            {!privateID && <MakeButton style={makeStyle} />}
+            <div style={{ position: 'absolute', width: width}}>
+                <Banner 
+                    channel={channel}
+                    privateID={privateID}
+                />
+            </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
             <AddButton channel={channel}/>
         </>

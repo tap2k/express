@@ -84,19 +84,19 @@ export default function Uploader({ channelID, lat, long, ...props }) {
 
   return (
     <RecorderWrapper {...props}>
-      <ButtonGroup>
+      { false && <ButtonGroup>
         <StyledButton color="primary" onClick={() => {if (showGallery) setShowGallery(false); else fileInputRef.current.click()}}>
           Select Files
         </StyledButton>
         <StyledButton color="info" onClick={() => setShowGallery(true)}>
           Show Gallery
         </StyledButton>
-      </ButtonGroup>
+      </ButtonGroup> }
 
       <div
         style={{
           width: '100%',
-          minHeight: '450px',
+          minHeight: '300px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',

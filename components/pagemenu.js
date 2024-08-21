@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MenuButton } from '../components/recorderstyles';
 
-export default function PageMenu({ privateID }) {
+export default function PageMenu({ privateID, isSlideshow=false }) {
   const router = useRouter();
 
   const menuStyle = {
@@ -22,15 +22,20 @@ export default function PageMenu({ privateID }) {
 
   const pages = ['reel', 'board', 'map'];
 
-  // Function to modify the channelId query parameter
-  const modifyChannelId = (query) => {
-    if (query.channelid && query.channelid.includes(':')) {
-      const [modifiedChannelId] = query.channelid.split(':');
-      return { ...query, channelid: modifiedChannelId };
-    }
-    return query;
-  };
-  
+  const copyUrlToClipboard = () => {
+    const baseurl = new URL(window.location.href);
+    let channelid = router.query.channelid;
+    if (channelid && channelid.includes(':'))
+        [channelid] = channelid.split(':');
+    let pathname = baseurl.pathname;
+    if (pathname === "/admin")
+      pathname = "/board";
+    const url = `${baseurl.origin}${pathname}?channelid=${channelid}`;  
+    navigator.clipboard.writeText(url)
+      .then(() => alert('URL copied to clipboard!'))
+      .catch(err => console.error('Failed to copy URL: ', err));
+  }
+
   return (
     <div style={menuStyle}>
       <div style={rowStyle}>
@@ -47,20 +52,7 @@ export default function PageMenu({ privateID }) {
             </MenuButton>
           </Link>
         ))}
-        {privateID && (
-          <Link
-            href={{
-              pathname: router.pathname,
-              query: modifyChannelId(router.query),
-            }}
-            passHref
-            legacyBehavior
-          >
-            <a target="_blank" rel="noopener noreferrer">
-              <MenuButton>Share</MenuButton>
-            </a>
-          </Link>
-        )}
+        {!isSlideshow && <MenuButton onClick={copyUrlToClipboard}>Share</MenuButton>}
       </div>
     </div>
   );

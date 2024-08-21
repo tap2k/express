@@ -8,7 +8,7 @@ import PageMenu from "./pagemenu";
 import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
 
-export default function Banner({ channel, privateID }) {
+export default function Banner({ channel, privateID, isSlideshow }) {
 
   if (!channel)
     return;
@@ -51,13 +51,14 @@ export default function Banner({ channel, privateID }) {
 
   return (
     <>
-      <PageMenu privateID={privateID} />
-      {!privateID && <MakeButton />}
-      <Alert 
+      <PageMenu isSlideshow={isSlideshow} />
+      <MakeButton />
+      {!isSlideshow && <Alert 
         style={{
           backgroundColor: 'transparent',
-          padding: '1rem',
-          border: 'none'
+          padding: '1.5rem',
+          border: 'none',
+          zIndex: 100
         }}
       >
         <div style={{
@@ -76,8 +77,7 @@ export default function Banner({ channel, privateID }) {
             <h1 style={{
               color: '#0a4f6a', // Darker blue for better readability
               fontSize: '2.5rem',
-              fontWeight: 'bold',
-              marginBottom: '0.5rem'
+              fontWeight: 'bold'
             }}>
               {channel.name}
             </h1>
@@ -127,7 +127,7 @@ export default function Banner({ channel, privateID }) {
             }
           </div>
         </div>
-      </Alert>
+      </Alert>}
       
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
