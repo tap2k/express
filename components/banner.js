@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import { useState } from "react";
 import { Alert, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import PageMenu from "./pagemenu";
@@ -22,8 +24,8 @@ export default function Banner({ channel, privateID, isSlideshow }) {
 
   const handleDeleteChannel = () => {
     confirmAlert({
-      title: 'Delete board?',
-      message: 'Are you sure you want to delete this board?',
+      title: 'Delete reel?',
+      message: 'Are you sure you want to delete this reel?',
       buttons: [
         {
           label: 'Yes',

@@ -1,6 +1,7 @@
 import { getPublicID } from '../hooks/seed';
 import getChannel from "../hooks/getchannel";
 import getMediaURL from "../hooks/getmediaurl";
+import AddButton from "../components/addbutton";
 import Banner from "../components/banner";
 import Wall from "../components/wall";
 
