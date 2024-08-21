@@ -2,7 +2,7 @@
 import Head from 'next/head'
 import '../styles/global.css';
 import '../styles/bootstrap.min.css';
-import { Nunito, Dancing_Script, Playfair_Display, Roboto } from '@next/font/google';
+import { Nunito, Dancing_Script, Playfair_Display, Roboto } from 'next/font/google';
 
 const nunito = Nunito({
   weight: ['400', '600', '700'],

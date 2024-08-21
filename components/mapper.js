@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+//import MarkerClusterGroup from 'react-leaflet-cluster'
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'leaflet/dist/leaflet.css';
@@ -102,11 +103,11 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
     <div {...props}>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
-        {
-          channel.contents && channel.contents.map((contentItem) => {
-            return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
-          })
-        }
+          {
+            channel.contents && channel.contents.map((contentItem) => {
+              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
+            })
+          }
         { tour  && channel.contents.length ? 
           <span>
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>

@@ -22,8 +22,8 @@ export default function ChannelEditor({ initialData, onSubmit }) {
   });
 
   const [selectedAudio, setSelectedAudio] = useState(() => {
-    if (!initialData?.audio?.url) return "None";
-    const baseName = initialData.audio.url.split('_')[0].split('/').pop();
+    if (!initialData?.audiofile?.url) return "None";
+    const baseName = initialData.audiofile.url.split('_')[0].split('/').pop();
     return audioOptions.find(option => option.startsWith(baseName)) || "None";
   });
 

@@ -20,11 +20,11 @@ export default async function uploadSubmission({myFormData, channelID, contentID
   if (!myFormData)
     myFormData = new FormData();
 
-  if (getFormDataSize(myFormData) > 8e6)
+  /*if (getFormDataSize(myFormData) > 8e6)
   {
     setErrorText("File size too big: Maximum is 10MB");
     return null;
-  }
+  }*/
     
   myFormData.append("uniqueID", channelID);
   if (contentID)

@@ -156,14 +156,6 @@ export default function Home() {
                                     </Link>
                                 </CardBody>
                             </Card>
-                            <Card style={linkCardStyle}>
-                                <CardBody style={{padding: '15px'}}>
-                                    <Link href={`/board?channelid=${channelID}`} style={{...linkStyle, color: '#007bff'}} rel="noopener noreferrer" target="_blank">
-                                        <strong style={{fontSize: 'x-large'}}>Board</strong>
-                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your board</p>
-                                    </Link>
-                                </CardBody>
-                            </Card>
                         </div>
                     ) : (
                         <ChannelEditor onSubmit={handleAddChannel} />
