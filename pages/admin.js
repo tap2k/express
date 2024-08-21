@@ -33,6 +33,7 @@ export default ({ channel, privateID }) => {
                     channel={channel}
                     privateID={privateID}
                 />
+                <AddButton channel={channel} />
             </div>
         </div>
     );
