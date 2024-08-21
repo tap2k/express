@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
@@ -11,6 +12,12 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
   const markerRefs = [];
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.L = L;
+    }
+  }, []);
 
   //  TODO: to make sure it loads
   const [mapKey, setMapKey] = useState(0);
@@ -39,15 +46,8 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
     if (!mapRef)
       return;
     
-    var locationArray = [];
-
-    mapRef.eachLayer((layer) => {
-      if (layer instanceof L.Marker)
-      {
-        const latlng = layer.getLatLng();
-        locationArray.push(latlng);
-      };
-    });
+    const locationArray = markerRefs.filter(marker => marker && marker.getLatLng)
+      .map(marker => marker.getLatLng());
 
     if (locationArray.length)
     {
@@ -100,11 +100,16 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
     <div {...props}>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
+        <MarkerClusterGroup
+          chunkedLoading
+          maxClusterRadius={15}
+        >
           {
             channel.contents && channel.contents.map((contentItem) => {
               return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
             })
           }
+          </MarkerClusterGroup>
         { tour  && channel.contents.length ? 
           <span>
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
