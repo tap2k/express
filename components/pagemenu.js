@@ -22,23 +22,46 @@ export default function PageMenu({ privateID }) {
 
   const pages = ['reel', 'board', 'map'];
 
+  // Function to modify the channelId query parameter
+  const modifyChannelId = (query) => {
+    if (query.channelid && query.channelid.includes(':')) {
+      const [modifiedChannelId] = query.channelid.split(':');
+      return { ...query, channelid: modifiedChannelId };
+    }
+    return query;
+  };
+  
   return (
     <div style={menuStyle}>
-        <div style={rowStyle}>
-          {pages.map((page) => (
-              <Link
-              key={page}
-              href={{
-                  pathname: `./${page}`,
-                  query: router.query,
-              }}
-              >
-                  <MenuButton>
-                      {page.charAt(0).toUpperCase() + page.slice(1)}
-                  </MenuButton>
-              </Link>
-          ))}
-        </div>
+      <div style={rowStyle}>
+        {pages.map((page) => (
+          <Link
+            key={page}
+            href={{
+              pathname: `./${page}`,
+              query: modifyChannelId(router.query),
+            }}
+          >
+            <MenuButton>
+              {page.charAt(0).toUpperCase() + page.slice(1)}
+            </MenuButton>
+          </Link>
+        ))}
+        {privateID && (
+          <Link
+            href={{
+              pathname: router.pathname,
+              query: modifyChannelId(router.query),
+            }}
+            passHref
+            legacyBehavior
+          >
+            <a target="_blank" rel="noopener noreferrer">
+              <MenuButton>Share</MenuButton>
+            </a>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
