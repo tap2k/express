@@ -21,8 +21,6 @@ export default function PageMenu({ privateID }) {
   };
 
   const pages = ['reel', 'board', 'map'];
-  if (privateID)
-    pages.push('admin');
 
   return (
     <div style={menuStyle}>

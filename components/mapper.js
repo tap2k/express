@@ -13,18 +13,22 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
   const [currSlide, setCurrSlide] = useState(-1);
   const markerRefs = [];
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.L = L;
-    }
-  }, []);
-
   //  TODO: to make sure it loads
   const [mapKey, setMapKey] = useState(0);
 
   useEffect(() => {
     setMapKey(prevKey => prevKey + 1);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.L = L;
+    }
+  }, []);
+
+  useEffect(() => {   
+    resetMap();
+  }, [mapRef, channel.contents]);
 
   let tileset = "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
   let attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href= "https://carto.com/about-carto/">CARTO</a>`;
@@ -37,17 +41,12 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
     attribution = channel.tileset.attribution;
   }
 
-  useEffect(() => {   
-    resetMap();
-  }, [mapRef, channel]);
-
   function resetMap()
   {
     if (!mapRef)
       return;
     
-    const locationArray = markerRefs.filter(marker => marker && marker.getLatLng)
-      .map(marker => marker.getLatLng());
+    const locationArray = markerRefs.map(marker => marker.getLatLng());
 
     if (locationArray.length)
     {

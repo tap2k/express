@@ -1,16 +1,28 @@
 import { useState } from "react";
-import { FaGripVertical, FaEdit, FaTrash } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
+import updateSubmission from '../hooks/updatesubmission';
 import ContentEditor from "./contenteditor";
 
 export default function ItemControls ({ contentItem, drag }) {
+  const router = useRouter();
 
   if (!contentItem)
     return;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handlePublish = async () => {
+    try {
+      await updateSubmission({contentID: contentItem.id, published: !contentItem.publishedAt});
+      await router.replace(router.asPath, undefined, { scroll: false });
+    } catch (error) {
+      console.error("Error updating publish status:", error);
+    }
+  };
 
   const handleDelete = () => {
     confirmAlert({
@@ -24,7 +36,7 @@ export default function ItemControls ({ contentItem, drag }) {
               await deleteSubmission({contentID: contentItem.id});
               await router.replace(router.asPath, undefined, { scroll: false });
             } catch (error) {
-              setError(error);
+              console.error("Error deleting submission:", error);
             }
           }
         },
@@ -58,6 +70,20 @@ export default function ItemControls ({ contentItem, drag }) {
           <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
         </button> }
         <button 
+          onClick={handlePublish} 
+          style={{ 
+            background: 'rgba(255, 255, 255, 0.7)', 
+            border: 'none', 
+            borderRadius: '50%', 
+            padding: '5px' 
+          }}
+        >
+          {contentItem.publishedAt ? 
+            <FaTimes size={20} color="rgba(0, 0, 0, 0.5)" /> : 
+            <FaCheck size={20} color="rgba(0, 0, 0, 0.5)" />
+          }
+        </button>
+        <button 
           onClick={() => {
             setIsModalOpen(true);
           }} 
@@ -86,4 +112,3 @@ export default function ItemControls ({ contentItem, drag }) {
     </>
   );
 };
-

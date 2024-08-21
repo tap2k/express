@@ -4,7 +4,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { Modal, ModalHeader, ModalBody, Button, Input } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import getMediaURL from "../hooks/getmediaurl";
@@ -66,18 +66,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   
   const showTitle = channel.showtitle || privateID;
 
-  const [claimedSlides, setClaimedSlides] = useState(() => {
-    if (!channel || !channel.contents) return [];
-  
-    return channel.contents.reduce((acc, content, index) => {
-      if (!content.publishedAt) {
-        const slideIndex = showTitle ? index + 1 : index;
-        acc.push(slideIndex);
-      }
-      return acc;
-    }, []);
-  });
-
   useEffect(() => {
     const handleFullScreenChange = () => {
       setIsFullScreen(!!document.fullscreenElement);
@@ -126,32 +114,10 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     );
   };
   
-  const handleClaim = async () => {
-    const contentToClaim = getCurrentContent();
-    if (contentToClaim) {
-      const publishedStatus = !claimedSlides.includes(currSlide);
-      confirmAlert({
-        title: `Confirm ${publishedStatus ? 'claim' : 'unclaim'}`,
-        message: `Are you sure you want to ${publishedStatus ? 'claim' : 'unclaim'} this item?`,
-        buttons: [
-          {
-            label: 'Yes',
-            onClick: async () => {
-              await updateSubmission({contentID: contentToClaim.id, published: !publishedStatus});
-              setClaimedSlides(prevClaimedSlides => 
-                publishedStatus
-                  ? [...prevClaimedSlides, currSlide]
-                  : prevClaimedSlides.filter(index => index !== currSlide)
-              );
-            }
-          },
-          {
-            label: 'No',
-            onClick: () => {}
-          }
-        ]
-      });
-    }
+  const handlePublish = async () => {
+    const contentToPublish = getCurrentContent();
+    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true});
+    await router.replace(router.asPath);
   };
 
   const handleDelete = () => {
@@ -293,6 +259,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
               <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
                 <FaArrowRight />
               </button>
+              <button onClick={handlePublish} style={iconButtonStyle}>
+                { getCurrentContent().publishedAt ? <FaTimes /> : <FaCheck /> }
+              </button>
             </>
           )}
         </div>
@@ -319,21 +288,14 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <button onClick={togglePlayPause} style={iconButtonStyle}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
-        {/*getCurrentContent()?.ext_url ? (
-          <button 
-            onClick={handleClaim} 
-            style={{...iconButtonStyle, color: claimedSlides.includes(currSlide) ? 'green' : 'white'}}
-          >
-            <FaCheck />
-          </button>
-        ) : (
+        {/*
           <button 
             onClick={handleHeartClick} 
             style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
           >
             <FaHeart />
           </button>
-        )*/}
+        */}
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {

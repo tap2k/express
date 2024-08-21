@@ -9,7 +9,6 @@ const formatEmailContent = (channelID, privateID, channelName) => {
   Admin Link: ${baseUrl}/admin?channelid=${privateID}
   Upload Link: ${baseUrl}/upload?channelid=${channelID}
   Reel Link: ${baseUrl}/reel?channelid=${channelID}
-  Board Link: ${baseUrl}/board?channelid=${channelID}
 
   Please save these links securely, especially the Admin Link.
   `;
