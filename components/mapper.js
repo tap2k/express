@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-//import MarkerClusterGroup from 'react-leaflet-cluster'
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'leaflet/dist/leaflet.css';
