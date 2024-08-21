@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import useGeolocation from "react-hook-geolocation";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { MdFlipCameraIos } from 'react-icons/md';

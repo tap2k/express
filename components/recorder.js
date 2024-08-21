@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
 import { Button } from "reactstrap";
 import { useReactMediaRecorder } from "react-media-recorder";
-import useGeolocation from "react-hook-geolocation";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';

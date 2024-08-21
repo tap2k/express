@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
 import RecordRTC from 'recordrtc';
-import useGeolocation from "react-hook-geolocation";
 import { MdFlipCameraIos } from 'react-icons/md';
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';

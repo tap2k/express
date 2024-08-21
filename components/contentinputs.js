@@ -23,7 +23,7 @@ export default function ContentInputs({ contentItem, descriptionRef, nameRef, em
         />
       )}
 
-      {emailRef && (
+      {emailRef && false && (
         <StyledInput
           type="text"
           innerRef={emailRef}
@@ -41,7 +41,7 @@ export default function ContentInputs({ contentItem, descriptionRef, nameRef, em
         />
       )}
 
-      {extUrlRef && (
+      {extUrlRef && false && (
         <StyledInput
           type="text"
           innerRef={extUrlRef}
