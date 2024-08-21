@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import 'leaflet-defaulticon-compatibility';
+import * as L from 'leaflet';
 import ContentMarker from "../components/contentmarker";
 
 export default function Mapper({ channel, itemWidth, privateID, autoPlay, animate, tour, ...props }) 
