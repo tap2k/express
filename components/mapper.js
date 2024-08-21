@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/leaflet.js';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
