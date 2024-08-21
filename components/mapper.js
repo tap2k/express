@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaUndo } from 'react-icons/fa';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -115,6 +116,22 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
             <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
           </span> : ""}
         <ZoomControl position="bottomleft" /> 
+        <div className="leaflet-bottom leaflet-left" style={{ margin: '0 0 0px 35px' }}>
+          <button
+            onClick={resetMap}
+            title="Reset map"
+            className="leaflet-control leaflet-bar"
+            style={{
+              width: '33px',
+              height: '33px',
+              border: '1px solid #aaaaaa',
+              backgroundColor: 'white',
+              cursor: 'pointer',
+            }}
+          >
+            <FaUndo />
+          </button>
+        </div>
       </MapContainer>
     </div>
   );

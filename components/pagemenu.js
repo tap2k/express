@@ -39,7 +39,7 @@ export default function PageMenu({ privateID }) {
             key={page}
             href={{
               pathname: `./${page}`,
-              query: modifyChannelId(router.query),
+              query: router.query,
             }}
           >
             <MenuButton>
