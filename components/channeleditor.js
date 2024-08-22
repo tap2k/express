@@ -37,7 +37,8 @@ export default function ChannelEditor({ initialData, onSubmit }) {
       email: emailRef?.current?.value,
       showtitle: showTitleSlide,
       interval: intervalRef?.current?.value,
-      ispublic: publicRef?.current?.checked,
+      //ispublic: publicRef?.current?.checked,
+      ispublic: true,
       picturefile: selectedImage,
       audiofile: selectedAudio
     });
