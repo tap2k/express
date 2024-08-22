@@ -1,10 +1,11 @@
+import { useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 
 const Backend = typeof window !== 'undefined' && 'ontouchstart' in window ? TouchBackend : HTML5Backend;
 
-export function DraggableItem({ id, index, moveItem, onDragStart, onDragEnd, children }) 
+export function Draggable({ id, index, moveItem, onDragStart, onDragEnd, children }) 
 {
   const ref = useRef(null);
   
@@ -47,7 +48,7 @@ export function DraggableItem({ id, index, moveItem, onDragStart, onDragEnd, chi
   return <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>{children}</div>;
 };
 
-export function MyDragArea({ children }) 
+export function DragArea({ children }) 
 {
 
   return (
