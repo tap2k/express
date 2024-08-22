@@ -69,11 +69,7 @@ export default async function uploadSubmission({myFormData, channelID, contentID
         {
           label: 'Upload Another',
           onClick: () => {
-            /*const currentQuery = router.query;
-            router.push({
-              pathname: '/upload',
-              query: currentQuery
-            });*/
+            router.reload();
           }
         }
       ];

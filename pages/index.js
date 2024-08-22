@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import { StyledInput } from '../components/recorderstyles';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
-import ChannelEditor from '../components/channeleditor';
-import { RecorderWrapper } from '../components/recorderstyles';
+import addChannel from '../hooks/addchannel';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { RecorderWrapper } from '../components/recorderstyles';
+import ChannelEditor from '../components/channeleditor';
 
 export default function Home() {
     const [channelID, setChannelID] = useState(null);
@@ -17,28 +17,7 @@ export default function Home() {
 
     const handleAddChannel = async (data) => {
         try {
-            // TODO: Hacky
-            const cleanedData = Object.keys(data).reduce((acc, key) => {
-                if (data[key] !== null && data[key] !== undefined && data[key] !== 'None') {
-                    if (typeof data[key] === 'boolean') {
-                        acc[key] = data[key] ? "true" : "false"; // Convert booleans to "true" or "false"
-                    } else if (data[key] instanceof File) {
-                        // For File objects, we'll just send the file name
-                        acc[key] = data[key].name;
-                    } else {
-                        acc[key] = String(data[key]); // Convert everything else to string
-                    }
-                }
-                return acc;
-            }, {});
-    
-            const response = await axios.post('/api/addchannel', cleanedData, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const respdata = response.data;
-    
+            const respdata = await addChannel(data);
             setChannelName(respdata.name);
             setPrivateID(respdata.privateID);
             setChannelID(respdata.uniqueID);

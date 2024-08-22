@@ -5,25 +5,25 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
 
-export default function ChannelEditor({ initialData, onSubmit }) {
+export default function ChannelEditor({ channel, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
   const intervalRef = useRef();
   const audioRef = useRef();
-  const [showTitleSlide, setShowTitleSlide] = useState(initialData ? initialData.showtitle : true);
+  const [showTitleSlide, setShowTitleSlide] = useState(channel ? channel.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const publicRef = useRef();
 
   const [selectedImage, setSelectedImage] = useState(() => {
-    if (!initialData?.picture?.url) return "None";
-    const baseName = initialData.picture.url.split('_')[0].split('/').pop();
+    if (!channel?.picture?.url) return "None";
+    const baseName = channel.picture.url.split('_')[0].split('/').pop();
     return imageOptions.find(option => option.startsWith(baseName)) || "None";
   });
 
   const [selectedAudio, setSelectedAudio] = useState(() => {
-    if (!initialData?.audiofile?.url) return "None";
-    const baseName = initialData.audiofile.url.split('_')[0].split('/').pop();
+    if (!channel?.audiofile?.url) return "None";
+    const baseName = channel.audiofile.url.split('_')[0].split('/').pop();
     return audioOptions.find(option => option.startsWith(baseName)) || "None";
   });
 
@@ -31,13 +31,13 @@ export default function ChannelEditor({ initialData, onSubmit }) {
     if (!titleRef.current.value)
       return;
     await onSubmit({
-      uniqueID: initialData ? initialData.uniqueID : null,
-      name: titleRef?.current?.value,
-      description: subtitleRef?.current?.value,
-      email: emailRef?.current?.value,
+      uniqueID: channel ? channel.uniqueID : null,
+      name: titleRef.current?.value,
+      description: subtitleRef.current?.value,
+      email: emailRef.current?.value,
       showtitle: showTitleSlide,
-      interval: intervalRef?.current?.value,
-      //ispublic: publicRef?.current?.checked,
+      interval: intervalRef.current?.value,
+      //ispublic: publicRef.current?.checked,
       ispublic: true,
       picturefile: selectedImage,
       audiofile: selectedAudio
@@ -115,19 +115,19 @@ export default function ChannelEditor({ initialData, onSubmit }) {
         type="text"
         innerRef={titleRef}
         placeholder="Enter your title here"
-        defaultValue={initialData?.name || ""}
+        defaultValue={channel?.name || ""}
       />
       {false && <StyledInput
         type="text"
         innerRef={subtitleRef}
         placeholder="Enter your subtitle here"
-        defaultValue={initialData?.description || ""}
+        defaultValue={channel?.description || ""}
       />}
-      {initialData && <StyledInput
+      {channel && <StyledInput
         type="email"
         innerRef={emailRef}
         placeholder="Update your email here"
-        defaultValue={initialData?.email || ""}
+        defaultValue={channel?.email || ""}
       />}
       
       {false && <div
@@ -155,7 +155,7 @@ export default function ChannelEditor({ initialData, onSubmit }) {
             <Input
               type="checkbox"
               innerRef={publicRef}
-              defaultChecked={initialData ? initialData.public : true}
+              defaultChecked={channel ? channel.public : true}
               style={{ marginRight: '5px', fontSize: 'large' }}
             />
             <span style={{fontSize: 'large'}}>Let participants view</span>
@@ -170,7 +170,7 @@ export default function ChannelEditor({ initialData, onSubmit }) {
             type="number"
             id="interval"
             innerRef={intervalRef}
-            defaultValue={initialData?.interval || 0}
+            defaultValue={channel?.interval || 0}
             style={{
               width: '80px',
               height: '32px',
@@ -224,7 +224,7 @@ export default function ChannelEditor({ initialData, onSubmit }) {
         onClick={handleSubmit}
         style={buttonStyle}
       >
-        {initialData ? 'Update Reel' : 'Make a New Reel'}
+        {channel ? 'Update Reel' : 'Make a New Reel'}
       </Button>
     </div>
   );
