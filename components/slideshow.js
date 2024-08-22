@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
+import axios from 'axios';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, Button, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
 import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -13,6 +14,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { StyledInput } from './recorderstyles';
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Caption from "./caption";
@@ -60,9 +62,11 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
+  const emailInputRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
 
@@ -93,6 +97,10 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     }
   }
 
+  const toggleEmailModal = () => {
+    setIsEmailModalOpen(!isEmailModalOpen);
+  }
+
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
     return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
@@ -118,6 +126,23 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     const contentToPublish = getCurrentContent();
     await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true});
     await router.replace(router.asPath);
+  };
+
+  const handleEmailSubmit = async () => {
+    if (emailInputRef.current.value)
+    {
+      const response = await axios.post('/api/makevideo', 
+        {
+          channelid: channel.uniqueID, // Assuming channelID is in cleanedData
+          email: emailInputRef.current.value}, 
+        {
+          headers: {
+              'Content-Type': 'application/json'
+        }
+      });
+      alert("Your video has been submitted for processing! You will receive an email when it is completed.");
+    }
+    setIsEmailModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -200,9 +225,11 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     setIsPlaying(!isPlaying);
   };
 
-  const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
-  );
+  const closeBtn = (
+    <button className="close" onClick={toggleEmailModal}>
+        &times;
+    </button>
+  ) ;
 
   const iconBarStyle = {
     position: 'fixed',
@@ -299,8 +326,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
-              console.log("DOWNLOAD");
-              return;
+              toggleEmailModal();
             }
             const currentContent = getCurrentContent();
             if (currentContent) {
@@ -378,16 +404,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </CarouselProvider>
       </div>
 
-      <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-        <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
-        <ModalBody>
-          <ChannelEditor
-            initialData={channel}
-            onSubmit={handleSaveChannel}
-          />
-        </ModalBody>
-      </Modal>
-
       <ContentEditor contentItem={getCurrentContent()} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
       {channel.audiofile?.url && (
@@ -398,6 +414,34 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           style={{ display: 'none' }}
         />
       )}
+
+      <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
+        <ModalHeader toggle={() => setIsChannelModalOpen(false)} close={closeBtn} />
+        <ModalBody>
+          <ChannelEditor
+            initialData={channel}
+            onSubmit={handleSaveChannel}
+          />
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isEmailModalOpen} toggle={toggleEmailModal}>
+        <ModalHeader toggle={toggleEmailModal} close={closeBtn}>
+            Download Video
+        </ModalHeader>
+        <ModalBody>
+            <p>Please enter your email address below to receive a link to your completed video.</p>
+            <StyledInput 
+                type="email" 
+                placeholder="Enter your email address" 
+                innerRef={emailInputRef}
+            />
+        </ModalBody>
+        <ModalFooter>
+            <Button color="primary" onClick={handleEmailSubmit}>Make Video</Button>
+            <Button color="secondary" onClick={toggleEmailModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }
