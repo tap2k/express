@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter, useState } from 'next/router';
 import { useRef } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import updateSubmission from "../hooks/updatesubmission";
@@ -15,6 +15,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
   const locationRef = useRef();
   const extUrlRef = useRef();
   const textAlignmentRef = useRef();
+  const [updating, setUpdating] = useState(false);
 
   const router = useRouter();
 
@@ -28,6 +29,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
   };
 
   const handleSave = async () => {
+    setUpdating(true);
     await updateSubmission({
       contentID: contentItem.id,
       description: descriptionRef?.current?.value,
@@ -37,6 +39,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
       ext_url: extUrlRef?.current?.value, 
       textAlignment: textAlignmentRef?.current?.value
     });
+    setUpdating(false);
     setIsModalOpen(false);
     await router.replace(router.asPath);
   };
@@ -54,6 +57,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           onClick={handleSave}
           style={{...buttonStyle}}
           color="primary" 
+          disabled={updating}
         >
           Update Slide
         </Button>

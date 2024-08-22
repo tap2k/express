@@ -13,6 +13,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
   const audioRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(channel ? channel.showtitle : true);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
+  const [updating, setUpdating] = useState(false);
   const publicRef = useRef();
 
   const [selectedImage, setSelectedImage] = useState(() => {
@@ -30,6 +31,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
   const handleSubmit = async () => {
     if (!titleRef.current.value)
       return;
+    setUpdating(true);
     await onSubmit({
       uniqueID: channel ? channel.uniqueID : null,
       name: titleRef.current?.value,
@@ -42,6 +44,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
       picturefile: selectedImage,
       audiofile: selectedAudio
     });
+    setUpdating(false);
   };
 
   const handleAudioToggle = (index) => {
@@ -223,6 +226,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
       <Button
         onClick={handleSubmit}
         style={buttonStyle}
+        disabled={updating}
       >
         {channel ? 'Update Reel' : 'Make a New Reel'}
       </Button>
