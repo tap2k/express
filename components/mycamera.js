@@ -6,28 +6,8 @@ import { MdFlipCameraIos } from 'react-icons/md';
 import { createFilter } from "cc-gram";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ContentInputs from "./contentinputs";
-
-async function uploadImage(dataUri, lat, long, description, name, email, location, ext_url, channelID, router) 
-{
-  const formData = require('form-data');
-  const myFormData = new formData();
-  try {
-    const blob = await (await fetch(dataUri)).blob();
-    if (!blob)
-    {
-      setErrorText("No blob found!");
-      return; 
-    }
-    myFormData.append('mediafile', blob, "image.png");
-    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
-  }
-  catch (error) {
-    console.error('Error uploading content:', error);
-    setErrorText('Failed to upload content. Please try again.');
-  }
-}
 
 function isMobileSafari() {
   const ua = navigator.userAgent;
@@ -42,18 +22,54 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const descriptionRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
 
-  const ccgramFilter = createFilter({ init: false });
-  const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
-
   useEffect(() => {
     checkForMultipleCameras();
   }, []);
+
+  const handleUpload = async (e) =>  
+    {
+      e.preventDefault();
+      setUploading(true);
+
+      try {
+        const formData = require('form-data');
+        const myFormData = new formData();
+        
+        const blob = await (await fetch(dataUri)).blob();
+        if (!blob)
+        {
+          setErrorText("No blob found!");
+          setUploading(false);
+          return; 
+        }
+  
+        myFormData.append('mediafile', blob, "image.png");
+        await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+        if (descriptionRef.current)
+          descriptionRef.current.value = "";
+        if (nameRef.current)
+          nameRef.current.value = "";
+        if (emailRef.current)
+          emailRef.current.value = "";
+        if (locationRef.current)
+          locationRef.current.value = "";
+        if (extUrlRef.current)
+          extUrlRef.current.value = "";
+      }
+      catch (error) {
+        console.error('Error uploading content:', error);
+        setErrorText('Failed to upload content. Please try again.');
+      }
+  
+      setUploading(false);
+    }  
 
   const checkForMultipleCameras = async () => {
     if (isMobileSafari()) setHasMultipleCameras(true);
@@ -62,22 +78,8 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
     setHasMultipleCameras(videoDevices.length > 1);
   };
 
-  const startCountdown = () => {
-    setCountdown(4);
-    
-    const countdownInterval = setInterval(() => {
-      setCountdown(prevCount => {
-        if (prevCount <= 1) {
-          clearInterval(countdownInterval);
-          // Trigger photo capture when countdown reaches 0
-          document.querySelector('#outer-circle').click();
-          return null;
-        }
-        return prevCount - 1;
-      });
-    }, 1000);
-  };
-
+  const ccgramFilter = createFilter({ init: false });
+  const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
 
   async function applyFilter(filter) {
     setCurrentFilter(filter);
@@ -125,6 +127,22 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
     setFilterPreviews({});
     setCountdown(null);
   }
+
+  const startCountdown = () => {
+    setCountdown(4);
+    
+    const countdownInterval = setInterval(() => {
+      setCountdown(prevCount => {
+        if (prevCount <= 1) {
+          clearInterval(countdownInterval);
+          // Trigger photo capture when countdown reaches 0
+          document.querySelector('#outer-circle').click();
+          return null;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
+  };
 
   function handleFlipCamera() {
     setFacingMode(prevMode => 
@@ -203,7 +221,7 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
             )}
             <button
               onClick={startCountdown}
-              disabled={countdown !== null}
+              disabled={countdown !== null || uploading}
               style={{
                 position: 'absolute',
                 bottom: '20px',
@@ -258,22 +276,15 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
           color="secondary" 
           size="lg"
           onClick={handleRetake} 
-          disabled={!dataUri}
+          disabled={!dataUri || uploading}
         >
           Retake
         </StyledButton>
         <StyledButton
           color="success"
           size="lg"
-          onClick={(e) => {
-            e.preventDefault();
-            uploadImage(dataUri, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, router);
-            if (descriptionRef.current)
-              descriptionRef.current.value = "";
-            if (extUrlRef.current)
-              extUrlRef.current.value = "";
-          }}
-          disabled={!dataUri}
+          onClick={handleUpload}
+          disabled={!dataUri || uploading}
         >
           Submit
         </StyledButton>

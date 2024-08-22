@@ -36,7 +36,7 @@ export default function AddButton({ channel }) {
       bottom: '25px',
       right: '10px',
       display: 'flex',
-      zIndex: 1000,
+      zIndex: 90,
   };
 
   return (

@@ -7,7 +7,7 @@ export default function PlayIcon({ inverted = false }) {
     width: '20%',
     maxWidth: 200,
     pointerEvents: 'none',
-    zIndex: 1000
+    zIndex: 90
   };
 
   if (inverted) {

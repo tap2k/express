@@ -7,7 +7,7 @@ export default function MakeButton({...props}) {
     position: 'absolute',
     top: '15px',
     right: '10px',
-    zIndex: 1000
+    zIndex: 90
   };
 
   return (

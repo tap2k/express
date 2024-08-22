@@ -112,8 +112,8 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
           </MarkerClusterGroup>
         { tour  && channel.contents.length ? 
           <span>
-            <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
-            <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 1000, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
+            <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
+            <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
           </span> : ""}
         <ZoomControl position="bottomleft" /> 
         <div className="leaflet-bottom leaflet-left" style={{ margin: '0 0 0px 35px' }}>

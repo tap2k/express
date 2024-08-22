@@ -210,7 +210,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     backgroundColor: 'rgba(50, 50, 50, 0.5)',
     padding: 'clamp(8px, 0.5vh, 20px)',
     borderRadius: 'clamp(10px, 2vh, 20px)',
-    zIndex: 1000,
+    zIndex: 90,
     alignItems: 'center',
   };
 

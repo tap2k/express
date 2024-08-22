@@ -4,8 +4,8 @@ import { Button, Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
-import ImageGallery from './imagegallery';
 import { imageOptions } from './fileoptions';
+import ImageGallery from './imagegallery';
 import ContentInputs from "./contentinputs";
 
 export default function Uploader({ channelID, lat, long, ...props }) {
@@ -15,16 +15,20 @@ export default function Uploader({ channelID, lat, long, ...props }) {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const descriptionRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
 
-  const uploadContent = async (e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
+    setUploading(true);
+    
     try {
       const formData = new FormData();
+
       if (selectedImage && selectedImage !== "None") {
         if (selectedImage.startsWith('data:image/png;base64,')) {
           // This is a DALL-E generated image
@@ -38,9 +42,11 @@ export default function Uploader({ channelID, lat, long, ...props }) {
           formData.append(selectedImage, blob, "maustrocard-"+selectedImage);
         }
       }
+      
       if (uploadedFiles.length > 0) {
         uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
       }
+      
       await uploadSubmission({
         myFormData: formData, 
         channelID, 
@@ -55,21 +61,30 @@ export default function Uploader({ channelID, lat, long, ...props }) {
         setProgress, 
         router
       }); 
+      
       setSelectedImage(null);
       setUploadedFiles([]);
       setProgress(0);
-      if (descriptionRef?.current) 
+      if (descriptionRef.current)
         descriptionRef.current.value = "";
-      if (extUrlRef?.current)
+      if (nameRef.current)
+        nameRef.current.value = "";
+      if (emailRef.current)
+        emailRef.current.value = "";
+      if (locationRef.current)
+        locationRef.current.value = "";
+      if (extUrlRef.current)
         extUrlRef.current.value = "";
     }
     catch (error) {
       console.error('Error uploading content:', error);
       setError('Failed to upload content. Please try again.');
     }
+
+    setUploading(false);
   }
 
-  const handleFileUpload = (e) => {
+  const addFile = (e) => {
     const newFiles = Array.from(e.target.files);
     setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
   };
@@ -209,7 +224,7 @@ export default function Uploader({ channelID, lat, long, ...props }) {
         type="file"
         style={{ display: 'none' }}
         accept="image/*,audio/*,video/*"
-        onChange={handleFileUpload}
+        onChange={addFile}
         multiple
       />
       
@@ -217,9 +232,9 @@ export default function Uploader({ channelID, lat, long, ...props }) {
 
       <Button
         color="success"
-        onClick={uploadContent}
+        onClick={handleUpload}
         block
-        //disabled={!uploadedFiles.length && !selectedImage}
+        disabled={(!uploadedFiles.length && !selectedImage) || uploading}
       >
         Submit
       </Button>

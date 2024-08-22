@@ -56,7 +56,7 @@ export default function ItemControls ({ contentItem, drag }) {
         right: 5,
         display: 'flex',
         gap: '5px',
-        zIndex: 1000
+        zIndex: 90
       }}>
         { drag && <button 
           style={{ 

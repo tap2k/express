@@ -9,7 +9,7 @@ export default function PageMenu({ privateID, isSlideshow=false }) {
     position: 'absolute',
     top: '0px',
     left: '0px',
-    zIndex: 1000
+    zIndex: 90
   };
 
   const rowStyle = {

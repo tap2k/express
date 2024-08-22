@@ -11,7 +11,6 @@ import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
 
 export default function Banner({ channel, privateID, isSlideshow }) {
-
   if (!channel)
     return;
 
@@ -54,13 +53,13 @@ export default function Banner({ channel, privateID, isSlideshow }) {
   return (
     <>
       <PageMenu isSlideshow={isSlideshow} />
-      <MakeButton />
+      {!(isSlideshow && privateID) && <MakeButton />}
       {!isSlideshow && <Alert 
         style={{
           backgroundColor: 'transparent',
           padding: '1.5rem',
           border: 'none',
-          zIndex: 100
+          zIndex: 90
         }}
       >
         <div style={{
@@ -99,7 +98,7 @@ export default function Banner({ channel, privateID, isSlideshow }) {
                     right: 5,
                     display: 'flex',
                     gap: '5px',
-                    zIndex: 1000
+                    zIndex: 90
                 }}>
                   <button 
                       onClick={() => {

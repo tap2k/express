@@ -4,27 +4,11 @@ import RecordRTC from 'recordrtc';
 import { MdFlipCameraIos } from 'react-icons/md';
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ContentInputs from "./contentinputs";
 
-const fileExt = "mp4";
 //const fileExt = "webm";
-
-async function uploadRecording(blob, lat, long, description, name, email, location, ext_url, channelID, status, router) 
-{
-  if (status != "stopped" || !blob)
-    return;
-  const formData = require('form-data');
-  const myFormData = new formData();
-  try {
-    myFormData.append('mediafile', blob, "video."+fileExt);
-    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
-  }
-  catch (error) {
-    console.error('Error uploading content:', error);
-    setErrorText('Failed to upload content. Please try again.');
-  }
-}
+const fileExt = "mp4";
 
 const formatTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
@@ -49,6 +33,7 @@ export default function VideoRecorder({ channelID, lat, long }) {
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [countdown, setCountdown] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const descriptionRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -58,6 +43,59 @@ export default function VideoRecorder({ channelID, lat, long }) {
   useEffect(() => {
     checkForMultipleCameras();
   }, []);
+
+  useEffect(() => {
+    startStream();
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [facingMode]);
+
+  useEffect(() => {
+    let interval;
+    if (status === "recording") {
+      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+    } else if (status === "stopped") {
+      setRecordingTime(0);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
+
+  const handleUpload = async (e) => 
+  {
+    e.preventDefault();
+    if (status != "stopped" || !blob)
+      return;
+
+    setUploading(true);
+
+    try {
+      const formData = require('form-data');
+      const myFormData = new formData();
+      myFormData.append('mediafile', blob, "video."+fileExt);
+      
+      await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+
+      if (descriptionRef.current)
+        descriptionRef.current.value = "";
+      if (nameRef.current)
+        nameRef.current.value = "";
+      if (emailRef.current)
+        emailRef.current.value = "";
+      if (locationRef.current)
+        locationRef.current.value = "";
+      if (extUrlRef.current)
+        extUrlRef.current.value = "";
+    }
+    catch (error) {
+      console.error('Error uploading content:', error);
+      setErrorText('Failed to upload content. Please try again.');
+    }
+
+    setUploading(false);
+  }
 
   const checkForMultipleCameras = async () => {
     if (isMobileSafari()) setHasMultipleCameras(true);
@@ -163,25 +201,6 @@ export default function VideoRecorder({ channelID, lat, long }) {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
   };
 
-  useEffect(() => {
-    startStream();
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [facingMode]);
-
-  useEffect(() => {
-    let interval;
-    if (status === "recording") {
-      interval = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
-    } else if (status === "stopped") {
-      setRecordingTime(0);
-    }
-    return () => clearInterval(interval);
-  }, [status]);
-
   return (
     <RecorderWrapper>
       <div style={{ 
@@ -258,7 +277,7 @@ export default function VideoRecorder({ channelID, lat, long }) {
               position: 'absolute',
               top: '10px',
               right: '10px',
-              zIndex: 1,
+              zIndex: 10,
               background: 'white',
               border: 'none',
               borderRadius: '50%',
@@ -304,15 +323,8 @@ export default function VideoRecorder({ channelID, lat, long }) {
           color="success" 
           size="lg" 
           block 
-          onClick={(e) => {
-            e.preventDefault();
-            uploadRecording(blob, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, status, router);
-            if (descriptionRef?.current)
-              descriptionRef.current.value = "";
-            if (extUrlRef?.current)
-              extUrlRef.current.value = "";
-          }}
-          disabled={status !== "stopped" || !blob}
+          onClick={handleUpload}
+          disabled={status !== "stopped" || !blob || uploading}
         >
           {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
         </StyledButton>

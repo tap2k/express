@@ -10,19 +10,6 @@ import ContentInputs from "./contentinputs";
 //const fileExt = "webm";
 const fileExt = "mp3";
 
-async function uploadRecording(myFormData, lat, long, description, name, email, location, ext_url, channelID, status, router) 
-{
-  if (status !== "stopped" || !myFormData.has('mediafile'))
-    return;
-
-  try {
-    await uploadSubmission({myFormData, lat, long, description, name, email, location, ext_url, published: true, channelID, router});
-  } catch (error) {
-    console.error('Error uploading content:', error);
-    setErrorText('Failed to upload content. Please try again.');
-  }
-}
-
 function Output({ src }) {  
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   return (
@@ -48,6 +35,7 @@ export default function Recorder({ channelID, lat, long }) {
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [imageFile, setImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef();
   const descriptionRef = useRef();
   const nameRef = useRef();
@@ -84,6 +72,46 @@ export default function Recorder({ channelID, lat, long }) {
     return () => clearInterval(interval);
   }, [status]);
 
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (status !== "stopped" || !blob)
+      return;
+
+    setUploading(true);
+
+    try {
+      const myFormData = new FormData();
+
+      if (imageFile) 
+      {
+        myFormData.append('mediafile', imageFile, imageFile.name);
+        myFormData.append('audiofile', blob, 'audio.' + fileExt);
+      }
+      else
+        myFormData.append('mediafile', blob, 'audio.' + fileExt);
+
+      await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+
+      if (descriptionRef.current)
+        descriptionRef.current.value = "";
+      if (nameRef.current)
+        nameRef.current.value = "";
+      if (emailRef.current)
+        emailRef.current.value = "";
+      if (locationRef.current)
+        locationRef.current.value = "";
+      if (extUrlRef.current)
+        extUrlRef.current.value = "";
+
+      } catch (error) {
+        console.error('Error uploading content:', error);
+        setErrorText('Failed to upload content. Please try again.');
+      }
+      
+    setUploading(false);  
+    setImageFile(null);
+  };
+
   const handleRecordingAction = () => {
     if (status === "recording") {
       pauseRecording();
@@ -105,26 +133,6 @@ export default function Recorder({ channelID, lat, long }) {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setImageFile(e.dataTransfer.files[0]);
     }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!blob)
-      return;
-    
-    const formData = new FormData();
-    if (imageFile) 
-    {
-      formData.append('mediafile', imageFile, imageFile.name);
-      formData.append('audiofile', blob, 'audio.' + fileExt);
-    }
-    else
-      formData.append('mediafile', blob, 'audio.' + fileExt);
-    
-    await uploadRecording(formData, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, status, router);
-    descriptionRef.current.value = "";
-    extUrlRef.current.value = "";
-    setImageFile(null);
   };
 
   return (
@@ -248,8 +256,8 @@ export default function Recorder({ channelID, lat, long }) {
         color="success" 
         size="lg" 
         block 
-        onClick={handleSubmit}
-        disabled={status !== "stopped" || !blob}
+        onClick={handleUpload}
+        disabled={status !== "stopped" || !blob || uploading}
         style={{ minWidth: '200px' }}
       >
         {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
