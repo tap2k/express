@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
@@ -34,6 +35,7 @@ function isMobileSafari() {
 }
 
 export default function MyCamera({ channelID, lat, long, ...props }) {
+  const router = useRouter();
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
@@ -76,24 +78,6 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
     }, 1000);
   };
 
-  async function handleTakePhotoAnimationDone(myDataUri) {
-    // unmirror the image if it was taken with the front camera
-    if (facingMode !== FACING_MODES.ENVIRONMENT) {
-      const img = new Image();
-      img.src = myDataUri;
-      await new Promise((resolve) => { img.onload = resolve; });
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.scale(-1, 1);
-      ctx.drawImage(img, -img.width, 0);
-      myDataUri = canvas.toDataURL('image/png');
-    }
-    setDataUri(myDataUri);
-    const previews = await generateFilterPreviews(myDataUri);
-    setFilterPreviews(previews);
-  }
 
   async function applyFilter(filter) {
     setCurrentFilter(filter);
@@ -114,6 +98,25 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
       }
     }
     return previews;
+  }
+
+  async function handleTakePhotoAnimationDone(myDataUri) {
+    // unmirror the image if it was taken with the front camera
+    if (facingMode !== FACING_MODES.ENVIRONMENT) {
+      const img = new Image();
+      img.src = myDataUri;
+      await new Promise((resolve) => { img.onload = resolve; });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, -img.width, 0);
+      myDataUri = canvas.toDataURL('image/png');
+    }
+    setDataUri(myDataUri);
+    const previews = await generateFilterPreviews(myDataUri);
+    setFilterPreviews(previews);
   }
   
   function handleRetake() {
@@ -265,8 +268,10 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
           onClick={(e) => {
             e.preventDefault();
             uploadImage(dataUri, lat, long, descriptionRef.current?.value, nameRef.current?.value, emailRef.current?.value, locationRef.current?.value, extUrlRef.current?.value, channelID, router);
-            descriptionRef.current.value = "";
-            extUrlRef.current.value = "";
+            if (descriptionRef.current)
+              descriptionRef.current.value = "";
+            if (extUrlRef.current)
+              extUrlRef.current.value = "";
           }}
           disabled={!dataUri}
         >
