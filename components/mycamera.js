@@ -197,7 +197,7 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
             )}
           </div>
           : 
-          <div style={{ position: 'relative', maxHeight: '80vh' }}>
+          <div style={{ position: 'relative' }}>
             <Camera
               onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
               idealFacingMode={facingMode || FACING_MODES.USER}
@@ -211,9 +211,9 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
                 top: 0,
                 left: 0,
                 width: '100%',
-                //height: '100%',
+                height: '100%',
                 objectFit: 'cover',
-                maxHeight: '60vh',
+                //maxHeight: '60vh',
                 //objectFit: 'contain',
                 borderRadius: '10px'
               }}

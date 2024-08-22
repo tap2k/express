@@ -207,7 +207,6 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
       <div style={{ 
         position: 'relative', 
         width: '100%', 
-        maxHeight: '60vh',
         paddingTop: `${(1 / aspectRatio) * 100}%`,
         marginTop: '10px',
         marginBottom: '20px'
@@ -225,6 +224,8 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            //maxHeight: '60vh',
+            //objectFit: 'contain',
             borderRadius: '10px',
             pointerEvents: status === 'recording' ? 'none' : 'auto',
             transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
