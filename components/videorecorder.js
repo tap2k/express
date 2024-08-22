@@ -21,7 +21,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function VideoRecorder({ channelID, lat, long }) {
+export default function VideoRecorder({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const videoRef = useRef(null);
   const recorderRef = useRef(null);
@@ -33,8 +33,7 @@ export default function VideoRecorder({ channelID, lat, long }) {
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [countdown, setCountdown] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const descriptionRef = useRef();
+  const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
@@ -69,17 +68,18 @@ export default function VideoRecorder({ channelID, lat, long }) {
     if (status != "stopped" || !blob)
       return;
 
-    setUploading(true);
+    if (setUploading)
+      setUploading(true);
 
     try {
       const formData = require('form-data');
       const myFormData = new formData();
       myFormData.append('mediafile', blob, "video."+fileExt);
       
-      await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
 
-      if (descriptionRef.current)
-        descriptionRef.current.value = "";
+      if (titleRef.current)
+        titleRef.current.value = "";
       if (nameRef.current)
         nameRef.current.value = "";
       if (emailRef.current)
@@ -94,7 +94,8 @@ export default function VideoRecorder({ channelID, lat, long }) {
       setErrorText('Failed to upload content. Please try again.');
     }
 
-    setUploading(false);
+    if (setUploading)
+      setUploading(false);
   }
 
   const checkForMultipleCameras = async () => {
@@ -202,7 +203,7 @@ export default function VideoRecorder({ channelID, lat, long }) {
   };
 
   return (
-    <RecorderWrapper>
+    <RecorderWrapper {...props}>
       <div style={{ 
         position: 'relative', 
         width: '100%', 
@@ -308,7 +309,7 @@ export default function VideoRecorder({ channelID, lat, long }) {
         )}
       </div>
       
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 

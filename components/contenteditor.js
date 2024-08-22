@@ -4,12 +4,12 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import updateSubmission from "../hooks/updatesubmission";
 import ContentInputs from "./contentinputs";
 
-export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, slideshow=false }) {
+export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen }) {
   
   if (!contentItem)
     return;
 
-  const descriptionRef = useRef();
+  const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
@@ -32,7 +32,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     setUpdating(true);
     await updateSubmission({
       contentID: contentItem.id,
-      description: descriptionRef?.current?.value,
+      title: titleRef?.current?.value,
       name: nameRef?.current?.value,
       email: emailRef?.current?.value,
       location: locationRef?.current?.value,
@@ -52,7 +52,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
       <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
       <ModalBody>
-        <ContentInputs style={{marginBottom: '5px'}} contentItem={contentItem} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} textAlignmentRef={slideshow ? textAlignmentRef : null} />
+        <ContentInputs style={{marginBottom: '5px'}} contentItem={contentItem} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} textAlignmentRef={textAlignmentRef} />
         <Button
           onClick={handleSave}
           style={{...buttonStyle}}

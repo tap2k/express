@@ -10,6 +10,7 @@ const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr
 
 export default ({ channelID, useLocation }) => {
   const [activeComponent, setActiveComponent] = useState('upload');
+  const [uploading, setUploading] = useState(false);
 
   let lat = null;
   let long = null;
@@ -23,13 +24,13 @@ export default ({ channelID, useLocation }) => {
   const renderComponent = () => {
     switch(activeComponent) {
       case 'upload':
-        return <Uploader channelID={channelID} lat={lat} long={long} />;
+        return <Uploader channelID={channelID} uploading={uploading} setUploading={setUploading} lat={lat} long={long} />;
       case 'video':
-        return <VideoRecorder channelID={channelID} lat={lat} long={long} />;
+        return <VideoRecorder channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
       case 'photo':
-        return <MyCamera channelID={channelID} lat={lat} long={long} />;
+        return <MyCamera channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
       case 'audio':
-        return <Recorder channelID={channelID} lat={lat} long={long} />;
+        return <Recorder channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
       default:
         return null;
     }

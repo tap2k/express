@@ -30,14 +30,13 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function Recorder({ channelID, lat, long }) {
+export default function Recorder({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [imageFile, setImageFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef();
-  const descriptionRef = useRef();
+  const titleRef = useRef();
   const nameRef = useRef();
   const locationRef = useRef();
   const emailRef = useRef();
@@ -77,7 +76,8 @@ export default function Recorder({ channelID, lat, long }) {
     if (status !== "stopped" || !blob)
       return;
 
-    setUploading(true);
+    if (setUploading)
+      setUploading(true);
 
     try {
       const myFormData = new FormData();
@@ -90,10 +90,10 @@ export default function Recorder({ channelID, lat, long }) {
       else
         myFormData.append('mediafile', blob, 'audio.' + fileExt);
 
-      await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
 
-      if (descriptionRef.current)
-        descriptionRef.current.value = "";
+      if (titleRef.current)
+        titleRef.current.value = "";
       if (nameRef.current)
         nameRef.current.value = "";
       if (emailRef.current)
@@ -108,7 +108,8 @@ export default function Recorder({ channelID, lat, long }) {
         setErrorText('Failed to upload content. Please try again.');
       }
       
-    setUploading(false);  
+    if (setUploading)
+      setUploading(false);  
     setImageFile(null);
   };
 
@@ -136,7 +137,7 @@ export default function Recorder({ channelID, lat, long }) {
   };
 
   return (
-    <RecorderWrapper>
+    <RecorderWrapper {...props}>
       <ButtonGroup style={{marginBottom: '10px'}}>
         <StyledButton 
           color="primary" 
@@ -250,7 +251,7 @@ export default function Recorder({ channelID, lat, long }) {
         )}
       </div>
 
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
       
       <Button 
         color="success" 

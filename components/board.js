@@ -1,57 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { Draggable, DragArea } from './draggable.js';
 import Masonry from 'react-masonry-css';
 import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
 import ContentCard from './contentcard';
-
-const DraggableItem = ({ id, index, moveItem, onDragStart, onDragEnd, children }) => {
-  const ref = useRef(null);
-
-  const [{ isDragging }, drag] = useDrag({
-    type: 'ITEM',
-    item: () => {
-      onDragStart();
-      return { id, index };
-    },
-    end: (item, monitor) => {
-      const dropResult = monitor.getDropResult();
-      if (dropResult) {
-        onDragEnd(item.id, item.index);
-      }
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: 'ITEM',
-    hover: (item, monitor) => {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-      moveItem(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-
-  drag(drop(ref));
-
-  return (
-    <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      {children}
-    </div>
-  );
-};
 
 export default function Board({ channel, privateID, ...props }) {
   const [contents, setContents] = useState(channel.contents);
@@ -68,6 +21,8 @@ export default function Board({ channel, privateID, ...props }) {
   }, [router.asPath, updateContents]);
 
   const moveItem = (fromIndex, toIndex) => {
+    if (!privateID)
+      return;
     setContents((previousContents) => {
       const updatedContents = [...previousContents];
       const [movedItem] = updatedContents.splice(fromIndex, 1);
@@ -77,10 +32,14 @@ export default function Board({ channel, privateID, ...props }) {
   };
 
   const handleDragStart = () => {
+    if (!privateID)
+      return;
     setPrevContents([...contents]);
   };
 
   const handleDragEnd = async (id, dropIndex) => {
+    if (!privateID)
+      return;
     if (id == prevContents[dropIndex].id)
       return;
     try {
@@ -98,10 +57,9 @@ export default function Board({ channel, privateID, ...props }) {
     500: 1
   };
 
-  const Backend = typeof window !== 'undefined' && 'ontouchstart' in window ? TouchBackend : HTML5Backend;
 
   return (
-    <DndProvider backend={Backend}>
+    <DragArea>
       <div {...props}>
         <Masonry
           breakpointCols={breakpointColumnsObj}
@@ -109,7 +67,7 @@ export default function Board({ channel, privateID, ...props }) {
           columnClassName="my-masonry-grid_column"
         >
           {contents.map((contentItem, index) => (
-            <DraggableItem
+            <Draggable
               key={contentItem.id}
               id={contentItem.id}
               index={index}
@@ -118,7 +76,7 @@ export default function Board({ channel, privateID, ...props }) {
               onDragEnd={handleDragEnd}
             >
               <ContentCard contentItem={contentItem} privateID={privateID} drag />
-            </DraggableItem>
+            </Draggable>
           ))}
         </Masonry>
         <style jsx global>{`
@@ -132,6 +90,6 @@ export default function Board({ channel, privateID, ...props }) {
           }
         `}</style>
       </div>
-    </DndProvider>
+    </DragArea>
   );
 }

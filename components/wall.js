@@ -1,56 +1,11 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { Draggable, DragArea } from './draggable.js';
 import Content from "./content";
 import Caption from "./caption";
 import ItemControls from './itemcontrols';
 import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
-
-const DragItem = ({ id, index, moveItem, onDragStart, onDragEnd, children }) => {
-  const ref = useRef(null);
-  
-  const [{ isDragging }, drag] = useDrag({
-    type: 'ITEM',
-    item: () => {
-      onDragStart(id, index);
-      return { id, index };
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-    end: async (item, monitor) => {
-      const dropResult = monitor.getDropResult();
-      if (dropResult) {
-        await onDragEnd(item.id, item.index);
-      }
-    },
-  });
-
-  const [, drop] = useDrop({
-    accept: 'ITEM',
-    hover: (item, monitor) => {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-      moveItem(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-    drop: (item) => ({ id, index: item.index }),
-  });
-
-  drag(drop(ref));
-
-  return <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>{children}</div>;
-};
-
 
 const Grid = ({ children, columns }) => (
   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '10px' }}>
@@ -95,6 +50,8 @@ export default function Wall ({ channel, privateID, ...props }) {
   }, []);
 
   const moveItem = (dragIndex, hoverIndex) => {
+    if (!privateID)
+      return;
     const newContents = [...contents];
     const [removed] = newContents.splice(dragIndex, 1);
     newContents.splice(hoverIndex, 0, removed);
@@ -102,11 +59,15 @@ export default function Wall ({ channel, privateID, ...props }) {
   };
 
   const handleDragStart = () => {
+    if (!privateID)
+      return;
     setPrevContents([...contents])
   };
 
   const handleDragEnd = async (id, dropIndex) => {
     try {
+      if (!privateID)
+        return;
       await updateSubmission({ contentID: id, order: prevContents[dropIndex].order })
       await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
@@ -114,14 +75,13 @@ export default function Wall ({ channel, privateID, ...props }) {
     }
   };
 
-  const Backend = typeof window !== 'undefined' && 'ontouchstart' in window ? TouchBackend : HTML5Backend;
 
   return (
-    <DndProvider backend={Backend}>
+    <DragArea>
       <div ref={containerRef} {...props}>
         <Grid columns={columns}>
           {contents.map((contentItem, index) => (
-            <DragItem 
+            <Draggable
               key={contentItem.id} 
               id={contentItem.id} 
               order={contentItem.order}
@@ -136,6 +96,7 @@ export default function Wall ({ channel, privateID, ...props }) {
                   border: '1px solid #999999',
                   borderRadius: '10px',
                   overflow: 'hidden',
+                  backgroundColor: 'black'
                 }}>
                 <Content 
                   contentItem={contentItem}
@@ -150,18 +111,18 @@ export default function Wall ({ channel, privateID, ...props }) {
                     drag
                   />
                 )}
-                {contentItem.description && (
+                {contentItem.title && (
                   <Caption 
-                    title={contentItem.description}
+                    title={contentItem.title}
                     textAlignment="center"
                     size="small"
                   />
                 )}
               </div>
-            </DragItem>
+            </Draggable>
           ))}
         </Grid>
       </div>
-    </DndProvider>
+    </DragArea>
   );
 }

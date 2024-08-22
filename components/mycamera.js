@@ -14,7 +14,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function MyCamera({ channelID, lat, long, ...props }) {
+export default function MyCamera({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
@@ -22,8 +22,7 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const descriptionRef = useRef();
+  const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
@@ -36,7 +35,8 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
   const handleUpload = async (e) =>  
     {
       e.preventDefault();
-      setUploading(true);
+      if (setUploading)
+        setUploading(true);
 
       try {
         const formData = require('form-data');
@@ -46,14 +46,15 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
         if (!blob)
         {
           setErrorText("No blob found!");
-          setUploading(false);
+          if (setUploading)
+            setUploading(false);
           return; 
         }
   
         myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, lat, long, description: descriptionRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
-        if (descriptionRef.current)
-          descriptionRef.current.value = "";
+        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+        if (titleRef.current)
+          titleRef.current.value = "";
         if (nameRef.current)
           nameRef.current.value = "";
         if (emailRef.current)
@@ -68,7 +69,8 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
         setErrorText('Failed to upload content. Please try again.');
       }
   
-      setUploading(false);
+      if (setUploading)
+        setUploading(false);
     }  
 
   const checkForMultipleCameras = async () => {
@@ -269,7 +271,7 @@ export default function MyCamera({ channelID, lat, long, ...props }) {
         }
       </div>
 
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 

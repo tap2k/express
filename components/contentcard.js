@@ -17,9 +17,9 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
             controls={controls}
             autoPlay={autoPlay}
           />
-          {contentItem.description && contentItem.mediafile?.url?.includes("maustrocard") &&
+          {contentItem.title && contentItem.mediafile?.url?.includes("maustrocard") &&
             <Caption 
-              title={contentItem.description}
+              title={contentItem.title}
               textAlignment="center"
               size="small"
             />
@@ -31,7 +31,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
             drag={drag}
           />
         }
-        {contentItem.description && !contentItem.mediafile?.url?.includes("maustrocard") &&
+        {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") &&
           <div 
             style={{ 
               padding: '10px 15px', 
@@ -40,7 +40,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
               lineHeight: '1.4',
             }}
           >
-            {contentItem.description}
+            {contentItem.title}
           </div>
         }
         {contentItem.name &&

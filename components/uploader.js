@@ -8,15 +8,14 @@ import { imageOptions } from './fileoptions';
 import ImageGallery from './imagegallery';
 import ContentInputs from "./contentinputs";
 
-export default function Uploader({ channelID, lat, long, ...props }) {
+export default function Uploader({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const fileInputRef = useRef();
   const [progress, setProgress] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const descriptionRef = useRef();
+  const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
@@ -24,7 +23,8 @@ export default function Uploader({ channelID, lat, long, ...props }) {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    setUploading(true);
+    if (setUploading)
+      setUploading(true);
     
     try {
       const formData = new FormData();
@@ -52,7 +52,7 @@ export default function Uploader({ channelID, lat, long, ...props }) {
         channelID, 
         lat, 
         long, 
-        description: descriptionRef?.current?.value,
+        title: titleRef?.current?.value,
         name: nameRef?.current?.value,
         email: emailRef?.current?.value,
         location: locationRef?.current?.value,
@@ -65,8 +65,8 @@ export default function Uploader({ channelID, lat, long, ...props }) {
       setSelectedImage(null);
       setUploadedFiles([]);
       setProgress(0);
-      if (descriptionRef.current)
-        descriptionRef.current.value = "";
+      if (titleRef.current)
+        titleRef.current.value = "";
       if (nameRef.current)
         nameRef.current.value = "";
       if (emailRef.current)
@@ -81,7 +81,8 @@ export default function Uploader({ channelID, lat, long, ...props }) {
       setError('Failed to upload content. Please try again.');
     }
 
-    setUploading(false);
+    if (setUploading)
+      setUploading(false);
   }
 
   const addFile = (e) => {
@@ -228,13 +229,13 @@ export default function Uploader({ channelID, lat, long, ...props }) {
         multiple
       />
       
-      <ContentInputs style={{marginBottom: '20px'}} descriptionRef={descriptionRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
 
       <Button
         color="success"
         onClick={handleUpload}
         block
-        disabled={(!uploadedFiles.length && !selectedImage) || uploading}
+        disabled={uploading}
       >
         Submit
       </Button>

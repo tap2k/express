@@ -361,7 +361,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                   />
                   <Caption 
-                      title={contentItem.description}
+                      title={contentItem.title}
                       url={contentItem.ext_url} 
                       textAlignment={contentItem.textalignment} 
                   />
@@ -388,7 +388,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </ModalBody>
       </Modal>
 
-      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} slideshow />
+      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
       {channel.audiofile?.url && (
         <audio
