@@ -1,5 +1,5 @@
-import { useRouter, useState } from 'next/router';
-import { useRef } from "react";
+import { useRouter } from 'next/router';
+import { useRef, useState } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import updateSubmission from "../hooks/updatesubmission";
 import ContentInputs from "./contentinputs";
