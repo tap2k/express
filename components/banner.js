@@ -53,7 +53,7 @@ export default function Banner({ channel, privateID, isSlideshow }) {
   return (
     <>
       <PageMenu isSlideshow={isSlideshow} />
-      {!(isSlideshow && privateID) && <MakeButton />}
+      {!privateID && <MakeButton />}
       {!isSlideshow && <Alert 
         style={{
           backgroundColor: 'transparent',

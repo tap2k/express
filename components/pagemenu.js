@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { FaPaperclip } from 'react-icons/fa';
 import { MenuButton } from '../components/recorderstyles';
 
 export default function PageMenu({ privateID, isSlideshow=false }) {
@@ -9,7 +10,7 @@ export default function PageMenu({ privateID, isSlideshow=false }) {
     position: 'absolute',
     top: '0px',
     left: '0px',
-    zIndex: 90
+    zIndex: 100
   };
 
   const rowStyle = {
@@ -52,7 +53,9 @@ export default function PageMenu({ privateID, isSlideshow=false }) {
             </MenuButton>
           </Link>
         ))}
-        {!isSlideshow && <MenuButton onClick={copyUrlToClipboard}>Share</MenuButton>}
+        {true && <MenuButton onClick={copyUrlToClipboard}>
+          <FaPaperclip color="rgba(240, 240, 240, 1)" />
+            </MenuButton>}
       </div>
     </div>
   );

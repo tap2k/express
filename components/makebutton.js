@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { MenuButton } from '../components/recorderstyles';
 
-export default function MakeButton({...props}) {
+export default function MakeButton() {
 
   const makeStyle = {
     position: 'absolute',
-    top: '15px',
+    top: '0.7rem',
     right: '10px',
-    zIndex: 90
+    zIndex: 100,
+    padding: 5
   };
 
   return (

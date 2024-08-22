@@ -274,12 +274,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         transform: 'translateX(-50%)', 
         gap: 'clamp(10px, 2vw, 20px)'
       }}>
-        <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
+        { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
           <FaPaperclip />
-        </button>
-        <button onClick={toggleFullScreen} style={iconButtonStyle}>
-          <FaExpandArrowsAlt />
-        </button>
+        </button> }
         <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
           <button style={iconButtonStyle}>
             <FaPlus />
@@ -287,6 +284,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </Link>
         <button onClick={togglePlayPause} style={iconButtonStyle}>
           {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
+        <button onClick={toggleFullScreen} style={iconButtonStyle}>
+          <FaExpandArrowsAlt />
         </button>
         {/*
           <button 
