@@ -100,7 +100,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
 
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
-    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${currSlide}`;  
+    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${privateID ? 0 : currSlide}`;  
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
       .catch(err => console.error('Failed to copy URL: ', err));
@@ -377,7 +377,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           )}
         </CarouselProvider>
       </div>
-
 
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
