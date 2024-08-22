@@ -206,6 +206,17 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
               sizeFactor={1}
               isDisplayStartCameraError={true}
               isImageMirror={facingMode !== FACING_MODES.ENVIRONMENT}
+              style={{ 
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                //height: '100%',
+                //objectFit: 'cover',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+                borderRadius: '10px'
+              }}
             />
             {countdown !== null && (
               <div style={{
