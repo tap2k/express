@@ -57,12 +57,12 @@ export default ({ channelID, useLocation }) => {
         >
           Photo
         </StyledButton>
-        { false && <StyledButton
+        <StyledButton
           color={activeComponent === 'audio' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('audio')}
         >
           Audio
-        </StyledButton> }
+        </StyledButton>
       </ButtonGroup>
 
       <div>
