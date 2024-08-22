@@ -23,7 +23,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '4vh' };
+    const captionStyleTop = { ...captionStyleBase, top: '2.5vh' };
     const captionStyleBottom = { ...captionStyleBase, bottom: '15vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
