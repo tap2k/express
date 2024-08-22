@@ -97,7 +97,6 @@ export default function ChannelEditor({ channel, onSubmit }) {
     cursor: 'pointer',
     backgroundColor: '#f8f9fa',
     height: '100%',
-    minHeight: '40px',
     border: '1px solid #ddd',
   };
 
@@ -208,9 +207,9 @@ export default function ChannelEditor({ channel, onSubmit }) {
             ) : (
               <>
                 {playingAudioIndex === index ? (
-                  <FaPause size={20} />
+                  <FaPause />
                 ) : (
-                  <FaPlay size={20} />
+                  <FaPlay />
                 )}
                 <span style={audioNameStyle}>{audio}</span>
               </>
