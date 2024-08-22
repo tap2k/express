@@ -272,7 +272,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         bottom: 'clamp(10px, 2vh, 20px)', 
         left: '50%', 
         transform: 'translateX(-50%)', 
-        gap: 'clamp(10px, 2vw, 20px)'
+        gap: '25px'
       }}>
         { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
           <FaPaperclip />

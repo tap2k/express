@@ -52,7 +52,7 @@ export default function Banner({ channel, privateID, isSlideshow }) {
 
   return (
     <>
-      <PageMenu isSlideshow={isSlideshow} />
+      <PageMenu privateID={privateID} isSlideshow={isSlideshow} />
       {!privateID && <MakeButton />}
       {!isSlideshow && <Alert 
         style={{

@@ -25,6 +25,7 @@ export default ({ channel, privateID }) => {
                 <Banner 
                     channel={channel}
                     privateID={privateID}
+                    isSlideshow
                 />
             </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
