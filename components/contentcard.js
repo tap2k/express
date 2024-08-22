@@ -35,7 +35,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
           <div 
             style={{ 
               padding: '10px 15px', 
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: 'bold',
               lineHeight: '1.4',
             }}
@@ -47,7 +47,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
           <div 
             style={{ 
               padding: '5px 10px', 
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: 'bold',
               lineHeight: '1.4',
               textAlign: 'right',
@@ -62,7 +62,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
           <div 
             style={{ 
               padding: '15px 10px', 
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: 'bold',
               lineHeight: '1.4',
               backgroundColor: '#f0f0f0'
