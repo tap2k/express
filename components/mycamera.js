@@ -212,9 +212,9 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
                 left: 0,
                 width: '100%',
                 //height: '100%',
-                //objectFit: 'cover',
-                maxHeight: '80vh',
-                objectFit: 'contain',
+                objectFit: 'cover',
+                maxHeight: '60vh',
+                //objectFit: 'contain',
                 borderRadius: '10px'
               }}
             />
