@@ -371,8 +371,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           </Slider>
           {channel.contents.length > 0 && (
             <>
-              <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '10%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />
-              <ButtonNext style={{position: 'absolute', top: 0, right: 0, width: '10%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
+              <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />
+              <ButtonNext style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
             </>
           )}
         </CarouselProvider>

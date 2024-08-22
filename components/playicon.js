@@ -31,7 +31,7 @@ export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
         {!isPlaying && (
           <img
             src="playicon.png"
-            style={{ width: '80%' }}
+            style={{ width: '60%' }}
             alt="Play"
           />
         )}
