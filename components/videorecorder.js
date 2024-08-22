@@ -232,7 +232,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
             transform: facingMode === 'user' && status !== 'stopped' ? 'scaleX(-1)' : 'none'
           }}
         />
-        { status != "stopped" && <div 
+        <div 
           onClick={status === 'recording' ? stopRecording : (countdown === null ? startRecording : null)}
           style={{
             position: 'absolute',
@@ -259,7 +259,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
               flexShrink: 0
             }} />
           )}
-        </div> }
+        </div>
         {status === 'recording' && (
           <div style={{
             position: 'absolute',
@@ -310,7 +310,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
             {countdown}
           </div>
         )}
-      </div> 
+      </div>
       
       <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
 
