@@ -1,13 +1,23 @@
-export default function PlayIcon({ inverted = false }) {
-  const iconStyle = {
+
+export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
+  const containerStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '20%',
     maxWidth: 200,
-    pointerEvents: 'none',
-    zIndex: 90
+    aspectRatio: '1 / 1', 
+    zIndex: 200,
+    cursor: 'pointer',
+  };
+
+  const iconStyle = {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   if (inverted) {
@@ -16,10 +26,16 @@ export default function PlayIcon({ inverted = false }) {
   }
 
   return (
-    <img 
-      src="playicon.png" 
-      style={iconStyle}
-      alt="Play"
-    />
+    <div style={containerStyle} onClick={toggle}>
+      <div style={iconStyle}>
+        {!isPlaying && (
+          <img
+            src="playicon.png"
+            style={{ width: '80%' }}
+            alt="Play"
+          />
+        )}
+      </div>
+    </div>
   );
 }

@@ -17,9 +17,8 @@ export default function AudioPlayer({ src, width, height, controls, autoPlay, in
         minHeight: '150px',
         backgroundColor: 'black'
       }} 
-      onClick={toggle}
     >
-      {!isPlaying && <PlayIcon />}
+      <PlayIcon isPlaying={isPlaying} toggle={toggle} />
       <audio src={src} style={{display: "none"}} ref={audioRef} />
     </div>
   );

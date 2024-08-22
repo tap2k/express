@@ -18,7 +18,6 @@ export default function VideoPlayer({ width, height, controls, autoPlay, index, 
         backgroundColor: '#000',
         cursor: 'pointer'
       }} 
-      onClick={toggle}
     >
       <video 
         ref={videoRef}
@@ -33,7 +32,7 @@ export default function VideoPlayer({ width, height, controls, autoPlay, index, 
       >
         {children}
       </video>
-      {!isPlaying && <PlayIcon inverted={false} />}
+      <PlayIcon isPlaying={isPlaying} toggle={toggle} inverted={false} />
     </div>
   );
 }
