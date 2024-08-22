@@ -14,17 +14,20 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         borderRadius: '10px',
         padding: '35px',
         backdropFilter: 'blur(5px)',
-        width: 'fit-content',
+        width: 'max-content',
         maxWidth: '80%',
+        boxSizing: 'border-box',
         textAlign: 'center',
         pointerEvents: 'none',
         whiteSpace: 'normal',
         overflowWrap: 'break-word',
+        wordWrap: 'break-word',
+        hyphens: 'auto',
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '2vh' };
-    const captionStyleBottom = { ...captionStyleBase, bottom: '15vh' };
+    const captionStyleTop = { ...captionStyleBase, top: '2.5vh' };
+    const captionStyleBottom = { ...captionStyleBase, bottom: 'clamp(70px, 10vh, 120px' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
         textAlignment === 'top' ? captionStyleTop :
@@ -50,9 +53,9 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleTop = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 200px)' };
-    const linkStyleBottom = { ...linkStyleBase, top: '30px' };
-    const linkStyle = textAlignment === 'bottom' ? linkStyleBottom : linkStyleTop;
+    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 120px)' };
+    const linkStyleTop = { ...linkStyleBase, top: '30px' };
+    const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
         fontSize: size === "small" ? '16px' : 
