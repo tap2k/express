@@ -117,7 +117,8 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
           height: { min: 480, ideal: 720, max: 1080 },
           aspectRatio: { ideal: 16/9 },
           frameRate: 30,
-          resizeMode: 'crop-and-scale'
+          //resizeMode: 'crop-and-scale'
+          resizeMode: 'none'
         },
         audio: true
       });
