@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Draggable, DragArea } from './draggable.js';
 import Content from "./content";
-import Caption from "./caption";
 import ItemControls from './itemcontrols';
 import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
