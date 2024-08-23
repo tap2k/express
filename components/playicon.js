@@ -10,6 +10,7 @@ export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
     aspectRatio: '1 / 1', 
     zIndex: 200,
     cursor: 'pointer',
+    opacity: 0.9
   };
 
   const iconStyle = {
@@ -17,7 +18,7 @@ export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   };
 
   if (inverted) {
