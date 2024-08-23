@@ -21,7 +21,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
         playsInline
         preload='metadata'
         controls={controls}
-        controlsList="nodownload noremoteplayback"
+        controlsList="nodownload nofullscreen noremoteplayback"
       >
         {children}
       </video>
