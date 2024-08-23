@@ -26,7 +26,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '3.5vh' };
+    const captionStyleTop = { ...captionStyleBase, top: '2vh' };
     const captionStyleBottom = { ...captionStyleBase, bottom: 'clamp(70px, 10vh, 120px' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
@@ -53,8 +53,8 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10.5vh, 120px)' };
-    const linkStyleTop = { ...linkStyleBase, top: '30px' };
+    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 120px)' };
+    const linkStyleTop = { ...linkStyleBase, top: '2.5vh' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
     const titleStyle = {
