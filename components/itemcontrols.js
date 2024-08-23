@@ -7,7 +7,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
 import ContentEditor from "./contenteditor";
 
-export default function ItemControls ({ contentItem, drag }) {
+export default function ItemControls ({ contentItem, dragRef }) {
   const router = useRouter();
 
   if (!contentItem)
@@ -58,7 +58,8 @@ export default function ItemControls ({ contentItem, drag }) {
         gap: '5px',
         zIndex: 90
       }}>
-        { drag && <button 
+        { dragRef && <button 
+          ref={dragRef}
           style={{ 
             background: 'rgba(255, 255, 255, 0.7)', 
             border: 'none', 

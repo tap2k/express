@@ -1,9 +1,8 @@
 import { Card } from 'reactstrap';
 import Content, { isMediaFile } from './content';
-import Caption from './caption';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, privateID, controls, autoPlay, drag }) 
+export default function ContentCard({ contentItem, privateID, controls, autoPlay, dragRef }) 
 {
   return (
     <Card className="mb-2">
@@ -23,7 +22,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
         {privateID && 
           <ItemControls 
             contentItem={contentItem} 
-            drag={drag}
+            dragRef={dragRef}
           />
         }
         {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") &&

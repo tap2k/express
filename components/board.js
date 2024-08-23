@@ -75,7 +75,9 @@ export default function Board({ channel, privateID, ...props }) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <ContentCard contentItem={contentItem} privateID={privateID} drag />
+              {({ dragRef }) => (
+                <ContentCard contentItem={contentItem} privateID={privateID} dragRef={dragRef} />
+              )}
             </Draggable>
           ))}
         </Masonry>

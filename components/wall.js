@@ -76,47 +76,49 @@ export default function Wall ({ channel, privateID, ...props }) {
   };
 
   return (
-    <DragArea>
-      <div ref={containerRef} {...props}>
-        <Grid columns={columns}>
-          {contents.map((contentItem, index) => (
-            <Draggable
-              key={contentItem.id} 
-              id={contentItem.id} 
-              order={contentItem.order}
-              index={index} 
-              moveItem={moveItem}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              <div style={{
-                  position: 'relative',
-                  height: '250px',
-                  border: '1px solid #999999',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  backgroundColor: 'black'
-                }}>
-                <Content 
-                  contentItem={contentItem}
-                  width="100%" 
-                  height="100%"
-                  index={index}
-                  caption
-                  thumbnail
-                  cover
+<DragArea>
+  <div ref={containerRef} {...props}>
+    <Grid columns={columns}>
+      {contents.map((contentItem, index) => (
+        <Draggable
+          key={contentItem.id} 
+          id={contentItem.id} 
+          order={contentItem.order}
+          index={index} 
+          moveItem={moveItem}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {({ dragRef }) => (
+            <div style={{
+                position: 'relative',
+                height: '250px',
+                border: '1px solid #999999',
+                borderRadius: '10px',
+                overflow: 'hidden',
+                backgroundColor: 'black'
+              }}>
+              <Content 
+                contentItem={contentItem}
+                width="100%" 
+                height="100%"
+                index={index}
+                caption
+                thumbnail
+                cover
+              />
+              {privateID && (
+                <ItemControls 
+                  contentItem={contentItem} 
+                  dragRef={dragRef}
                 />
-                {privateID && (
-                  <ItemControls 
-                    contentItem={contentItem} 
-                    drag
-                  />
-                )}
-              </div>
-            </Draggable>
-          ))}
-        </Grid>
-      </div>
-    </DragArea>
+              )}
+            </div>
+          )}
+        </Draggable>
+      ))}
+    </Grid>
+  </div>
+</DragArea>
   );
 }
