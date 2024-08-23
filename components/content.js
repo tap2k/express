@@ -1,11 +1,15 @@
 // components/content.js
 
 import dynamic from "next/dynamic";
+import { useRef } from "react";
 import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
+import useMediaControl from "../hooks/usemediacontrol";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
+import Caption from "./caption";
+import PlayIcon from './playicon';
 
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
 
@@ -30,7 +34,6 @@ export function isMediaFile(url)
 }
 
 export function getMediaInfo(contentItem) {
-
   if (!contentItem)
     return { url: "", type: "" };
 
@@ -75,17 +78,14 @@ export function getMediaInfo(contentItem) {
   return {url: "", type: ""};
 }
 
-export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, index }) 
+export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index }) 
 {
   if (!contentItem)
     return;
 
+  const mediaRef = useRef();
+  const { isPlaying, toggle } = useMediaControl(mediaRef, index, autoPlay);
   const { url, type, videotype } = getMediaInfo(contentItem);
-    
-  let videostyle = {};
-  if (type.startsWith("video") && !Number.isFinite(width) || !Number.isFinite(height)) {
-    videostyle = {width, height};
-  }
 
   const containerStyle = {
     position: 'relative',
@@ -101,32 +101,29 @@ export default function Content({ contentItem, width, height, cover, controls, a
         width={width} 
         height={height}
         controls={controls}
-        autoPlay={autoPlay} 
-        index={index} 
+        mediaRef={mediaRef}
       />
     );
   } else if (type.startsWith("video")) {
     mediaElement = (
       <VideoPlayer 
-        style={videostyle} 
         width={width} 
         height={height}
         controls={controls}
-        autoPlay={autoPlay} 
-        index={index}
+        mediaRef={mediaRef} 
       >
         <source src={url} type={videotype} />
       </VideoPlayer>
     );
   } else if (type.startsWith("youtube")) {
       mediaElement = (
-        <MyReactPlayer 
+        <MyReactPlayer
+          url={url} 
           width={width} 
           height={height}
           controls={controls}
-          autoPlay={autoPlay} 
+          autoPlay={autoPlay}
           index={index}
-          url={url}
         />
       );
   } else {
@@ -140,14 +137,24 @@ export default function Content({ contentItem, width, height, cover, controls, a
         controls={controls}
         autoPlay={autoPlay} 
         interval={interval}
+        mediaRef={mediaRef}
         index={index} 
       />
     );
   }
 
   return (
+    <>
     <div style={containerStyle}>
       {mediaElement}
     </div>
+      { caption && contentItem.title && !isPlaying && <Caption 
+        title={contentItem.title}
+        url={contentItem.ext_url} 
+        textAlignment={thumbnail ? "center" : contentItem.textalignment} 
+        size={thumbnail ? "small" : "medium"}
+      /> } 
+      { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
+    </>
   );
 }

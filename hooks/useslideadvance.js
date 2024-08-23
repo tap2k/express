@@ -6,15 +6,16 @@ export default function useSlideAdvance(index, autoPlay, interval) {
         interval = 5000;
 
     const carouselContext = useContext(CarouselContext);
+    if (!carouselContext)
+        return;
+
     const advanceSlide = () => {
-                if (carouselContext) {
-                const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
-                carouselContext.setStoreState({ currentSlide: nextSlideIndex });
-            }
+            const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
+            carouselContext.setStoreState({ currentSlide: nextSlideIndex });
         };
 
     useEffect(() => {
-        if (!carouselContext || !autoPlay || !interval) return;
+        if (!autoPlay || !interval) return;
 
         let timer = null;
         const onChange = () => {

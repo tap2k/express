@@ -1,13 +1,7 @@
-import { useRef } from "react";
 import useSlideAdvance from '../hooks/useslideadvance';
-import useMediaControl from "../hooks/usemediacontrol";
-import PlayIcon from './playicon';
 
-export default function FullImage({ src, width, height, audioUrl, index, cover, controls, autoPlay, interval }) 
+export default function FullImage({ src, width, height, audioUrl, controls, autoPlay, interval, mediaRef, cover, index }) 
 {
-  const audioRef = useRef();
-  const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
-
   useSlideAdvance(
     index, 
     autoPlay && !audioUrl, 
@@ -32,8 +26,7 @@ export default function FullImage({ src, width, height, audioUrl, index, cover, 
           }} 
         /> : "" }
         { audioUrl ? <>
-            <PlayIcon isPlaying={isPlaying} toggle={toggle} />
-            <audio src={audioUrl} style={{display: "none"}} ref={audioRef} />
+            <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
           </> : ""
         }
       </div>

@@ -17,9 +17,9 @@ import sendEmailLinks from '../hooks/sendemaillinks';
 import { StyledInput } from './recorderstyles';
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
-import Caption from "./caption";
 import ContentEditor from "./contenteditor";
 import ChannelEditor from './channeleditor';
+import Caption from "./caption";
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -385,11 +385,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                     interval={channel.interval} 
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
-                  />
-                  <Caption 
-                      title={contentItem.title}
-                      url={contentItem.ext_url} 
-                      textAlignment={contentItem.textalignment} 
+                    caption
                   />
                 </Slide>
               );

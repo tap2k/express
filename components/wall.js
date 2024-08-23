@@ -75,7 +75,6 @@ export default function Wall ({ channel, privateID, ...props }) {
     }
   };
 
-
   return (
     <DragArea>
       <div ref={containerRef} {...props}>
@@ -102,20 +101,15 @@ export default function Wall ({ channel, privateID, ...props }) {
                   contentItem={contentItem}
                   width="100%" 
                   height="100%"
-                  cover
                   index={index}
+                  caption
+                  thumbnail
+                  cover
                 />
                 {privateID && (
                   <ItemControls 
                     contentItem={contentItem} 
                     drag
-                  />
-                )}
-                {contentItem.title && (
-                  <Caption 
-                    title={contentItem.title}
-                    textAlignment="center"
-                    size="small"
                   />
                 )}
               </div>

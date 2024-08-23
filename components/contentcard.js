@@ -13,17 +13,12 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
             contentItem={contentItem}
             width="100%" 
             height="auto"
-            cover
             controls={controls}
             autoPlay={autoPlay}
+            caption={contentItem.mediafile?.url?.includes("maustrocard")}
+            thumbnail
+            cover
           />
-          {contentItem.title && contentItem.mediafile?.url?.includes("maustrocard") &&
-            <Caption 
-              title={contentItem.title}
-              textAlignment="center"
-              size="small"
-            />
-          }
         </div>
         {privateID && 
           <ItemControls 

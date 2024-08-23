@@ -1,14 +1,6 @@
-// components/videoplayer.js
 
-import { useRef } from "react";
-import useMediaControl from "../hooks/usemediacontrol";
-import PlayIcon from './playicon';
-
-export default function VideoPlayer({ width, height, controls, autoPlay, index, children }) 
+export default function VideoPlayer({ width, height, controls, mediaRef, children }) 
 {
-  const videoRef = useRef();
-  const { isPlaying, toggle } = useMediaControl(videoRef, index, autoPlay);
-
   return (
     <div 
       style={{
@@ -20,7 +12,7 @@ export default function VideoPlayer({ width, height, controls, autoPlay, index, 
       }} 
     >
       <video 
-        ref={videoRef}
+        ref={mediaRef}
         style={{
           width: '100%',
           height: '100%',
@@ -33,7 +25,6 @@ export default function VideoPlayer({ width, height, controls, autoPlay, index, 
       >
         {children}
       </video>
-      <PlayIcon isPlaying={isPlaying} toggle={toggle} inverted={false} />
     </div>
   );
 }

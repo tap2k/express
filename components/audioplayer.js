@@ -1,12 +1,6 @@
-import { useRef } from "react";
-import useMediaControl from "../hooks/usemediacontrol";
-import PlayIcon from './playicon';
 
-export default function AudioPlayer({ src, width, height, controls, autoPlay, index }) 
+export default function AudioPlayer({ src, width, height, controls, mediaRef }) 
 {  
-  const audioRef = useRef();
-  const { isPlaying, toggle } = useMediaControl(audioRef, index, autoPlay);
-
   return (
     <div 
       style={{
@@ -18,8 +12,7 @@ export default function AudioPlayer({ src, width, height, controls, autoPlay, in
         backgroundColor: 'black'
       }} 
     >
-      <PlayIcon isPlaying={isPlaying} toggle={toggle} />
-      <audio src={src} style={{display: "none"}} ref={audioRef} />
+      <audio src={src} style={{display: "none"}} ref={mediaRef} />
     </div>
   );
 }
