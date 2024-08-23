@@ -21,7 +21,6 @@ export default function Home() {
             setChannelName(respdata.name);
             setPrivateID(respdata.privateID);
             setChannelID(respdata.uniqueID);
-            setAdding(false);
             toggleModal();
         } catch (error) {
             console.error("Error creating channel:", error);
