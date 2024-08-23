@@ -148,7 +148,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     <div style={containerStyle}>
       {mediaElement}
     </div>
-      { caption && contentItem.title && !isPlaying && <Caption 
+      { caption && !(contentItem.textalignment != "center" && isPlaying) && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
         textAlignment={thumbnail ? "center" : contentItem.textalignment} 
