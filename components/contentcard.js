@@ -55,8 +55,8 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
         {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
           <div 
             style={{ 
-              padding: '15px 10px', 
-              fontSize: '16px',
+              padding: '10px 15px', 
+              fontSize: '14px',
               fontWeight: 'bold',
               lineHeight: '1.4',
               backgroundColor: '#f0f0f0'
@@ -71,7 +71,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
                 textDecoration: 'none',
               }}
             >
-              Product Link
+              Item Link
             </a>
           </div>
         }

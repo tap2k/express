@@ -26,7 +26,7 @@ function validateYouTubeUrl(urlToParse){
 export function isMediaFile(url)
 {
   if (!url)
-    return null;
+    return false;
   if (validateYouTubeUrl(url))
     return true;
   const type = mime.lookup(url);

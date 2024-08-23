@@ -42,7 +42,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',
-        fontSize: 'clamp(16px, 2vh, 24px)',
+        fontSize: 'clamp(16px, 2.5vh, 24px)',
         fontWeight: 'bold',
         textDecoration: 'none',
         display: 'flex',
@@ -53,7 +53,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 120px)' };
+    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10.5vh, 120px)' };
     const linkStyleTop = { ...linkStyleBase, top: '30px' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
@@ -79,10 +79,10 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
                     {subtitle && !size === "small" & <div style={subtitleStyle}>{subtitle}</div>}
                 </div>
             )}
-            {url && !size === "small" && !isMediaFile(url) && (
+            {url && !(size === "small") && !isMediaFile(url) && (
                 <a href={url} style={linkStyle} rel="noopener noreferrer" target="_blank">
                     <FaShoppingBag style={{marginRight: '8px'}} />
-                    Product Link
+                    Item Link
                 </a>
             )}
         </>
