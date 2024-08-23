@@ -15,6 +15,7 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -86,7 +87,11 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
   }
 
   const addFile = (e) => {
-    const newFiles = Array.from(e.target.files);
+    const newFiles = Array.from(e.target.files).filter(file => 
+      file.type.startsWith('image/') || 
+      file.type.startsWith('video/') || 
+      file.type.startsWith('audio/')
+    );
     setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
   };
 
@@ -96,6 +101,36 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
 
   const clearSelectedImage = () => {
     setSelectedImage(null);
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files).filter(file => 
+      file.type.startsWith('image/') || 
+      file.type.startsWith('video/') || 
+      file.type.startsWith('audio/')
+    );
+    setUploadedFiles(prevFiles => [...prevFiles, ...files]);
   };
 
   return (
@@ -113,16 +148,21 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
         style={{
           width: '100%',
           minHeight: '300px',
-          border: '1px solid #ddd',
+          border: `2px dashed ${isDragging ? '#007bff' : '#ddd'}`,
           borderRadius: '4px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: (showGallery || selectedImage || uploadedFiles.length > 0) ? 'start' : 'center',
           alignItems: 'center',
           position: 'relative',
-          overflow: 'hidden', // Changed from 'auto' to 'hidden'
+          overflow: 'hidden',
           padding: '10px',
+          backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
         }}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         {showGallery ? (
           <ImageGallery 
@@ -208,7 +248,7 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
           </div>
         ) : (
           <div style={{ textAlign: 'center'}}>
-            <p>No files selected</p>
+            <p>Drop files here, or</p>
             <StyledButton
               color="secondary"
               onClick={() => fileInputRef.current.click()}
@@ -229,7 +269,7 @@ export default function Uploader({ channelID, uploading, setUploading, lat, long
         multiple
       />
       
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
 
       <Button
         color="success"
