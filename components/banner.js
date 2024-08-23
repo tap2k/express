@@ -134,7 +134,7 @@ export default function Banner({ channel, privateID, isSlideshow }) {
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
           <ChannelEditor
-            initialData={channel}
+            channel={channel}
             onSubmit={handleSaveChannel}
           />
         </ModalBody>
