@@ -11,6 +11,14 @@ const formatEmailContent = (channelID, privateID, channelName) => {
   Reel Link: ${baseUrl}/reel?channelid=${channelID}
 
   Please save these links securely, especially the Admin Link.
+
+  Below you can find some template text to people that you want to invite to contribute to this reel. Feel free to edit and send!
+
+  -------
+
+  Hi - I have created this reel to collect videos and images for ${channelName}. Please visit this link to contribute!
+
+  ${baseUrl}/reel?channelid=${channelID}
   `;
 };
 

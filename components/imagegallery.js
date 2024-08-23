@@ -6,10 +6,10 @@ import ImageGrid from './imagegrid';
 export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage }) {
   const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
   const [dalleImage, setDalleImage] = useState(null);
-  const [columns, setColumns] = useState(6);
+  //const [columns, setColumns] = useState(6);
   const dallePromptRef = useRef(null);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) {
         setColumns(4);
@@ -17,11 +17,10 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
         setColumns(4);
       } 
     };
-
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, []);*/
 
   const itemStyle = {
     position: 'relative',
@@ -98,7 +97,6 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
         ) : (
           <ImageGrid
             imageOptions={imageOptions}
-            columns={columns}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
           />

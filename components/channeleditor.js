@@ -81,7 +81,8 @@ export default function ChannelEditor({ channel, onSubmit }) {
 
   const audioGridStyle = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+    gridTemplateColumns: `repeat(2, 1fr)`,
+    //gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
     gap: '10px',
     marginTop: '20px',
     width: '100%',
@@ -186,7 +187,6 @@ export default function ChannelEditor({ channel, onSubmit }) {
       {showTitleSlide && (
         <ImageGrid
           imageOptions={imageOptions}
-          columns={4}
           selectedImage={selectedImage}
           setSelectedImage={setSelectedImage}
         />

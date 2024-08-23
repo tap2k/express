@@ -10,9 +10,9 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: 'rgba(200,200,200,0.4)',
-        color: 'rgba(255,255,255,1.0)',
+        color: 'rgba(255,255,255,0.9)',
         borderRadius: '10px',
-        padding: '35px',
+        padding: '20px',
         backdropFilter: 'blur(5px)',
         width: 'max-content',
         maxWidth: '80%',
@@ -26,7 +26,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '2.5vh' };
+    const captionStyleTop = { ...captionStyleBase, top: '3.5vh' };
     const captionStyleBottom = { ...captionStyleBase, bottom: 'clamp(70px, 10vh, 120px' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
@@ -38,7 +38,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: 'rgba(200,200,200,0.7)',
-        color: 'rgba(255,255,255,1.0)',
+        color: 'rgba(255,255,255,0.9)',
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',

@@ -1,5 +1,5 @@
 
-export default function ImageGallery({ imageOptions, columns, selectedImage, setSelectedImage }) {
+export default function ImageGrid({ imageOptions, selectedImage, setSelectedImage, columns=4  }) {
   const imageGridStyle = {
     display: 'grid',
     gridTemplateColumns: `repeat(${columns}, 1fr)`,
