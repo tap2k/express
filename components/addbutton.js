@@ -6,13 +6,9 @@ import getMediaURL from "../hooks/getmediaurl";
 import { MenuButton } from '../components/recorderstyles';
 
 const CircularMenuButton = styled(MenuButton)`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 `;
 
 export default function AddButton({ channel }) {

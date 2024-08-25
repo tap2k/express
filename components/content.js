@@ -79,7 +79,7 @@ export function getMediaInfo(contentItem) {
   return {url: "", type: ""};
 }
 
-export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index }) 
+export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID }) 
 {
   if (!contentItem)
     return;
@@ -158,7 +158,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { type.startsWith("video") && <Timeline mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} />}
+      { type.startsWith("video") && privateID && <Timeline mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} />}
     </>
   );
 }

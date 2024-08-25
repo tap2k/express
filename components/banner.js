@@ -7,10 +7,9 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import PageMenu from "./pagemenu";
-import MakeButton from "../components/makebutton";
 import ChannelEditor from './channeleditor';
 
-export default function Banner({ channel, privateID, isSlideshow }) {
+export default function Banner({ channel, privateID, isSlideshow=false }) {
   if (!channel)
     return;
 
@@ -52,8 +51,7 @@ export default function Banner({ channel, privateID, isSlideshow }) {
 
   return (
     <>
-      <PageMenu privateID={privateID} isSlideshow={isSlideshow} />
-      {!privateID && <MakeButton />}
+      <PageMenu channel={channel} />
       {!isSlideshow && <Alert 
         style={{
           backgroundColor: 'transparent',
@@ -128,7 +126,8 @@ export default function Banner({ channel, privateID, isSlideshow }) {
             }
           </div>
         </div>
-      </Alert>}
+      </Alert>
+      }
       
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>

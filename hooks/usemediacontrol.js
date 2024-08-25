@@ -70,7 +70,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     {
       if (autoPlay && mediaRef?.current)
       {
-        mediaRef.current.currentTime = 0();
+        mediaRef.current.currentTime = 0;
         play();
       }
       return;

@@ -1,27 +1,46 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaPaperclip } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
 import { MenuButton } from '../components/recorderstyles';
+import EmailModal from './emailmodal'; 
 
-export default function PageMenu({ privateID, isSlideshow=false }) {
+export default function PageMenu({ channel }) {
   const router = useRouter();
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
-  const menuStyle = {
-    position: 'absolute',
-    top: '0px',
-    left: '0px',
-    zIndex: 100
+  const toggleEmailModal = () => {
+    setIsEmailModalOpen(!isEmailModalOpen);
+  }
+
+  const handleEmailSubmit = async (email) => {
+    if (email)
+    {
+      const response = await axios.post('/api/makevideo', 
+        {
+          channelid: channel.uniqueID, // Assuming channelID is in cleanedData
+          email: email}, 
+        {
+          headers: {
+              'Content-Type': 'application/json'
+        }
+      });
+      alert("Your video has been submitted for processing! You will receive an email when it is completed.");
+    }
+    setIsEmailModalOpen(false);
   };
 
   const rowStyle = {
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    zIndex: 100,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem',
     backgroundColor: 'transparent',
   };
-
-  const pages = ['reel', 'board', 'map'];
 
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
@@ -38,25 +57,57 @@ export default function PageMenu({ privateID, isSlideshow=false }) {
   }
 
   return (
-    <div style={menuStyle}>
+    <>
       <div style={rowStyle}>
-        {pages.map((page) => (
-          <Link
-            key={page}
-            href={{
-              pathname: `./${page}`,
-              query: router.query,
-            }}
-          >
-            <MenuButton>
-              {page.charAt(0).toUpperCase() + page.slice(1)}
-            </MenuButton>
-          </Link>
-        ))}
-        {true && <MenuButton onClick={copyUrlToClipboard}>
-          <FaPaperclip color="rgba(240, 240, 240, 1)" />
-            </MenuButton>}
+        <Link
+          href={{
+            pathname: `./reel`,
+            query: router.query,
+          }}
+        >
+          <MenuButton>
+            <FaImages />
+          </MenuButton>
+        </Link>
+        <Link
+          href={{
+            pathname: `./board`,
+            query: router.query,
+          }}
+        >
+          <MenuButton>
+            <FaTh />
+          </MenuButton>
+        </Link>
+        <Link
+          href={{
+            pathname: `./map`,
+            query: router.query,
+          }}
+        >
+          <MenuButton>
+            <FaMap />
+          </MenuButton>
+        </Link>
+        <MenuButton onClick={copyUrlToClipboard}>
+          <FaPaperclip />
+        </MenuButton>
+        <MenuButton onClick={toggleEmailModal}>
+          <FaFilm />
+        </MenuButton>
+        <Link href="/" rel="noopener noreferrer" target="_blank">
+          <MenuButton>
+            <FaHome />
+          </MenuButton>
+        </Link>
       </div>
-    </div>
+      <EmailModal 
+        isOpen={isEmailModalOpen} 
+        toggle={toggleEmailModal}
+        onSubmit={handleEmailSubmit}
+        headerText="Download Video"
+        bodyText="Please enter your email address below to receive a link to your completed video."
+      />
+    </>
   );
 }

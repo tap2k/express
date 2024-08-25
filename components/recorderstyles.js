@@ -44,13 +44,14 @@ export const MenuButton = styled(Button)`
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: calc(0.8vmin + 0.6em);
+  font-size: calc(0.8vmin + 1.0em);
   padding: 6px 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   margin: 0 3px;
   font-weight: 600;
+
 
   &:hover {
     background-color: rgba(92, 131, 156, 0.8);

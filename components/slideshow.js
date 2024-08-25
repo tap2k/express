@@ -4,8 +4,8 @@ import { useState, useEffect, useContext, useRef } from "react";
 import axios from 'axios';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight, FaCcJcb } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import getMediaURL from "../hooks/getmediaurl";
@@ -14,7 +14,6 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import { StyledInput } from './recorderstyles';
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
@@ -62,11 +61,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const emailInputRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
 
@@ -97,10 +94,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     }
   }
 
-  const toggleEmailModal = () => {
-    setIsEmailModalOpen(!isEmailModalOpen);
-  }
-
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
     return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
@@ -126,23 +119,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     const contentToPublish = getCurrentContent();
     await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true});
     await router.replace(router.asPath);
-  };
-
-  const handleEmailSubmit = async () => {
-    if (emailInputRef.current.value)
-    {
-      const response = await axios.post('/api/makevideo', 
-        {
-          channelid: channel.uniqueID, // Assuming channelID is in cleanedData
-          email: emailInputRef.current.value}, 
-        {
-          headers: {
-              'Content-Type': 'application/json'
-        }
-      });
-      alert("Your video has been submitted for processing! You will receive an email when it is completed.");
-    }
-    setIsEmailModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -225,12 +201,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     setIsPlaying(!isPlaying);
   };
 
-  const closeBtn = (
-    <button className="close" onClick={toggleEmailModal}>
-        &times;
-    </button>
-  ) ;
-
   const iconBarStyle = {
     position: 'fixed',
     display: 'flex',
@@ -252,6 +222,27 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     justifyContent: 'center',
     fontSize: 'clamp(20px, 2.5vh, 32px)',
   };
+
+  const buttonStyle = {
+    position: 'absolute', 
+    top: '50%', 
+    transform: 'translateY(-50%)',
+    opacity: '0.5', 
+    width: 'clamp(30px, 5%, 40px)', 
+    aspectRatio: '1 / 1', 
+    border: '1px solid gray', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    padding: 0, 
+    fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
+  }
+
+  const closeBtn = (
+    <button className="close" onClick={() => setIsChannelModalOpen(false)}>
+      &times;
+    </button>
+  );
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
@@ -326,7 +317,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
-              toggleEmailModal();
+              await downloadURL(channel.picture?.url);
+              await downloadURL(channel.audiofile?.url);
             }
             const currentContent = getCurrentContent();
             if (currentContent) {
@@ -340,7 +332,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </button>
       </div>
 
-      <div style={{width: width, height: height, position: "relative"}}>
+      <div style={{width: width, height: height, position: "relative", isolation: 'auto'}}>
         <CarouselProvider 
           isIntrinsicHeight 
           totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
@@ -348,6 +340,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           dragEnabled={true} 
           infinite 
           currentSlide={currSlide}
+          style={{isolation: 'auto !important'}}
         >
           <SlideTracker setCurrSlide={setCurrSlide} />
           <Slider style={{height: height, width: width}}>
@@ -393,8 +386,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           </Slider>
           {channel.contents.length > 0 && (
             <>
-              <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />
-              <ButtonNext style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
+              <ButtonBack key={1} style={{...buttonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={1} style={{...buttonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </>
           )}
         </CarouselProvider>
@@ -415,28 +408,10 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <ModalHeader toggle={() => setIsChannelModalOpen(false)} close={closeBtn} />
         <ModalBody>
           <ChannelEditor
-            initialData={channel}
+            channel={channel}
             onSubmit={handleSaveChannel}
           />
         </ModalBody>
-      </Modal>
-
-      <Modal isOpen={isEmailModalOpen} toggle={toggleEmailModal}>
-        <ModalHeader toggle={toggleEmailModal} close={closeBtn}>
-            Download Video
-        </ModalHeader>
-        <ModalBody>
-            <p>Please enter your email address below to receive a link to your completed video.</p>
-            <StyledInput 
-                type="email" 
-                placeholder="Enter your email address" 
-                innerRef={emailInputRef}
-            />
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={handleEmailSubmit}>Make Video</Button>
-            <Button color="secondary" onClick={toggleEmailModal}>Cancel</Button>
-        </ModalFooter>
       </Modal>
     </div>
   );

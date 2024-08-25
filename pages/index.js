@@ -1,19 +1,18 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { StyledInput } from '../components/recorderstyles';
-import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input, Card, CardBody, Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand } from 'reactstrap';
 import addChannel from '../hooks/addchannel';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
 import { RecorderWrapper } from '../components/recorderstyles';
 import ChannelEditor from '../components/channeleditor';
+import EmailModal from '../components/emailmodal'; 
 
 export default function Home() {
     const [channelID, setChannelID] = useState(null);
     const [privateID, setPrivateID] = useState(null);
     const [channelName, setChannelName] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const emailInputRef = useRef(null);
+    const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
     const handleAddChannel = async (data) => {
         try {
@@ -27,11 +26,11 @@ export default function Home() {
         }
     };
 
-    const handleEmailSubmit = async () => {
-        if (emailInputRef.current?.value) {
+    const handleEmailSubmit = async (email) => {
+        if (email) {
             try {
-                await updateChannel({uniqueID: channelID, email: emailInputRef.current?.value});
-                await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: emailInputRef.current?.value});
+                await updateChannel({uniqueID: channelID, email: email});
+                await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email});
                 alert('Email sent successfully!');
             } catch (error) {
                 console.error("Failed to send email:", error);
@@ -41,15 +40,9 @@ export default function Home() {
         toggleModal();
     };
 
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
+    const toggleEmailModal = () => {
+        setIsEmailModalOpen(!isEmailModalOpen);
     };
-
-    const closeBtn = (
-        <button className="close" onClick={toggleModal}>
-            &times;
-        </button>
-    );
 
     const containerStyle = {
         display: 'flex-start',
@@ -141,23 +134,13 @@ export default function Home() {
                     )}
                 </div>
             </RecorderWrapper>
-            <Modal isOpen={isModalOpen} toggle={toggleModal}>
-                <ModalHeader toggle={toggleModal} close={closeBtn}>
-                    Send Email
-                </ModalHeader>
-                <ModalBody>
-                    <p>Your channel has been created successfully. Please enter your email address below to receive links to manage and view your reel.</p>
-                    <StyledInput 
-                        type="email" 
-                        placeholder="Enter your email address" 
-                        innerRef={emailInputRef}
-                    />
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={handleEmailSubmit}>Send Email</Button>
-                    <Button color="secondary" onClick={toggleModal}>Cancel</Button>
-                </ModalFooter>
-            </Modal>
+            <EmailModal 
+                isOpen={isEmailModalOpen} 
+                toggle={toggleEmailModal}
+                onSubmit={handleEmailSubmit}
+                headerText="Send Email"
+                bodyText="Your channel has been created successfully. Please enter your email address below to receive links to manage and view your reel."
+            />
         </>
     );
 }
