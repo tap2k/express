@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
 export default function Timeline ({ mediaRef, isPlaying, pause }) {
@@ -19,7 +19,7 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
             return;
 
         const updateDuration = () => {
-            if (mediaRef.current?.readyState >= 1) {
+            if (mediaRef.current.readyState >= 1) {
                 setDuration(mediaRef.current.duration);
             }
         };
@@ -30,7 +30,7 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
             updateDuration();
 
         return () => {
-            if (mediaRef.curremt)
+            if (mediaRef.current)
                 mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
         };
     }, [mediaRef]);
@@ -40,20 +40,19 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
             return;
 
         const updateTime = () => {
-            if (!mediaRef.current)
-                return;
-            setCurrentTime(mediaRef.current.currentTime);
-            if (mediaRef.current.currentTime >= endTime) {
-                pause();
-                mediaRef.current.currentTime = endTime;
-            }
+        setCurrentTime(mediaRef.current.currentTime);
+        if (mediaRef.current.currentTime >= endTime) {
+            pause();
+            mediaRef.current.currentTime = endTime;
+        }
         };
         mediaRef.current.addEventListener('timeupdate', updateTime);
 
-        return () => {
-            if (mediaRef.curremt)
-                mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
-        };
+        return () => 
+            {
+                if (mediaRef.current)
+                    mediaRef.current.removeEventListener('timeupdate', updateTime);
+            }
     }, [mediaRef, endTime]);
 
     useEffect(() => {
@@ -109,8 +108,7 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
         const clickTime = clickPosition * duration;
 
         if (clickTime >= startTime && clickTime <= endTime) 
-            if (mediaRef.current)
-                mediaRef.current.currentTime = clickTime;
+            mediaRef.current.currentTime = clickTime;
         }
 
     const timelineStyle = {
