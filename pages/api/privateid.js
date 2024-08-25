@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     const hostname = req.headers.host;
     const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const adminLink = `${protocol}://${hostname}/admin?channelid=${privateID}`;
+    const adminLink = `${protocol}://${hostname}/editor?channelid=${privateID}`;
     res.send(adminLink);
   
     } catch (error) {
