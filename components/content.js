@@ -158,7 +158,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { type.startsWith("video") && privateID && <Timeline mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} />}
+      { type.startsWith("video")  || type.startsWith("audio") && privateID && <Timeline mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} />}
     </>
   );
 }

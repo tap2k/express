@@ -5,7 +5,6 @@ import setError from '../hooks/seterror';
 import { Draggable, DragArea } from './draggable';
 import Content from "./content";
 import ItemControls from './itemcontrols';
-import EmailModal from './emailmodal'; 
 
 const Grid = ({ children, columns }) => (
   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '10px' }}>
@@ -16,31 +15,9 @@ const Grid = ({ children, columns }) => (
 export default function Wall ({ channel, privateID, ...props }) {
   const [contents, setContents] = useState(channel.contents);
   const [prevContents, setPrevContents] = useState(channel.contents);
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [columns, setColumns] = useState(1);
   const containerRef = useRef(null);
   const router = useRouter();
-
-  const toggleEmailModal = () => {
-    setIsEmailModalOpen(!isEmailModalOpen);
-  }
-
-  const handleEmailSubmit = async (email) => {
-    if (email)
-    {
-      const response = await axios.post('/api/makevideo', 
-        {
-          channelid: channel.uniqueID, // Assuming channelID is in cleanedData
-          email: email}, 
-        {
-          headers: {
-              'Content-Type': 'application/json'
-        }
-      });
-      alert("Your video has been submitted for processing! You will receive an email when it is completed.");
-    }
-    setIsEmailModalOpen(false);
-  };
 
   const updateContents = useCallback(() => {
     setContents(channel.contents);
@@ -144,13 +121,6 @@ export default function Wall ({ channel, privateID, ...props }) {
           </Grid>
         </div>
       </DragArea>
-      <EmailModal 
-        isOpen={isEmailModalOpen} 
-        toggle={toggleEmailModal}
-        onSubmit={handleEmailSubmit}
-        headerText="Download Video"
-        bodyText="Please enter your email address below to receive a link to your completed video."
-      />
     </>
   );
 }

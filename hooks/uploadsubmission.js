@@ -69,14 +69,14 @@ export default async function uploadSubmission({myFormData, channelID, contentID
 
       const buttons = [
         {
-          label: 'Upload Another',
+          label: 'OK',
           onClick: () => {
-            router.reload();
+            router.replace(router.asPath, undefined, { scroll: false });
           }
         }
       ];
   
-      if (response.data?.[0]?.channel?.public) {
+      if (router.asPath.includes('upload') && response.data?.[0]?.channel?.public) {
         buttons.push({
           label: 'Go to Reel',
           onClick: () => {
