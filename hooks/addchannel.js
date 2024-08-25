@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default async function addChannel(data) 
 {    
-    // TODO: Hacky
+    // TODO: Hacky - Calling local API
     const cleanedData = Object.keys(data).reduce((acc, key) => {
         if (data[key] !== null && data[key] !== undefined && data[key] !== 'None') {
             if (typeof data[key] === 'boolean') {

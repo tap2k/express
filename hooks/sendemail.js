@@ -30,6 +30,7 @@ async function getAccessToken() {
 }
 
 export default async function sendEmail(subject, body, recipient) {
+  // TODO: NEED TO SECURE!
   const accessToken = await getAccessToken();
 
   const transporter = nodemailer.createTransport({
