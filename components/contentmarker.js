@@ -1,5 +1,4 @@
-import { useRouter } from 'next/router';
-import { useRef, forwardRef, useState } from 'react';
+import { useRef, forwardRef } from 'react';
 import { Marker, Popup, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/leaflet.js';

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import { StyledButton } from './recorderstyles';
 import ImageGrid from './imagegrid';
@@ -6,21 +6,7 @@ import ImageGrid from './imagegrid';
 export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage }) {
   const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
   const [dalleImage, setDalleImage] = useState(null);
-  //const [columns, setColumns] = useState(6);
   const dallePromptRef = useRef(null);
-
-  /*useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 600) {
-        setColumns(4);
-      } else {
-        setColumns(4);
-      } 
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);*/
 
   const itemStyle = {
     position: 'relative',

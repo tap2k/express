@@ -1,5 +1,22 @@
+import { useEffect, useState } from 'react';
 
-export default function ImageGrid({ imageOptions, selectedImage, setSelectedImage, columns=4  }) {
+export default function ImageGrid({ imageOptions, selectedImage, setSelectedImage  }) {
+  const columns = 4;
+  //const [columns, setColumns] = useState(6);
+
+  /*useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) {
+        setColumns(4);
+      } else {
+        setColumns(4);
+      } 
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);*/
+
   const imageGridStyle = {
     display: 'grid',
     gridTemplateColumns: `repeat(${columns}, 1fr)`,

@@ -7,13 +7,6 @@ import getChannel from "../hooks/getchannel";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
-const makeStyle = {
-    position: 'absolute',
-    top: '35px',
-    right: '20px',
-    zIndex: 1000
-  };
-
 export default ({ channel, privateID }) => {
     const width = "100vw";
     const height = use100vh();

@@ -151,7 +151,6 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
       else
         videoRef.current.srcObject = stream;
       
-      // Start countdown
       setCountdown(4);
       const countdownInterval = setInterval(() => {
         setCountdown(prev => {
@@ -163,7 +162,6 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
         });
       }, 1000);
 
-      // Wait for countdown to finish
       setTimeout(() => {
         setStatus('recording');
         recorderRef.current = new RecordRTC(stream, {

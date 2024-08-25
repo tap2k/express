@@ -18,7 +18,7 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     function pause()
     {
         videoRef?.current?.getInternalPlayer()?.pauseVideo();
-        setIsPlaying(true);
+        setIsPlaying(false);
     }
 
     const toggle = () => {
