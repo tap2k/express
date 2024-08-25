@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { FaPlay, FaPause, FaPlus, FaDownload } from 'react-icons/fa';
+import { FaPlay, FaPause, FaPlus, FaDownload, FaSave } from 'react-icons/fa';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import styled from 'styled-components';
 import getMediaURL from "../hooks/getmediaurl";
@@ -71,6 +71,9 @@ export default function AddMenu({ channel, privateID }) {
   return (
     <>
       <div style={containerStyle}>
+        { privateID && <CircularMenuButton onClick={toggleEmailModal}>
+          <FaSave  />
+        </CircularMenuButton> }
         { privateID && <CircularMenuButton onClick={toggleEmailModal}>
           <FaDownload  />
         </CircularMenuButton> }

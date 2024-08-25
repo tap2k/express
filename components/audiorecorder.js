@@ -90,7 +90,7 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
       else
         myFormData.append('mediafile', blob, 'audio.' + fileExt);
 
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
 
       if (titleRef.current)
         titleRef.current.value = "";

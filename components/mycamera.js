@@ -52,7 +52,7 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
         }
   
         myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
         if (titleRef.current)
           titleRef.current.value = "";
         if (nameRef.current)

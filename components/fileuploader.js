@@ -58,7 +58,6 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
         email: emailRef?.current?.value,
         location: locationRef?.current?.value,
         ext_url: extUrlRef?.current?.value, 
-        published: true, 
         setProgress, 
         router
       }); 

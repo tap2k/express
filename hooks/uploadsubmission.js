@@ -50,8 +50,10 @@ export default async function uploadSubmission({myFormData, channelID, contentID
     myFormData.append("location", location);
   if (ext_url)
     myFormData.append("ext_url", ext_url);
-  if (published)
-    myFormData.append("published", "true");
+
+  // TODO: FIX THIS!
+  //if (published)
+  myFormData.append("published", "true");
 
   try {
     const response = await axios.post(url, myFormData, 

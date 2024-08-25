@@ -76,7 +76,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
       const myFormData = new formData();
       myFormData.append('mediafile', blob, "video."+fileExt);
       
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, published: true, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
 
       if (titleRef.current)
         titleRef.current.value = "";
