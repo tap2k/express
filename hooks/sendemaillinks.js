@@ -6,7 +6,7 @@ const formatEmailContent = (channelID, privateID, channelName) => {
   return `
   Your channel ${channelName} has been created successfully. Here are your channel links:
 
-  Admin Link: ${baseUrl}/admin?channelid=${privateID}
+  Admin Link: ${baseUrl}/editor?channelid=${privateID}
   Upload Link: ${baseUrl}/upload?channelid=${channelID}
   Reel Link: ${baseUrl}/reel?channelid=${channelID}
 

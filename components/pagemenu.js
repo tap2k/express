@@ -1,34 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
+import { FaEdit, FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
 import { MenuButton } from '../components/recorderstyles';
-import EmailModal from './emailmodal'; 
 
-export default function PageMenu({ channel }) {
+export default function PageMenu( ) {
   const router = useRouter();
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
-
-  const toggleEmailModal = () => {
-    setIsEmailModalOpen(!isEmailModalOpen);
-  }
-
-  const handleEmailSubmit = async (email) => {
-    if (email)
-    {
-      const response = await axios.post('/api/makevideo', 
-        {
-          channelid: channel.uniqueID, // Assuming channelID is in cleanedData
-          email: email}, 
-        {
-          headers: {
-              'Content-Type': 'application/json'
-        }
-      });
-      alert("Your video has been submitted for processing! You will receive an email when it is completed.");
-    }
-    setIsEmailModalOpen(false);
-  };
 
   const rowStyle = {
     position: 'absolute',
@@ -48,8 +25,6 @@ export default function PageMenu({ channel }) {
     if (channelid && channelid.includes(':'))
         [channelid] = channelid.split(':');
     let pathname = baseurl.pathname;
-    if (pathname === "/admin" || pathname === "/wall")
-      pathname = "/board";
     const url = `${baseurl.origin}${pathname}?channelid=${channelid}`;  
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
@@ -89,11 +64,18 @@ export default function PageMenu({ channel }) {
             <FaMap />
           </MenuButton>
         </Link>
+        <Link
+          href={{
+            pathname: `./editor`,
+            query: router.query,
+          }}
+        >
+          <MenuButton>
+            <FaFilm />
+          </MenuButton>
+        </Link>
         <MenuButton onClick={copyUrlToClipboard}>
           <FaPaperclip />
-        </MenuButton>
-        <MenuButton onClick={toggleEmailModal}>
-          <FaFilm />
         </MenuButton>
         <Link href="/" rel="noopener noreferrer" target="_blank">
           <MenuButton>
@@ -101,13 +83,6 @@ export default function PageMenu({ channel }) {
           </MenuButton>
         </Link>
       </div>
-      <EmailModal 
-        isOpen={isEmailModalOpen} 
-        toggle={toggleEmailModal}
-        onSubmit={handleEmailSubmit}
-        headerText="Download Video"
-        bodyText="Please enter your email address below to receive a link to your completed video."
-      />
     </>
   );
 }

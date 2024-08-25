@@ -105,7 +105,7 @@ export default function Home() {
                             {privateID && (
                                 <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                     <CardBody style={{padding: '15px'}}>
-                                        <Link href={`/admin?channelid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                        <Link href={`/editor?channelid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
                                             <strong style={{fontSize: 'x-large'}}>Manage</strong>
                                             <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Manage and edit your reel</p>
                                         </Link>
