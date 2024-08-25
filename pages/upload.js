@@ -1,93 +1,53 @@
-import dynamic from "next/dynamic";
-import { useState } from 'react';
-import useGeolocation from "react-hook-geolocation";
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
-import MyCamera from '../components/mycamera';
-import Uploader from '../components/uploader';
+import { getPublicID } from '../hooks/seed';
+import Uploader from "../components/uploader";
 
-const Recorder = dynamic(() => import("../components/recorder"), { ssr: false });
-const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
-
-export default ({ channelID, useLocation }) => {
-  const [activeComponent, setActiveComponent] = useState('upload');
-  const [uploading, setUploading] = useState(false);
-
-  let lat = null;
-  let long = null;
-
-  if (useLocation) {
-    const geolocation = useGeolocation();
-    lat = geolocation.latitude;
-    long = geolocation.longitude;
-  }
-
-  const renderComponent = () => {
-    switch(activeComponent) {
-      case 'upload':
-        return <Uploader channelID={channelID} uploading={uploading} setUploading={setUploading} lat={lat} long={long} />;
-      case 'video':
-        return <VideoRecorder channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
-      case 'photo':
-        return <MyCamera channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
-      case 'audio':
-        return <Recorder channelID={channelID}  uploading={uploading} setUploading={setUploading}lat={lat} long={long} />;
-      default:
-        return null;
-    }
-  };
-
+export default ({ channel, useLocation }) => {
   return (
-    <RecorderWrapper>
-      <ButtonGroup style={{marginBottom: 10}}>
-        <StyledButton
-          color={activeComponent === 'upload' ? "primary" : "secondary"}
-          onClick={() => setActiveComponent('upload')}
-        >
-          Upload
-        </StyledButton>
-        <StyledButton
-          color={activeComponent === 'video' ? "primary" : "secondary"}
-          onClick={() => setActiveComponent('video')}
-        >
-          Video
-        </StyledButton>
-        <StyledButton
-          color={activeComponent === 'photo' ? "primary" : "secondary"}
-          onClick={() => setActiveComponent('photo')}
-        >
-          Photo
-        </StyledButton>
-        <StyledButton
-          color={activeComponent === 'audio' ? "primary" : "secondary"}
-          onClick={() => setActiveComponent('audio')}
-        >
-          Audio
-        </StyledButton>
-      </ButtonGroup>
-
-      <div>
-        {renderComponent()}
-      </div>
-    </RecorderWrapper>
-  );
+      <Uploader channelID={channel.uniqueID} useLocation={useLocation} />
+  )
 }
 
 export async function getServerSideProps(ctx) {
-  const channelid = ctx.query.channelid;
-  var uselocation = ctx.query.uselocation;
-  if (!uselocation)
-    uselocation = false;
+  let { channelid, admin, uselocation } = ctx.query;
+  let privateID = null;
+  if (!admin)
+      admin = false;
 
-  if (!channelid || channelid === "null") {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
+  const publicID = getPublicID(channelid);
+  if (publicID)
+  {
+      privateID = channelid;
+      channelid = publicID;
   }
 
-  return {
-    props: { channelID: channelid, useLocation: uselocation }
-  };
+  try {
+      // TODO: Hack for testing
+      const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
+      
+      if (!channel) {
+          return {
+              redirect: {
+                  destination: '/',
+                  permanent: false,
+              },
+          };
+      }
+
+      return { 
+          props: { 
+              channel: channel,
+              privateID: privateID ? privateID : admin,
+              useLocation: uselocation
+          } 
+      };
+  } catch (err) {
+      console.error(err);
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false,
+          },
+      };
+  }
+
 }

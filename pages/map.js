@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
 import { getPublicID } from '../hooks/seed';
 import Banner from "../components/banner";
-import AddButton from "../components/addbutton";
+import AddMenu from "../components/addmenu";
 import getChannel from "../hooks/getchannel";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
@@ -29,7 +29,7 @@ export default ({ channel, privateID }) => {
                 />
             </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
-            <AddButton channel={channel}/>
+            <AddMenu channel={channel}/>
         </>
     );
 }

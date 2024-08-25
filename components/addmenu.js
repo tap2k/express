@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react';
-import Link from 'next/link';
 import { FaPlay, FaPause, FaPlus } from 'react-icons/fa';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import styled from 'styled-components';
 import getMediaURL from "../hooks/getmediaurl";
 import { MenuButton } from '../components/recorderstyles';
+import Uploader from "../components/uploader";
 
 const CircularMenuButton = styled(MenuButton)`
   width: 50px;
@@ -11,11 +12,12 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddButton({ channel }) {
+export default function AddMenu({ channel }) {
   if (!channel)
     return;
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const audioRef = useRef(null);
 
   const togglePlayPause = () => {
@@ -27,6 +29,14 @@ export default function AddButton({ channel }) {
       setIsPlaying(!isPlaying);
   };
 
+  const toggle = () => {setIsUploadModalOpen(!isUploadModalOpen)};
+
+  const closeBtn = (
+    <button className="close" onClick={() => setIsUploadModalOpen(false)}>
+      &times;
+    </button>
+  );
+
   const containerStyle = {
       position: 'fixed',
       bottom: '25px',
@@ -36,13 +46,12 @@ export default function AddButton({ channel }) {
   };
 
   return (
+    <>
       <div style={containerStyle}>
           {channel.audiofile?.url && (
               <>
                   <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
-                  <CircularMenuButton 
-                      onClick={togglePlayPause}
-                  >
+                  <CircularMenuButton onClick={togglePlayPause}>
                       {isPlaying ? (
                           <FaPause color="rgba(240, 240, 240, 1)" />
                       ) : (
@@ -51,15 +60,21 @@ export default function AddButton({ channel }) {
                   </CircularMenuButton>
               </>
           )}
-        <CircularMenuButton 
-            as={Link} 
-            href={`/upload?channelid=${channel.uniqueID}`} 
-            rel="noopener noreferrer" 
-            target="_blank"
-            style={{ right: '10px' }}
-        >
+        <CircularMenuButton onClick={toggle}>
             <FaPlus color="rgba(240, 240, 240, 1)" />
         </CircularMenuButton>
       </div>
+        <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
+            <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn}>
+                Upload
+            </ModalHeader>
+            <ModalBody>
+                <Uploader
+                    channelID={channel.uniqueID}
+                    toggle={toggle}
+                />
+            </ModalBody>
+        </Modal>
+    </>
   );
 }

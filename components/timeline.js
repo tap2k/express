@@ -132,14 +132,14 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
         left: `${(startTime / duration) * 100}%`,
         width: `${((endTime - startTime) / duration) * 100}%`,
         height: '100%',
-        backgroundColor: 'green'
+        backgroundColor: '#999'
     }
 
     const handleStyle = {
         position: 'absolute',
         width: '20px',
         height: '100%',
-        backgroundColor: 'grey',
+        backgroundColor: '#666',
         cursor: 'ew-resize',
         borderRadius: '5px 0 0 5px',
         display: 'flex',

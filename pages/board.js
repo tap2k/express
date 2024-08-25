@@ -1,7 +1,7 @@
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
-import AddButton from "../components/addbutton";
+import AddMenu from "../components/addmenu";
 import Banner from '../components/banner';
 import Board from "../components/board";
 
@@ -36,7 +36,7 @@ export default ({ channel, privateID }) => {
                     channel={channel}
                     privateID={privateID}
                 />
-                <AddButton channel={channel} />
+                <AddMenu channel={channel} />
             </div>
         </div>
     );
