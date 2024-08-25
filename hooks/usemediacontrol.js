@@ -1,35 +1,26 @@
 import { useState, useEffect, useContext } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
-export default function useMediaControl(mediaRef, index, autoPlay) {
+export default function useMediaControl({mediaRef, index, autoPlay}) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const carouselContext = useContext(CarouselContext);
 
   const play = () => {
     if (mediaRef?.current) {
-      mediaRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(error => {
-        console.error("Error playing media:", error);
-      });
+      setIsPlaying(true);
+      mediaRef.current.play();
     }
   }
 
   const pause = () => {
     if (mediaRef?.current) {
-      mediaRef.current.pause();
       setIsPlaying(false);
+      mediaRef.current.pause();
     }
   }
 
   const toggle = () => {
     isPlaying ? pause() : play();
-  }
-
-  const resetMedia = () => {
-    if (mediaRef?.current) {
-      mediaRef.current.currentTime = 0;
-    }
   }
 
   const goToNextSlide = () => {
@@ -48,13 +39,12 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
 
       if (carouselContext.state.currentSlide === index) {
         if (autoPlay) {
-          console.log("current slide = " + carouselContext.state.currentSlide);
-          resetMedia();
+          mediaRef.current.currentTime = 0;
           play();
         }
       } else {
         pause();
-        resetMedia();
+        mediaRef.current.currentTime = 0;
       }
     };
 
@@ -80,7 +70,7 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
     {
       if (autoPlay && mediaRef?.current)
       {
-        resetMedia();
+        mediaRef.current.currentTime = 0();
         play();
       }
       return;
@@ -92,5 +82,5 @@ export default function useMediaControl(mediaRef, index, autoPlay) {
       pause();
   }, [autoPlay, mediaRef, carouselContext]);
 
-  return { isPlaying, play, pause, toggle, resetMedia };
+  return { isPlaying, play, pause, toggle };
 };

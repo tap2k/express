@@ -1,5 +1,6 @@
 
 export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
+  
   const containerStyle = {
     position: 'absolute',
     top: '50%',

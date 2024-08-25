@@ -10,6 +10,7 @@ import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
 import Caption from "./caption";
 import PlayIcon from './playicon';
+import Timeline from './timeline';
 
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
 
@@ -84,7 +85,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     return;
 
   const mediaRef = useRef();
-  const { isPlaying, toggle } = useMediaControl(mediaRef, index, autoPlay);
+  const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
   const { url, type, videotype } = getMediaInfo(contentItem);
 
   const containerStyle = {
@@ -110,7 +111,9 @@ export default function Content({ contentItem, width, height, cover, controls, a
         width={width} 
         height={height}
         controls={controls}
-        mediaRef={mediaRef} 
+        mediaRef={mediaRef}
+        play={play}
+        pause={pause}
       >
         <source src={url} type={videotype} />
       </VideoPlayer>
@@ -155,6 +158,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
+      { type.startsWith("video") && <Timeline mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} />}
     </>
   );
 }

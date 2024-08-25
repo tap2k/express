@@ -84,7 +84,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
     gridTemplateColumns: `repeat(2, 1fr)`,
     //gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
     gap: '10px',
-    marginTop: '20px',
+    marginTop: '10px',
     width: '100%',
   };
 
@@ -112,7 +112,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '10px',
+      gap: '5px',
     }}>
       <StyledInput
         type="text"
@@ -192,7 +192,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
         />
       )}
       
-      <div style={{...audioGridStyle, marginBottom: '10px'}}>
+      <div style={{...audioGridStyle, marginBottom: '5px'}}>
         {audioOptions.map((audio, index) => (
           <div 
             key={index} 
