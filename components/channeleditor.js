@@ -1,18 +1,16 @@
 import { useState, useRef } from 'react';
 import { StyledInput } from './recorderstyles';
 import { Input, Button, FormGroup, Label } from 'reactstrap';
-import { FaPlay, FaPause } from 'react-icons/fa';
 import { imageOptions, audioOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
+import AudioGrid from './audiogrid';
 
 export default function ChannelEditor({ channel, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
   const intervalRef = useRef();
-  const audioRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(channel ? channel.showtitle : true);
-  const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const [updating, setUpdating] = useState(false);
   const publicRef = useRef();
 
@@ -47,25 +45,6 @@ export default function ChannelEditor({ channel, onSubmit }) {
     setUpdating(false);
   };
 
-  const handleAudioToggle = (index) => {
-    if (index === 0) {
-      audioRef.current.pause();
-      setPlayingAudioIndex(null);
-      setSelectedAudio("None");
-      return;
-    }
-
-    if (playingAudioIndex === index) {
-      audioRef.current.pause();
-      setPlayingAudioIndex(null);
-    } else {
-      audioRef.current.src = `audio/${audioOptions[index]}`;
-      audioRef.current.play();
-      setPlayingAudioIndex(index);
-    }
-    setSelectedAudio(audioOptions[index]);
-  };
-
   const buttonStyle = {
     fontSize: 'large',
     width: '100%',
@@ -77,35 +56,6 @@ export default function ChannelEditor({ channel, onSubmit }) {
     border: 'none',
     color: '#ffffff',
     fontWeight: 'bold',
-  };
-
-  const audioGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(2, 1fr)`,
-    //gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-    gap: '10px',
-    marginTop: '10px',
-    width: '100%',
-  };
-
-  const audioItemStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    backgroundColor: '#f8f9fa',
-    height: '100%',
-    border: '1px solid #ddd',
-  };
-
-  const audioNameStyle = {
-    marginTop: '5px',
-    textAlign: 'center',
-    fontSize: 'small',
-    wordBreak: 'break-word',
   };
 
   return (
@@ -191,41 +141,17 @@ export default function ChannelEditor({ channel, onSubmit }) {
           setSelectedImage={setSelectedImage}
         />
       )}
-      
-      <div style={{...audioGridStyle, marginBottom: '5px'}}>
-        {audioOptions.map((audio, index) => (
-          <div 
-            key={index} 
-            style={{
-              ...audioItemStyle,
-              backgroundColor: selectedAudio === audio ? '#e6f2ff' : '#f8f9fa',
-            }}
-            onClick={() => handleAudioToggle(index)}
-          >
-            {audio === "None" ? (
-              <span>None</span>
-            ) : (
-              <>
-                {playingAudioIndex === index ? (
-                  <FaPause />
-                ) : (
-                  <FaPlay />
-                )}
-                <span style={audioNameStyle}>{audio}</span>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
-      
-      <audio ref={audioRef} style={{ display: 'none' }}>
-        Your browser does not support the audio element.
-      </audio>
+  
+      <AudioGrid
+          audioOptions={audioOptions}
+          selectedAudio={selectedAudio}
+          setSelectedAudio={setSelectedAudio}
+        />
       
       <Button
         onClick={handleSubmit}
         style={buttonStyle}
-        disabled={updating}
+        disabled={updating || !titleRef.current?.value}
       >
         {channel ? 'Update Reel' : 'Make a New Reel'}
       </Button>

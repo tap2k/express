@@ -8,8 +8,8 @@ import Uploader from "../components/uploader";
 import EmailModal from './emailmodal'; 
 
 const CircularMenuButton = styled(MenuButton)`
-  width: clamp(16px, 2.5rem, 50px);
-  height: clamp(16px, 2.5rem, 50px);
+  width: clamp(16px, 3rem, 50px);
+  height: clamp(16px, 3rem, 50px);
   border-radius: 50%;
 `;
 

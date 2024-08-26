@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand, Card, CardBody } from 'reactstrap';
 import addChannel from '../hooks/addchannel';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
