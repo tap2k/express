@@ -8,8 +8,8 @@ import Uploader from "../components/uploader";
 import EmailModal from './emailmodal'; 
 
 const CircularMenuButton = styled(MenuButton)`
-  width: 50px;
-  height: 50px;
+  width: clamp(16px, 2.5rem, 50px);
+  height: clamp(16px, 2.5rem, 50px);
   border-radius: 50%;
 `;
 
@@ -62,8 +62,8 @@ export default function AddMenu({ channel, privateID }) {
 
   const containerStyle = {
       position: 'fixed',
-      bottom: '25px',
-      right: '10px',
+      bottom: '3px',
+      right: '3px',
       display: 'flex',
       zIndex: 90,
   };

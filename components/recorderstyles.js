@@ -49,9 +49,8 @@ export const MenuButton = styled(Button)`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  margin: 0 3px;
+  margin: 0 2px;
   font-weight: 600;
-
 
   &:hover {
     background-color: rgba(92, 131, 156, 0.8);

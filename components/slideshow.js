@@ -219,7 +219,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 'clamp(20px, 2.5vh, 32px)',
+    fontSize: 'clamp(16px, 2vh, 32px)',
   };
 
   const buttonStyle = {
@@ -233,7 +233,6 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     display: 'flex', 
     alignItems: 'center', 
     justifyContent: 'center', 
-    padding: 0, 
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
 
@@ -249,8 +248,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         <div style={{
           ...iconBarStyle, 
           flexDirection: 'column', 
-          top: '15px', 
-          right: '15px'
+          top: '3px', 
+          right: '20px'
         }}>
           <button 
             onClick={() => {

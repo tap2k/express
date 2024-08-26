@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, {setErrorText} from "./seterror";
 
-export default async function updateChannel({ name, description, uniqueID, interval, showtitle, ispublic, picturefile, audiofile, email, deletePic, deleteAudio }) 
+export default async function updateChannel({ myFormData, name, description, uniqueID, interval, showtitle, ispublic, picturefile, audiofile, email, deletePic, deleteAudio }) 
 {    
   if (!uniqueID)
   {
@@ -12,8 +12,10 @@ export default async function updateChannel({ name, description, uniqueID, inter
   
   const url = getBaseURL() + "/api/updateSubmissionChannel";
 
-  const formData = new FormData();
-  formData.append("uniqueID", uniqueID);
+  if (!myFormData)
+    myFormData = new FormData();
+  
+  myFormData.append("uniqueID", uniqueID);
 
   let audioblob = null;
   let pictureblob = null;
@@ -39,28 +41,28 @@ export default async function updateChannel({ name, description, uniqueID, inter
   }
   
   if (name !== undefined) 
-    formData.append("name", name);
+    myFormData.append("name", name);
   if (description !== undefined) 
-    formData.append("description", description);
+    myFormData.append("description", description);
   if (interval !== undefined) 
-    formData.append("interval", interval);
+    myFormData.append("interval", interval);
   if (showtitle !== undefined) 
-    formData.append("showtitle", showtitle);
+    myFormData.append("showtitle", showtitle);
   if (ispublic !== undefined) 
-    formData.append("public", ispublic);
+    myFormData.append("public", ispublic);
   if (pictureblob) 
-    formData.append("picturefile", pictureblob, picturefile);
+    myFormData.append("picturefile", pictureblob, picturefile);
   if (audioblob) 
-    formData.append("audiofile", audioblob, audiofile);
+    myFormData.append("audiofile", audioblob, audiofile);
   if (email !== undefined) 
-    formData.append("email", email);
+    myFormData.append("email", email);
   if (deletePic !== undefined) 
-    formData.append("deletepic", deletePic);
+    myFormData.append("deletepic", deletePic);
   if (deleteAudio !== undefined) 
-    formData.append("deleteaudio", deleteAudio);
+    myFormData.append("deleteaudio", deleteAudio);
 
   try {
-    return await axios.post(url, formData);
+    return await axios.post(url, myFormData);
   } catch (err) {
     setError(err);
     return null;

@@ -1,24 +1,35 @@
 import { useRouter } from 'next/router';
-import { useState } from "react";
-import { Alert, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useState, useRef } from "react";
+import { Alert, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { FaEdit, FaTrash, FaImage } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
+import sendEmailLinks from '../hooks/sendemaillinks';
+import { StyledInput } from './recorderstyles';
 import PageMenu from "./pagemenu";
-import ChannelEditor from './channeleditor';
+import ImagePicker from './imagepicker';
 
 export default function Banner({ channel, privateID, isSlideshow=false }) {
   if (!channel)
     return;
 
   const router = useRouter();
+  const [progress, setProgress] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [deletePic, setDeletePic] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+  const titleRef = useRef();
+  const subtitleRef = useRef();
+  const emailRef = useRef();
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
+
 
   const handleDeleteChannel = () => {
     confirmAlert({
@@ -40,13 +51,32 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     });
   };
 
-  const handleSaveChannel = async (data) => {
-    await updateChannel(data);
-    if (data.email && data.email != channel.email) {
-      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: data.email});
-    }
+  const handleSaveChannel = async ( ) => {
     setIsChannelModalOpen(false);
+    setIsImageModalOpen(false);
+    const myFormData = new FormData();
+    uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, deletePic: deletePic});
+    if (emailRef.current?.value != channel.email) {
+      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
+    }
+    setDeletePic(false);
+    setSelectedImage(null);
+    setUploadedFiles([]);
     await router.replace(router.asPath);
+  };
+
+  const buttonStyle = {
+    fontSize: 'medium',
+    width: '100%',
+    padding: '6px',
+    marginTop: '10px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#5dade2', 
+    border: 'none',
+    color: '#ffffff',
+    fontWeight: 'bold',
   };
 
   return (
@@ -99,6 +129,19 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
                     zIndex: 90
                 }}>
                   <button 
+                    onClick={() => {
+                        setIsImageModalOpen(true);
+                    }} 
+                    style={{ 
+                        background: 'rgba(255, 255, 255, 0.5)', 
+                        border: 'none', 
+                        borderRadius: '50%', 
+                        padding: '5px' 
+                    }}
+                    >
+                    <FaImage size={20} color="rgba(0, 0, 0, 0.5)"/>
+                </button>
+                  <button 
                       onClick={() => {
                           setIsChannelModalOpen(true);
                       }} 
@@ -132,10 +175,37 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ChannelEditor
-            channel={channel}
-            onSubmit={handleSaveChannel}
+          <StyledInput
+          type="text"
+          innerRef={titleRef}
+          placeholder="Enter your title here"
+          defaultValue={channel.name || ""}
           />
+          <StyledInput
+            type="email"
+            innerRef={emailRef}
+            placeholder="Update your email here"
+            defaultValue={channel.email || ""}
+          />
+          <Button
+            onClick={handleSaveChannel}
+            style={buttonStyle}
+          >
+            {'Update Reel'}
+          </Button>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
+        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <ImagePicker imageUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedImage={selectedImage} setSelectedImage={setSelectedImage} deletePic={deletePic} setDeletePic={setDeletePic} accept="image/*" />
+          <Button
+            onClick={handleSaveChannel}
+            style={buttonStyle}
+          >
+            {'Update Reel'}
+          </Button>
         </ModalBody>
       </Modal>
     </>

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { FaEdit, FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
+import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
 import { MenuButton } from '../components/recorderstyles';
 
 export default function PageMenu( ) {
@@ -15,8 +14,9 @@ export default function PageMenu( ) {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '1rem',
+    padding: '0.5rem',
     backgroundColor: 'transparent',
+    gap: '1px'
   };
 
   const copyUrlToClipboard = () => {

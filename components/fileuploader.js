@@ -1,21 +1,17 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Button, Progress } from "reactstrap";
+import { Button } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
-import { imageOptions } from './fileoptions';
-import ImageGallery from './imagegallery';
+import { RecorderWrapper } from './recorderstyles';
+import ImagePicker from "./imagepicker";
 import ContentInputs from "./contentinputs";
 
 export default function FileUploader({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
-  const fileInputRef = useRef();
   const [progress, setProgress] = useState(0);
-  const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -29,6 +25,7 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
     
     try {
       const formData = new FormData();
+      uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
 
       if (selectedImage && selectedImage !== "None") {
         if (selectedImage.startsWith('data:image/png;base64,')) {
@@ -42,10 +39,6 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
           const blob = await response.blob();
           formData.append(selectedImage, blob, "maustrocard-"+selectedImage);
         }
-      }
-      
-      if (uploadedFiles.length > 0) {
-        uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
       }
       
       await uploadSubmission({
@@ -85,191 +78,10 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
       setUploading(false);
   }
 
-  const addFile = (e) => {
-    const newFiles = Array.from(e.target.files).filter(file => 
-      file.type.startsWith('image/') || 
-      file.type.startsWith('video/') || 
-      file.type.startsWith('audio/')
-    );
-    setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
-  };
-
-  const removeFile = (index) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const clearSelectedImage = () => {
-    setSelectedImage(null);
-  };
-
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    
-    const files = Array.from(e.dataTransfer.files).filter(file => 
-      file.type.startsWith('image/') || 
-      file.type.startsWith('video/') || 
-      file.type.startsWith('audio/')
-    );
-    setUploadedFiles(prevFiles => [...prevFiles, ...files]);
-  };
-
   return (
-    <RecorderWrapper {...props}>
-      <ButtonGroup>
-        <StyledButton color="primary" onClick={() => {if (showGallery) setShowGallery(false); else fileInputRef.current.click()}}>
-          Select Files
-        </StyledButton>
-        <StyledButton color="info" onClick={() => setShowGallery(true)}>
-          Show Gallery
-        </StyledButton>
-      </ButtonGroup>
-
-      <div
-        style={{
-          width: '100%',
-          minHeight: '300px',
-          border: `2px dashed ${isDragging ? '#007bff' : '#ddd'}`,
-          borderRadius: '4px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: (showGallery || selectedImage || uploadedFiles.length > 0) ? 'start' : 'center',
-          alignItems: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-          padding: '10px',
-          backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
-        }}
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {showGallery ? (
-          <ImageGallery 
-            imageOptions={imageOptions}
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
-          />
-        ) : selectedImage || uploadedFiles.length > 0 ? (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length + (selectedImage ? 1 : 0))))}px, 1fr))`,
-            gap: '12px', 
-            width: '100%',
-            height: '100%',
-            padding: '6px',
-          }}>
-            {selectedImage && (
-              <div style={{ position: 'relative', aspectRatio: '1 / 1' }}>
-                <img 
-                  src={selectedImage.startsWith('data:image/png;base64,') ? selectedImage : `images/${selectedImage}`} 
-                  alt={selectedImage}
-                  style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}}
-                />
-                <button
-                  onClick={clearSelectedImage}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '22px',
-                    height: '22px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-            {uploadedFiles.map((file, index) => (
-              <div key={index} style={{ position: 'relative', aspectRatio: '1 / 1' }}>
-                {file.type.startsWith('image/') && (
-                  <img 
-                    src={URL.createObjectURL(file)} 
-                    alt={file.name} 
-                    style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}}
-                  />
-                )}
-                {file.type.startsWith('video/') && (
-                  <video src={URL.createObjectURL(file)} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}} />
-                )}
-                {file.type.startsWith('audio/') && (
-                  <audio src={URL.createObjectURL(file)} controls style={{width: '100%'}} />
-                )}
-                <button
-                  onClick={() => removeFile(index)}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '22px',
-                    height: '22px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center'}}>
-            <p>Drop files here, or</p>
-            <StyledButton
-              color="secondary"
-              onClick={() => fileInputRef.current.click()}
-            >
-              Select Files
-            </StyledButton>
-          </div>
-        )}
-      </div>
-      <Progress value={progress} style={{marginBottom: 20}}  />
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        style={{ display: 'none' }}
-        accept="image/*,audio/*,video/*"
-        onChange={addFile}
-        multiple
-      />
-      
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
-
+    <RecorderWrapper  {...props}>
+      <ImagePicker progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedImage={selectedImage} setSelectedImage={setSelectedImage} handleUpload={handleUpload} accept="image/*,audio/*,video/*" multiple />
+      <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <Button
         color="success"
         onClick={handleUpload}
@@ -278,6 +90,5 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
       >
         Submit
       </Button>
-    </RecorderWrapper>
-  );
-}
+  </RecorderWrapper>
+)}
