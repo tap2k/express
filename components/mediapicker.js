@@ -137,7 +137,7 @@ return (
       <div
         style={{
           width: '100%',
-          minHeight: '200px',
+          minHeight: '300px',
           border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`,
           borderRadius: '4px',
           display: 'flex',
@@ -170,35 +170,20 @@ return (
       setSelectedAudio={setSelectedMedia}
     />
   ) : null
-) : selectedMedia || uploadedFiles.length > 0 ? (
+) : uploadedFiles.length > 0 ? (
   <div style={{ 
     display: 'grid', 
-    gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length + (selectedMedia ? 1 : 0))))}px, 1fr))`,
+    gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length + (selectedMedia ? 1 : 0))))}px, 1fr))` : '100%',
     gap: '12px', 
     width: '100%',
     height: '100%',
     padding: '6px',
   }}>
-    {selectedMedia && selectedMedia != "None" && (
-      <div style={{ position: 'relative', aspectRatio: '1 / 1' }}>
-        <img 
-          src={selectedMedia.startsWith('data:image/png;base64,') ? selectedMedia : `images/${selectedMedia}`} 
-          alt={selectedMedia}
-          style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px'}}
-        />
-        <button
-          onClick={clearselectedMedia}
-          style={deleteStyle}
-        >
-          ✕
-        </button>
-      </div>
-    )}
     {uploadedFiles.map((file, index) => {
       const url = URL.createObjectURL(file);
       const type = file.type;
       return (
-        <div key={index} style={{ position: 'relative', aspectRatio: '1 / 1' }}>
+        <div key={index} style={{ position: 'relative'}}>
           <MediaPreview url={url} type={type} onRemove={() => removeFile(index)} />
         </div>
       );

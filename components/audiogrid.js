@@ -28,7 +28,7 @@ export default function AudioGrid({ audioOptions, selectedAudio, setSelectedAudi
         display: 'grid',
         gridTemplateColumns: `repeat(2, 1fr)`,
         //gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-        gap: '10px',
+        gap: '5px',
         marginTop: '10px',
         width: '100%',
       };

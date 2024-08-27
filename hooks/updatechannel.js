@@ -20,14 +20,19 @@ export default async function updateChannel({ myFormData, name, description, uni
   let audioblob = null;
   let pictureblob = null;
   if (audiofile)
-  {
-    const response = await fetch(`audio/${audiofile}`);
-    audioblob = await response.blob();
+  {    
+    if (audiofile == "None")
+      deleteAudio = true;
+    else
+    {
+      const response = await fetch(`audio/${audiofile}`);
+      audioblob = await response.blob();
+    }
   }
   if (picturefile)
   {
     if (picturefile == "None")
-      deletePic = "true";
+      deletePic = true;
     else
     {
       if (picturefile.startsWith('data:image/png;base64,')) {

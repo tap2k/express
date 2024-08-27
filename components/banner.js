@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Alert, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaEdit, FaTrash, FaImage, FaMusic } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
@@ -30,7 +30,15 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
   const subtitleRef = useRef();
   const emailRef = useRef();
 
-  console.log("selected image " + selectedImage);
+
+  useEffect(() => {
+      setUploading(false);
+      setDeletePic(false);
+      setSelectedImage(null);
+      setSelectedAudio(null);
+      setUploadedFiles([]);
+      setProgress(0);
+  }, [isImageModalOpen, isAudioModalOpen]);
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
@@ -56,21 +64,19 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     });
   };
 
+
+
   const handleSaveChannel = async ( ) => {
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
-    setUploading(false);
     setIsChannelModalOpen(false);
+    setIsAudioModalOpen(false);
     setIsImageModalOpen(false);
-    setDeletePic(false);
-    setSelectedImage(null);
-    setUploadedFiles([]);
-    setProgress(0);
     await router.replace(router.asPath);
   };
 
@@ -210,8 +216,10 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
           <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
           <Button
             onClick={handleSaveChannel}
-            style={buttonStyle}
-            disabled={uploading && (uploadedFiles > 0 || selectedAudio)}
+            disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio)}
+            block
+            color="success"
+            style={{marginTop: '10px'}}
           >
             {'Update Reel'}
           </Button>
@@ -224,8 +232,10 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
           <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
           <Button
             onClick={handleSaveChannel}
-            style={buttonStyle}
             disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
+            block
+            color="success"
+            style={{marginTop: '10px'}}
           >
             {'Update Reel'}
           </Button>
