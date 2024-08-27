@@ -14,9 +14,6 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
     }
   
     const addFile = (e) => {
-      if (!multiple) {
-        clearSelectedMedia();
-      }
       const newFiles = Array.from(e.target.files).filter(file => 
         file.type.startsWith('image/') || 
         file.type.startsWith('video/') || 
@@ -27,10 +24,6 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
 
     const removeFile = (index) => {
         setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    };
-
-    const clearSelectedMedia = () => {
-        setSelectedMedia(null);
     };
 
     const handleDragEnter = (e) => {
@@ -69,12 +62,12 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        style={{width: '100%', height: '100%', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1}}
+        style={{width: '100%', minHeight: '300px', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
       >
         {uploadedFiles.length > 0 ? (
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length + (selectedMedia ? 1 : 0))))}px, 1fr))` : '100%',
+            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length)))}px, 1fr))` : '100%',
             gap: '12px', 
             width: '100%',
             height: '100%',

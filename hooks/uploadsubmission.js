@@ -38,8 +38,6 @@ export default async function uploadSubmission({myFormData, channelID, contentID
 
   if (title)
     myFormData.append("title", title);
-  if (title != undefined)
-    myFormData.append("title", title);
   if (description)
     myFormData.append("description", description);
   if (name)

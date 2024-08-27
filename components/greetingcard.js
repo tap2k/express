@@ -1,16 +1,17 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Button } from "reactstrap";
+import { Button, Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper } from './recorderstyles';
-import UploadWidget from "./uploadwidget";
+import ImageGallery from "./imagegallery";
 import ContentInputs from "./contentinputs";
 
-export default function FileUploader({ channelID, uploading, setUploading, lat, long, ...props }) {
+export default function GreetingCard({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [generating, setGenerating] = useState(false);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -25,7 +26,20 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
       setUploading(true);
     try {
       const formData = new FormData();
-      uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
+
+      if (selectedImage && selectedImage !== "None") {
+        if (selectedImage.startsWith('data:image/png;base64,')) {
+          // This is a DALL-E generated image
+          const response = await fetch(selectedImage);
+          const blob = await response.blob();
+          formData.append('dalle-image.png', blob, 'dalle-image.png');
+        } else {
+          // This is a regular gallery image
+          const response = await fetch(`images/${selectedImage}`);
+          const blob = await response.blob();
+          formData.append(selectedImage, blob, "maustrocard-"+selectedImage);
+        }
+      }
       
       await uploadSubmission({
         myFormData: formData, 
@@ -41,8 +55,7 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
         router
       }); 
       
-      setUploadedFiles([]);
-      setProgress(0);
+      setSelectedImage(null);
       if (titleRef.current)
         titleRef.current.value = "";
       if (nameRef.current)
@@ -58,19 +71,22 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
       console.error('Error uploading content:', error);
       setError('Failed to upload content. Please try again.');
     }
-
-    if (setUploading)
-      setUploading(false);
+    finally {
+      if (setUploading)
+        setUploading(false);
+    }
   }
+
   return (
     <RecorderWrapper  {...props}>
-      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
-      <ContentInputs style={{marginTop: '15px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ImageGallery selectedImage={selectedImage} setSelectedImage={setSelectedImage} uploading={generating} setUploading={setGenerating} setProgress={setProgress} />
+      <Progress value={progress} />
+      <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <Button
         color="success"
         onClick={handleUpload}
         block
-        disabled={uploading}
+        disabled={uploading || generating}
       >
         Submit
       </Button>

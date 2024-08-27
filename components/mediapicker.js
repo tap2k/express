@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { ButtonGroup, StyledButton } from './recorderstyles';
-import { imageOptions, audioOptions } from './fileoptions';
 import ImageGallery from './imagegallery';
 import AudioGrid from './audiogrid';
 import UploadWidget from "./uploadwidget";
@@ -13,6 +12,11 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
       setUploadedFiles([]);
   }, [selectedMedia]);
 
+  useEffect(() => {
+    if (!multiple && uploadedFiles.length)
+      setSelectedMedia(null);
+  }, [uploadedFiles]);
+
   return (
     <div {...props}>
       { gallery && <ButtonGroup>
@@ -23,50 +27,34 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
           Show Gallery
         </StyledButton>
       </ButtonGroup> }
-
-      <div
-        style={{
-          width: '100%',
-          minHeight: '300px',
-          borderRadius: '4px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-          padding: '5px',
-        }}
-      >
-        {showGallery ? (
-          gallery === "image" ? (
-            <ImageGallery 
-              imageOptions={imageOptions}
-              selectedImage={selectedMedia}
-              setSelectedImage={setSelectedMedia}
-              uploading={uploading}
-              setUploading={setUploading}
-            />
-          ) : gallery === "audio" ? (
-            <AudioGrid             
-              audioOptions={audioOptions}
-              selectedAudio={selectedMedia}
-              setSelectedAudio={setSelectedMedia}
-            />
-          ) : null
-        ) : 
-          <UploadWidget
-            mediaUrl={mediaUrl} 
-            progress={progress}
-            uploadedFiles={uploadedFiles} 
-            setUploadedFiles={setUploadedFiles}
-            deleteMedia={deleteMedia}
-            setDeleteMedia={setDeleteMedia}
-            accept={accept} 
-            multiple={multiple}
+      {showGallery ? (
+        gallery === "image" ? (
+          <>
+          <ImageGallery 
+            selectedImage={selectedMedia}
+            setSelectedImage={setSelectedMedia}
+            uploading={uploading}
+            setUploading={setUploading}
           />
-        }
-      </div>
+          </>
+        ) : gallery === "audio" ? (
+          <AudioGrid             
+            selectedAudio={selectedMedia}
+            setSelectedAudio={setSelectedMedia}
+          />
+        ) : null
+      ) : 
+        <UploadWidget
+          mediaUrl={mediaUrl} 
+          progress={progress}
+          uploadedFiles={uploadedFiles} 
+          setUploadedFiles={setUploadedFiles}
+          deleteMedia={deleteMedia}
+          setDeleteMedia={setDeleteMedia}
+          accept={accept} 
+          multiple={multiple}
+        />
+      }
     </div>
   );
 }

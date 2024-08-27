@@ -1,11 +1,28 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { StyledButton } from './recorderstyles';
+import { imageOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
 
-export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage, uploading, setUploading }) {
+export default function ImageGallery({ selectedImage, setSelectedImage, uploading, setUploading, setProgress }) {
   const [dalleImage, setDalleImage] = useState(null);
   const dallePromptRef = useRef(null);
+
+  const simulateProgress = () => {
+    if (!setProgress)
+      return;
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 90) {
+          clearInterval(interval);
+          return prevProgress;
+        }
+        return prevProgress + 10;
+      });
+    }, 500);
+    return interval;
+  };
 
   const itemStyle = {
     position: 'relative',
@@ -49,7 +66,13 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
   const handleDalleGeneration = async () => {
     if (!dallePromptRef.current?.value)
       return;
-    setUploading(true);
+
+    if (setUploading)
+      setUploading(true);
+    if (setProgress)
+      setProgress(0);
+
+    const progressInterval = simulateProgress();
     try {
       const response = await axios.post('/api/dalle', {
         prompt: dallePromptRef.current.value
@@ -64,7 +87,10 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
       console.error('Error generating DALL-E image:', error);
       alert('Failed to generate AI image. Please try again.');
     } finally {
-      setUploading(false);
+      if (setUploading)
+        setUploading(false);
+      if (setProgress)
+        setProgress(0);
     }
   };
 

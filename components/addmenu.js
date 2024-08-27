@@ -22,10 +22,6 @@ export default function AddMenu({ channel, privateID }) {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const audioRef = useRef(null);
 
-  const toggleEmailModal = () => {
-    setIsEmailModalOpen(!isEmailModalOpen);
-  }
-
   const handleEmailSubmit = async (email) => {
     if (email)
     {
@@ -43,12 +39,8 @@ export default function AddMenu({ channel, privateID }) {
     setIsEmailModalOpen(false);
   };
 
-  const toggleUploadModal = () => {setIsUploadModalOpen(!isUploadModalOpen)};
-
-  const closeBtn = (
-    <button className="close" onClick={() => setIsUploadModalOpen(false)}>
-      &times;
-    </button>
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>&times;</button>
   );
 
   const togglePlayPause = () => {
@@ -71,10 +63,10 @@ export default function AddMenu({ channel, privateID }) {
   return (
     <>
       <div style={containerStyle}>
-        { privateID && <CircularMenuButton onClick={toggleEmailModal}>
+        { privateID && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
           <FaSave  />
         </CircularMenuButton> }
-        { privateID && <CircularMenuButton onClick={toggleEmailModal}>
+        { privateID && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
           <FaDownload  />
         </CircularMenuButton> }
         {channel.audiofile?.url && (
@@ -89,22 +81,22 @@ export default function AddMenu({ channel, privateID }) {
                 </CircularMenuButton>
             </>
         )}
-        <CircularMenuButton onClick={toggleUploadModal}>
+        <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
           <FaPlus />
         </CircularMenuButton>
       </div>
         <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
-            <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
-            <ModalBody>
-                <Uploader
-                    channelID={channel.uniqueID}
-                    toggle={toggleUploadModal}
-                />
-            </ModalBody>
+          <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn(() => setIsUploadModalOpen(false))} />
+          <ModalBody>
+            <Uploader
+                channelID={channel.uniqueID}
+                toggle={() => setIsUploadModalOpen(false)}
+            />
+          </ModalBody>
         </Modal>
         <EmailModal 
           isOpen={isEmailModalOpen} 
-          toggle={toggleEmailModal}
+          toggle={() => setIsEmailModalOpen(false)}
           onSubmit={handleEmailSubmit}
           headerText="Download Video"
           bodyText="Please enter your email address below to receive a link to your completed video."

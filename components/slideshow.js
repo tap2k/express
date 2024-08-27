@@ -14,6 +14,7 @@ import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
 import { StyledInput } from './recorderstyles';
+import Uploader from "./uploader";
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
@@ -70,6 +71,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [selectedAudio, setSelectedAudio] = useState(null);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -327,11 +329,9 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
           <FaPaperclip />
         </button> }
-        <Link href={`/upload?channelid=${channel.uniqueID}`} rel="noopener noreferrer" target="_blank">
-          <button style={iconButtonStyle}>
-            <FaPlus />
-          </button>
-        </Link>
+        <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
+          <FaPlus />
+        </button>
         <button onClick={togglePlayPause} style={iconButtonStyle}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
@@ -489,6 +489,16 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           >
             {'Update Reel'}
           </Button>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
+        <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
+        <ModalBody>
+          <Uploader
+              channelID={channel.uniqueID}
+              toggle={() => setIsUploadModalOpen(false)}
+          />
         </ModalBody>
       </Modal>
     </div>

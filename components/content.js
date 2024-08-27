@@ -154,7 +154,8 @@ export default function Content({ contentItem, width, height, cover, controls, a
       { caption && !(contentItem.textalignment != "center" && isPlaying) && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
-        textAlignment={contentItem.mediafile?.url?.includes("maustrocard") ? "center" : contentItem.textalignment} 
+        // TODO: This is a bit hacky
+        textAlignment={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle") || !contentItem.mediafile ? "center" : contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }

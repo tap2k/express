@@ -5,6 +5,7 @@ import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope } from 'react-ico
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
+import GreetingCard from '../components/greetingcard';
 
 const AudioRecorder = dynamic(() => import("../components/audiorecorder"), { ssr: false });
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
@@ -34,11 +35,13 @@ export default ({ channelID, toggle, useLocation=false }) => {
       case 'upload':
         return <FileUploader channelID={channelID} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'video':
-        return <VideoRecorder channelID={channelID}  uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <VideoRecorder channelID={channelID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'photo':
-        return <MyCamera channelID={channelID}  uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <MyCamera channelID={channelID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'audio':
-        return <AudioRecorder channelID={channelID}  uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <AudioRecorder channelID={channelID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+      case 'card':
+        return <GreetingCard channelID={channelID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       default:
         return null;
     }
@@ -72,8 +75,8 @@ export default ({ channelID, toggle, useLocation=false }) => {
           <FaMicrophone />
         </StyledButton>
         <StyledButton
-          color={activeComponent === 'audio' ? "primary" : "secondary"}
-          onClick={() => setActiveComponent('audio')}
+          color={activeComponent === 'card' ? "primary" : "secondary"}
+          onClick={() => setActiveComponent('card')}
         >
           <FaEnvelope />
         </StyledButton>
