@@ -30,7 +30,6 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
   const subtitleRef = useRef();
   const emailRef = useRef();
 
-
   useEffect(() => {
       setUploading(false);
       setDeletePic(false);
@@ -63,8 +62,6 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
       ]
     });
   };
-
-
 
   const handleSaveChannel = async ( ) => {
     setUploading(true);

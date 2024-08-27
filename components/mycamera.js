@@ -154,7 +154,7 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
 
   return (
     <RecorderWrapper {...props}>
-      <div style={{ marginTop: '10px', marginBottom: '20px', position: 'relative' }}>
+      <div style={{ marginTop: '10px', marginBottom: '10px', position: 'relative' }}>
         {dataUri ? 
           <div>
             <img 

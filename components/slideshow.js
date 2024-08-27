@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight, FaMusic, FaImage } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import getMediaURL from "../hooks/getmediaurl";
@@ -13,10 +13,11 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { StyledInput } from './recorderstyles';
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
-import ChannelEditor from './channeleditor';
+import MediaPicker from "./mediapicker";
 import Caption from "./caption";
 
 const downloadURL = async (dlurl) => {
@@ -58,11 +59,23 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const router = useRouter();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [deletePic, setDeletePic] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [deleteAudio, setDeleteAudio] = useState(false);
+  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
+  const [selectedAudio, setSelectedAudio] = useState(null);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
+  const titleRef = useRef();
+  const subtitleRef = useRef();
+  const emailRef = useRef();
   
   const showTitle = channel.showtitle || privateID;
 
@@ -73,6 +86,15 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
   }, []);
+
+  useEffect(() => {
+    setUploading(false);
+    setDeletePic(false);
+    setSelectedImage(null);
+    setSelectedAudio(null);
+    setUploadedFiles([]);
+    setProgress(0);
+}, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isContentModalOpen]);
 
   useEffect(() => {
     if (!audioRef.current)
@@ -170,14 +192,18 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     });
   };
 
-  const handleSaveChannel = async (data) => {
-    await updateChannel(data);
-    if (data.email && data.email != channel.email) {
-      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: data.email});
+  const handleSaveChannel = async ( ) => {
+    setUploading(true);
+    const myFormData = new FormData();
+    uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    if (emailRef.current?.value != channel.email) {
+      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
     setIsChannelModalOpen(false);
-    const newQuery = { ...router.query, currslide: 0 };
-    await router.replace({ pathname: router.pathname, query: newQuery });
+    setIsAudioModalOpen(false);
+    setIsImageModalOpen(false);
+    await router.replace(router.asPath);
   };
 
   const moveSlide = async (increment) => {
@@ -236,10 +262,8 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
 
-  const closeBtn = (
-    <button className="close" onClick={() => setIsChannelModalOpen(false)}>
-      &times;
-    </button>
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>&times;</button>
   );
 
   return (
@@ -257,7 +281,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                 if (isPlaying) togglePlayPause();
                 setIsChannelModalOpen(true);
               } else {
-                setIsModalOpen(true);
+                setIsContentModalOpen(true);
               }
             }} 
             style={iconButtonStyle}
@@ -267,7 +291,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={iconButtonStyle}>
             <FaTrash />
           </button>
-          {!(showTitle && currSlide === 0) && (
+          {!(showTitle && currSlide === 0) ? (
             <>
               <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
                 <FaArrowLeft />
@@ -279,7 +303,17 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
                 { getCurrentContent().publishedAt ? <FaTimes /> : <FaCheck /> }
               </button>
             </>
-          )}
+          ) : (
+            <>
+            <button onClick={() => setIsImageModalOpen(true)} style={iconButtonStyle}>
+              <FaImage />
+            </button>
+            <button onClick={() => setIsAudioModalOpen(true)} style={iconButtonStyle}>
+              <FaMusic />
+            </button>
+          </>
+          )
+        }
         </div>
       }
       
@@ -385,13 +419,13 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
           {channel.contents.length > 0 && (
             <>
               <ButtonBack key={1} style={{...buttonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={1} style={{...buttonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
+              <ButtonNext key={2} style={{...buttonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </>
           )}
         </CarouselProvider>
       </div>
 
-      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} />
 
       {channel.audiofile?.url && (
         <audio
@@ -403,12 +437,58 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       )}
 
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-        <ModalHeader toggle={() => setIsChannelModalOpen(false)} close={closeBtn} />
+        <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ChannelEditor
-            channel={channel}
-            onSubmit={handleSaveChannel}
+          <StyledInput
+          type="text"
+          innerRef={titleRef}
+          placeholder="Enter your title here"
+          defaultValue={channel.name || ""}
           />
+          <StyledInput
+            type="email"
+            innerRef={emailRef}
+            placeholder="Update your email here"
+            defaultValue={channel.email || ""}
+          />
+          <Button
+            onClick={handleSaveChannel}
+            style={buttonStyle}
+          >
+            {'Update Reel'}
+          </Button>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isAudioModalOpen} toggle={() => {setIsAudioModalOpen(false); setDeleteAudio(false)}}>
+        <ModalHeader close={closeBtn(() => setIsAudioModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
+          <Button
+            onClick={handleSaveChannel}
+            disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio)}
+            block
+            color="success"
+            style={{marginTop: '10px'}}
+          >
+            {'Update Reel'}
+          </Button>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
+        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
+          <Button
+            onClick={handleSaveChannel}
+            disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
+            block
+            color="success"
+            style={{marginTop: '10px'}}
+          >
+            {'Update Reel'}
+          </Button>
         </ModalBody>
       </Modal>
     </div>

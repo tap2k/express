@@ -82,7 +82,7 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
   return (
     <RecorderWrapper  {...props}>
       <MediaPicker progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} uploading={uploading} setUploading={setUploading} handleUpload={handleUpload} accept="image/*,audio/*,video/*" multiple gallery="image" />
-      <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ContentInputs style={{marginTop: '15px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <Button
         color="success"
         onClick={handleUpload}

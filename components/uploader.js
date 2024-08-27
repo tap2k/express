@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useGeolocation from "react-hook-geolocation";
+import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope } from 'react-icons/fa';
 import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
@@ -50,25 +51,31 @@ export default ({ channelID, toggle, useLocation=false }) => {
           color={activeComponent === 'upload' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('upload')}
         >
-          Upload
+          <FaUpload />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'video' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('video')}
         >
-          Video
+           <FaVideo />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'photo' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('photo')}
         >
-          Photo
+          <FaCamera />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'audio' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('audio')}
         >
-          Audio
+          <FaMicrophone />
+        </StyledButton>
+        <StyledButton
+          color={activeComponent === 'audio' ? "primary" : "secondary"}
+          onClick={() => setActiveComponent('audio')}
+        >
+          <FaEnvelope />
         </StyledButton>
       </ButtonGroup>
 
