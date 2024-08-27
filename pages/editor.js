@@ -6,6 +6,7 @@ import Banner from '../components/banner';
 import Wall from "../components/wall";
 
 export default ({ channel, privateID }) => {
+    
     const backgroundStyle = channel.picture?.url 
         ? {
             backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
@@ -14,7 +15,10 @@ export default ({ channel, privateID }) => {
             backgroundRepeat: 'no-repeat',
             backgroundAttachment: 'fixed',
           }
-        : {};
+        : channel.background_color ? {
+            backgroundColor: channel.background_color
+        }
+        : ""
 
     return (
         <div style={{

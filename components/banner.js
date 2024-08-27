@@ -68,7 +68,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -214,7 +214,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
           <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
           <Button
             onClick={handleSaveChannel}
-            disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio)}
+            disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio && !selectedColor)}
             block
             color="success"
             style={{marginTop: '10px'}}

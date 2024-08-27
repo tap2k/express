@@ -12,7 +12,6 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import { imageOptions, audioOptions } from './fileoptions';
 import { StyledInput } from './recorderstyles';
 import Uploader from "./uploader";
 import FullImage from "./fullimage";
@@ -199,7 +198,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -270,7 +269,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   );
 
   return (
-    <div style={{width: width, display: "flex", flexDirection: "column"}} {...props}>
+    <div style={{width: width, display: "flex", flexDirection: "column"}}>
       { privateID && 
         <div style={{
           ...iconBarStyle, 
@@ -365,7 +364,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
         </button>
       </div>
 
-      <div style={{width: width, height: height, position: "relative", isolation: 'auto'}}>
+      <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 
           isIntrinsicHeight 
           totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
@@ -381,6 +380,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
               <Slide style={{height: height, width: width}}>
                 <div style={{position: 'relative', height: '100%', width: '100%'}}>
                   <FullImage 
+                    style={{backgroundColor: channel.background_color}}
                     src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
                     width={width} 
                     height={height} 

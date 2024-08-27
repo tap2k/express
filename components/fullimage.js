@@ -1,6 +1,6 @@
 import useSlideAdvance from "../hooks/useslideadvance";
 
-export default function FullImage({ src, width, height, audioUrl, controls, autoPlay, interval, mediaRef, cover, index }) 
+export default function FullImage({ src, width, height, audioUrl, controls, autoPlay, interval, mediaRef, cover, index, ...props }) 
 {  
   // TODO: Just for title, a bit hacky
   useSlideAdvance({index, autoPlay, interval});
@@ -11,7 +11,7 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
           position: 'relative',
           width,
           height,
-          cursor: 'pointer'
+          ...props.style
         }} 
       >
         { src && <img 

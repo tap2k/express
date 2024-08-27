@@ -1,6 +1,7 @@
 //import { useEffect, useState } from 'react';
 
 export default function ImageGrid({ imageOptions, selectedImage, setSelectedImage  }) {
+  
   const columns = 4;
   //const [columns, setColumns] = useState(6);
 
