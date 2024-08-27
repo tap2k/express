@@ -230,7 +230,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
           <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
           <Button
             onClick={handleSaveChannel}
-            disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
+            disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedColor)}
             block
             color="success"
             style={{marginTop: '10px'}}

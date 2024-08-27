@@ -52,7 +52,7 @@ export default function ColorGrid({ selectedColor, setSelectedColor }) {
             key={index}
             style={{
                 ...itemStyle,
-                backgroundColor: color[1],
+                backgroundColor: color,
             }}
             onClick={() => setSelectedColor(color)}
             >

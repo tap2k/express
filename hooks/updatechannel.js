@@ -64,7 +64,7 @@ export default async function updateChannel({ myFormData, name, description, uni
   if (audioblob) 
     myFormData.append("audiofile", audioblob, audiofile);
   if (backgroundColor) 
-    myFormData.append("background_color", backgroundColor, audiofile);
+    myFormData.append("background_color", backgroundColor);
   if (email !== undefined) 
     myFormData.append("email", email);
   if (deletePic !== undefined) 
