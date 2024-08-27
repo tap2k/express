@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper } from './recorderstyles';
-import ImagePicker from "./imagepicker";
+import MediaPicker from "./mediapicker";
 import ContentInputs from "./contentinputs";
 
 export default function FileUploader({ channelID, uploading, setUploading, lat, long, ...props }) {
@@ -20,9 +20,10 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
 
   const handleUpload = async (e) => {
     e.preventDefault();
+    if (!titleRef.current?.value && !uploadedFiles.length)
+      return;
     if (setUploading)
       setUploading(true);
-    
     try {
       const formData = new FormData();
       uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
@@ -80,7 +81,7 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
 
   return (
     <RecorderWrapper  {...props}>
-      <ImagePicker progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedImage={selectedImage} setSelectedImage={setSelectedImage} handleUpload={handleUpload} accept="image/*,audio/*,video/*" multiple />
+      <MediaPicker progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} uploading={uploading} setUploading={setUploading} handleUpload={handleUpload} accept="image/*,audio/*,video/*" multiple gallery="image" />
       <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <Button
         color="success"

@@ -18,6 +18,7 @@
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "lodash": "^4.17.21",
+    "mime": "^4.0.4",
     "next": "13.5.1",
     "nodemailer": "^6.9.14",
     "openai": "^4.53.2",

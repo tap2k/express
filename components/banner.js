@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useRef } from "react";
 import { Alert, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
-import { FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaImage, FaMusic } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
@@ -9,7 +9,7 @@ import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
 import { StyledInput } from './recorderstyles';
 import PageMenu from "./pagemenu";
-import ImagePicker from './imagepicker';
+import MediaPicker from './mediapicker';
 
 export default function Banner({ channel, privateID, isSlideshow=false }) {
   if (!channel)
@@ -17,19 +17,24 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
 
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [deletePic, setDeletePic] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [deleteAudio, setDeleteAudio] = useState(false);
+  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
+  const [selectedAudio, setSelectedAudio] = useState(null);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
 
+  console.log("selected image " + selectedImage);
+
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
-
 
   const handleDeleteChannel = () => {
     confirmAlert({
@@ -52,17 +57,20 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
   };
 
   const handleSaveChannel = async ( ) => {
-    setIsChannelModalOpen(false);
-    setIsImageModalOpen(false);
+    setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, deletePic: deletePic});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, deletePic: deletePic, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
+    setUploading(false);
+    setIsChannelModalOpen(false);
+    setIsImageModalOpen(false);
     setDeletePic(false);
     setSelectedImage(null);
     setUploadedFiles([]);
+    setProgress(0);
     await router.replace(router.asPath);
   };
 
@@ -78,6 +86,13 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     color: '#ffffff',
     fontWeight: 'bold',
   };
+
+  const iconButtonStyle = { 
+    background: 'rgba(255, 255, 255, 0.5)', 
+    border: 'none', 
+    borderRadius: '50%', 
+    padding: '5px' 
+  }
 
   return (
     <>
@@ -130,38 +145,31 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
                 }}>
                   <button 
                     onClick={() => {
+                        setIsAudioModalOpen(true);
+                    }} 
+                    style={iconButtonStyle}
+                    >
+                    <FaMusic size={20} color="rgba(0, 0, 0, 0.5)"/>
+                  </button>
+                  <button 
+                    onClick={() => {
                         setIsImageModalOpen(true);
                     }} 
-                    style={{ 
-                        background: 'rgba(255, 255, 255, 0.5)', 
-                        border: 'none', 
-                        borderRadius: '50%', 
-                        padding: '5px' 
-                    }}
+                    style={iconButtonStyle}
                     >
                     <FaImage size={20} color="rgba(0, 0, 0, 0.5)"/>
-                </button>
+                  </button>
                   <button 
                       onClick={() => {
                           setIsChannelModalOpen(true);
                       }} 
-                      style={{ 
-                          background: 'rgba(255, 255, 255, 0.5)', 
-                          border: 'none', 
-                          borderRadius: '50%', 
-                          padding: '5px' 
-                      }}
+                      style={iconButtonStyle}
                       >
                       <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
                   </button>
                   <button 
                       onClick={handleDeleteChannel} 
-                      style={{ 
-                          background: 'rgba(255, 255, 255, 0.5)', 
-                          border: 'none', 
-                          borderRadius: '50%', 
-                          padding: '5px' 
-                      }}
+                      style={iconButtonStyle}
                       >
                       <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
                   </button>
@@ -196,13 +204,28 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
         </ModalBody>
       </Modal>
 
-      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
-        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+      <Modal isOpen={isAudioModalOpen} toggle={() => {setIsAudioModalOpen(false); setDeleteAudio(false)}}>
+        <ModalHeader close={closeBtn(() => setIsAudioModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ImagePicker imageUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedImage={selectedImage} setSelectedImage={setSelectedImage} deletePic={deletePic} setDeletePic={setDeletePic} accept="image/*" />
+          <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
           <Button
             onClick={handleSaveChannel}
             style={buttonStyle}
+            disabled={uploading && (uploadedFiles > 0 || selectedAudio)}
+          >
+            {'Update Reel'}
+          </Button>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
+        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
+          <Button
+            onClick={handleSaveChannel}
+            style={buttonStyle}
+            disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
           >
             {'Update Reel'}
           </Button>

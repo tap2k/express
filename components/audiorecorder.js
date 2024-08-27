@@ -190,7 +190,7 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
       <div
         style={{
           width: '100%',
-          height: '200px',
+          height: '100px',
           border: '1px solid #ddd',
           borderRadius: '4px',
           display: 'flex',

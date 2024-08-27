@@ -3,8 +3,7 @@ import axios from 'axios';
 import { StyledButton } from './recorderstyles';
 import ImageGrid from './imagegrid';
 
-export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage }) {
-  const [isGeneratingDalle, setIsGeneratingDalle] = useState(false);
+export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage, uploading, setUploading }) {
   const [dalleImage, setDalleImage] = useState(null);
   const dallePromptRef = useRef(null);
 
@@ -50,7 +49,7 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
   const handleDalleGeneration = async () => {
     if (!dallePromptRef.current?.value)
       return;
-    setIsGeneratingDalle(true);
+    setUploading(true);
     try {
       const response = await axios.post('/api/dalle', {
         prompt: dallePromptRef.current.value
@@ -65,7 +64,7 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
       console.error('Error generating DALL-E image:', error);
       alert('Failed to generate AI image. Please try again.');
     } finally {
-      setIsGeneratingDalle(false);
+      setUploading(false);
     }
   };
 
@@ -99,10 +98,10 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
         <StyledButton
           color="info"
           onClick={handleDalleGeneration}
-          disabled={isGeneratingDalle}
+          disabled={uploading}
           style={{ width: '100%', marginTop: '10px'}}
         >
-          {isGeneratingDalle ? 'Generating...' : 'Generate AI Image'}
+          {uploading ? 'Generating...' : 'Generate AI Image'}
         </StyledButton>
       </div>
     </>

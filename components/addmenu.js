@@ -94,9 +94,7 @@ export default function AddMenu({ channel, privateID }) {
         </CircularMenuButton>
       </div>
         <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
-            <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn}>
-                Upload
-            </ModalHeader>
+            <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
             <ModalBody>
                 <Uploader
                     channelID={channel.uniqueID}
