@@ -52,7 +52,7 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
       ) : showColors ? (
         <ColorGrid  
           colorOptions={colorOptions}           
-          selecteColor={selectedColor}
+          selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
       />
       ) :

@@ -4,7 +4,6 @@ import { Alert, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaEdit, FaTrash, FaImage, FaMusic } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { imageOptions, audioOptions, colorOptions } from './fileoptions';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
