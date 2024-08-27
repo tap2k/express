@@ -52,7 +52,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, startSlide, autoPlay, privateID, ...props }) 
+export default function Slideshow({ channel, height, width, startSlide, privateID }) 
 {
   if (!channel) return;
 

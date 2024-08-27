@@ -13,7 +13,7 @@ export default ({ channel, currslide, privateID }) => {
     return (
         <>
             <Banner channel={channel} privateID={privateID} isSlideshow />
-            <Slideshow channel={channel} width={width} height={height}startSlide={currslide} privateID={privateID} autoPlay />
+            <Slideshow channel={channel} width={width} height={height}startSlide={currslide} privateID={privateID} />
         </>
     );
 }
