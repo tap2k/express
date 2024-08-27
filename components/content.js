@@ -5,6 +5,7 @@ import { useRef } from "react";
 import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
+import useSlideAdvance from "../hooks/useslideadvance";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 import VideoPlayer from './videoplayer';
@@ -86,6 +87,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
 
   const mediaRef = useRef();
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
+  useSlideAdvance({index, autoPlay, isPlaying, interval});
   const { url, type, videotype } = getMediaInfo(contentItem);
 
   const containerStyle = {
@@ -138,10 +140,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         audioUrl={contentItem.audiofile?.url ? getMediaURL() + contentItem.audiofile?.url : ""}
         cover={cover}
         controls={controls}
-        autoPlay={autoPlay} 
-        interval={interval}
         mediaRef={mediaRef}
-        index={index} 
       />
     );
   }

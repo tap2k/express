@@ -63,7 +63,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
         mediaRef.current.removeEventListener('ended', onEnded);
       }
     };
-  }, [carouselContext, mediaRef, autoPlay]);
+  }, [mediaRef, carouselContext]);
 
   useEffect(() => {
     if (!carouselContext)
@@ -80,7 +80,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       play();
     else
       pause();
-  }, [autoPlay, mediaRef, carouselContext]);
+  }, [mediaRef, carouselContext]);
 
   return { isPlaying, play, pause, toggle };
 };
