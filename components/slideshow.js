@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
@@ -13,6 +12,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { imageOptions, audioOptions } from './fileoptions';
 import { StyledInput } from './recorderstyles';
 import Uploader from "./uploader";
 import FullImage from "./fullimage";
@@ -65,11 +65,12 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [deletePic, setDeletePic] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [deleteAudio, setDeleteAudio] = useState(false);
-  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [selectedAudio, setSelectedAudio] = useState(null);
+  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
@@ -479,7 +480,7 @@ export default function Slideshow({ channel, height, width, startSlide, autoPlay
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
+          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage}  selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" color />
           <Button
             onClick={handleSaveChannel}
             disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}

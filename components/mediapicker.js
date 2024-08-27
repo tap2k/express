@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { ButtonGroup, StyledButton } from './recorderstyles';
+import { imageOptions, audioOptions, colorOptions } from './fileoptions';
 import ImageGallery from './imagegallery';
 import AudioGrid from './audiogrid';
+import ColorGrid from './colorgrid';
 import UploadWidget from "./uploadwidget";
 
-export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUploadedFiles, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, uploading, setUploading, accept, multiple, gallery, ...props }) {
+export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUploadedFiles, selectedColor, setSelectedColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, uploading, setUploading, accept, multiple, gallery, ...props }) {
   const [showGallery, setShowGallery] = useState(false);
+  const [showColors, setShowColors] = useState(false);
 
   useEffect(() => {
     if (!multiple)
@@ -19,31 +22,40 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
 
   return (
     <div {...props}>
-      { gallery && <ButtonGroup>
-        <StyledButton color="primary" onClick={() => setShowGallery(false)}>
-          Select Files
+      { (gallery || setSelectedColor) && <ButtonGroup>
+        <StyledButton color="primary" onClick={() => {setShowColors(false); setShowGallery(false)}}>
+          Upload
         </StyledButton>
-        <StyledButton color="info" onClick={() => setShowGallery(true)}>
-          Show Gallery
-        </StyledButton>
+        { gallery && <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(true)}}>
+          Gallery
+        </StyledButton> }
+        { setSelectedColor && <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true)}}>
+          Colors
+        </StyledButton> }
       </ButtonGroup> }
       {showGallery ? (
         gallery === "image" ? (
-          <>
           <ImageGallery 
+            imageOptions={imageOptions}
             selectedImage={selectedMedia}
             setSelectedImage={setSelectedMedia}
             uploading={uploading}
             setUploading={setUploading}
           />
-          </>
         ) : gallery === "audio" ? (
-          <AudioGrid             
+          <AudioGrid
+            audioOptions={audioOptions}           
             selectedAudio={selectedMedia}
             setSelectedAudio={setSelectedMedia}
           />
         ) : null
-      ) : 
+      ) : showColors ? (
+        <ColorGrid  
+          colorOptions={colorOptions}           
+          selecteColor={selectedColor}
+          setSelectedColor={setSelectedColor}
+      />
+      ) :
         <UploadWidget
           mediaUrl={mediaUrl} 
           progress={progress}

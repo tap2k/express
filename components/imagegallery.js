@@ -1,10 +1,9 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { StyledButton } from './recorderstyles';
-import { imageOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
 
-export default function ImageGallery({ selectedImage, setSelectedImage, uploading, setUploading, setProgress }) {
+export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage, uploading, setUploading, setProgress }) {
   const [dalleImage, setDalleImage] = useState(null);
   const dallePromptRef = useRef(null);
 

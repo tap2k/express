@@ -77,16 +77,33 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
               const url = URL.createObjectURL(file);
               const type = file.type;
               return (
-                <div key={index} style={{ position: 'relative'}}>
+                <div key={index} style={{ 
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                }}>
                   <MediaPreview url={url} type={type} onRemove={() => removeFile(index)} />
                 </div>
               );
             })}
           </div>
         ) : mediaUrl && !deleteMedia ? (
-          <div style={{ display: 'inline-block', position: 'relative', maxWidth: '100%' }}>
-            <MediaPreview url={mediaUrl} type={mime.getType(mediaUrl)} onRemove={() => setDeleteMedia(true)} /> 
-          </div>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                width: '100%', 
+                margin: '0 auto', 
+                position: 'relative' 
+              }}>
+                <MediaPreview 
+                  url={mediaUrl} 
+                  type={mime.getType(mediaUrl)} 
+                  onRemove={() => setDeleteMedia(true)} 
+                /> 
+              </div>
         ) : (
           <div style={{ textAlign: 'center'}}>
             <p>Drop files here, or</p>

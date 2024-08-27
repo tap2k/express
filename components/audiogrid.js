@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import { FaPlay, FaPause } from 'react-icons/fa';
-import { audioOptions } from './fileoptions';
 
-export default function AudioGrid({ selectedAudio, setSelectedAudio }) {
+export default function AudioGrid({ audioOptions, selectedAudio, setSelectedAudio }) {
     const audioRef = useRef();
     const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
 

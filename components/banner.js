@@ -4,6 +4,7 @@ import { Alert, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaEdit, FaTrash, FaImage, FaMusic } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { imageOptions, audioOptions, colorOptions } from './fileoptions';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
@@ -22,6 +23,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
   const [deletePic, setDeletePic] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [deleteAudio, setDeleteAudio] = useState(false);
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [selectedAudio, setSelectedAudio] = useState(null);
@@ -226,7 +228,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
+          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" />
           <Button
             onClick={handleSaveChannel}
             disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
