@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, {setErrorText} from "./seterror";
 
-export default async function updateChannel({ myFormData, name, description, uniqueID, interval, showtitle, ispublic, picturefile, audiofile, backgroundColor, email, deletePic, deleteAudio, setProgress }) 
+export default async function updateChannel({ myFormData, name, description, uniqueID, interval, showtitle, ispublic, allowsubmissions, picturefile, audiofile, backgroundColor, email, deletePic, deleteAudio, setProgress }) 
 {    
   if (!uniqueID)
   {
@@ -59,6 +59,8 @@ export default async function updateChannel({ myFormData, name, description, uni
     myFormData.append("showtitle", showtitle);
   if (ispublic !== undefined) 
     myFormData.append("public", ispublic);
+  if (allowsubmissions !== undefined) 
+    myFormData.append("public", allowsubmissions);
   if (pictureblob) 
     myFormData.append("picturefile", pictureblob, picturefile);
   if (audioblob) 

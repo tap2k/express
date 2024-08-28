@@ -15,7 +15,7 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddMenu({ channel, privateID }) {
+export default function AddMenu({ channel, privateID, download }) {
   if (!channel)
     return;
 
@@ -62,8 +62,8 @@ export default function AddMenu({ channel, privateID }) {
 
   const containerStyle = {
       position: 'fixed',
-      bottom: '3px',
-      right: '3px',
+      bottom: '10px',
+      right: '10px',
       display: 'flex',
       zIndex: 90,
   };
@@ -74,9 +74,9 @@ export default function AddMenu({ channel, privateID }) {
         { privateID && false && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
-        <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
+        { download && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
           <FaDownload  />
-        </CircularMenuButton>
+        </CircularMenuButton> }
         {channel.audiofile?.url && (
             <>
                 <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
@@ -89,9 +89,9 @@ export default function AddMenu({ channel, privateID }) {
                 </CircularMenuButton>
             </>
         )}
-        <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
+        { (privateID || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
           <FaPlus />
-        </CircularMenuButton>
+        </CircularMenuButton> }
       </div>
         <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
           <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn(() => setIsUploadModalOpen(false))} />

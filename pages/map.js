@@ -22,7 +22,7 @@ export default ({ channel, privateID }) => {
                 />
             </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} autoPlay tour />
-            <AddMenu channel={channel}/>
+            <AddMenu channel={channel} privateID={privateID} />
         </>
     );
 }

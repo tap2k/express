@@ -80,6 +80,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   const emailRef = useRef();
   const showTitleRef = useRef();
   const publicRef = useRef();
+  const allowRef = useRef();
   const intervalRef = useRef();
   
   const showTitle = channel.showtitle || privateID;
@@ -201,7 +202,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value,picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value,picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -332,9 +333,9 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
         { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
           <FaPaperclip />
         </button> }
-        <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
+        { (privateID || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
           <FaPlus />
-        </button>
+        </button> }
         <button onClick={togglePlayPause} style={iconButtonStyle}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
@@ -447,7 +448,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={emailRef} publicRef={publicRef} showTitleRef={showTitleRef} intervalRef={intervalRef} handleSaveChannel={handleSaveChannel} />
+          <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={emailRef} publicRef={publicRef} allowRef={allowRef} showTitleRef={showTitleRef} intervalRef={intervalRef} handleSaveChannel={handleSaveChannel} />
         </ModalBody>
       </Modal>
 
