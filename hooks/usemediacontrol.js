@@ -43,6 +43,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
           play();
         }
       } else {
+        // TODO: Make this wait to make it smoother?
         pause();
         mediaRef.current.currentTime = 0;
       }
