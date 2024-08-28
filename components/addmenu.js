@@ -71,12 +71,12 @@ export default function AddMenu({ channel, privateID }) {
   return (
     <>
       <div style={containerStyle}>
-        { privateID && <CircularMenuButton onClick={handleSaveChannel} >
+        { privateID && false && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
-        { privateID && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
+        <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
           <FaDownload  />
-        </CircularMenuButton> }
+        </CircularMenuButton>
         {channel.audiofile?.url && (
             <>
                 <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
