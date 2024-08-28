@@ -1,13 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
-export default function Timeline ({ contentItem, mediaRef, isPlaying, pause }) {
+export default function Timeline ({ contentItem, mediaRef, isPlaying, pause, privateID }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
     const [duration, setDuration] = useState(0);
     const [endTime, setEndTime] = useState(contentItem.start_time + contentItem.duration);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
+
+    useEffect(() => {
+        if (mediaRef.current) {
+          mediaRef.current.currentTime = startTime;
+        }
+      }, []); 
 
     useEffect(() => {
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
@@ -165,7 +171,7 @@ export default function Timeline ({ contentItem, mediaRef, isPlaying, pause }) {
     }
     
   return (
-    <div 
+    privateID && <div 
       ref={timelineRef}
       onClick={handleTimelineClick}
       style={timelineStyle}
