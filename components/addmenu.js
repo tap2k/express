@@ -27,6 +27,7 @@ export default function AddMenu({ channel, privateID }) {
   const handleEmailSubmit = async (email) => {
     if (email)
     {
+      await saveChannel({channel});
       const response = await axios.post('/api/makevideo', 
         {
           channelid: channel.uniqueID, // Assuming channelID is in cleanedData

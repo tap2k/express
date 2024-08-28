@@ -21,7 +21,7 @@ export default function Timeline ({ contentItem, mediaRef, isPlaying, pause, pri
 
     useEffect(() => {
         // Only update if different
-        if ((endTime - startTime) < (duration - 0.1))
+        if (startTime > 0 && endTime > 0.2 && ((endTime - startTime) < (duration - 0.2)))
         {
             contentItem.start_time = startTime;
             contentItem.duration = endTime - startTime;

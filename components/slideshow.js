@@ -478,7 +478,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
             color="success"
             style={{marginTop: '10px'}}
           >
-            {'Update Reel'}
+            Update Reel
           </Button>
         </ModalBody>
       </Modal>
