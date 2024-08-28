@@ -1,18 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
-export default function Timeline ({ mediaRef, isPlaying, pause }) {
-  const [startTime, setStartTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [endTime, setEndTime] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const timelineRef = useRef(null);
-  const currentHandleRef = useRef(null);
+export default function Timeline ({ contentItem, mediaRef, isPlaying, pause }) {
+    const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
+    const [duration, setDuration] = useState(0);
+    const [endTime, setEndTime] = useState(contentItem.start_time + contentItem.duration);
+    const [currentTime, setCurrentTime] = useState(contentItem.start_time);
+    const timelineRef = useRef(null);
+    const currentHandleRef = useRef(null);
 
     useEffect(() => {
-        setEndTime(duration);
+        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
     }, [duration]);
 
+    useEffect(() => {
+        // Only update if different
+        if ((endTime - startTime) < (duration - 0.1))
+        {
+            contentItem.start_time = startTime;
+            contentItem.duration = endTime - startTime;
+        }
+    }, [startTime, endTime]);
 
     useEffect(() => {
         if (!mediaRef.current)
@@ -72,13 +80,15 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
         const newTime = Math.min(Math.max(position * duration, 0), duration);
 
         if (currentHandleRef.current === 'start') {
-        const newStartTime = Math.min(newTime, endTime - 0.1);
-        setStartTime(newStartTime);
-        mediaRef.current.currentTime = newStartTime;
+            const newStartTime = Math.min(newTime, endTime - 0.1);
+            setStartTime(newStartTime);
+            mediaRef.current.currentTime = newStartTime;
         } else if (currentHandleRef.current === 'end') {
-        const newEndTime = Math.max(newTime, startTime + 0.1);
-        setEndTime(newEndTime);
-        mediaRef.current.currentTime = newEndTime;
+            const newEndTime = Math.max(newTime, startTime + 0.1);
+            setEndTime(newEndTime);
+            if (!startTime)
+                setStartTime(0);
+            mediaRef.current.currentTime = newEndTime;
         }
     };
 
@@ -100,7 +110,6 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
     const handleTimelineClick = (e) => {
         if (currentHandleRef.current || !timelineRef.current || !mediaRef.current) return;
         
-        // Check if we're clicking on a handle
         if (e.target.closest('.timeline-handle')) return;
 
         const rect = timelineRef.current.getBoundingClientRect();
@@ -123,8 +132,7 @@ export default function Timeline ({ mediaRef, isPlaying, pause }) {
         overflow: 'hidden',
         cursor: 'pointer',
         zIndex: 99999,  
-        pointerEvents: 'auto',
-        isolation: 'isolate'  // Add this line
+        pointerEvents: 'auto'
     }
 
     const currWindowStyle = {

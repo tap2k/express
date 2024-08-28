@@ -38,7 +38,7 @@ export default ({ channel, privateID }) => {
                     channel={channel}
                     privateID={privateID}
                 />
-                <AddMenu channel={channel} privateID={true} />
+                <AddMenu channel={channel} privateID={privateID} />
             </div>
         </div>
     );

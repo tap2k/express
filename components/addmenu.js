@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { FaPlay, FaPause, FaPlus, FaDownload, FaSave } from 'react-icons/fa';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import styled from 'styled-components';
+import saveChannel from "../hooks/savechannel";
 import getMediaURL from "../hooks/getmediaurl";
 import { MenuButton } from '../components/recorderstyles';
 import Uploader from "../components/uploader";
@@ -39,6 +40,10 @@ export default function AddMenu({ channel, privateID }) {
     setIsEmailModalOpen(false);
   };
 
+  const handleSaveChannel = async() => {
+    await saveChannel({channel});
+  }
+
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
@@ -63,7 +68,7 @@ export default function AddMenu({ channel, privateID }) {
   return (
     <>
       <div style={containerStyle}>
-        { privateID && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
+        { privateID && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
         { privateID && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
