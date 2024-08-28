@@ -157,7 +157,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         textAlignment={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle") || !contentItem.mediafile ? "center" : contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
       /> } 
-      { (type.startsWith("video") || type.startsWith("audio")) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
+      { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       { (type.startsWith("video") || type.startsWith("audio")) && privateID && <Timeline contentItem={contentItem} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} privateID={privateID} />}
     </>
   );

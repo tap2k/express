@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
-import { Button } from "reactstrap";
+import { Button, Progress } from "reactstrap";
 import { useReactMediaRecorder } from "react-media-recorder";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
+import UploadWidget from './uploadwidget';
 import ContentInputs from "./contentinputs";
 
 //const fileExt = "webm";
@@ -16,7 +17,7 @@ function Output({ src }) {
     <audio 
       src={src}
       controls 
-      style={{ width: '100%', marginBottom: '20px' }}
+      style={{ width: '100%', marginBottom: '10px' }}
     >
       {isSafari && <source src={src} type="audio/aac" />}
       Your browser does not support the audio element.
@@ -34,8 +35,8 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [imageFile, setImageFile] = useState(null);
-  const fileInputRef = useRef();
+  const [progress, setProgress] = useState(0);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const titleRef = useRef();
   const nameRef = useRef();
   const locationRef = useRef();
@@ -82,9 +83,9 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
     try {
       const myFormData = new FormData();
 
-      if (imageFile) 
+      if (uploadedFiles.length) 
       {
-        myFormData.append('mediafile', imageFile, imageFile.name);
+        myFormData.append('mediafile', uploadedFiles[0], uploadedFiles[0].name);
         myFormData.append('audiofile', blob, 'audio.' + fileExt);
       }
       else
@@ -109,8 +110,8 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
       }
       
     if (setUploading)
-      setUploading(false);  
-    setImageFile(null);
+      setUploading(false); 
+    setUploadedFiles([]); 
   };
 
   const handleRecordingAction = () => {
@@ -120,19 +121,6 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
       resumeRecording();
     } else {
       startRecording();
-    }
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setImageFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -187,69 +175,7 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
 
       <Output src={mediaBlobUrl} />
       
-      <div
-        style={{
-          width: '100%',
-          height: '150px',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: '30px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        onDragEnter={(e) => e.preventDefault()}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        {imageFile ? (
-          <>
-            <img
-              src={URL.createObjectURL(imageFile)}
-              alt="Preview"
-              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-            />
-            <button
-              onClick={() => setImageFile(null)}
-              style={{
-                position: 'absolute',
-                top: '5px',
-                right: '5px',
-                background: 'rgba(255, 255, 255, 0.7)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '25px',
-                height: '25px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              ✕
-            </button>
-          </>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
-            <StyledButton
-              color="secondary"
-              onClick={() => fileInputRef.current.click()}
-            >
-              Add Image
-            </StyledButton>
-          </div>
-        )}
-      </div>
+      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" style={{minHeight: '200px', marginBottom: '20px'}} />
 
       <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
       

@@ -5,9 +5,12 @@ import getMediaURL from "../hooks/getmediaurl";
 import { StyledButton } from './recorderstyles';
 import MediaPreview from "./mediapreview";
 
-export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, deleteMedia, setDeleteMedia, accept, multiple }) {
+export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, deleteMedia, setDeleteMedia, accept, multiple, text, ...props }) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef();
+    
+    if (!text)
+      text = 'Drop files here, or';
   
     if (mediaUrl) {
       mediaUrl = getMediaURL() + mediaUrl;
@@ -62,7 +65,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        style={{width: '100%', minHeight: '300px', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+        style={{width: '100%', minHeight: '300px', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center', ...props.style}}
       >
         {uploadedFiles.length > 0 ? (
           <div style={{ 
@@ -106,7 +109,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
               </div>
         ) : (
           <div style={{ textAlign: 'center'}}>
-            <p>Drop files here, or</p>
+            <p>{text}</p>
             <StyledButton
               color="secondary"
               onClick={() => fileInputRef.current.click()}
