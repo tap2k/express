@@ -29,21 +29,21 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
         await updateSubmission({contentID: contentItem.id, lat: position.lat, long: position.lng});
       }
     },
-    click() {
+    /*click() {
       markerRef.current.closeTooltip();
-    },
+    },*/
   };
 
   const icon = getContentMarkerIcon(contentItem);
 
   return (
     <>
-      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID ? true : false}>
+      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID ? true : false} >
         { contentItem.title && <Tooltip>
             <div style={{textAlign: 'center'}}><b>{contentItem.title}</b></div>
           </Tooltip>    
         }
-        <Popup>
+        <Popup closeOnClick={false}>
           <div style={{minWidth: itemWidth}}>
             <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} />
           </div>

@@ -109,7 +109,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
               return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
             })
           }
-          </MarkerClusterGroup>
+        </MarkerClusterGroup>
         { tour  && channel.contents.length ? 
           <span>
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
