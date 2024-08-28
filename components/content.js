@@ -150,7 +150,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     <div style={containerStyle}>
       {mediaElement}
     </div>
-      { caption && !(contentItem.textalignment != "center" && isPlaying) && <Caption 
+      { caption && !(contentItem.textalignment != "center" && isPlaying && false) && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
         // TODO: This is a bit hacky
