@@ -50,7 +50,7 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, emailRef
         />
       )}
 
-      {textAlignmentRef && (
+      {textAlignmentRef && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.mediafile?.url?.includes("dalle") && (
         <StyledInput
           type="select"
           innerRef={textAlignmentRef}

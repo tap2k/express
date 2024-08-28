@@ -54,7 +54,9 @@ export default function Timeline ({ contentItem, mediaRef, isPlaying, pause, pri
             return;
 
         const updateTime = () => {
-            setCurrentTime(mediaRef.current?.currentTime);
+            if (!mediaRef.current)
+                return;
+            setCurrentTime(mediaRef.current.currentTime);
             if (mediaRef.current.currentTime >= endTime) {
                 pause();
                 mediaRef.current.currentTime = endTime;
