@@ -52,7 +52,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, startSlide, privateID }) 
+export default function Slideshow({ channel, height, width, startSlide, privateID, ...props }) 
 {
   if (!channel) return;
 
@@ -272,7 +272,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   );
 
   return (
-    <div style={{width: width, display: "flex", flexDirection: "column"}}>
+    <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       { privateID && 
         <div style={{
           ...iconBarStyle, 
