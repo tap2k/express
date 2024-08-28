@@ -38,7 +38,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
 
   return (
     <>
-      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID ? true : false} >
+      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID ? true : false}>
         { contentItem.title && <Tooltip>
             <div style={{textAlign: 'center'}}><b>{contentItem.title}</b></div>
           </Tooltip>    
