@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
+import { Progress } from "reactstrap";
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { MdFlipCameraIos } from 'react-icons/md';
@@ -16,6 +17,7 @@ function isMobileSafari() {
 
 export default function MyCamera({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
+  const [progress, setProgress] = useState(0);
   const [dataUri, setDataUri] = useState(null);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
@@ -52,7 +54,7 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
         }
   
         myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
+        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, router});
         if (titleRef.current)
           titleRef.current.value = "";
         if (nameRef.current)
@@ -282,6 +284,7 @@ export default function MyCamera({ channelID, uploading, setUploading, lat, long
         }
       </div>
 
+      { dataUri && <Progress value={progress} /> }
       <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
 
       <ButtonGroup style={{marginBottom: '10px' }}>

@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Button, Progress } from "reactstrap";
+import { Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { imageOptions } from './fileoptions';
-import { RecorderWrapper } from './recorderstyles';
+import { RecorderWrapper, StyledButton } from './recorderstyles';
 import ImageGallery from "./imagegallery";
 import ContentInputs from "./contentinputs";
 
@@ -83,13 +83,14 @@ export default function GreetingCard({ channelID, uploading, setUploading, lat, 
       <ImageGallery imageOptions={imageOptions} selectedImage={selectedImage} setSelectedImage={setSelectedImage} uploading={generating} setUploading={setGenerating} setProgress={setProgress} />
       <Progress value={progress} />
       <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
-      <Button
+      <StyledButton
         color="success"
+        size="lg"
         onClick={handleUpload}
         block
         disabled={uploading || generating}
       >
         Submit
-      </Button>
+      </StyledButton>
   </RecorderWrapper>
 )}

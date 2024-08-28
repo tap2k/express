@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
-import { Button, Progress } from "reactstrap";
+import { Progress } from "reactstrap";
 import { useReactMediaRecorder } from "react-media-recorder";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
@@ -91,7 +91,7 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
       else
         myFormData.append('mediafile', blob, 'audio.' + fileExt);
 
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, router});
 
       if (titleRef.current)
         titleRef.current.value = "";
@@ -103,6 +103,7 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
         locationRef.current.value = "";
       if (extUrlRef.current)
         extUrlRef.current.value = "";
+      setProgress(0);
 
       } catch (error) {
         console.error('Error uploading content:', error);
@@ -175,20 +176,20 @@ export default function AudioRecorder({ channelID, uploading, setUploading, lat,
 
       <Output src={mediaBlobUrl} />
       
-      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" style={{minHeight: '200px', marginBottom: '20px'}} />
+      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" style={{minHeight: '200px'}} />
+      <Progress value={progress} style={{marginBottom: '20px'}} />
 
       <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
       
-      <Button 
+      <StyledButton 
         color="success" 
         size="lg" 
         block 
         onClick={handleUpload}
         disabled={status !== "stopped" || !blob || uploading}
-        style={{ minWidth: '200px' }}
       >
         {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
-      </Button>
+      </StyledButton>
     </RecorderWrapper>
   );
 }

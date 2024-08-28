@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Button } from "reactstrap";
+import { Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
-import { RecorderWrapper } from './recorderstyles';
+import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from "./uploadwidget";
 import ContentInputs from "./contentinputs";
 
@@ -32,17 +32,16 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
         channelID, 
         lat, 
         long, 
-        title: titleRef?.current?.value,
-        name: nameRef?.current?.value,
-        email: emailRef?.current?.value,
-        location: locationRef?.current?.value,
-        ext_url: extUrlRef?.current?.value, 
+        title: titleRef?.current.value,
+        name: nameRef?.current.value,
+        email: emailRef?.current.value,
+        location: locationRef?.current.value,
+        ext_url: extUrlRef?.current.value, 
         setProgress, 
         router
       }); 
       
       setUploadedFiles([]);
-      setProgress(0);
       if (titleRef.current)
         titleRef.current.value = "";
       if (nameRef.current)
@@ -53,6 +52,7 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
         locationRef.current.value = "";
       if (extUrlRef.current)
         extUrlRef.current.value = "";
+      setProgress(0);
     }
     catch (error) {
       console.error('Error uploading content:', error);
@@ -65,14 +65,16 @@ export default function FileUploader({ channelID, uploading, setUploading, lat, 
   return (
     <RecorderWrapper  {...props}>
       <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
+      <Progress value={progress} />
       <ContentInputs style={{marginTop: '15px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
-      <Button
+      <StyledButton
         color="success"
+        size="lg"
         onClick={handleUpload}
         block
-        disabled={uploading}
+        disabled={uploading || (!uploadedFiles.length && !titleRef.current?.value)}
       >
         Submit
-      </Button>
+      </StyledButton>
   </RecorderWrapper>
 )}

@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from "react";
+import { Progress } from "reactstrap";
 import RecordRTC from 'recordrtc';
 import { MdFlipCameraIos } from 'react-icons/md';
 import uploadSubmission from "../hooks/uploadsubmission";
@@ -23,16 +24,17 @@ function isMobileSafari() {
 
 export default function VideoRecorder({ channelID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
-  const videoRef = useRef(null);
-  const recorderRef = useRef(null);
-  const streamRef = useRef(null);
   const [status, setStatus] = useState('idle');
+  const [progress, setProgress] = useState(0);
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [aspectRatio, setAspectRatio] = useState(16.0 / 9.0);
   const [facingMode, setFacingMode] = useState('user');
   const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
   const [countdown, setCountdown] = useState(null);
+  const videoRef = useRef(null);
+  const recorderRef = useRef(null);
+  const streamRef = useRef(null);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -76,7 +78,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
       const myFormData = new formData();
       myFormData.append('mediafile', blob, "video."+fileExt);
       
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID: channelID, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, router});
 
       if (titleRef.current)
         titleRef.current.value = "";
@@ -88,6 +90,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
         locationRef.current.value = "";
       if (extUrlRef.current)
         extUrlRef.current.value = "";
+      setProgress(0);
     }
     catch (error) {
       console.error('Error uploading content:', error);
@@ -311,6 +314,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
         )}
       </div>
       
+      <Progress value={progress} style={{marginBottom: '20px'}} />
       <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
 
       <ButtonGroup style={{marginBottom: '10px' }}>
