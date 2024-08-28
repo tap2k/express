@@ -88,7 +88,7 @@ export default function GreetingCard({ channelID, uploading, setUploading, lat, 
         size="lg"
         onClick={handleUpload}
         block
-        disabled={uploading || generating || (!titleRef.current.value && !selectedImage) }
+        disabled={uploading || generating || (!titleRef.current?.value && !selectedImage) }
       >
         Submit
       </StyledButton>
