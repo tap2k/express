@@ -49,7 +49,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
               color: '#aaaaaa'
             }}
           >
-            From: {contentItem.name}
+            {contentItem.name}{contentItem.location ? ', ' + contentItem.location : ""}
           </div>
         }
         {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&

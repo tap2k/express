@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Button, Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
+import { imageOptions } from './fileoptions';
 import { RecorderWrapper } from './recorderstyles';
 import ImageGallery from "./imagegallery";
 import ContentInputs from "./contentinputs";
@@ -46,11 +47,11 @@ export default function GreetingCard({ channelID, uploading, setUploading, lat, 
         channelID, 
         lat, 
         long, 
-        title: titleRef?.current?.value,
-        name: nameRef?.current?.value,
-        email: emailRef?.current?.value,
-        location: locationRef?.current?.value,
-        ext_url: extUrlRef?.current?.value, 
+        title: titleRef.current?.value,
+        name: nameRef.current?.value,
+        email: emailRef.current?.value,
+        location: locationRef.current?.value,
+        ext_url: extUrlRef.current?.value, 
         setProgress, 
         router
       }); 
@@ -79,7 +80,7 @@ export default function GreetingCard({ channelID, uploading, setUploading, lat, 
 
   return (
     <RecorderWrapper  {...props}>
-      <ImageGallery selectedImage={selectedImage} setSelectedImage={setSelectedImage} uploading={generating} setUploading={setGenerating} setProgress={setProgress} />
+      <ImageGallery imageOptions={imageOptions} selectedImage={selectedImage} setSelectedImage={setSelectedImage} uploading={generating} setUploading={setGenerating} setProgress={setProgress} />
       <Progress value={progress} />
       <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <Button
