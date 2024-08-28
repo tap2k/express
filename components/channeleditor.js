@@ -95,7 +95,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
           <Label check>
             <Input
               type="checkbox"
-              checked={showTitleSlide}
+              defaultChecked={channel.showtitle}
               onChange={(e) => setShowTitleSlide(e.target.checked)}
               style={{ marginRight: '5px', fontSize: 'large'}}
             />

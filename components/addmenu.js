@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useRef } from 'react';
 import { FaPlay, FaPause, FaPlus, FaDownload, FaSave } from 'react-icons/fa';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -42,6 +43,7 @@ export default function AddMenu({ channel, privateID }) {
 
   const handleSaveChannel = async() => {
     await saveChannel({channel});
+    alert("Channel saved!");
   }
 
   const closeBtn = (toggle) => (

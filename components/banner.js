@@ -7,8 +7,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import { StyledInput } from './recorderstyles';
 import PageMenu from "./pagemenu";
+import ChannelInputs from "./channelinputs";
 import MediaPicker from './mediapicker';
 
 export default function Banner({ channel, privateID, isSlideshow=false }) {
@@ -30,6 +30,9 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
+  const showTitleRef = useRef();
+  const publicRef = useRef();
+  const intervalRef = useRef();
 
   useEffect(() => {
       setUploading(false);
@@ -68,7 +71,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -76,19 +79,6 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     setIsAudioModalOpen(false);
     setIsImageModalOpen(false);
     await router.replace(router.asPath);
-  };
-
-  const buttonStyle = {
-    fontSize: 'medium',
-    width: '100%',
-    padding: '6px',
-    marginTop: '10px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#5dade2', 
-    border: 'none',
-    color: '#ffffff',
-    fontWeight: 'bold',
   };
 
   const iconButtonStyle = { 
@@ -187,24 +177,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
       <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
         <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <StyledInput
-          type="text"
-          innerRef={titleRef}
-          placeholder="Enter your title here"
-          defaultValue={channel.name || ""}
-          />
-          <StyledInput
-            type="email"
-            innerRef={emailRef}
-            placeholder="Update your email here"
-            defaultValue={channel.email || ""}
-          />
-          <Button
-            onClick={handleSaveChannel}
-            style={buttonStyle}
-          >
-            {'Update Reel'}
-          </Button>
+          <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={emailRef} publicRef={publicRef} showTitleRef={showTitleRef} intervalRef={intervalRef} handleSaveChannel={handleSaveChannel} />
         </ModalBody>
       </Modal>
 
