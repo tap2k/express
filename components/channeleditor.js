@@ -27,7 +27,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
   });
 
   const handleSubmit = async () => {
-    if (!titleRef.current.value)
+    if (!titleRef.current?.value)
       return;
     setUpdating(true);
     await onSubmit({
@@ -151,7 +151,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
       <Button
         onClick={handleSubmit}
         style={buttonStyle}
-        disabled={updating || !titleRef.current?.value}
+        disabled={updating}
       >
         {channel ? 'Update Reel' : 'Make a New Reel'}
       </Button>
