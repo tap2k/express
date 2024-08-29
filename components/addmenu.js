@@ -27,7 +27,7 @@ export default function AddMenu({ channel, privateID, download }) {
   const handleEmailSubmit = async (email) => {
     if (email)
     {
-      await saveChannel({channel});
+      await saveChannel({channel, privateID});
       const response = await axios.post('/api/makevideo', 
         {
           channelid: channel.uniqueID, // Assuming channelID is in cleanedData
@@ -43,7 +43,7 @@ export default function AddMenu({ channel, privateID, download }) {
   };
 
   const handleSaveChannel = async() => {
-    await saveChannel({channel});
+    await saveChannel({channel, privateID});
     alert("Channel saved!");
   }
 
@@ -71,7 +71,7 @@ export default function AddMenu({ channel, privateID, download }) {
   return (
     <>
       <div style={containerStyle}>
-        { privateID && false && <CircularMenuButton onClick={handleSaveChannel} >
+        { privateID && download && false && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
         { download && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>

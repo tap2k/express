@@ -67,7 +67,7 @@ export default function Wall ({ channel, privateID, ...props }) {
     try {
       if (!privateID)
         return;
-      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order })
+      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID: privateID })
       await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
@@ -108,12 +108,11 @@ export default function Wall ({ channel, privateID, ...props }) {
                       thumbnail
                       cover
                     />
-                    {privateID && (
-                      <ItemControls 
-                        contentItem={contentItem} 
-                        dragRef={dragRef}
-                      />
-                    )}
+                    <ItemControls 
+                      contentItem={contentItem} 
+                      dragRef={dragRef}
+                      privateID={privateID}
+                    />
                   </div>
                 )}
               </Draggable>

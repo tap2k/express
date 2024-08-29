@@ -28,10 +28,8 @@ export default ({ channel, privateID }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    let { channelid, admin } = ctx.query;
+    let { channelid } = ctx.query;
     let privateID = null;
-    if (!admin)
-        admin = false;
 
     const publicID = getPublicID(channelid);
     if (publicID)
@@ -42,7 +40,7 @@ export async function getServerSideProps(ctx) {
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID });
         
         if (!channel) {
             return {
@@ -56,7 +54,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateID ? privateID : admin
+                privateID: privateID
             } 
         };
     } catch (err) {

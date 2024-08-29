@@ -31,7 +31,7 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function AudioRecorder({ channelID, uploading, setUploading, lat, long, ...props }) {
+export default function AudioRecorder({ channelID, privateID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);

@@ -29,7 +29,7 @@ export default function Home() {
     const handleEmailSubmit = async (email) => {
         if (email) {
             try {
-                await updateChannel({uniqueID: channelID, email: email});
+                await updateChannel({privateID: privateID, email: email});
                 await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email});
                 alert('Email sent successfully!');
             } catch (error) {

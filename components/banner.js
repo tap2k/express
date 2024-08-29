@@ -56,7 +56,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
         {
           label: 'Yes',
           onClick: async () => {
-            await deleteChannel(channel.uniqueID);
+            await deleteChannel(privateID);
             await router.push('/');
           }
         },
@@ -72,7 +72,7 @@ export default function Banner({ channel, privateID, isSlideshow=false }) {
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, privateID: privateID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }

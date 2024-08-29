@@ -144,7 +144,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   
   const handlePublish = async () => {
     const contentToPublish = getCurrentContent();
-    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true});
+    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true, privateID: privateID});
     await router.replace(router.asPath);
   };
 
@@ -158,7 +158,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
           onClick: async () => {
             const contentToDelete = getCurrentContent();
             if (contentToDelete) {
-              await deleteSubmission({contentID: contentToDelete.id});
+              await deleteSubmission({contentID: contentToDelete.id, privateID: privateID});
               const newQuery = { 
                 ...router.query, 
                 currslide: Math.min(currSlide, showTitle ? channel.contents.length : channel.contents.length - 1)
@@ -186,7 +186,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
         {
           label: 'Yes',
           onClick: async () => {
-            await deleteChannel(channel.uniqueID);
+            await deleteChannel(privateID);
             await router.push('/');
           }
         },
@@ -202,7 +202,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, uniqueID: channel.uniqueID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value,picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, privateID: privateID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value,picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -218,7 +218,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     
     const contentToMove = channel.contents[contentIndex];
     if (contentToMove) {
-      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order});
+      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID: privateID});
       const newQuery = { 
         ...router.query, 
         currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
@@ -434,7 +434,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
         </CarouselProvider>
       </div>
 
-      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} />
+      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} />
 
       {channel.audiofile?.url && (
         <audio

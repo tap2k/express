@@ -19,10 +19,8 @@ export default ({ channel, currslide, privateID }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    let { channelid, currslide, admin } = ctx.query;
+    let { channelid, currslide } = ctx.query;
     let privateID = null;
-    if (!admin)
-        admin = false;
 
     const publicID = getPublicID(channelid);
     if (publicID)
@@ -33,7 +31,7 @@ export async function getServerSideProps(ctx) {
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID });
         
         if (!channel) {
             return {
@@ -48,7 +46,7 @@ export async function getServerSideProps(ctx) {
             props: { 
                 channel: channel,
                 currslide : currslide ? currslide : 0,
-                privateID: privateID ? privateID : admin
+                privateID: privateID
             } 
         };
     } catch (err) {

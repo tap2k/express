@@ -19,12 +19,11 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
             cover
           />
         </div>
-        {privateID && 
-          <ItemControls 
-            contentItem={contentItem} 
-            dragRef={dragRef}
-          />
-        }
+        <ItemControls 
+          contentItem={contentItem} 
+          dragRef={dragRef}
+          privateID={privateID}
+        />
         {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") &&
           <div 
             style={{ 

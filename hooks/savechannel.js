@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError from "./seterror";
 
-export default async function saveChannel({channel}) {
+export default async function saveChannel({channel, privateID}) {
   if (!channel || !channel.contents?.length) 
     return;
 

@@ -2,17 +2,15 @@ import { getPublicID } from '../hooks/seed';
 import getChannel from '../hooks/getchannel';
 import Uploader from "../components/uploader";
 
-export default ({ channel, useLocation }) => {
+export default ({ channel, privateID, useLocation }) => {
   return (
-      <Uploader channelID={channel.uniqueID} useLocation={useLocation} />
+      <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} />
   )
 }
 
 export async function getServerSideProps(ctx) {
-  let { channelid, admin, uselocation } = ctx.query;
+  let { channelid, uselocation } = ctx.query;
   let privateID = null;
-  if (!admin)
-      admin = false;
 
   const publicID = getPublicID(channelid);
   if (publicID)
@@ -23,9 +21,9 @@ export async function getServerSideProps(ctx) {
 
   try {
       // TODO: Hack for testing
-      const channel = await getChannel({ channelID: channelid, privateID: privateID ? privateID : admin });
+      const channel = await getChannel({ channelID: channelid, privateID: privateID });
       
-      if (!channel) {
+      if (!channel || (!privateID && !channel.allowsubmissions)) {
           return {
               redirect: {
                   destination: '/',
@@ -37,7 +35,7 @@ export async function getServerSideProps(ctx) {
       return { 
           props: { 
               channel: channel,
-              privateID: privateID ? privateID : admin,
+              privateID: privateID,
               useLocation: uselocation ? uselocation : false
           } 
       };

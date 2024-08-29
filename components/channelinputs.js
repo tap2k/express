@@ -70,7 +70,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                     </Label>
                 </FormGroup>}
 
-                {allowRef && false && <FormGroup check>
+                {allowRef && <FormGroup check>
                     <Label check>
                         <Input
                             type="checkbox"

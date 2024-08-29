@@ -2,9 +2,9 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment} ) 
+export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, privateID} ) 
 {  
-  if (!contentID)
+  if (!contentID || !privateID)
   {
     setErrorText("Error no content provided");
     return null;
@@ -15,6 +15,7 @@ export default async function updateSubmission( {myFormData, contentID, order, t
     myFormData = new FormData();
 
   myFormData.append("contentID", contentID);
+  myFormData.append("privateID", privateID);
   if (order != undefined)
     myFormData.append("order", order);
   if (title != undefined)

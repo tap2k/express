@@ -26,7 +26,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
       const marker = markerRef.current;
       if (marker != null) {
         var position = marker.getLatLng();
-        await updateSubmission({contentID: contentItem.id, lat: position.lat, long: position.lng});
+        await updateSubmission({contentID: contentItem.id, lat: position.lat, long: position.lng, privateID: privateID});
       }
     },
     /*click() {

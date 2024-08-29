@@ -7,11 +7,11 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadSubmission({myFormData, channelID, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router}) 
+export default async function uploadSubmission({myFormData, channelID, privateID, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router}) 
 { 
   const url = getBaseURL() + "/api/uploadSubmission";
 
-  if (!channelID || !router)
+  if ((!channelID && !privateID) || !router)
   {
     setErrorText("No channel or router provided");
     return null;
@@ -48,6 +48,8 @@ export default async function uploadSubmission({myFormData, channelID, contentID
     myFormData.append("location", location);
   if (ext_url)
     myFormData.append("ext_url", ext_url);
+  if (privateID)
+    myFormData.append("privateID", privateID);
 
   // TODO: FIX THIS!
   //if (published)

@@ -22,7 +22,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function VideoRecorder({ channelID, uploading, setUploading, lat, long, ...props }) {
+export default function VideoRecorder({ channelID, privateID, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [status, setStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
@@ -78,7 +78,7 @@ export default function VideoRecorder({ channelID, uploading, setUploading, lat,
       const myFormData = new formData();
       myFormData.append('mediafile', blob, "video."+fileExt);
       
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, privateID, setProgress, router});
 
       if (titleRef.current)
         titleRef.current.value = "";

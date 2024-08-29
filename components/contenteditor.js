@@ -4,7 +4,7 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import updateSubmission from "../hooks/updatesubmission";
 import ContentInputs from "./contentinputs";
 
-export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen }) {
+export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, privateID }) {
   
   if (!contentItem)
     return;
@@ -32,6 +32,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     setUpdating(true);
     await updateSubmission({
       contentID: contentItem.id,
+      privateID: privateID,
       title: titleRef?.current?.value,
       name: nameRef?.current?.value,
       email: emailRef?.current?.value,
