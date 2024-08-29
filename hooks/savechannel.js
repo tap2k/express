@@ -9,8 +9,8 @@ export default async function saveChannel({channel, privateID}) {
   const url = getBaseURL() + "/api/saveSubmissionChannel";
 
   const payload = {
-    id: channel.id,
-    uniqueID: channel.uniqueID,
+    //uniqueID: channel.uniqueID,
+    privateID: privateID,
     contents: channel.contents.map(item => ({
       id: item.id,
       start_time: item.start_time,
