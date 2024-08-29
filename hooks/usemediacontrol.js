@@ -58,9 +58,11 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       mediaRef.current.addEventListener('ended', onEnded);
     }
 
-    carouselContext.subscribe(onChange);
+    if (carouselContext)
+      carouselContext.subscribe(onChange);
     return () => {
-      carouselContext.unsubscribe(onChange);
+      if (carouselContext)
+        carouselContext.unsubscribe(onChange);
       if (mediaRef?.current) {
         mediaRef.current.removeEventListener('ended', onEnded);
       }
