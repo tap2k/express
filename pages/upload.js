@@ -1,4 +1,5 @@
 import { getPublicID } from '../hooks/seed';
+import getChannel from '../hooks/getchannel';
 import Uploader from "../components/uploader";
 
 export default ({ channel, useLocation }) => {
@@ -37,7 +38,7 @@ export async function getServerSideProps(ctx) {
           props: { 
               channel: channel,
               privateID: privateID ? privateID : admin,
-              useLocation: uselocation
+              useLocation: uselocation ? uselocation : false
           } 
       };
   } catch (err) {

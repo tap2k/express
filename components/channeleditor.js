@@ -9,10 +9,11 @@ export default function ChannelEditor({ channel, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
+  const publicRef = useRef();
+  const allowRef = useRef();
   const intervalRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(channel ? channel.showtitle : true);
   const [updating, setUpdating] = useState(false);
-  const publicRef = useRef();
 
   const [selectedImage, setSelectedImage] = useState(() => {
     if (!channel?.picture?.url) return "None";
@@ -36,8 +37,9 @@ export default function ChannelEditor({ channel, onSubmit }) {
       description: subtitleRef.current?.value,
       email: emailRef.current?.value,
       showtitle: showTitleSlide,
-      interval: intervalRef.current?.value,
       ispublic: publicRef.current?.checked,
+      allowsubmissions: allowRef.current?.checked,
+      interval: intervalRef.current?.value,
       //ispublic: true,
       picturefile: selectedImage,
       audiofile: selectedAudio
@@ -112,6 +114,18 @@ export default function ChannelEditor({ channel, onSubmit }) {
               style={{ marginRight: '5px', fontSize: 'large' }}
             />
             <span style={{fontSize: 'large'}}>Let participants view</span>
+          </Label>
+        </FormGroup>
+
+        <FormGroup check>
+          <Label check>
+            <Input
+              type="checkbox"
+              innerRef={allowRef}
+              defaultChecked={channel ? channel.allowsubmissions : true}
+              style={{ marginRight: '5px', fontSize: 'large' }}
+            />
+            <span style={{fontSize: 'large'}}>Allow submissions</span>
           </Label>
         </FormGroup>
 

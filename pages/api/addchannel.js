@@ -24,7 +24,6 @@ export default async function handler(req, res) {
         // Append text fields
         if (name !== undefined) formData.append("name", name);
         if (description !== undefined) formData.append("description", description);
-        if (uniqueID !== undefined) formData.append("uniqueID", uniqueID);
         if (interval !== undefined) formData.append("interval", interval);
         if (showtitle !== undefined) formData.append("showtitle", showtitle);
         if (ispublic !== undefined) formData.append("public", ispublic);

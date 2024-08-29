@@ -86,7 +86,7 @@ export default async function updateChannel({ myFormData, name, description, uni
       },
     );
   } catch (err) {
-    setError(err);
-    return null;
+      setError(err);
+      return null;
   }
 }
