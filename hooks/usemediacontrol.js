@@ -31,8 +31,6 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
   }
 
   useEffect(() => {
-    if (!carouselContext)
-      return;
 
     const onChange = () => {
       if (!mediaRef?.current) return;
@@ -50,10 +48,13 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     };
 
     const onEnded = () => {
-      goToNextSlide();
+      setIsPlaying(false);
+      mediaRef.current.currentTime = 0;
+      if (carouselContext && autoPlay)
+        goToNextSlide();
     };
 
-    if (mediaRef?.current && autoPlay) {
+    if (mediaRef?.current) {
       mediaRef.current.addEventListener('ended', onEnded);
     }
 

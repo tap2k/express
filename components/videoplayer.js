@@ -19,7 +19,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
           objectFit: 'contain'
         }}
         playsInline
-        preload='metadata'
+        preload='auto'
         controls={controls}
         controlsList="nodownload nofullscreen noremoteplayback"
       >
