@@ -77,7 +77,7 @@ export default function PageMenu( ) {
         <MenuButton onClick={copyUrlToClipboard}>
           <FaPaperclip />
         </MenuButton>
-        <Link href="/" rel="noopener noreferrer" target="_blank">
+        <Link href="/">
           <MenuButton>
             <FaHome />
           </MenuButton>

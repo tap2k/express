@@ -1,7 +1,7 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
 
-export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, size = "medium" }) 
+export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
 {
     if (!title && !url) return null;
 
@@ -23,7 +23,8 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
-        mixBlendMode: inverted ? 'difference' : 'normal'
+        mixBlendMode: inverted ? 'difference' : 'normal',
+        ...props.style
     };
     
     const captionStyleTop = { ...captionStyleBase, top: '2vh' };

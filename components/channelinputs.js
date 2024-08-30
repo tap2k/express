@@ -1,23 +1,10 @@
-import { Button, FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input } from "reactstrap";
 import { StyledInput } from './recorderstyles';
 
-export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef, showTitleRef, publicRef, allowRef, intervalRef, timerRef, handleSaveChannel }) {
-
-    const buttonStyle = {
-        fontSize: 'medium',
-        width: '100%',
-        padding: '6px',
-        marginTop: '10px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        backgroundColor: '#5dade2', 
-        border: 'none',
-        color: '#ffffff',
-        fontWeight: 'bold',
-    };
+export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef, showTitleRef, publicRef, allowRef, intervalRef, timerRef, ...props }) {
 
     return (
-        <>
+        <div {...props}>
             {titleRef && <StyledInput
                 type="text"
                 innerRef={titleRef}
@@ -100,13 +87,6 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                     />
                 </div> }
             </div>
-
-            <Button
-                onClick={handleSaveChannel}
-                style={buttonStyle}
-            >
-            Update Reel
-            </Button>
-        </>
+        </div>
     )
 }

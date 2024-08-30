@@ -2,23 +2,16 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight, FaMusic, FaImage } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight} from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import deleteSubmission from '../hooks/deletesubmission';
-import updateChannel from '../hooks/updatechannel';
-import deleteChannel from '../hooks/deletechannel';
-import sendEmailLinks from '../hooks/sendemaillinks';
-import ChannelInputs from "./channelinputs";
-import Uploader from "./uploader";
+import ChannelControls from "./channelcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
-import MediaPicker from "./mediapicker";
-import Caption from "./caption";
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -60,28 +53,9 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [deletePic, setDeletePic] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [deleteAudio, setDeleteAudio] = useState(false);
-  const [selectedAudio, setSelectedAudio] = useState(null);
-  const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
-  const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const titleRef = useRef();
-  const subtitleRef = useRef();
-  const emailRef = useRef();
-  const showTitleRef = useRef();
-  const publicRef = useRef();
-  const allowRef = useRef();
-  const intervalRef = useRef();
   
   const showTitle = channel.showtitle || privateID;
 
@@ -92,15 +66,6 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
   }, []);
-
-  useEffect(() => {
-    setUploading(false);
-    setDeletePic(false);
-    setSelectedImage(null);
-    setSelectedAudio(null);
-    setUploadedFiles([]);
-    setProgress(0);
-}, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isContentModalOpen]);
 
   useEffect(() => {
     if (!audioRef.current)
@@ -178,40 +143,6 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     });
   };
 
-  const handleDeleteChannel = () => {
-    confirmAlert({
-      title: 'Delete reel?',
-      message: 'Are you sure you want to delete this reel?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-            await deleteChannel(privateID);
-            await router.push('/');
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
-  const handleSaveChannel = async ( ) => {
-    setUploading(true);
-    const myFormData = new FormData();
-    uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, privateID: privateID, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value,picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress});
-    if (emailRef.current?.value != channel.email) {
-      await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
-    }
-    setIsChannelModalOpen(false);
-    setIsAudioModalOpen(false);
-    setIsImageModalOpen(false);
-    await router.replace(router.asPath);
-  };
-
   const moveSlide = async (increment) => {
     const contentIndex = showTitle ? currSlide - 1 : currSlide;
     if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
@@ -268,59 +199,33 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
 
-  const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
-  );
-
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      { privateID && 
-        <div style={{
-          ...iconBarStyle, 
-          flexDirection: 'column', 
-          top: '3px', 
-          right: '20px'
-        }}>
-          <button 
-            onClick={() => {
-              if (showTitle && currSlide === 0) {
-                if (isPlaying) togglePlayPause();
-                setIsChannelModalOpen(true);
-              } else {
-                setIsContentModalOpen(true);
-              }
-            }} 
-            style={iconButtonStyle}
-          >
-            <FaEdit />
-          </button>
-          <button onClick={showTitle && currSlide === 0 ? handleDeleteChannel : handleDelete} style={iconButtonStyle}>
-            <FaTrash />
-          </button>
-          {!(showTitle && currSlide === 0) ? (
-            <>
-              <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
-                <FaArrowLeft />
-              </button>
-              <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
-                <FaArrowRight />
-              </button>
-              <button onClick={handlePublish} style={iconButtonStyle}>
-                { getCurrentContent().publishedAt ? <FaTimes /> : <FaCheck /> }
-              </button>
-            </>
-          ) : (
-            <>
-            <button onClick={() => setIsImageModalOpen(true)} style={iconButtonStyle}>
-              <FaImage />
+      {/* TODO: Is there a way this can be integrated with itemcontrols? */}
+      { privateID && getCurrentContent() && 
+          <div style={{
+            ...iconBarStyle, 
+            flexDirection: 'column', 
+            top: '3px', 
+            right: '3px'
+          }}>
+            <button onClick={() => {setIsContentModalOpen(true)}} style={iconButtonStyle}
+            >
+              <FaEdit />
             </button>
-            <button onClick={() => setIsAudioModalOpen(true)} style={iconButtonStyle}>
-              <FaMusic />
+            <button onClick={handleDelete} style={iconButtonStyle}>
+              <FaTrash />
             </button>
-          </>
-          )
-        }
-        </div>
+            <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
+              <FaArrowLeft />
+            </button>
+            <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
+              <FaArrowRight />
+            </button>
+            <button onClick={handlePublish} style={iconButtonStyle}>
+              { getCurrentContent().publishedAt ? <FaTimes /> : <FaCheck /> }
+            </button>
+          </div>
       }
       
       <div style={{
@@ -342,14 +247,6 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
         <button onClick={toggleFullScreen} style={iconButtonStyle}>
           <FaExpandArrowsAlt />
         </button>
-        {/*
-          <button 
-            onClick={handleHeartClick} 
-            style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
-          >
-            <FaHeart />
-          </button>
-        */}
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
@@ -366,6 +263,14 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
         >
           <FaDownload />
         </button>
+        {/*
+          <button 
+            onClick={handleHeartClick} 
+            style={{...iconButtonStyle, color: likedSlides.includes(currSlide) ? 'red' : 'white'}}
+          >
+            <FaHeart />
+          </button>
+        */}
       </div>
 
       <div style={{width: width, height: height, position: "relative"}}>
@@ -384,7 +289,6 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
               <Slide style={{height: height, width: width}}>
                 <div style={{position: 'relative', height: '100%', width: '100%'}}>
                   <FullImage 
-                    style={{backgroundColor: channel.background_color}}
                     src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
                     width={width} 
                     height={height} 
@@ -393,12 +297,48 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
                     autoPlay={isPlaying}
                     interval={channel.interval} 
                   />
-                  <Caption 
-                    title={channel.name}
-                    subtitle={channel.description}
-                    textAlignment="center"
-                    size="big"
-                  />
+                  <div style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'rgba(200,200,200,0.4)',
+                    color: 'rgba(255,255,255,0.9)',
+                    borderRadius: '10px',
+                    padding: '50px',
+                    backdropFilter: 'blur(5px)',
+                    width: 'max-content',
+                    maxWidth: '80%',
+                    textAlign: 'center',
+                    overflowWrap: 'break-word',
+                    wordWrap: 'break-word',
+                    hyphens: 'auto',
+                  }}>
+                    <div style={{
+                      fontSize: 'clamp(24px, 4vh, 48px)',
+                      lineHeight: '1.1',
+                      fontWeight: 'bold'
+                    }}>
+                      {channel.name}
+                    </div>
+                    <div style={{
+                      fontSize: 'clamp(18px, 2vh, 32px)',
+                      lineHeight: '1.2',
+                      marginTop: '10px',
+                    }}>
+                      {channel.description}
+                    </div>
+                    {privateID && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        zIndex: 1000,
+                      }}>
+                        <ChannelControls channel={channel} privateID={privateID} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Slide> 
             )}
@@ -444,55 +384,6 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
           style={{ display: 'none' }}
         />
       )}
-
-      <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
-        <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
-        <ModalBody>
-          <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={emailRef} publicRef={publicRef} allowRef={allowRef} showTitleRef={showTitleRef} intervalRef={intervalRef} handleSaveChannel={handleSaveChannel} />
-        </ModalBody>
-      </Modal>
-
-      <Modal isOpen={isAudioModalOpen} toggle={() => {setIsAudioModalOpen(false); setDeleteAudio(false)}}>
-        <ModalHeader close={closeBtn(() => setIsAudioModalOpen(false))}></ModalHeader>
-        <ModalBody>
-          <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
-          <Button
-            onClick={handleSaveChannel}
-            disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio)}
-            block
-            color="success"
-            style={{marginTop: '10px'}}
-          >
-            {'Update Reel'}
-          </Button>
-        </ModalBody>
-      </Modal>
-
-      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
-        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
-        <ModalBody>
-          <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage}  selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" color />
-          <Button
-            onClick={handleSaveChannel}
-            disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage)}
-            block
-            color="success"
-            style={{marginTop: '10px'}}
-          >
-            Update Reel
-          </Button>
-        </ModalBody>
-      </Modal>
-
-      <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
-        <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
-        <ModalBody>
-          <Uploader
-              channelID={channel.uniqueID}
-              toggle={() => setIsUploadModalOpen(false)}
-          />
-        </ModalBody>
-      </Modal>
     </div>
   );
 }

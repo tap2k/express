@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Navbar, NavbarBrand, Card, CardBody } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
+import nookies from 'nookies';
 import addChannel from '../hooks/addchannel';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
+import BannerTwo from '../components/bannertwo';
 import { RecorderWrapper } from '../components/recorderstyles';
 import ChannelEditor from '../components/channeleditor';
 import EmailModal from '../components/emailmodal'; 
 
-export default function Home() {
+export default function Home( ) {
     const [channelID, setChannelID] = useState(null);
     const [privateID, setPrivateID] = useState(null);
     const [channelName, setChannelName] = useState(null);
@@ -74,28 +76,7 @@ export default function Home() {
     return (
         <>
             <RecorderWrapper>
-                <Navbar style={{ 
-                    backgroundColor: 'rgba(26, 95, 122, 0.9)', 
-                    color: 'white', 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    minHeight: '60px',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' 
-                }}>
-                    <NavbarBrand style={{ 
-                        position: 'absolute', 
-                        left: '50%', 
-                        transform: 'translateX(-50%)'
-                    }}>
-                        <b style={{
-                            fontSize: 'xx-large',
-                            color: '#ffffff', 
-                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)' 
-                        }}>
-                            EXPRESS
-                        </b>
-                    </NavbarBrand>
-                </Navbar>
+                <BannerTwo />
                 <div style={containerStyle}>
                     {channelID ? (
                         <div style={{width: '100%', maxWidth: '600px', margin: '0 auto', padding: '20px', textAlign: 'center'}}>
@@ -144,3 +125,12 @@ export default function Home() {
         </>
     );
 }
+
+export const getServerSideProps = async (ctx) => {
+    const cookies = nookies.get(ctx);
+    if (cookies?.jwt) 
+      return {
+        redirect: { permanent: false, destination: '/myreels' }
+      }
+    return { props: {} };
+  }

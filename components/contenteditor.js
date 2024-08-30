@@ -54,12 +54,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
       <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
       <ModalBody>
         <ContentInputs style={{marginBottom: '5px'}} contentItem={contentItem} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} textAlignmentRef={textAlignmentRef} />
-        <Button
-          onClick={handleSave}
-          style={{...buttonStyle}}
-          color="primary" 
-          disabled={updating}
-        >
+        <Button onClick={handleSave} style={{...buttonStyle}} color="primary" disabled={updating}>
           Update Slide
         </Button>
       </ModalBody>

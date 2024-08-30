@@ -2,14 +2,16 @@ import { getPublicID } from '../hooks/seed';
 import getChannel from '../hooks/getchannel';
 import Uploader from "../components/uploader";
 
-export default ({ channel, privateID, useLocation }) => {
+export default ({ channel, privateID, jwt, useLocation }) => {
   return (
-      <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} />
+      <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} jwt={jwt} />
   )
 }
 
 export async function getServerSideProps(ctx) {
   let { channelid, uselocation } = ctx.query;
+  const cookies = nookies.get(ctx);
+  const jwt = cookies?.jwt || null;
   let privateID = null;
 
   const publicID = getPublicID(channelid);
@@ -36,6 +38,7 @@ export async function getServerSideProps(ctx) {
           props: { 
               channel: channel,
               privateID: privateID,
+              jwt : jwt,
               useLocation: uselocation ? uselocation : false
           } 
       };
