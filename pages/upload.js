@@ -1,11 +1,16 @@
 import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getChannel from '../hooks/getchannel';
+import BannerTwo from "../components/bannertwo";
 import Uploader from "../components/uploader";
+import { RecorderWrapper } from '../components/recorderstyles';
 
 export default ({ channel, privateID, jwt, useLocation }) => {
   return (
-      <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} jwt={jwt} />
+    <RecorderWrapper>
+        <BannerTwo />
+        <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} jwt={jwt} />
+    </RecorderWrapper>
   )
 }
 

@@ -24,7 +24,7 @@ export default function LoginButton({ jwt, ...props }) {
           size="sm"
           style={{
             borderRadius: '20px',
-            padding: '6px 16px',
+            padding: '6px 12px',
             fontSize: 'medium',
             transition: 'all 0.3s ease',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',

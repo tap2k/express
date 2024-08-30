@@ -9,7 +9,8 @@ export default function BannerTwo({ jwt }) {
             color: 'white', 
             position: 'relative',
             minHeight: '60px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            marginBottom: '15px'
         }}>
             <NavbarBrand style={{ 
                 position: 'absolute',
@@ -29,7 +30,7 @@ export default function BannerTwo({ jwt }) {
             </NavbarBrand>
             <div style={{ 
                 position: 'absolute',
-                right: '5%',  // Percentage-based right positioning
+                right: '2%',  // Percentage-based right positioning
                 top: '50%',
                 transform: 'translateY(-50%)'
             }}>

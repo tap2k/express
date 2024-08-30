@@ -1,16 +1,17 @@
 import nookies, { destroyCookie } from 'nookies';
 import getUser from "../hooks/getuser";
 import getMyChannels from "../hooks/getmychannels";
+import { RecorderWrapper } from '../components/recorderstyles';
 import BannerTwo from '../components/bannertwo';
 import MyReels from "../components/myreels";
 
 export default ({ user, jwt, channels }) => {
 
   return (
-    <>
+    <RecorderWrapper>
       <BannerTwo jwt={jwt} />
       <MyReels channels={channels} user={user} jwt={jwt} />
-    </>
+    </RecorderWrapper>
   )
 }
 

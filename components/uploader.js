@@ -48,7 +48,7 @@ export default function Uploader ({ channelID, privateID, toggle, useLocation=fa
   };
 
   return (
-    <>
+    <> 
       <ButtonGroup style={{marginBottom: 10}}>
         <StyledButton
           color={activeComponent === 'upload' ? "primary" : "secondary"}
