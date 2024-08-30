@@ -1,3 +1,4 @@
+import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getChannel from '../hooks/getchannel';
 import Uploader from "../components/uploader";
