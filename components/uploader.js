@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { useState } from 'react';
 import useGeolocation from "react-hook-geolocation";
 import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope } from 'react-icons/fa';
-import { RecorderWrapper, ButtonGroup, StyledButton } from '../components/recorderstyles';
+import { ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
 import GreetingCard from '../components/greetingcard';
@@ -48,7 +48,7 @@ export default function Uploader ({ channelID, privateID, toggle, useLocation=fa
   };
 
   return (
-    <RecorderWrapper>
+    <>
       <ButtonGroup style={{marginBottom: 10}}>
         <StyledButton
           color={activeComponent === 'upload' ? "primary" : "secondary"}
@@ -85,6 +85,6 @@ export default function Uploader ({ channelID, privateID, toggle, useLocation=fa
       <div>
         {renderComponent()}
       </div>
-    </RecorderWrapper>
+    </>
   );
 }

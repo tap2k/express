@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
+import { Button } from 'reactstrap';
 import axios from 'axios';
-import { StyledButton } from './recorderstyles';
 import ImageGrid from './imagegrid';
 
 export default function ImageGallery({ imageOptions, selectedImage, setSelectedImage, uploading, setUploading, setProgress }) {
@@ -120,14 +120,14 @@ export default function ImageGallery({ imageOptions, selectedImage, setSelectedI
           placeholder="Enter AI prompt"
           style={{...dallePromptStyle, width: '100%'}}
         />
-        <StyledButton
+        <Button
           color="info"
           onClick={handleDalleGeneration}
           disabled={uploading}
           style={{ width: '100%', marginTop: '10px'}}
         >
           {uploading ? 'Generating...' : 'Generate AI Image'}
-        </StyledButton>
+        </Button>
       </div>
     </>
   );

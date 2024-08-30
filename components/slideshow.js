@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight} from 'react-icons/fa';
@@ -11,6 +12,7 @@ import deleteSubmission from '../hooks/deletesubmission';
 import ChannelControls from "./channelcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
+import Uploader from "./uploader";
 import ContentEditor from "./contenteditor";
 
 const downloadURL = async (dlurl) => {
@@ -53,6 +55,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -198,6 +201,10 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
     justifyContent: 'center', 
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
+
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>&times;</button>
+  );
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
@@ -375,6 +382,16 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
       </div>
 
       <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} />
+
+      <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
+        <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
+        <ModalBody>
+          <Uploader
+              channelID={channel.uniqueID}
+              toggle={() => setIsUploadModalOpen(false)}
+          />
+        </ModalBody>
+      </Modal>
 
       {channel.audiofile?.url && (
         <audio
