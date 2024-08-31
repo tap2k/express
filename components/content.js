@@ -85,9 +85,12 @@ export default function Content({ contentItem, width, height, cover, controls, a
   if (!contentItem)
     return;
 
+  if (!interval)
+    interval = 5000;
+
   const mediaRef = useRef();
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
-  useSlideAdvance({index, autoPlay, isPlaying, interval});
+  useSlideAdvance({index, autoPlay, isPlaying, interval: contentItem.duration ? contentItem.duration : interval});
   const { url, type, videotype } = getMediaInfo(contentItem);
 
   const containerStyle = {
@@ -158,7 +161,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { (type.startsWith("video") || type.startsWith("audio")) && privateID && <Timeline contentItem={contentItem} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} privateID={privateID} />}
+      { privateID && <Timeline contentItem={contentItem} interval={interval} mediaRef={(type.startsWith("video") || type.startsWith("audio")) ? mediaRef : null} isPlaying={isPlaying} pause={pause} privateID={privateID} />}
     </>
   );
 }

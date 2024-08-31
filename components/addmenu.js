@@ -71,7 +71,7 @@ export default function AddMenu({ channel, privateID, download }) {
   return (
     <>
       <div style={containerStyle}>
-        { privateID && download && false && <CircularMenuButton onClick={handleSaveChannel} >
+        { privateID && download && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
         { download && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
