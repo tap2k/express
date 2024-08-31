@@ -384,7 +384,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
       <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} />
 
       <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
-        <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn} />
+        <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn(() => setIsUploadModalOpen(false))} />
         <ModalBody>
           <Uploader
               channelID={channel.uniqueID}
