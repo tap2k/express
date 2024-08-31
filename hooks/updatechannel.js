@@ -2,21 +2,17 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, {setErrorText} from "./seterror";
 
-export default async function updateChannel({ myFormData, name, description, privateID, interval, showtitle, ispublic, allowsubmissions, picturefile, audiofile, backgroundColor, email, deletePic, deleteAudio, setProgress }) 
+export default async function updateChannel({ myFormData, name, description, interval, showtitle, ispublic, allowsubmissions, picturefile, audiofile, backgroundColor, email, deletePic, deleteAudio, setProgress, channelID, privateID, jwt }) 
 {    
-  if (!privateID)
+  if (!privateID && (!channelID || !jwt))
   {
     setErrorText("Error no channel provided");
     return null;
   }
   
-  const url = getBaseURL() + "/api/updateSubmissionChannel";
-
   if (!myFormData)
     myFormData = new FormData();
   
-  myFormData.append("privateID", privateID);
-
   let audioblob = null;
   let pictureblob = null;
   if (audiofile)
@@ -74,9 +70,22 @@ export default async function updateChannel({ myFormData, name, description, pri
   if (deleteAudio !== undefined) 
     myFormData.append("deleteaudio", deleteAudio);
 
+  let url = getBaseURL() + "/api/updateSubmissionChannel";
+  let headerclause = {};
+
+  if (privateID)
+    myFormData.append("privateID", privateID);
+  else
+  {
+    url = getBaseURL() + "/api/updateChannel";
+    myFormData.append("uniqueID", channelID)
+    headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
+
   try {
     return await axios.post(url, myFormData,
       {
+        headers: headerclause,
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
         onUploadProgress: setProgress ? (progressEvent) => {

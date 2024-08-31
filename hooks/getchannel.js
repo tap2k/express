@@ -2,20 +2,29 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function getChannel({channelID, privateID}) 
+export default async function getChannel({channelID, privateID, jwt}) 
 {
   if (!channelID && !privateID) {
     setErrorText("No channel provided");
     return null;
   }
   try {
+    
     if (privateID)
     {
-      let url = getBaseURL() + "/api/getSubmissionChannel";
-      const resp = await axios.post(url, {privateID: privateID});
+      const url = getBaseURL() + "/api/getSubmissionChannel?privateID=" + privateID;
+      const resp = await axios.get(url);
       return resp.data;
     }
-    let url = getBaseURL() + "/api/getChannel?uniqueID=" + channelID;
+
+    if (jwt)
+    {
+      const url = getBaseURL() + "/api/getChannel?uniqueID=" + channelID;
+      const resp = await axios.get(url, {headers: { 'Authorization': 'Bearer ' + jwt}});
+      return resp.data;
+    }
+
+    const url = getBaseURL() + "/api/getChannel?uniqueID=" + channelID;
     const resp = await axios.get(url);
     return resp.data;
 

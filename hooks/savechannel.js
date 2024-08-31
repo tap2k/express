@@ -2,15 +2,15 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError from "./seterror";
 
-export default async function saveChannel({channel, privateID}) {
-  if (!channel || !channel.contents?.length) 
-    return;
+export default async function saveChannel({channel, privateID, jwt}) {
 
-  const url = getBaseURL() + "/api/saveSubmissionChannel";
+  if (!channel || !channel.contents?.length || (!privateID && !jwt))
+  {
+    setErrorText("Error no content provided");
+    return null;
+  }
 
   const payload = {
-    //uniqueID: channel.uniqueID,
-    privateID: privateID,
     contents: channel.contents.map(item => ({
       id: item.id,
       start_time: item.start_time,
@@ -19,7 +19,17 @@ export default async function saveChannel({channel, privateID}) {
   };
 
   try {
-    return await axios.post(url, payload);
+    
+    if (privateID)
+    {
+      const url = getBaseURL() + "/api/saveSubmissionChannel";
+      payload["privateID"] = privateID;
+      return await axios.post(url, payload);
+    }
+
+    const url = getBaseURL() + "/api/saveChannel";
+    return await axios.post(url, payload, {headers: { 'Authorization': 'Bearer ' + jwt}});
+
   } catch (err) {
     setError(err);
     return null;

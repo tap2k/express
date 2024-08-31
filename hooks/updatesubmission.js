@@ -2,20 +2,19 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, privateID} ) 
+export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, privateID, jwt} ) 
 {  
   if (!contentID || !privateID)
   {
     setErrorText("Error no content provided");
     return null;
   }
-  const url = getBaseURL() + "/api/updateSubmission";
   
   if (!myFormData)
     myFormData = new FormData();
 
   myFormData.append("contentID", contentID);
-  myFormData.append("privateID", privateID);
+
   if (order != undefined)
     myFormData.append("order", order);
   if (title != undefined)
@@ -40,9 +39,19 @@ export default async function updateSubmission( {myFormData, contentID, order, t
       myFormData.append("deleteaudio", deleteAudio);
   if (textAlignment)
     myFormData.append("textalignment", textAlignment);
-      
+  
+  let url = getBaseURL() + "/api/updateSubmission";
+  let headerclause = {};
+  if (privateID)
+    myFormData.append("privateID", privateID);
+  else
+  {
+    url = getBaseURL() + "/api/updateContent";
+    headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
+
   try {
-    return await axios.post(url, myFormData);
+    return await axios.post(url, myFormData, {headers: headerclause});
   } catch (err) {
     setError(err);
     return null;

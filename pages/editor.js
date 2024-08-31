@@ -63,7 +63,6 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        // TODO: Hack for testing
         const channel = await getChannel({ channelID: channelid, privateID: privateID });
         
         if (!channel) {

@@ -7,11 +7,10 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadSubmission({myFormData, channelID, privateID, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router}) 
+export default async function uploadSubmission({myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router, channelID, privateID, jwt}) 
 { 
-  const url = getBaseURL() + "/api/uploadSubmission";
 
-  if ((!channelID && !privateID) || !router)
+  if (((!channelID || !jwt) && !privateID) || !router)
   {
     setErrorText("No channel or router provided");
     return null;
@@ -26,7 +25,6 @@ export default async function uploadSubmission({myFormData, channelID, privateID
     return null;
   }
     
-  myFormData.append("uniqueID", channelID);
   if (contentID)
     myFormData.append("contentID", contentID);
 
@@ -50,14 +48,24 @@ export default async function uploadSubmission({myFormData, channelID, privateID
     myFormData.append("ext_url", ext_url);
   if (privateID)
     myFormData.append("privateID", privateID);
-
   // TODO: FIX THIS!
   //if (published)
   myFormData.append("published", "true");
 
+  let url = getBaseURL() + "/api/uploadSubmission";
+  let headerclause = {};
+  if (privateID)
+    myFormData.append("privateID", privateID);
+  else
+  {
+    url = getBaseURL() + "/api/uploadContentToChannel";
+    headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
+  
   try {
     const response = await axios.post(url, myFormData, 
       {
+        headers: headerclause,
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
         onUploadProgress: setProgress ? (progressEvent) => {
@@ -78,6 +86,7 @@ export default async function uploadSubmission({myFormData, channelID, privateID
         }
       ];
   
+      // TODO: hacky
       if (router.asPath.includes('upload') && response.data?.[0]?.channel?.public) {
         buttons.push({
           label: 'Go to Reel',
