@@ -2,7 +2,7 @@ import { Card } from 'reactstrap';
 import Content, { isMediaFile } from './content';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, privateID, controls, autoPlay, dragRef }) 
+export default function ContentCard({ contentItem, privateID, jwt, controls, autoPlay, dragRef }) 
 {
   return (
     <Card className="mb-2">
@@ -23,6 +23,7 @@ export default function ContentCard({ contentItem, privateID, controls, autoPlay
           contentItem={contentItem} 
           dragRef={dragRef}
           privateID={privateID}
+          jwt={jwt}
         />
         {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") &&
           <div 

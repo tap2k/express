@@ -10,7 +10,7 @@ import sendEmailLinks from '../hooks/sendemaillinks';
 import ChannelInputs from "./channelinputs";
 import MediaPicker from './mediapicker';
 
-export default function ChannelControls ({ channel, privateID }) {
+export default function ChannelControls ({ channel, privateID, jwt }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -31,7 +31,7 @@ export default function ChannelControls ({ channel, privateID }) {
   const allowRef = useRef();
   const intervalRef = useRef();
 
-  if (!channel || !privateID)
+  if (!channel || (!privateID && !jwt))
     return;
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function ChannelControls ({ channel, privateID }) {
         {
           label: 'Yes',
           onClick: async () => {
-            await deleteChannel({ privateID });
+            await deleteChannel({ privateID, jwt });
             await router.push('/');
           }
         },
@@ -71,7 +71,7 @@ export default function ChannelControls ({ channel, privateID }) {
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID: privateID});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID, jwt});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }

@@ -10,7 +10,7 @@ import ContentCard from "./contentcard";
 
 const ContentMarker = forwardRef(function ContentMarker(props, fwdRef) 
 {
-  const { contentItem, itemWidth, privateID, autoPlay } = props;
+  const { contentItem, itemWidth, privateID, jwt, autoPlay } = props;
 
   if (!contentItem)
     return;
@@ -45,7 +45,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
         }
         <Popup closeOnClick={false}>
           <div style={{minWidth: itemWidth}}>
-            <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} />
+            <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} />
           </div>
         </Popup>
       </Marker>

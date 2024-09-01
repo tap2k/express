@@ -47,7 +47,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, startSlide, privateID, ...props }) 
+export default function Slideshow({ channel, height, width, startSlide, privateID, jwt, ...props }) 
 {
   if (!channel) return;
 
@@ -126,7 +126,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
           onClick: async () => {
             const contentToDelete = getCurrentContent();
             if (contentToDelete) {
-              await deleteSubmission({contentID: contentToDelete.id, privateID: privateID});
+              await deleteSubmission({contentID: contentToDelete.id, privateID, jwt});
               const newQuery = { 
                 ...router.query, 
                 currslide: Math.min(currSlide, showTitle ? channel.contents.length : channel.contents.length - 1)
@@ -335,14 +335,14 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
                     }}>
                       {channel.description}
                     </div>
-                    {privateID && (
+                    {(privateID || jwt) && (
                       <div style={{
                         position: 'absolute',
                         top: 0,
                         right: 0,
                         zIndex: 1000,
                       }}>
-                        <ChannelControls channel={channel} privateID={privateID} />
+                        <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />
                       </div>
                     )}
                   </div>
@@ -389,6 +389,8 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
           <Uploader
               channelID={channel.uniqueID}
               toggle={() => setIsUploadModalOpen(false)}
+              privateID={privateID}
+              jwt={jwt}
           />
         </ModalBody>
       </Modal>

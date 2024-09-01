@@ -12,7 +12,7 @@ const Grid = ({ children, columns }) => (
   </div>
 );
 
-export default function Wall ({ channel, privateID, ...props }) {
+export default function Wall ({ channel, privateID, jwt, ...props }) {
   const [contents, setContents] = useState(channel.contents);
   const [prevContents, setPrevContents] = useState(channel.contents);
   const [columns, setColumns] = useState(1);
@@ -65,9 +65,9 @@ export default function Wall ({ channel, privateID, ...props }) {
 
   const handleDragEnd = async (id, dropIndex) => {
     try {
-      if (!privateID)
+      if (!privateID && !jwt)
         return;
-      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID: privateID })
+      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID, jwt })
       await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
@@ -112,6 +112,7 @@ export default function Wall ({ channel, privateID, ...props }) {
                       contentItem={contentItem} 
                       dragRef={dragRef}
                       privateID={privateID}
+                      jwt={jwt}
                     />
                   </div>
                 )}

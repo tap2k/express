@@ -6,7 +6,7 @@ import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
 import ContentCard from './contentcard';
 
-export default function Board({ channel, privateID, ...props }) {
+export default function Board({ channel, privateID, jwt, ...props }) {
   const [contents, setContents] = useState(channel.contents);
   const [prevContents, setPrevContents] = useState([...channel.contents]);
   const router = useRouter();
@@ -76,7 +76,7 @@ export default function Board({ channel, privateID, ...props }) {
               onDragEnd={handleDragEnd}
             >
               {({ dragRef }) => (
-                <ContentCard contentItem={contentItem} privateID={privateID} dragRef={dragRef} />
+                <ContentCard contentItem={contentItem} privateID={privateID} jwt={jwt} dragRef={dragRef} />
               )}
             </Draggable>
           ))}

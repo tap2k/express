@@ -1,7 +1,7 @@
 import { Alert } from 'reactstrap';
 import ChannelControls from "./channelcontrols";
 
-export default function Banner({ channel, privateID }) {
+export default function Banner({ channel, privateID, jwt }) {
   if (!channel) return null;
 
   return (
@@ -41,7 +41,7 @@ export default function Banner({ channel, privateID }) {
                 {channel.description}
               </h3>
             )}
-            {privateID && <ChannelControls channel={channel} privateID={privateID} />}
+            {(privateID || jwt) && <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />}
           </div>
         </div>
       </Alert>

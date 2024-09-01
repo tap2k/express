@@ -15,7 +15,7 @@ function isMobileSafari() {
   return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
 }
 
-export default function MyCamera({ channelID, privateID, uploading, setUploading, lat, long, ...props }) {
+export default function MyCamera({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [dataUri, setDataUri] = useState(null);
@@ -54,7 +54,7 @@ export default function MyCamera({ channelID, privateID, uploading, setUploading
         }
   
         myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, privateID, setProgress, router});
+        await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, privateID, jwt, setProgress, router});
         if (titleRef.current)
           titleRef.current.value = "";
         if (nameRef.current)

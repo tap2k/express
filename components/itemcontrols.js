@@ -7,17 +7,17 @@ import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
 import ContentEditor from "./contenteditor";
 
-export default function ItemControls ({ contentItem, privateID, dragRef }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) {
   const router = useRouter();
 
-  if (!contentItem || !privateID)
+  if (!contentItem || (!privateID && !jwt))
     return;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePublish = async () => {
     try {
-      await updateSubmission({contentID: contentItem.id, published: !contentItem.publishedAt});
+      await updateSubmission({contentID: contentItem.id, published: !contentItem.publishedAt, jwt});
       await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       console.error("Error updating publish status:", error);
@@ -33,7 +33,7 @@ export default function ItemControls ({ contentItem, privateID, dragRef }) {
           label: 'Yes',
           onClick: async () => {
             try {
-              await deleteSubmission({contentID: contentItem.id, privateID: privateID});
+              await deleteSubmission({contentID: contentItem.id, privateID, jwt});
               await router.replace(router.asPath, undefined, { scroll: false });
             } catch (error) {
               console.error("Error deleting submission:", error);
@@ -109,7 +109,7 @@ export default function ItemControls ({ contentItem, privateID, dragRef }) {
           <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
         </button>
       </div>
-      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} privateID={privateID} />
+      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} privateID={privateID} jwt={jwt} />
     </>
   );
 };

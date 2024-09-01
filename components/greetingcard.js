@@ -8,7 +8,7 @@ import { RecorderWrapper, StyledButton } from './recorderstyles';
 import ImageGallery from "./imagegallery";
 import ContentInputs from "./contentinputs";
 
-export default function GreetingCard({ channelID, uploading, setUploading, lat, long, ...props }) {
+export default function GreetingCard({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -52,6 +52,8 @@ export default function GreetingCard({ channelID, uploading, setUploading, lat, 
         email: emailRef.current?.value,
         location: locationRef.current?.value,
         ext_url: extUrlRef.current?.value, 
+        privateID,
+        jwt,
         setProgress, 
         router
       }); 

@@ -7,7 +7,7 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadSubmission({myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router, channelID, privateID, jwt}) 
+export default async function uploadSubmission({ myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router, channelID, privateID, jwt }) 
 { 
 
   if (((!channelID || !jwt) && !privateID) || !router)

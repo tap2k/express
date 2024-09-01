@@ -31,7 +31,7 @@ export default function Home({ jwt }) {
     const handleEmailSubmit = async (email) => {
         if (email) {
             try {
-                await updateChannel({privateID: privateID, email: email});
+                await updateChannel({email: email, privateID: privateID, jwt: jwt});
                 await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email});
                 alert('Email sent successfully!');
             } catch (error) {

@@ -19,7 +19,7 @@ export default async function getChannel({channelID, privateID, jwt})
 
     if (jwt)
     {
-      const url = getBaseURL() + "/api/getChannel?uniqueID=" + channelID;
+      const url = getBaseURL() + "/api/getMyChannel?uniqueID=" + channelID;
       const resp = await axios.get(url, {headers: { 'Authorization': 'Bearer ' + jwt}});
       return resp.data;
     }

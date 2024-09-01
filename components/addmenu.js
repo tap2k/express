@@ -15,7 +15,7 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddMenu({ channel, privateID, download }) {
+export default function AddMenu({ channel, privateID, jwt, download }) {
   if (!channel)
     return;
 
@@ -27,7 +27,7 @@ export default function AddMenu({ channel, privateID, download }) {
   const handleEmailSubmit = async (email) => {
     if (email)
     {
-      await saveChannel({channel, privateID});
+      await saveChannel({channel, privateID, jwt});
       const response = await axios.post('/api/makevideo', 
         {
           channelid: channel.uniqueID, // Assuming channelID is in cleanedData
@@ -43,7 +43,7 @@ export default function AddMenu({ channel, privateID, download }) {
   };
 
   const handleSaveChannel = async() => {
-    await saveChannel({channel, privateID});
+    await saveChannel({channel, privateID, jwt});
     alert("Channel saved!");
   }
 
@@ -98,6 +98,8 @@ export default function AddMenu({ channel, privateID, download }) {
           <ModalBody>
             <Uploader
                 channelID={channel.uniqueID}
+                privateID={privateID}
+                jwt={jwt}
                 toggle={() => setIsUploadModalOpen(false)}
             />
           </ModalBody>

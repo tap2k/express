@@ -7,7 +7,7 @@ import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from "./uploadwidget";
 import ContentInputs from "./contentinputs";
 
-export default function FileUploader({ channelID, privateID, uploading, setUploading, lat, long, ...props }) {
+export default function FileUploader({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -30,14 +30,15 @@ export default function FileUploader({ channelID, privateID, uploading, setUploa
       await uploadSubmission({
         myFormData: formData, 
         channelID, 
-        privateID,
         lat, 
         long, 
         title: titleRef.current?.value,
         name: nameRef.current?.value,
         email: emailRef.current?.value,
         location: locationRef.current?.value,
-        ext_url: extUrlRef.current?.value, 
+        ext_url: extUrlRef.current?.value,
+        privateID,
+        jwt,
         setProgress, 
         router
       }); 

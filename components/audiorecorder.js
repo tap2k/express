@@ -31,7 +31,7 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function AudioRecorder({ channelID, privateID, uploading, setUploading, lat, long, ...props }) {
+export default function AudioRecorder({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -91,7 +91,7 @@ export default function AudioRecorder({ channelID, privateID, uploading, setUplo
       else
         myFormData.append('mediafile', blob, 'audio.' + fileExt);
 
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, router});
+      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, privateID, jwt, router});
 
       if (titleRef.current)
         titleRef.current.value = "";

@@ -63,7 +63,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        const channel = await getChannel({ channelID: channelid, privateID: privateID });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt });
         
         if (!channel) {
             return {
@@ -78,7 +78,7 @@ export async function getServerSideProps(ctx) {
             props: { 
                 channel: channel,
                 privateID: privateID,
-                jwt: jwt
+                jwt: channel.canedit ? jwt : null
             } 
         };
     } catch (err) {

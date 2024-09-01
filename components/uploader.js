@@ -10,7 +10,7 @@ import GreetingCard from '../components/greetingcard';
 const AudioRecorder = dynamic(() => import("../components/audiorecorder"), { ssr: false });
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
 
-export default function Uploader ({ channelID, privateID, toggle, useLocation=false }) {
+export default function Uploader ({ channelID, privateID, jwt, toggle, useLocation=false }) {
   const [activeComponent, setActiveComponent] = useState('upload');
   const [uploading, setUploading] = useState();
 
@@ -33,15 +33,15 @@ export default function Uploader ({ channelID, privateID, toggle, useLocation=fa
   const renderComponent = () => {
     switch(activeComponent) {
       case 'upload':
-        return <FileUploader channelID={channelID} privateID={privateID} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
+        return <FileUploader channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'video':
-        return <VideoRecorder channelID={channelID} privateID={privateID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <VideoRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'photo':
-        return <MyCamera channelID={channelID} privateID={privateID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <MyCamera channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'audio':
-        return <AudioRecorder channelID={channelID} privateID={privateID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <AudioRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'card':
-        return <GreetingCard channelID={channelID} privateID={privateID} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       default:
         return null;
     }

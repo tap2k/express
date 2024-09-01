@@ -8,7 +8,7 @@ import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
 import ContentMarker from "../components/contentmarker";
 
-export default function Mapper({ channel, itemWidth, privateID, autoPlay, animate, tour, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, jwt, autoPlay, animate, tour, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -106,7 +106,7 @@ export default function Mapper({ channel, itemWidth, privateID, autoPlay, animat
         >
           {
             channel.contents && channel.contents.map((contentItem) => {
-              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
+              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} jwt={jwt} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
             })
           }
         </MarkerClusterGroup>
