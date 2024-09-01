@@ -1,11 +1,21 @@
 import { Alert } from 'reactstrap';
+import LoginButton from "../components/loginbutton";
 import ChannelControls from "./channelcontrols";
 
 export default function Banner({ channel, privateID, jwt }) {
   if (!channel) return null;
 
+  const makeStyle = {
+    position: 'absolute',
+    top: '0.8rem',
+    right: '20px',
+    zIndex: 100,
+    padding: 5
+  };
+
   return (
     <>
+      <LoginButton style={makeStyle} jwt={jwt} />
       <Alert style={{
         backgroundColor: 'transparent',
         padding: '1.5rem',

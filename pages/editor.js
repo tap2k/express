@@ -2,6 +2,7 @@ import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
+import LoginButton from "../components/addmenu";
 import AddMenu from "../components/addmenu";
 import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';

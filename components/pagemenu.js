@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
-import { MenuButton } from '../components/recorderstyles';
+import { MenuButton } from './recorderstyles';
 
 export default function PageMenu( ) {
   const router = useRouter();
