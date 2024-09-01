@@ -47,7 +47,7 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-export default function Slideshow({ channel, height, width, startSlide, privateID, jwt, ...props }) 
+export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
 {
   if (!channel) return;
 
@@ -209,7 +209,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {/* TODO: Is there a way this can be integrated with itemcontrols? */}
-      { privateID && getCurrentContent() && 
+      { privateID && getCurrentContent() && !isInactive && 
           <div style={{
             ...iconBarStyle, 
             flexDirection: 'column', 
@@ -235,7 +235,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
           </div>
       }
       
-      <div style={{
+      {!isInactive && <div style={{
         ...iconBarStyle, 
         bottom: 'clamp(10px, 2vh, 20px)', 
         left: '50%', 
@@ -278,7 +278,7 @@ export default function Slideshow({ channel, height, width, startSlide, privateI
             <FaHeart />
           </button>
         */}
-      </div>
+      </div>}
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 

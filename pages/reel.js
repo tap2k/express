@@ -1,20 +1,22 @@
 import { use100vh } from 'react-div-100vh';
 import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
+import getChannel from "../hooks/getchannel";
+import useInactive from '../hooks/useinactive';
 import Slideshow from "../components/slideshow";
 import PageMenu from '../components/pagemenu';
-import getChannel from "../hooks/getchannel";
 
 export default ({ channel, currslide, privateID, jwt }) => {
 
     const width = "100vw";
     const height = use100vh();
+    const isInactive = useInactive();
     //const height = "100vh";
 
     return (
         <>
-            <PageMenu />
-            <Slideshow channel={channel} width={width} height={height}startSlide={currslide} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
+            {!isInactive && <PageMenu />}
+            <Slideshow channel={channel} width={width} height={height} startSlide={currslide} isInactive={isInactive} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
         </>
     );
 }
