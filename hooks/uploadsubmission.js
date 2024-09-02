@@ -16,6 +16,8 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
     return null;
   }
 
+  console.log("JWT = " + jwt);
+
   if (!myFormData)
     myFormData = new FormData();
 
@@ -46,8 +48,6 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
     myFormData.append("location", location);
   if (ext_url)
     myFormData.append("ext_url", ext_url);
-  if (privateID)
-    myFormData.append("privateID", privateID);
   // TODO: FIX THIS!
   //if (published)
   myFormData.append("published", "true");
@@ -58,6 +58,7 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
     myFormData.append("privateID", privateID);
   else
   {
+    myFormData.append("uniqueID", channelID)
     url = getBaseURL() + "/api/uploadContentToChannel";
     headerclause = {'Authorization': 'Bearer ' + jwt};
   }

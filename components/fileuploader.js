@@ -19,7 +19,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!titleRef.current?.value && !uploadedFiles.length)
+    if (!titleRef.current?.value && !uploadedFiles.length && !extUrlRef.current?.value)
       return;
     if (setUploading)
       setUploading(true);
@@ -74,7 +74,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         size="lg"
         onClick={handleUpload}
         block
-        disabled={uploading || (!uploadedFiles.length && !titleRef.current?.value)}
+        disabled={uploading}
       >
         Submit
       </StyledButton>

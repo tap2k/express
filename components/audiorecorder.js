@@ -179,7 +179,7 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
       <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" style={{minHeight: '200px'}} />
       <Progress value={progress} style={{marginBottom: '20px'}} />
 
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef}  />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} />
       
       <StyledButton 
         color="success" 

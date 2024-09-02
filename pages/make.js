@@ -32,7 +32,7 @@ export default function Home({ jwt }) {
         if (email) {
             try {
                 await updateChannel({email: email, privateID: privateID, jwt: jwt});
-                await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email});
+                await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email, jwt: jwt});
                 alert('Email sent successfully!');
             } catch (error) {
                 console.error("Failed to send email:", error);
@@ -85,7 +85,7 @@ export default function Home({ jwt }) {
                             {privateID && (
                                 <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                     <CardBody style={{padding: '15px'}}>
-                                        <Link href={`/editor?channelid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                        <Link href={`/editor?channelid=${jwt ? channelID + "&edit=1" : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
                                             <strong style={{fontSize: 'x-large'}}>Edit</strong>
                                             <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Manage and edit your reel</p>
                                         </Link>

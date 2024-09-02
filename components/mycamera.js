@@ -54,7 +54,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
         }
   
         myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, privateID, jwt, setProgress, router});
+        await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, privateID, jwt, setProgress, router});
         if (titleRef.current)
           titleRef.current.value = "";
         if (nameRef.current)
@@ -285,7 +285,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
       </div>
 
       { dataUri && <Progress value={progress} /> }
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} />
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 

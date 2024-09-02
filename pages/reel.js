@@ -22,7 +22,7 @@ export default ({ channel, currslide, privateID, jwt }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    let { channelid, currslide } = ctx.query;
+    let { channelid, currslide, edit } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
     let privateID = null;
@@ -47,13 +47,12 @@ export async function getServerSideProps(ctx) {
             };
         }
 
-        console.log("CAN EDIT = " + channel.canedit);
         return { 
             props: { 
                 channel: channel,
                 currslide : currslide ? currslide : 0,
                 privateID: privateID,
-                jwt: channel.canedit ? jwt : null
+                jwt: channel.canedit && edit ? jwt : null
             } 
         };
     } catch (err) {

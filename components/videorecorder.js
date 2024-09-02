@@ -315,7 +315,7 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
       </div>
       
       <Progress value={progress} style={{marginBottom: '20px'}} />
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />      
+      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} />      
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 
