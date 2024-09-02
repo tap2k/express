@@ -1,11 +1,12 @@
 /* components/myreactplayer.js */
 
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext, useState } from "react";
 import { CarouselContext } from 'pure-react-carousel';
 import ReactPlayer from 'react-player/lazy';
 
 export default function MyReactPlayer({ url, width, height, controls, autoPlay, index }) 
 {
+    const [isPlaying, setIsPlaying] = useState(autoPlay);
     const carouselContext = useContext(CarouselContext);
     const videoRef = useRef();
 
