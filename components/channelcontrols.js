@@ -55,7 +55,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
         {
           label: 'Yes',
           onClick: async () => {
-            await deleteChannel({ privateID, jwt });
+            await deleteChannel({ channelID: channel.uniqueID, privateID, jwt });
             await router.push('/');
           }
         },

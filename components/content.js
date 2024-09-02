@@ -62,7 +62,7 @@ export function getMediaInfo(contentItem) {
     if (type === 'video/ogg' || type === 'video/mp4' || type === 'video/webm')
       videotype = type;
 
-    if (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio"))
+    if (type && (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio")))
       return { url, type, videotype };
 
     return { url: "", type: "" };
