@@ -10,7 +10,6 @@ export default function MediaPreview({ url, type, onRemove }) {
     alignItems: 'center',
     overflow: 'hidden',
     borderRadius: '4px',
-    background: 'rgba(0, 0, 0, 0.2)', // Subtle background
   };
 
   const mediaStyle = {

@@ -15,13 +15,19 @@ const fileExt = "mp3";
 const AudioRecorder = dynamic(() => import("./audiorecorder"), { ssr: false });
 
 export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, setIsModalOpen, ...props }) {
+
+    if (!isModalOpen) {
+        return null;
+    }
+
     const [uploading, setUploading] = useState(false);
     const [recording, setRecording] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [progress, setProgress] = useState(0);
     const [blob, setBlob] = useState(null);
-    const [mediaBlobUrl, setMediaBlobUrl] = useState(getBaseURL() + contentItem.audiofile?.url);
+    const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
     const router = useRouter();
+
 
     const handleStop = (blobUrl, blob) => {
         setBlob(blob);
@@ -32,11 +38,18 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
         if (blob)
             setUploadedFiles([])
         else if (uploadedFiles.length) {
-            console.log("setting blob null");
             setBlob(null);
             setMediaBlobUrl(null);
         }
     }, [blob, uploadedFiles]);
+
+    useEffect(() => {
+        setBlob(null);
+        setMediaBlobUrl(null);
+        setUploadedFiles([]);
+        setProgress(0);
+        setUploading(false);
+    }, [isModalOpen]);
 
     const handleUpload = async (e) => {
         e.preventDefault();
@@ -56,11 +69,6 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
             setErrorText('Failed to upload content. Please try again.');
         }
         
-        setBlob(null);
-        setMediaBlobUrl(null);
-        setUploadedFiles([]);
-        setProgress(0);
-        setUploading(false);
         setIsModalOpen(false);
         router.replace(router.asPath, undefined, { scroll: false }); 
     };
@@ -107,10 +115,6 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
         <button className="close" onClick={toggle}>&times;</button>
     );
 
-    if (!isModalOpen) {
-        return null;
-    }
-
     return (
         <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
             <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
@@ -119,7 +123,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                     <AudioRecorder 
                         onStop={handleStop} 
                         uploadedFiles={uploadedFiles} 
-                        mediaBlobUrl={mediaBlobUrl} 
+                        mediaBlobUrl={mediaBlobUrl ? mediaBlobUrl : getBaseURL() + contentItem.audiofile?.url} 
                         contentItem={contentItem} 
                         fileExt={fileExt}
                         setRecording={setRecording}
@@ -131,7 +135,6 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                         setUploadedFiles={setUploadedFiles} 
                         accept="audio/*" 
                         style={{minHeight: '200px'}} 
-                        dontShowFiles 
                     />
                     <Progress value={progress} style={{marginBottom: '20px'}} />
 
