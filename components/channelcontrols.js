@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/router';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
-import { FaEdit, FaTrash, FaImage, FaMusic } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaImage, FaMusic, FaUserPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
 import ChannelInputs from "./channelinputs";
+import EditorAdder from "./editoradder";
+import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
 export default function ChannelControls ({ channel, privateID, jwt }) {
@@ -23,6 +25,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [selectedAudio, setSelectedAudio] = useState(null);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
@@ -127,6 +130,14 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           >
           <FaImage size={20} color="rgba(0, 0, 0, 0.5)"/>
         </button>
+        { jwt && <button 
+          onClick={() => {
+              setIsUserModalOpen(true);
+          }} 
+          style={iconButtonStyle}
+          >
+          <FaUserPlus size={20} color="rgba(0, 0, 0, 0.5)"/>
+        </button> }
         <button 
             onClick={() => {
                 setIsChannelModalOpen(true);
@@ -135,12 +146,12 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
             >
             <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
         </button>
-        <button 
+        { channel.owned && <button 
             onClick={handleDeleteChannel} 
             style={iconButtonStyle}
             >
             <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
-        </button>
+        </button> }
     </div>
 
     <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
@@ -182,6 +193,14 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
         >
           {'Update Reel'}
         </Button>
+      </ModalBody>
+    </Modal>
+
+    <Modal isOpen={isUserModalOpen} toggle={() => {setIsUserModalOpen(false)}}>
+      <ModalHeader close={closeBtn(() => setIsUserModalOpen(false))}>Project Editors</ModalHeader>
+      <ModalBody>
+            <EditorTable channel={channel} maxHeight={400} jwt={jwt} />
+            <EditorAdder channel={channel} jwt={jwt} />
       </ModalBody>
     </Modal>
   </>
