@@ -91,7 +91,7 @@ export function getMediaInfo(contentItem, thumbnail) {
   return {url: "", type: ""};
 }
 
-export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID }) 
+export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID, jwt }) 
 {
   if (!contentItem)
     return;

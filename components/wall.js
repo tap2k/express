@@ -104,6 +104,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                       height="100%"
                       index={index}
                       privateID={privateID}
+                      jwt={jwt}
                       caption
                       thumbnail
                       cover
