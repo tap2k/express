@@ -52,9 +52,9 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         setIsDragging(false);
         
         const files = Array.from(e.dataTransfer.files).filter(file => 
-        file.type.startsWith('image/') || 
-        file.type.startsWith('video/') || 
-        file.type.startsWith('audio/')
+          file.type.startsWith('image/') || 
+          file.type.startsWith('video/') || 
+          file.type.startsWith('audio/')
         );
         setUploadedFiles(prevFiles => [...prevFiles, ...files]);
     };

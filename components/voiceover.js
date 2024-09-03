@@ -10,11 +10,9 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from './uploadwidget';
 
-const fileExt = "mp3";
-
 const AudioRecorder = dynamic(() => import("./audiorecorder"), { ssr: false });
 
-export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, setIsModalOpen, ...props }) {
+export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, setIsModalOpen }) {
 
     if (!isModalOpen) {
         return null;
@@ -27,7 +25,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
     const [blob, setBlob] = useState(null);
     const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
     const router = useRouter();
-
+    const fileExt = "mp3";
 
     const handleStop = (blobUrl, blob) => {
         setBlob(blob);
@@ -74,20 +72,12 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
     };
 
     const doDelete = async () => {
-        setUploading(true);  
         try {
             await updateSubmission({contentID: contentItem.id, deleteAudio: true, privateID, jwt});
         } catch (error) {
             console.error('Error delete', error);
             setErrorText('Failed to delete audiofile. Please try again.');
         }
-        
-        setBlob(null);
-        setMediaBlobUrl(null);
-        setUploadedFiles([]);
-        setProgress(0);
-        setUploading(false);
-        router.replace(router.asPath, undefined, { scroll: false }); 
     };
 
     const handleDelete = (e) => {

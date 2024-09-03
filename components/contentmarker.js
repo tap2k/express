@@ -26,7 +26,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
       const marker = markerRef.current;
       if (marker != null) {
         var position = marker.getLatLng();
-        await updateSubmission({contentID: contentItem.id, lat: position.lat, long: position.lng, privateID: privateID});
+        await updateSubmission({contentID: contentItem.id, lat: position.lat, long: position.lng, privateID, jwt});
       }
     },
     /*click() {
@@ -38,7 +38,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
 
   return (
     <>
-      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID ? true : false}>
+      <Marker position={[contentItem.lat, contentItem.long]} icon={icon} ref={(el)=> {markerRef.current = el; if (fwdRef) fwdRef(el);}} eventHandlers={eventHandlers} draggable={privateID || jwt ? true : false}>
         { contentItem.title && <Tooltip>
             <div style={{textAlign: 'center'}}><b>{contentItem.title}</b></div>
           </Tooltip>    

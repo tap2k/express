@@ -8,9 +8,6 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ContentInputs from "./contentinputs";
 
-//const fileExt = "webm";
-const fileExt = "mp4";
-
 const formatTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -40,6 +37,7 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
+  const fileExt = "mp4";
 
   useEffect(() => {
     checkForMultipleCameras();

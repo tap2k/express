@@ -21,7 +21,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
   }, [router.asPath, updateContents]);
 
   const moveItem = (fromIndex, toIndex) => {
-    if (!privateID)
+    if (!privateID && !jwt)
       return;
     setContents((previousContents) => {
       const updatedContents = [...previousContents];
@@ -32,18 +32,18 @@ export default function Board({ channel, privateID, jwt, ...props }) {
   };
 
   const handleDragStart = () => {
-    if (!privateID)
+    if (!privateID && !jwt)
       return;
     setPrevContents([...contents]);
   };
 
   const handleDragEnd = async (id, dropIndex) => {
-    if (!privateID)
+    if (!privateID && !jwt)
       return;
     if (id == prevContents[dropIndex].id)
       return;
     try {
-      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID: privateID });
+      await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID, jwt });
       await router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
@@ -56,7 +56,6 @@ export default function Board({ channel, privateID, jwt, ...props }) {
     700: 2,
     500: 1
   };
-
 
   return (
     <DragArea>

@@ -115,7 +115,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   
   const handlePublish = async () => {
     const contentToPublish = getCurrentContent();
-    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true, privateID: privateID});
+    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true, privateID, jwt});
     await router.replace(router.asPath);
   };
 
@@ -155,7 +155,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     
     const contentToMove = channel.contents[contentIndex];
     if (contentToMove) {
-      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID: privateID});
+      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID, jwt});
       const newQuery = { 
         ...router.query, 
         currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
@@ -214,7 +214,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {/* TODO: Is there a way this can be integrated with itemcontrols? */}
-      { privateID && getCurrentContent() && !isInactive && 
+      { (privateID || jwt) && getCurrentContent() && !isInactive && 
           <div style={{
             ...iconBarStyle, 
             flexDirection: 'column', 
@@ -394,7 +394,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         </CarouselProvider>
       </div>
 
-      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} />
+      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} jwt={jwt} />
 
       <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
         <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn(() => setIsUploadModalOpen(false))} />

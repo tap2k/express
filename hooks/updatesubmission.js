@@ -3,7 +3,9 @@ import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
 export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, setProgress, privateID, jwt} ) 
-{  
+{ 
+  console.log("jwt = " + jwt);
+   
   if (!contentID || (!privateID && !jwt))
   {
     setErrorText("Error no content provided");

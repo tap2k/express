@@ -10,8 +10,6 @@ import ContentInputs from "./contentinputs";
 
 const AudioRecorder = dynamic(() => import("../components/audiowidget"), { ssr: false });
 
-const fileExt = "mp3";
-
 export default function AudioWidget({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [blob, setBlob] = useState(null);
@@ -24,6 +22,7 @@ export default function AudioWidget({ channelID, privateID, jwt, uploading, setU
   const locationRef = useRef();
   const emailRef = useRef();
   const extUrlRef = useRef();
+  const fileExt = "mp3";
 
   const handleStop = (blobUrl, blob) => {
     setBlob(blob);
