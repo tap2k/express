@@ -18,25 +18,27 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
 
     useEffect(() => {
         if (mediaRef) {
-            mediaRef.current = {
+            const mediaObject = {
                 play: () => videoRef.current?.getInternalPlayer()?.playVideo(),
                 pause: () => videoRef.current?.getInternalPlayer()?.pauseVideo(),
                 getCurrentTime: () => videoRef.current?.getInternalPlayer()?.getCurrentTime() || 0,
                 getDuration: () => videoRef.current?.getInternalPlayer()?.getDuration() || 0,
                 seekTo: (time) => videoRef.current?.getInternalPlayer()?.seekTo(time),
-                addEventListener: (event, listener) => videoRef.current?.getInternalPlayer()?.addEventListener(event, listener),
-                removeEventListener: (event, listener) => videoRef.current?.getInternalPlayer()?.removeEventListener(event, listener),
                 youtube: true
             };
+    
+            Object.defineProperty(mediaObject, 'currentTime', {
+                get: function() {
+                    return this.getCurrentTime();
+                },
+                set: function(value) {
+                    this.seekTo(value);
+                }
+            });
+    
+            mediaRef.current = mediaObject;
         }
     }, [mediaRef]);
-
-    const setListeners = () =>
-    {
-        if (videoRef?.current?.getInternalPlayer()) {
-            videoRef?.current?.getInternalPlayer().addEventListener("onStateChange", onStateChange);
-        }
-    }
 
     const onStateChange = (event) => {
         console.log("EVENT = " + event.data);
@@ -46,6 +48,13 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
         if (event.data === 0 && autoPlay)
             goToNextSlide();
     };
+
+    const setListeners = () =>
+    {
+        if (videoRef?.current?.getInternalPlayer()) {
+            videoRef?.current?.getInternalPlayer().addEventListener("onStateChange", onStateChange);
+        }
+    }
 
     const removeListeners = () =>
     {
@@ -83,8 +92,8 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 playsInline
                 url={url}
                 controls={controls}  
-                // TODO: autoplay doesnt work with light
                 onReady={setListeners}
+                // TODO: autoplay doesnt work with light
                 light
             />
         </div>

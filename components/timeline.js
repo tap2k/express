@@ -19,10 +19,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
     useEffect(() => {
         if (mediaRef?.current) {
-            if (mediaRef.current.youtube)
-                mediaRef.current.seekTo(startTime);
-            else
-                mediaRef.current.currentTime = startTime;
+            mediaRef.current.currentTime = startTime;
         }
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
     }, [duration]);
@@ -74,13 +71,10 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     useEffect(() => {
         if (!mediaRef?.current)
             return;
-        const currTime = mediaRef.current.youtube ? mediaRef.current.getCurrentTime() : mediaRef.current.currentTime;
+        const currTime = mediaRef.current.currentTime;
         if (isPlaying && currTime >= endTime - 0.1)
         {
-            if (mediaRef.current.youtube)
-                mediaRef.current.seekTo(startTime)
-            else
-                mediaRef.current.currentTime = startTime;
+            mediaRef.current.currentTime = startTime;
         }
     }, [isPlaying]);
 
@@ -100,10 +94,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 return;
             const newStartTime = Math.min(newTime, endTime - 1.0);
             setStartTime(newStartTime);
-            if (mediaRef.current.youtube)
-                mediaRef.current.seekTo(newStartTime)
-            else
-                mediaRef.current.currentTime = newStartTime;
+            mediaRef.current.currentTime = newStartTime;
         } else if (currentHandleRef.current === 'end') {
             const newEndTime = Math.max(newTime, startTime + 1.0);
             if (!startTime)
@@ -111,10 +102,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             setEndTime(newEndTime);
             if (mediaRef?.current)
             {
-                if (mediaRef.current.youtube)
-                    mediaRef.current.seekTo(newEndTime)
-                else
-                    mediaRef.current.currentTime = newEndTime;
+                mediaRef.current.currentTime = newEndTime;
             }
         }
     };
@@ -144,10 +132,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         const clickTime = clickPosition * duration;
 
         if (clickTime >= startTime && clickTime <= endTime) 
-            if (mediaRef.current.youtube)
-                mediaRef.current.seekTo(clickTime)
-            else
-                mediaRef.current.currentTime = clickTime;
+            mediaRef.current.currentTime = clickTime;
     }
 
     const timelineStyle = {

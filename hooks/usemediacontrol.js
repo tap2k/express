@@ -24,10 +24,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
   }
 
   const reset = () => {
-    if (mediaRef.current.youtube)
-      mediaRef.current.seekTo(0)
-    else
-      mediaRef.current.currentTime = 0;
+    mediaRef.current.currentTime = 0;
   }
 
   const goToNextSlide = () => {
