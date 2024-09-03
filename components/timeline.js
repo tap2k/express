@@ -18,9 +18,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     }        
 
     useEffect(() => {
-        if (mediaRef?.current) {
+        if (mediaRef?.current) 
             mediaRef.current.currentTime = startTime;
-        }
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
     }, [duration]);
 
@@ -29,9 +28,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             return;
 
         const updateDuration = () => {
-            if (mediaRef.current.readyState >= 1) {
+            if (mediaRef.current.readyState >= 1) 
                 setDuration(mediaRef?.current?.duration);
-            }
         };
 
         mediaRef.current.addEventListener('loadedmetadata', updateDuration);
@@ -71,11 +69,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     useEffect(() => {
         if (!mediaRef?.current)
             return;
-        const currTime = mediaRef.current.currentTime;
-        if (isPlaying && currTime >= endTime - 0.1)
-        {
+        if (isPlaying && mediaRef.current.currentTime >= endTime - 0.1)
             mediaRef.current.currentTime = startTime;
-        }
     }, [isPlaying]);
 
 
@@ -101,9 +96,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 setStartTime(0);
             setEndTime(newEndTime);
             if (mediaRef?.current)
-            {
                 mediaRef.current.currentTime = newEndTime;
-            }
         }
     };
 

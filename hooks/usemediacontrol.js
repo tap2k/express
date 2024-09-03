@@ -81,7 +81,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       {
         reset();
         if (carouselContext && autoPlay)
-        play();
+          play();
       }
       return;
     }  

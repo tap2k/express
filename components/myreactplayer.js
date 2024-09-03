@@ -9,13 +9,6 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     const carouselContext = useContext(CarouselContext);
     const videoRef = useRef();
 
-    const goToNextSlide = () => {
-        if (carouselContext) {
-            const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
-            carouselContext.setStoreState({ currentSlide: nextSlideIndex });
-        }
-    }
-
     useEffect(() => {
         if (mediaRef) {
             const mediaObject = {
@@ -40,9 +33,14 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
         }
     }, [mediaRef]);
 
+    const goToNextSlide = () => {
+        if (carouselContext) {
+            const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
+            carouselContext.setStoreState({ currentSlide: nextSlideIndex });
+        }
+    }
+
     const onStateChange = (event) => {
-        console.log("EVENT = " + event.data);
-        console.log("DURATION = " + videoRef.current?.getInternalPlayer()?.getDuration());
         if (event.data === -1)
             setDuration(videoRef.current?.getInternalPlayer()?.getDuration());
         if (event.data === 0 && autoPlay)
