@@ -23,7 +23,7 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function AudioRecorder({ onStop, mediaBlobUrl, fileExt, setRecording }) {
+export default function AudioRecorder({ onStop, mediaBlobUrl, setRecording, fileExt=".mp3"  }) {
   const [recordingTime, setRecordingTime] = useState(0);
 
   const {

@@ -5,7 +5,7 @@ import { Modal, ModalHeader, ModalBody, Progress } from "reactstrap";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateSubmission from "../hooks/updatesubmission";
-import getBaseURL from "../hooks/getbaseurl";
+import getMediaURL from "../hooks/getmediaurl";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from './uploadwidget';
@@ -123,7 +123,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                     <AudioRecorder 
                         onStop={handleStop} 
                         uploadedFiles={uploadedFiles} 
-                        mediaBlobUrl={mediaBlobUrl ? mediaBlobUrl : getBaseURL() + contentItem.audiofile?.url} 
+                        mediaBlobUrl={mediaBlobUrl ? mediaBlobUrl : getMediaURL() + contentItem.audiofile?.url} 
                         contentItem={contentItem} 
                         fileExt={fileExt}
                         setRecording={setRecording}
