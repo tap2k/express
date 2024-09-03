@@ -5,7 +5,7 @@ import getMediaURL from "../hooks/getmediaurl";
 import { StyledButton } from './recorderstyles';
 import MediaPreview from "./mediapreview";
 
-export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, deleteMedia, setDeleteMedia, accept, multiple, text, ...props }) {
+export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, deleteMedia, setDeleteMedia, accept, multiple, text, dontShowFiles, ...props }) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef();
     
@@ -67,7 +67,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         onDrop={handleDrop}
         style={{width: '100%', minHeight: '300px', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center', ...props.style}}
       >
-        {uploadedFiles.length > 0 ? (
+        {uploadedFiles.length > 0 && !dontShowFiles ? (
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length)))}px, 1fr))` : '100%',

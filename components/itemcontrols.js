@@ -1,11 +1,15 @@
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useRouter } from 'next/router';
-import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
+import { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
+
+const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
 export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) {
   const router = useRouter();
@@ -14,6 +18,10 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
     return;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+
+  const mediaType = getMediaInfo(contentItem).type;
+
 
   const handlePublish = async () => {
     try {
@@ -97,6 +105,19 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
         >
           <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
         </button>
+        { mediaType.startsWith("image") && <button 
+          onClick={() => {
+            setIsVoiceModalOpen(true);
+          }} 
+          style={{ 
+            background: 'rgba(255, 255, 255, 0.7)', 
+            border: 'none', 
+            borderRadius: '50%', 
+            padding: '5px' 
+          }}
+        >
+          <FaMicrophone size={20} color="rgba(0, 0, 0, 0.5)"/>
+        </button> }
         <button 
           onClick={handleDelete} 
           style={{ 
@@ -110,6 +131,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
         </button>
       </div>
       <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} privateID={privateID} jwt={jwt} />
+      <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
     </>
   );
 };

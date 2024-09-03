@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, privateID, jwt} ) 
+export default async function updateSubmission( {myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteAudio, textAlignment, setProgress, privateID, jwt} ) 
 {  
   if (!contentID || (!privateID && !jwt))
   {
@@ -51,7 +51,13 @@ export default async function updateSubmission( {myFormData, contentID, order, t
   }
 
   try {
-    return await axios.post(url, myFormData, {headers: headerclause});
+    return await axios.post(url, myFormData, {
+      headers: headerclause,
+      onUploadProgress: setProgress ? (progressEvent) => {
+        const progress = (progressEvent.loaded / progressEvent.total) * 100;
+        setProgress(progress);
+      } : {},
+    });
   } catch (err) {
     setError(err);
     return null;

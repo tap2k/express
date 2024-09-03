@@ -61,6 +61,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   const audioRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
+  const mediaType = getMediaInfo(getCurrentContent()).type;
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -77,7 +78,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       audioRef.current.play();
     else
       audioRef.current.pause();
-    const mediaType = getMediaInfo(getCurrentContent()).type;
     mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') || mediaType?.startsWith('youtube') ? audioRef.current.volume = 0.25 :  audioRef.current.volume = 0.8;
   }, [currSlide, isPlaying]);
 

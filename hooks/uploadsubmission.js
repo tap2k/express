@@ -16,8 +16,6 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
     return null;
   }
 
-  console.log("JWT = " + jwt);
-
   if (!myFormData)
     myFormData = new FormData();
 
