@@ -1,15 +1,7 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState, useRef } from "react";
-import { Progress } from "reactstrap";
+import { useEffect, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
-import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
-import UploadWidget from './uploadwidget';
-import ContentInputs from "./contentinputs";
-
-//const fileExt = "webm";
-const fileExt = "mp3";
+import { ButtonGroup, StyledButton } from './recorderstyles';
 
 function Output({ src }) {  
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -31,17 +23,8 @@ const formatTime = (seconds) => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function AudioRecorder({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
-  const router = useRouter();
-  const [blob, setBlob] = useState(null);
+export default function AudioRecorder({ onStop, mediaBlobUrl, fileExt, setRecording }) {
   const [recordingTime, setRecordingTime] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const titleRef = useRef();
-  const nameRef = useRef();
-  const locationRef = useRef();
-  const emailRef = useRef();
-  const extUrlRef = useRef();
 
   const {
     status,
@@ -50,12 +33,11 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
     pauseRecording,
     resumeRecording,
     stopRecording,
-    mediaBlobUrl,
   } = useReactMediaRecorder({
     audio: true,
     askPermissionOnMount: true,
     blobPropertyBag: { type: "audio/" + fileExt },
-    onStop: (blobUrl, blob) => setBlob(blob)
+    onStop,
   });
 
   useEffect(() => {
@@ -72,61 +54,21 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
     return () => clearInterval(interval);
   }, [status]);
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (status !== "stopped" || !blob)
-      return;
-
-    if (setUploading)
-      setUploading(true);
-
-    try {
-      const myFormData = new FormData();
-
-      if (uploadedFiles.length) 
-      {
-        myFormData.append('mediafile', uploadedFiles[0], uploadedFiles[0].name);
-        myFormData.append('audiofile', blob, 'audio.' + fileExt);
-      }
-      else
-        myFormData.append('mediafile', blob, 'audio.' + fileExt);
-
-      await uploadSubmission({myFormData, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, ext_url: extUrlRef.current?.value, channelID, setProgress, privateID, jwt, router});
-
-      if (titleRef.current)
-        titleRef.current.value = "";
-      if (nameRef.current)
-        nameRef.current.value = "";
-      if (emailRef.current)
-        emailRef.current.value = "";
-      if (locationRef.current)
-        locationRef.current.value = "";
-      if (extUrlRef.current)
-        extUrlRef.current.value = "";
-      setProgress(0);
-
-      } catch (error) {
-        console.error('Error uploading content:', error);
-        setErrorText('Failed to upload content. Please try again.');
-      }
-      
-    if (setUploading)
-      setUploading(false); 
-    setUploadedFiles([]); 
-  };
-
   const handleRecordingAction = () => {
     if (status === "recording") {
-      pauseRecording();
+        setRecording(false);
+        pauseRecording();
     } else if (status === "paused") {
-      resumeRecording();
+        setRecording(true);
+        resumeRecording();
     } else {
-      startRecording();
+        setRecording(true);
+        startRecording();
     }
   };
 
   return (
-    <RecorderWrapper {...props}>
+    <>
       <ButtonGroup style={{marginBottom: '10px'}}>
         <StyledButton 
           color="primary" 
@@ -136,8 +78,8 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
         </StyledButton>
         <StyledButton 
           color="secondary" 
-          onClick={stopRecording}
-          disabled={status != "recording"}
+          onClick={() => {stopRecording(); setRecording(false)}}
+          disabled={status !== "recording"}
         >
           Stop
         </StyledButton>
@@ -175,21 +117,6 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
       </div>
 
       <Output src={mediaBlobUrl} />
-      
-      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" style={{minHeight: '200px'}} />
-      <Progress value={progress} style={{marginBottom: '20px'}} />
-
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} />
-      
-      <StyledButton 
-        color="success" 
-        size="lg" 
-        block 
-        onClick={handleUpload}
-        disabled={status !== "stopped" || !blob || uploading}
-      >
-        {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
-      </StyledButton>
-    </RecorderWrapper>
+    </>
   );
 }

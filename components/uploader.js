@@ -7,7 +7,6 @@ import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
 import GreetingCard from '../components/greetingcard';
 
-const AudioRecorder = dynamic(() => import("../components/audiorecorder"), { ssr: false });
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
 
 export default function Uploader ({ channelID, privateID, jwt, toggle, useLocation=false }) {
@@ -39,7 +38,7 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
       case 'photo':
         return <MyCamera channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'audio':
-        return <AudioRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <AudioWidget channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       case 'card':
         return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
       default:

@@ -1,9 +1,10 @@
+import dynamic from "next/dynamic";
 import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight} from 'react-icons/fa';
+import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight, FaMicrophone} from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import getMediaURL from "../hooks/getmediaurl";
@@ -14,6 +15,8 @@ import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
 import ContentEditor from "./contenteditor";
+
+const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -56,12 +59,12 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   
   const showTitle = channel.showtitle || privateID;
-  const mediaType = getMediaInfo(getCurrentContent()).type;
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -206,6 +209,8 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     <button className="close" onClick={toggle}>&times;</button>
   );
 
+  const mediaType = getMediaInfo(getCurrentContent()).type;
+
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {/* TODO: Is there a way this can be integrated with itemcontrols? */}
@@ -254,6 +259,14 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         <button onClick={toggleFullScreen} style={iconButtonStyle}>
           <FaExpandArrowsAlt />
         </button>
+        { mediaType.startsWith("image") && <button 
+          onClick={() => {
+            setIsVoiceModalOpen(true);
+          }} 
+          style={iconButtonStyle}
+        >
+          <FaMicrophone />
+        </button> }
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
@@ -394,6 +407,8 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           />
         </ModalBody>
       </Modal>
+
+      <Voiceover contentItem={getCurrentContent()} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
 
       {channel.audiofile?.url && (
         <audio
