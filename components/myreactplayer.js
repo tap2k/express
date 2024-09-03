@@ -1,34 +1,14 @@
 /* components/myreactplayer.js */
 
-import { useEffect, useRef, useContext, useState } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { CarouselContext } from 'pure-react-carousel';
 import ReactPlayer from 'react-player/lazy';
 
-export default function MyReactPlayer({ url, width, height, controls, autoPlay, index }) 
+export default function MyReactPlayer({ url, width, height, controls, autoPlay, setDuration, mediaRef }) 
 {
-    const [isPlaying, setIsPlaying] = useState(autoPlay);
     const carouselContext = useContext(CarouselContext);
     const videoRef = useRef();
-
-    function play()
-    {
-        videoRef?.current?.getInternalPlayer()?.playVideo();
-        setIsPlaying(true);
-    }
-
-    function pause()
-    {
-        videoRef?.current?.getInternalPlayer()?.pauseVideo();
-        setIsPlaying(false);
-    }
-
-    const toggle = () => {
-        isPlaying ? pause() : play();
-    }
-
-    const resetMedia = () => {
-        videoRef?.current?.getInternalPlayer()?.seekTo(0);
-    }
+    const internalPlayerRef = useRef(null);
 
     const goToNextSlide = () => {
         if (carouselContext) {
@@ -38,56 +18,48 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     }
 
     useEffect(() => {
-        if (!carouselContext) return;
-
-        const onChange = () => {
-            if (!videoRef?.current?.getInternalPlayer()) return;
-
-            if (carouselContext.state.currentSlide === index) {
-                if (autoPlay) {
-                    resetMedia();
-                    play();
-                }
-                } else {
-                    pause();
-                    resetMedia();
-                }
-        };
-
-        const onStateChange = (event) => {
-            if (event.data === 0)
-                goToNextSlide();
-        };
-
-        if (videoRef?.current?.getInternalPlayer() && autoPlay) {
-            videoRef?.current?.getInternalPlayer().addEventListener("onStateChange", onStateChange)
+        if (mediaRef) {
+            mediaRef.current = {
+                play: () => videoRef.current?.getInternalPlayer()?.playVideo(),
+                pause: () => videoRef.current?.getInternalPlayer()?.pauseVideo(),
+                getCurrentTime: () => videoRef.current?.getInternalPlayer()?.getCurrentTime() || 0,
+                getDuration: () => videoRef.current?.getInternalPlayer()?.getDuration() || 0,
+                seekTo: (time) => videoRef.current?.getInternalPlayer()?.seekTo(time),
+                addEventListener: (event, listener) => videoRef.current?.getInternalPlayer()?.addEventListener(event, listener),
+                removeEventListener: (event, listener) => videoRef.current?.getInternalPlayer()?.removeEventListener(event, listener),
+                youtube: true
+            };
         }
+    }, [mediaRef]);
 
-        carouselContext.subscribe(onChange);
-        return () => {
-            carouselContext.unsubscribe(onChange);
-            if (videoRef?.current?.getInternalPlayer()) {
-                videoRef?.current?.getInternalPlayer().removeEventListener("onStateChange", onStateChange);
-            }
-        };
-    }, [autoPlay, videoRef, carouselContext]);
+    const setListeners = () =>
+    {
+        if (videoRef?.current?.getInternalPlayer()) {
+            videoRef?.current?.getInternalPlayer().addEventListener("onStateChange", onStateChange);
+        }
+    }
+
+    const onStateChange = (event) => {
+        console.log("EVENT = " + event.data);
+        console.log("DURATION = " + videoRef.current?.getInternalPlayer()?.getDuration());
+        if (event.data === -1)
+            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());
+        if (event.data === 0 && autoPlay)
+            goToNextSlide();
+    };
+
+    const removeListeners = () =>
+    {
+        if (videoRef?.current?.getInternalPlayer()) {
+            videoRef?.current?.getInternalPlayer().removeEventListener("onStateChange", onStateChange);
+        }
+    }
 
     useEffect(() => {
-        if (!carouselContext)
-        {
-            if (autoPlay && mediaRef?.current)
-            {
-            resetMedia();
-            play();
-            }
-            return;
-        }  
-
-        if (autoPlay && carouselContext.state.currentSlide === index)
-            play();
-        else
-            pause();
-    }, [autoPlay, videoRef, carouselContext]);
+        return () => {
+            removeListeners();
+        };
+    }, []);
 
     return (
         <div 
@@ -99,7 +71,6 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 cursor: 'pointer',
                 paddingTop: '56.25%' // 16:9 aspect ratio for video
             }} 
-            onClick={toggle}
         >
             <ReactPlayer 
                 ref={videoRef}
@@ -112,8 +83,9 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 height='100%'
                 playsInline
                 url={url}
-                controls={controls}
+                controls={controls}  
                 // TODO: autoplay doesnt work with light
+                onReady={setListeners}
                 light
             />
         </div>

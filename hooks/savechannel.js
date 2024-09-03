@@ -11,6 +11,7 @@ export default async function saveChannel({channel, privateID, jwt}) {
   }
 
   const payload = {
+    uniqueID: channel.uniqueID,
     contents: channel.contents.map(item => ({
       id: item.id,
       start_time: item.start_time,

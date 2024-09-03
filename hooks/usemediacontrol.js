@@ -23,6 +23,13 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     isPlaying ? pause() : play();
   }
 
+  const reset = () => {
+    if (mediaRef.current.youtube)
+      mediaRef.current.seekTo(0)
+    else
+      mediaRef.current.currentTime = 0;
+  }
+
   const goToNextSlide = () => {
     if (carouselContext) {
       const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
@@ -31,31 +38,31 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
   }
 
   useEffect(() => {
-
     const onChange = () => {
       if (!mediaRef?.current) return;
 
       if (carouselContext.state.currentSlide === index) {
         if (autoPlay) {
-          mediaRef.current.currentTime = 0;
+          reset();
           play();
         }
       } else {
         // TODO: Make this wait to make it smoother?
         pause();
-        mediaRef.current.currentTime = 0;
+        reset();
       }
     };
 
     const onEnded = () => {
       setIsPlaying(false);
-      mediaRef.current.currentTime = 0;
+      reset();
       if (carouselContext && autoPlay)
         goToNextSlide();
     };
 
     if (mediaRef?.current) {
-      mediaRef.current.addEventListener('ended', onEnded);
+      if (!mediaRef.current.youtube)
+        mediaRef.current.addEventListener('ended', onEnded);
     }
 
     if (carouselContext)
@@ -64,7 +71,8 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       if (carouselContext)
         carouselContext.unsubscribe(onChange);
       if (mediaRef?.current) {
-        mediaRef.current.removeEventListener('ended', onEnded);
+        if (!mediaRef.current.youtube)
+          mediaRef.current.removeEventListener('ended', onEnded);
       }
     };
   }, [autoPlay, mediaRef, carouselContext]);
@@ -74,7 +82,8 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     {
       if (autoPlay && mediaRef?.current)
       {
-        mediaRef.current.currentTime = 0;
+        reset();
+        if (carouselContext && autoPlay)
         play();
       }
       return;

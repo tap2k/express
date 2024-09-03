@@ -1,7 +1,7 @@
 // components/content.js
 
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
@@ -100,6 +100,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     interval = 5000;
 
   const mediaRef = useRef();
+  const [duration, setDuration] = useState(20.0);
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
   useSlideAdvance({index, autoPlay, isPlaying, interval: contentItem.duration ? contentItem.duration : interval});
   const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
@@ -128,8 +129,6 @@ export default function Content({ contentItem, width, height, cover, controls, a
         height={height}
         controls={controls}
         mediaRef={mediaRef}
-        play={play}
-        pause={pause}
       >
         <source src={url} type={videotype} />
       </VideoPlayer>
@@ -142,8 +141,8 @@ export default function Content({ contentItem, width, height, cover, controls, a
           height={height}
           controls={controls}
           autoPlay={autoPlay}
-          index={index}
-          thumbnail={thumbnail}
+          mediaRef={mediaRef}
+          setDuration={setDuration}
         />
       );
   } else {
@@ -173,7 +172,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={interval} mediaRef={(type.startsWith("video") || type.startsWith("audio")) ? mediaRef : null} isPlaying={isPlaying} pause={pause} privateID={privateID} jwt={jwt} />}
+      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={!((type.startsWith("video") || type.startsWith("audio")) || type.startsWith("youtube")) ? interval : 0} mediaRef={(type.startsWith("video") || type.startsWith("audio")) || type.startsWith("youtube") ? mediaRef : null} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} />}
     </>
   );
 }

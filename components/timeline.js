@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
-export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, privateID, jwt }) {
+export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
-    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : (interval / 1000.0));
-    const [duration, setDuration] = useState(20.0);
+    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ?(interval / 1000.0) : duration);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
@@ -25,27 +24,32 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     }, []); 
 
     useEffect(() => {
-       setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
+        console.log("duration = " + duration);
+        console.log("CIII " + contentItem.duration);
+        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
+        //setEndTime(duration);
     }, [duration]);
-
-    useEffect(() => {
-        // Only update if different
-        if (startTime >= 0 && endTime > 0.2) {
-            contentItem.start_time = startTime;
-            contentItem.duration = endTime - startTime;
-        }
-    }, [startTime, endTime]);
 
     useEffect(() => {
         if (!mediaRef?.current)
             return;
 
+        if (mediaRef.current.youtube)
+            return;
+
         const updateDuration = () => {
+            console.log("READY");
             if (mediaRef.current.readyState >= 1) {
-                setDuration(mediaRef?.current.duration);
+                setDuration(mediaRef?.current?.youtube ? mediaRef.current.getDuration() : mediaRef?.current?.duration);
             }
         };
-        mediaRef.current.addEventListener('loadedmetadata', updateDuration);
+        if (!mediaRef.current.youtube)
+        {
+            if (mediaRef.current.youtube)
+                mediaRef.current.addEventListener('onReady', updateDuration);
+            else
+                mediaRef.current.addEventListener('loadedmetadata', updateDuration);
+        }
 
         // Check if duration is already available
         if (mediaRef.current.readyState >= 1)
@@ -53,7 +57,12 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
         return () => {
             if (mediaRef?.current)
-                mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
+            {
+                if (mediaRef.current.youtube)
+                    mediaRef.current.removeEventListener('onReady', updateDuration);
+                else
+                    mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
+            }
         };
     }, [mediaRef]);
 
@@ -70,10 +79,11 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 mediaRef.current.currentTime = endTime;
             }
         };
-        mediaRef.current.addEventListener('timeupdate', updateTime);
+        if (!mediaRef.current.youtube)
+            mediaRef.current.addEventListener('timeupdate', updateTime);
 
         return () => {
-            if (mediaRef?.current)
+            if (mediaRef?.current && !mediaRef.current.youtube)
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
         }
     }, [mediaRef, endTime]);
@@ -81,10 +91,23 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     useEffect(() => {
         if (!mediaRef?.current)
             return;
-
-        if (isPlaying && mediaRef?.current.currentTime >= endTime - 0.1)
-            mediaRef.current.currentTime = startTime;
+        const currTime = mediaRef.current.youtube ? mediaRef.current.getCurrentTime() : mediaRef.current.currentTime;
+        if (isPlaying && currTime >= endTime - 0.1)
+        {
+            if (mediaRef.current.youtube)
+                mediaRef.current.seekTo(startTime)
+            else
+                mediaRef.current.currentTime = startTime;
+        }
     }, [isPlaying]);
+
+    const setTimes = () => {
+        // Only update if different
+        if (startTime >= 0 && endTime > 0.2) {
+            contentItem.start_time = startTime;
+            contentItem.duration = endTime - startTime;
+        }
+    };
 
     const handleDrag = (e) => {
         const newTime = calculateTimelineClick(e);
@@ -93,15 +116,24 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 return;
             const newStartTime = Math.min(newTime, endTime - 1.0);
             setStartTime(newStartTime);
-            mediaRef.current.currentTime = newStartTime;
+            if (mediaRef.current.youtube)
+                mediaRef.current.seekTo(newStartTime)
+            else
+                mediaRef.current.currentTime = newStartTime;
         } else if (currentHandleRef.current === 'end') {
             const newEndTime = Math.max(newTime, startTime + 1.0);
             if (!startTime)
                 setStartTime(0);
             setEndTime(newEndTime);
             if (mediaRef?.current)
-                mediaRef.current.currentTime = newEndTime;
+            {
+                if (mediaRef.current.youtube)
+                    mediaRef.current.seekTo(newEndTime)
+                else
+                    mediaRef.current.currentTime = newEndTime;
+            }
         }
+        setTimes();
     };
 
     const handleMouseDown = (handle) => (e) => {
@@ -129,7 +161,10 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         const clickTime = clickPosition * duration;
 
         if (clickTime >= startTime && clickTime <= endTime) 
-            mediaRef.current.currentTime = clickTime;
+            if (mediaRef.current.youtube)
+                mediaRef.current.seekTo(clickTime)
+            else
+                mediaRef.current.currentTime = clickTime;
     }
 
     const timelineStyle = {
@@ -219,7 +254,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                         {formatTime(endTime)}
                     </span>
                 </div>
-                <div style={currTimeStyle} />
+                {mediaRef?.current?.youtube ? "" : <div style={currTimeStyle} />}
             </div>
         )
     );
