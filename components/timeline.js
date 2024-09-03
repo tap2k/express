@@ -1,12 +1,37 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
+function getAudioDurationFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+  
+      reader.onload = function(event) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        audioContext.decodeAudioData(event.target.result, function(buffer) {
+          const duration = buffer.duration;
+          resolve(duration);
+        }, function(e) {
+          reject('Error decoding audio data: ' + e.message);
+        });
+      };
+  
+      reader.onerror = function(event) {
+        reject('Error reading file: ' + event.target.error);
+      };
+  
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
 export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ?(interval / 1000.0) : 0);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
+
+    console.log(JSON.stringify(contentItem.mediafile));
 
     const calculateTimelineClick = (e) => {
         if (!timelineRef?.current)
@@ -21,30 +46,52 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         if (mediaRef?.current) 
             mediaRef.current.currentTime = startTime;
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
-        console.log("duration = " + duration);
     }, [duration]);
 
     useEffect(() => {
         if (!mediaRef?.current || mediaRef.current.youtube)
-            return;
-
-        const updateDuration = () => {
-            if (mediaRef.current.readyState >= 1) 
-                setDuration(mediaRef?.current?.duration);
+          return;
+    
+        const updateDuration = async () => {
+          if (mediaRef.current.readyState >= 1) {
+            let audioDuration = mediaRef.current.duration;
+            
+            // Check if it's an MP3 file and duration is not available
+            if (mediaRef.current.src.toLowerCase().endsWith('.mp3') && 
+                (!isFinite(audioDuration) || audioDuration <= 0)) {
+              try {
+                const file = await fetch(mediaRef.current.src).then(r => r.blob());
+                audioDuration = await getAudioDurationFromFile(file);
+              } catch (error) {
+                console.error('Error getting audio duration:', error);
+              }
+            }
+    
+            setDuration(audioDuration);
+          }
         };
-
-        mediaRef.current.addEventListener('loadedmetadata', updateDuration);
-
-        // Check if duration is already available
-        //if (mediaRef.current.readyState >= 1)
+    
+        const handleLoadedMetadata = () => {
+          if (isFinite(mediaRef.current.duration) && mediaRef.current.duration > 0) {
+            setDuration(mediaRef.current.duration);
+          } else {
             updateDuration();
-
-        return () => {
-            if (mediaRef?.current)
-                mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
+          }
         };
-    }, [mediaRef]);
-
+    
+        mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+    
+        // Check if duration is already available
+        if (mediaRef.current.readyState >= 1) {
+          handleLoadedMetadata();
+        }
+    
+        return () => {
+          if (mediaRef?.current)
+            mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        };
+      }, [mediaRef]);
+      
     useEffect(() => {
         if (!mediaRef?.current || mediaRef.current.youtube)
             return;
@@ -74,15 +121,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             mediaRef.current.currentTime = startTime;
     }, [isPlaying]);
 
-
-
-    useEffect(() => {
-        if (startTime >= 0 && endTime > 0.2) {
-            contentItem.start_time = startTime;
-            contentItem.duration = endTime - startTime;
-        }
-    }, [startTime, endTime]);
-
     const handleDrag = (e) => {
         const newTime = calculateTimelineClick(e);
         if (currentHandleRef.current === 'start') {
@@ -91,6 +129,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             const newStartTime = Math.min(newTime, endTime - 1.0);
             setStartTime(newStartTime);
             mediaRef.current.currentTime = newStartTime;
+            contentItem.start_time = newStartTime;
+            contentItem.duration = endTime - newStartTime;
         } else if (currentHandleRef.current === 'end') {
             const newEndTime = Math.max(newTime, startTime + 1.0);
             if (!startTime)
@@ -98,6 +138,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             setEndTime(newEndTime);
             if (mediaRef?.current)
                 mediaRef.current.currentTime = newEndTime;
+            contentItem.duration = newEndTime - startTime;
         }
     };
 

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useReactMediaRecorder } from "react-media-recorder";
+import { useEffect, useState, useRef } from "react";
 import { setErrorText } from '../hooks/seterror';
 import { ButtonGroup, StyledButton } from './recorderstyles';
 
@@ -25,24 +24,10 @@ const formatTime = (seconds) => {
 
 export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileExt=".mp3"  }) {
   const [recordingTime, setRecordingTime] = useState(0);
-
-  const {
-    status,
-    error,
-    startRecording,
-    pauseRecording,
-    resumeRecording,
-    stopRecording,
-  } = useReactMediaRecorder({
-    audio: true,
-    askPermissionOnMount: true,
-    blobPropertyBag: { type: "audio/" + fileExt },
-    onStop,
-  });
-
-  useEffect(() => {
-    if (error) setErrorText(error);
-  }, [error]);
+  const [status, setStatus] = useState("idle");
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
+  const chunksRef = useRef([]);
 
   useEffect(() => {
     let interval;
@@ -54,16 +39,56 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
     return () => clearInterval(interval);
   }, [status]);
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: `audio/${fileExt.substr(1)}` });
+        const url = URL.createObjectURL(blob);
+        
+        // Get the correct duration
+        const audio = new Audio(url);
+        audio.addEventListener('loadedmetadata', () => {
+          const duration = audio.duration;
+          // Create a new blob with the correct duration
+          const newBlob = new Blob(chunksRef.current, { type: `audio/${fileExt}` });
+          const newUrl = URL.createObjectURL(newBlob);
+          onStop(newUrl, newBlob, duration);
+        });
+      };
+
+      mediaRecorder.start();
+      setStatus("recording");
+      setRecording(true);
+    } catch (error) {
+      setErrorText(error.message);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && status === "recording") {
+      mediaRecorderRef.current.stop();
+      streamRef.current.getTracks().forEach(track => track.stop());
+      setStatus("stopped");
+      setRecording(false);
+    }
+  };
+
   const handleRecordingAction = () => {
     if (status === "recording") {
-        setRecording(false);
-        pauseRecording();
-    } else if (status === "paused") {
-        setRecording(true);
-        resumeRecording();
+      stopRecording();
     } else {
-        setRecording(true);
-        startRecording();
+      startRecording();
     }
   };
 
@@ -74,14 +99,7 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
           color="primary" 
           onClick={handleRecordingAction}
         >
-          {status === "recording" ? "Pause" : status === "paused" ? "Resume" : "Start"}
-        </StyledButton>
-        <StyledButton 
-          color="secondary" 
-          onClick={() => {stopRecording(); setRecording(false)}}
-          disabled={status !== "recording"}
-        >
-          Stop
+          {status === "recording" ? "Stop" : "Start"}
         </StyledButton>
       </ButtonGroup>
 
@@ -116,7 +134,7 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
         </div>
       </div>
 
-      <Output src={mediaBlobUrl} />
+      {mediaBlobUrl && <Output src={mediaBlobUrl} />}
     </>
   );
 }
