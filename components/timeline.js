@@ -19,37 +19,25 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
     useEffect(() => {
         if (mediaRef?.current) {
-          mediaRef.current.currentTime = startTime;
+            if (mediaRef.current.youtube)
+                mediaRef.current.seekTo(startTime);
+            else
+                mediaRef.current.currentTime = startTime;
         }
-    }, []); 
-
-    useEffect(() => {
-        console.log("duration = " + duration);
-        console.log("CIII " + contentItem.duration);
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
-        //setEndTime(duration);
     }, [duration]);
 
     useEffect(() => {
-        if (!mediaRef?.current)
-            return;
-
-        if (mediaRef.current.youtube)
+        if (!mediaRef?.current || mediaRef.current.youtube)
             return;
 
         const updateDuration = () => {
-            console.log("READY");
             if (mediaRef.current.readyState >= 1) {
                 setDuration(mediaRef?.current?.youtube ? mediaRef.current.getDuration() : mediaRef?.current?.duration);
             }
         };
-        if (!mediaRef.current.youtube)
-        {
-            if (mediaRef.current.youtube)
-                mediaRef.current.addEventListener('onReady', updateDuration);
-            else
-                mediaRef.current.addEventListener('loadedmetadata', updateDuration);
-        }
+
+        mediaRef.current.addEventListener('loadedmetadata', updateDuration);
 
         // Check if duration is already available
         if (mediaRef.current.readyState >= 1)
@@ -57,21 +45,16 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
         return () => {
             if (mediaRef?.current)
-            {
-                if (mediaRef.current.youtube)
-                    mediaRef.current.removeEventListener('onReady', updateDuration);
-                else
-                    mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
-            }
+                mediaRef.current.removeEventListener('loadedmetadata', updateDuration);
         };
     }, [mediaRef]);
 
     useEffect(() => {
-        if (!mediaRef?.current)
+        if (!mediaRef?.current || mediaRef.current.youtube)
             return;
 
         const updateTime = () => {
-            if (!mediaRef?.current)
+            if (!mediaRef?.current || mediaRef.current.youtube)
                 return;
             setCurrentTime(mediaRef.current.currentTime);
             if (mediaRef.current.currentTime >= endTime) {
@@ -79,8 +62,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 mediaRef.current.currentTime = endTime;
             }
         };
-        if (!mediaRef.current.youtube)
-            mediaRef.current.addEventListener('timeupdate', updateTime);
+        
+        mediaRef.current.addEventListener('timeupdate', updateTime);
 
         return () => {
             if (mediaRef?.current && !mediaRef.current.youtube)

@@ -8,7 +8,6 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
 {
     const carouselContext = useContext(CarouselContext);
     const videoRef = useRef();
-    const internalPlayerRef = useRef(null);
 
     const goToNextSlide = () => {
         if (carouselContext) {
