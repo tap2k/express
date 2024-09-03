@@ -33,7 +33,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
         const updateDuration = () => {
             if (mediaRef.current.readyState >= 1) {
-                setDuration(mediaRef?.current?.youtube ? mediaRef.current.getDuration() : mediaRef?.current?.duration);
+                setDuration(mediaRef?.current?.duration);
             }
         };
 
@@ -54,7 +54,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             return;
 
         const updateTime = () => {
-            if (!mediaRef?.current || mediaRef.current.youtube)
+            if (!mediaRef?.current)
                 return;
             setCurrentTime(mediaRef.current.currentTime);
             if (mediaRef.current.currentTime >= endTime) {
@@ -62,11 +62,11 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 mediaRef.current.currentTime = endTime;
             }
         };
-        
+
         mediaRef.current.addEventListener('timeupdate', updateTime);
 
         return () => {
-            if (mediaRef?.current && !mediaRef.current.youtube)
+            if (mediaRef?.current)
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
         }
     }, [mediaRef, endTime]);
@@ -84,13 +84,14 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         }
     }, [isPlaying]);
 
-    const setTimes = () => {
-        // Only update if different
+
+
+    useEffect(() => {
         if (startTime >= 0 && endTime > 0.2) {
             contentItem.start_time = startTime;
             contentItem.duration = endTime - startTime;
         }
-    };
+    }, [startTime, endTime]);
 
     const handleDrag = (e) => {
         const newTime = calculateTimelineClick(e);
@@ -116,7 +117,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                     mediaRef.current.currentTime = newEndTime;
             }
         }
-        setTimes();
     };
 
     const handleMouseDown = (handle) => (e) => {
