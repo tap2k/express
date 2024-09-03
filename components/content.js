@@ -35,7 +35,7 @@ export function isMediaFile(url)
   return type.startsWith("video") || type.startsWith("image") || type.startsWith("audio");
 }
 
-export function getMediaInfo(contentItem) {
+export function getMediaInfo(contentItem, thumbnail) {
   if (!contentItem)
     return { url: "", type: "" };
 
@@ -47,6 +47,13 @@ export function getMediaInfo(contentItem) {
   {
     if (validateYouTubeUrl(url))
       return { url, type: "youtube" };
+
+    if (url.indexOf("googleusercontent") != -1)
+    {
+      //if (!thumbnail)
+      //  url = url + "=w1920";
+      return { url: url, type: "image/jpeg" };
+    }
 
     if (url.startsWith("https://www.dropbox.com")) {
       if (url.endsWith("?dl=0") || url.endsWith("?dl=1"))
@@ -62,6 +69,10 @@ export function getMediaInfo(contentItem) {
     if (type === 'video/ogg' || type === 'video/mp4' || type === 'video/webm')
       videotype = type;
 
+    if (type.startsWith("image") && thumbnail && contentItem.mediafile?.formats?.large?.url)
+      url = getMediaURL() + contentItem.mediafile.formats.large.url;
+
+    
     if (type && (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio")))
       return { url, type, videotype };
 
@@ -91,7 +102,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
   const mediaRef = useRef();
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
   useSlideAdvance({index, autoPlay, isPlaying, interval: contentItem.duration ? contentItem.duration : interval});
-  const { url, type, videotype } = getMediaInfo(contentItem);
+  const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
 
   const containerStyle = {
     position: 'relative',
@@ -132,6 +143,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
           controls={controls}
           autoPlay={autoPlay}
           index={index}
+          thumbnail={thumbnail}
         />
       );
   } else {
@@ -161,7 +173,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { privateID && <Timeline contentItem={contentItem} interval={interval} mediaRef={(type.startsWith("video") || type.startsWith("audio")) ? mediaRef : null} isPlaying={isPlaying} pause={pause} privateID={privateID} />}
+      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={interval} mediaRef={(type.startsWith("video") || type.startsWith("audio")) ? mediaRef : null} isPlaying={isPlaying} pause={pause} privateID={privateID} jwt={jwt} />}
     </>
   );
 }

@@ -18,11 +18,12 @@ export default function Home({ jwt }) {
 
     const handleAddChannel = async (data) => {
         try {
-            const respdata = await addChannel(data);
+            const respdata = await addChannel({...data, jwt});
             setChannelName(respdata.name);
             setPrivateID(respdata.privateID);
             setChannelID(respdata.uniqueID);
-            toggleEmailModal();
+            if (!jwt)
+                toggleEmailModal();
         } catch (error) {
             console.error("Error creating channel:", error);
         }
@@ -82,7 +83,7 @@ export default function Home({ jwt }) {
                             <p style={{fontSize: 'large', color: '#6c757d', marginBottom: '40px'}}>
                                 Your new reel <strong>{channelName}</strong> has been created. You can manage or share your reel using the links below
                             </p>
-                            {privateID && (
+                            {(privateID || jwt) && (
                                 <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                     <CardBody style={{padding: '15px'}}>
                                         <Link href={`/editor?channelid=${jwt ? channelID + "&edit=1" : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">

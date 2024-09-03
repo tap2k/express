@@ -1,9 +1,11 @@
 import axios from 'axios';
 import getBaseURL from "../hooks/getbaseurl";
 
-export default async function addChannel({ name, description, email, showtitle, ispublic, allowsubmissions, interval, picturefile, audiofile, setProgress }) 
+export default async function addChannel({ name, description, email, showtitle, ispublic, allowsubmissions, interval, picturefile, audiofile, setProgress, jwt }) 
 {    
-    const url = getBaseURL() + "/api/createSubmissionChannel";
+    let url = getBaseURL() + "/api/createSubmissionChannel";
+    if (jwt)
+        url = getBaseURL() + "/api/createChannel";
     const myFormData = new FormData();
 
     let audioblob = null;
@@ -51,17 +53,21 @@ export default async function addChannel({ name, description, email, showtitle, 
     if (audioblob) 
         myFormData.append("audiofile", audioblob, audiofile);
     
+    let headerclause = {};
+    if (jwt)
+        headerclause = { 'Authorization': 'Bearer ' + jwt};
     try {
-    const response = await axios.post(url, myFormData,
-        {
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity,
-        onUploadProgress: setProgress ? (progressEvent) => {
-                const progress = (progressEvent.loaded / progressEvent.total) * 100;
-                setProgress(progress);
-            } : {},
-        },
-    );
+        const response = await axios.post(url, myFormData,
+            {
+                headers: headerclause,
+                maxContentLength: Infinity,
+                maxBodyLength: Infinity,
+                onUploadProgress: setProgress ? (progressEvent) => {
+                        const progress = (progressEvent.loaded / progressEvent.total) * 100;
+                        setProgress(progress);
+                    } : {},
+                },
+        );
     return response.data;
     } catch (err) {
         setError(err);

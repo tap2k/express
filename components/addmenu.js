@@ -89,7 +89,7 @@ export default function AddMenu({ channel, privateID, jwt, download }) {
                 </CircularMenuButton>
             </>
         )}
-        { (privateID || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
+        { (privateID || jwt || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
           <FaPlus />
         </CircularMenuButton> }
       </div>
