@@ -164,11 +164,11 @@ export default function Content({ contentItem, width, height, cover, controls, a
     <div style={containerStyle}>
       {mediaElement}
     </div>
-      { caption && !(contentItem.textalignment != "center" && isPlaying && false) && <Caption 
+      { caption && !(type.startsWith("video") && isPlaying) && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
         // TODO: This is a bit hacky
-        textAlignment={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle") || !contentItem.mediafile ? "center" : contentItem.textalignment} 
+        textAlignment={contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }

@@ -6,6 +6,7 @@ import { ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
 import GreetingCard from '../components/greetingcard';
+import AudioRecorder from '../components/audiorecorder';
 
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
 
@@ -34,13 +35,13 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
       case 'upload':
         return <FileUploader channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'video':
-        return <VideoRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <VideoRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'photo':
-        return <MyCamera channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <MyCamera channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'audio':
-        return <AudioWidget channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <AudioRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'card':
-        return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading}lat={lat} long={long} />;
+        return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       default:
         return null;
     }

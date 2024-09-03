@@ -10,7 +10,7 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from './uploadwidget';
 
-const AudioRecorder = dynamic(() => import("./audiorecorder"), { ssr: false });
+const AudioWidget = dynamic(() => import("./audiowidget"), { ssr: false });
 
 export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, setIsModalOpen }) {
 
@@ -110,11 +110,9 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
             <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
             <ModalBody>
                 <RecorderWrapper>
-                    <AudioRecorder 
+                    <AudioWidget
                         onStop={handleStop} 
-                        uploadedFiles={uploadedFiles} 
                         mediaBlobUrl={mediaBlobUrl ? mediaBlobUrl : getMediaURL() + contentItem.audiofile?.url} 
-                        contentItem={contentItem} 
                         fileExt={fileExt}
                         setRecording={setRecording}
                     />
