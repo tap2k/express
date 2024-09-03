@@ -21,6 +21,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         if (mediaRef?.current) 
             mediaRef.current.currentTime = startTime;
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
+        console.log("duration = " + duration);
     }, [duration]);
 
     useEffect(() => {
@@ -35,7 +36,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         mediaRef.current.addEventListener('loadedmetadata', updateDuration);
 
         // Check if duration is already available
-        if (mediaRef.current.readyState >= 1)
+        //if (mediaRef.current.readyState >= 1)
             updateDuration();
 
         return () => {

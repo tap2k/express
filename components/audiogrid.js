@@ -42,7 +42,7 @@ export default function AudioGrid({ audioOptions, selectedAudio, setSelectedAudi
     borderRadius: '8px',
     cursor: 'pointer',
     backgroundColor: '#f8f9fa',
-    height: '100%',
+    height: '70px',
     border: '1px solid #ddd',
   };
 

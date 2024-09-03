@@ -12,7 +12,6 @@
     "axios": "^1.7.2",
     "cc-gram": "^1.1.0",
     "dotenv": "^16.4.5",
-    "fix-webm-duration": "^1.0.6",
     "get-blob-duration": "^1.2.0",
     "googleapis": "^140.0.1",
     "leaflet": "^1.9.4",

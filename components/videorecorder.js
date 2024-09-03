@@ -187,8 +187,10 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
         setBlob(recordedBlob);
         setStatus('stopped');
         
+
         if (videoRef.current) {
           const url = URL.createObjectURL(recordedBlob);
+          console.log("url = " + url);
           videoRef.current.src = url;
           videoRef.current.srcObject = null;
           videoRef.current.muted = false;
