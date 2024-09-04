@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useRouter } from 'next/router';
-import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone } from 'react-icons/fa';
+import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
@@ -11,7 +11,7 @@ import ContentEditor from "./contenteditor";
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, iconSize=20, flexDirection="row" }) {
   const router = useRouter();
 
   if (!contentItem || (!privateID && !jwt))
@@ -22,6 +22,21 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
 
   const mediaType = getMediaInfo(contentItem).type;
 
+  const moveSlide = async (increment) => {
+    const contentIndex = showTitle ? currSlide - 1 : currSlide;
+    if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
+    
+    const contentToMove = channel.contents[contentIndex];
+    if (contentToMove) {
+      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID, jwt});
+      const newQuery = { 
+        ...router.query, 
+        currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
+      };
+      setCurrSlide(currSlide + increment);
+      await router.replace({ pathname: router.pathname, query: newQuery });
+    }
+  }
 
   const handlePublish = async () => {
     try {
@@ -56,6 +71,15 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
     });
   };
 
+  const iconColor = "rgba(0, 0, 0, 0.5)";
+
+  const iconButtonStyle = { 
+    background: 'rgba(255, 255, 255, 0.5)', 
+    border: 'none', 
+    borderRadius: '50%', 
+    padding: '5px' 
+  }
+
   return (
     <>
       <div style={{
@@ -63,71 +87,54 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
         top: 5,
         right: 5,
         display: 'flex',
-        gap: '5px',
+        flexDirection: flexDirection,
+        gap: iconSize/3,
         zIndex: 1
       }}>
         { dragRef && <button 
           ref={dragRef}
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            padding: '5px',
-            cursor: 'move'
-          }}
+          style={iconButtonStyle}
         >
-          <FaGripVertical size={20} color="rgba(0, 0, 0, 0.5)" />
+          <FaGripVertical size={iconSize} color={iconColor} />
         </button> }
-        <button 
-          onClick={handlePublish} 
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            padding: '5px' 
-          }}
-        >
-          {contentItem.publishedAt ? 
-            <FaTimes size={20} color="rgba(0, 0, 0, 0.5)" /> : 
-            <FaCheck size={20} color="rgba(0, 0, 0, 0.5)" />
-          }
-        </button>
-        <button 
-          onClick={() => {
-            setIsModalOpen(true);
-          }} 
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            padding: '5px' 
-          }}
-        >
-          <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
-        </button>
+        { flexDirection === "column" && <>
+          <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
+            <FaArrowLeft size={iconSize} color={iconColor} />
+          </button>
+          <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
+            <FaArrowRight size={iconSize} color={iconColor} />
+          </button>
+        </> }
         { mediaType.startsWith("image") && <button 
           onClick={() => {
             setIsVoiceModalOpen(true);
           }} 
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            padding: '5px' 
-          }}
+          style={iconButtonStyle}
         >
-          <FaMicrophone size={20} color="rgba(0, 0, 0, 0.5)"/>
+          <FaMicrophone size={iconSize} color={iconColor} />
         </button> }
         <button 
-          onClick={handleDelete} 
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            border: 'none', 
-            borderRadius: '50%', 
-            padding: '5px' 
-          }}
+          onClick={() => {
+            setIsModalOpen(true);
+          }} 
+          style={iconButtonStyle}
         >
-          <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
+          <FaEdit size={20} color={iconColor} />
+        </button>
+        <button 
+          onClick={handlePublish} 
+          style={iconButtonStyle}
+        >
+          {contentItem.publishedAt ? 
+            <FaTimes size={iconSize} color={iconColor} /> : 
+            <FaCheck size={iconSize} color={iconColor} />
+          }
+        </button>
+        <button 
+          onClick={handleDelete} 
+          style={iconButtonStyle}
+        >
+          <FaTrash size={iconSize} color={iconColor} />
         </button>
       </div>
       <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} privateID={privateID} jwt={jwt} />

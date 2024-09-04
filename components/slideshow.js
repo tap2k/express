@@ -1,22 +1,15 @@
-import dynamic from "next/dynamic";
-import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaHeart, FaTrash, FaArrowLeft, FaArrowRight, FaExpandArrowsAlt, FaPlus, FaEdit, FaCheck, FaTimes, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight, FaMicrophone} from 'react-icons/fa';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+import { FaExpandArrowsAlt, FaPlus, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import getMediaURL from "../hooks/getmediaurl";
-import updateSubmission from '../hooks/updatesubmission';
-import deleteSubmission from '../hooks/deletesubmission';
 import ChannelControls from "./channelcontrols"
+import ItemControls from "./itemcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
 import ContentEditor from "./contenteditor";
-
-const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -54,17 +47,20 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
 {
   if (!channel) return;
 
-  const router = useRouter();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
-  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   
+  const getCurrentContent = () => {
+    const index = showTitle ? currSlide - 1 : currSlide;
+    return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
+  };  
+
   const showTitle = channel.showtitle || privateID;
+  const mediaType = getMediaInfo(getCurrentContent()).type;
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -92,11 +88,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     }
   }
 
-  const getCurrentContent = () => {
-    const index = showTitle ? currSlide - 1 : currSlide;
-    return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
-  };  
-
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
     const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${privateID ? 0 : currSlide}`;  
@@ -113,58 +104,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     );
   };
   
-  const handlePublish = async () => {
-    const contentToPublish = getCurrentContent();
-    await updateSubmission({contentID: contentToPublish.id, published: contentToPublish.publishedAt ? false : true, privateID, jwt});
-    await router.replace(router.asPath);
-  };
-
-  const handleDelete = () => {
-    confirmAlert({
-      title: `Delete item?`,
-      message: `Are you sure you want to delete this item?`,
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: async () => {
-            const contentToDelete = getCurrentContent();
-            if (contentToDelete) {
-              await deleteSubmission({contentID: contentToDelete.id, privateID, jwt});
-              const newQuery = { 
-                ...router.query, 
-                currslide: Math.min(currSlide, showTitle ? channel.contents.length : channel.contents.length - 1)
-              };
-              await router.replace({
-                pathname: router.pathname,
-                query: newQuery,
-              });
-            }
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
-  };
-
-  const moveSlide = async (increment) => {
-    const contentIndex = showTitle ? currSlide - 1 : currSlide;
-    if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
-    
-    const contentToMove = channel.contents[contentIndex];
-    if (contentToMove) {
-      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID, jwt});
-      const newQuery = { 
-        ...router.query, 
-        currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
-      };
-      setCurrSlide(currSlide + increment);
-      await router.replace({ pathname: router.pathname, query: newQuery });
-    }
-  }
-
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
@@ -209,37 +148,8 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     <button className="close" onClick={toggle}>&times;</button>
   );
 
-  const mediaType = getMediaInfo(getCurrentContent()).type;
-
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      {/* TODO: Is there a way this can be integrated with itemcontrols? */}
-      { (privateID || jwt) && getCurrentContent() && !isInactive && 
-          <div style={{
-            ...iconBarStyle, 
-            flexDirection: 'column', 
-            top: '3px', 
-            right: '3px'
-          }}>
-            <button onClick={() => {setIsContentModalOpen(true)}} style={iconButtonStyle}
-            >
-              <FaEdit />
-            </button>
-            <button onClick={handleDelete} style={iconButtonStyle}>
-              <FaTrash />
-            </button>
-            <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
-              <FaArrowLeft />
-            </button>
-            <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
-              <FaArrowRight />
-            </button>
-            <button onClick={handlePublish} style={iconButtonStyle}>
-              { getCurrentContent().publishedAt ? <FaTimes /> : <FaCheck /> }
-            </button>
-          </div>
-      }
-      
       {!isInactive && <div style={{
         ...iconBarStyle, 
         bottom: 'clamp(10px, 2vh, 20px)', 
@@ -259,14 +169,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         <button onClick={toggleFullScreen} style={iconButtonStyle}>
           <FaExpandArrowsAlt />
         </button>
-        { mediaType.startsWith("image") && <button 
-          onClick={() => {
-            setIsVoiceModalOpen(true);
-          }} 
-          style={iconButtonStyle}
-        >
-          <FaMicrophone />
-        </button> }
         <button 
           onClick={async () => {
             if (showTitle && currSlide == 0) {
@@ -348,15 +250,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     }}>
                       {channel.description}
                     </div>
-                    {(privateID || jwt) && (
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                      }}>
-                        <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />
-                      </div>
-                    )}
                   </div>
                 </div>
               </Slide> 
@@ -393,8 +286,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         </CarouselProvider>
       </div>
 
-      <ContentEditor contentItem={getCurrentContent()} isModalOpen={isContentModalOpen} setIsModalOpen={setIsContentModalOpen} privateID={privateID} jwt={jwt} />
-
       <Modal isOpen={isUploadModalOpen} toggle={() => setIsUploadModalOpen(false)}>
         <ModalHeader toggle={() => setIsUploadModalOpen(false)} close={closeBtn(() => setIsUploadModalOpen(false))} />
         <ModalBody>
@@ -407,7 +298,17 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         </ModalBody>
       </Modal>
 
-      <Voiceover contentItem={getCurrentContent()} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
+      {(privateID || jwt) && !isInactive && (
+        <div style={{
+          position: 'absolute',
+          top: 10,
+          right: 10
+        }}>
+        { showTitle && currSlide === 0 ?
+          <ChannelControls channel={channel} privateID={privateID} flex="column" iconSize={24} jwt={jwt} />
+          : <ItemControls contentItem={getCurrentContent()} privateID={privateID} flexDirection="column" iconSize={24} jwt={jwt} /> }
+        </div>
+      )}
 
       {channel.audiofile?.url && (
         <audio
@@ -417,6 +318,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           style={{ display: 'none' }}
         />
       )}
+      
     </div>
   );
 }

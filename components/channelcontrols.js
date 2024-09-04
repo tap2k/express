@@ -12,7 +12,7 @@ import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
-export default function ChannelControls ({ channel, privateID, jwt }) {
+export default function ChannelControls ({ channel, privateID, jwt, iconSize=20, flex="row" }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -84,6 +84,8 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
     await router.replace(router.asPath);
   };
 
+  const iconColor = "rgba(0, 0, 0, 0.5)";
+
   const iconButtonStyle = { 
     background: 'rgba(255, 255, 255, 0.5)', 
     border: 'none', 
@@ -111,8 +113,9 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           top: 5,
           right: 5,
           display: 'flex',
-          gap: '5px',
-          zIndex: 1
+          gap: iconSize/3,
+          zIndex: 1,
+          flexDirection: flex,
       }}>
         <button 
           onClick={() => {
@@ -120,7 +123,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           }} 
           style={iconButtonStyle}
           >
-          <FaMusic size={20} color="rgba(0, 0, 0, 0.5)"/>
+          <FaMusic size={iconSize} color={iconColor} />
         </button>
         <button 
           onClick={() => {
@@ -128,7 +131,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           }} 
           style={iconButtonStyle}
           >
-          <FaImage size={20} color="rgba(0, 0, 0, 0.5)"/>
+          <FaImage size={iconSize} color={iconColor} />
         </button>
         { jwt && <button 
           onClick={() => {
@@ -136,7 +139,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           }} 
           style={iconButtonStyle}
           >
-          <FaUserPlus size={20} color="rgba(0, 0, 0, 0.5)"/>
+          <FaUserPlus size={iconSize} color={iconColor} />
         </button> }
         <button 
             onClick={() => {
@@ -144,13 +147,13 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
             }} 
             style={iconButtonStyle}
             >
-            <FaEdit size={20} color="rgba(0, 0, 0, 0.5)"/>
+            <FaEdit size={iconSize} color={iconColor} />
         </button>
         { channel.owned && <button 
             onClick={handleDeleteChannel} 
             style={iconButtonStyle}
             >
-            <FaTrash size={20} color="rgba(0, 0, 0, 0.5)" />
+            <FaTrash size={iconSize} color={iconColor} />
         </button> }
     </div>
 

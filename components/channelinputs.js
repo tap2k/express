@@ -9,7 +9,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 type="text"
                 innerRef={titleRef}
                 placeholder="Enter your title here"
-                defaultValue={channel.name || ""}
+                defaultValue={channel?.name || ""}
             />}
             {subtitleRef && false && <StyledInput
                 type="text"
@@ -21,7 +21,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 type="email"
                 innerRef={emailRef}
                 placeholder="Update your email here"
-                defaultValue={channel.email || ""}
+                defaultValue={channel?.email || ""}
             />}
             <div
                 style={{
@@ -38,7 +38,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                         <Input
                             type="checkbox"
                             innerRef={showTitleRef}
-                            defaultChecked={channel ? channel.showtitle : true}
+                            defaultChecked={channel ? channel?.showtitle : true}
                             style={{ marginRight: '5px', fontSize: 'large'}}
                         />
                         <span style={{fontSize: 'large'}}>Show title slide</span>
@@ -50,7 +50,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                         <Input
                             type="checkbox"
                             innerRef={publicRef}
-                            defaultChecked={channel ? channel.public : true}
+                            defaultChecked={channel ? channel?.public : true}
                             style={{ marginRight: '5px', fontSize: 'large' }}
                         />
                         <span style={{fontSize: 'large'}}>Let participants view</span>
@@ -62,7 +62,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                         <Input
                             type="checkbox"
                             innerRef={allowRef}
-                            defaultChecked={channel ? channel.allowsubmissions : true}
+                            defaultChecked={channel ? channel?.allowsubmissions : true}
                             style={{ marginRight: '5px', fontSize: 'large' }}
                         />
                         <span style={{fontSize: 'large'}}>Allow submissions</span>
