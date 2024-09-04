@@ -28,7 +28,7 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
     };
     
     const captionStyleTop = { ...captionStyleBase, top: '2vh' };
-    const captionStyleBottom = { ...captionStyleBase, bottom: 'clamp(70px, 10vh, 120px' };
+    const captionStyleBottom = { ...captionStyleBase, bottom: '3vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
         textAlignment === 'top' ? captionStyleTop :

@@ -11,7 +11,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 placeholder="Enter your title here"
                 defaultValue={channel?.name || ""}
             />}
-            {subtitleRef && false && <StyledInput
+            {subtitleRef && <StyledInput
                 type="text"
                 innerRef={subtitleRef}
                 placeholder="Enter your subtitle here"
