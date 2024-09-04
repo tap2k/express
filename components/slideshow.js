@@ -288,7 +288,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
             })}
           </Slider>
           {channel.contents.length > 0 && (
-            privateID ? <>
+            !privateID && !jwt && !isInactive && false ? <>
               <ButtonBack key={1} style={{...buttonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
               <ButtonNext key={2} style={{...buttonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :

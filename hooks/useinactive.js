@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useInactive(inactivityThreshold = 2000) {
+export default function useInactive(inactivityThreshold = 3000) {
   const [isInactive, setIsInactive] = useState(false);
   
   useEffect(() => {
