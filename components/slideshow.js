@@ -321,7 +321,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           top: 10,
           right: 10
         }}>
-        { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flexDirection="column" iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
+        { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 

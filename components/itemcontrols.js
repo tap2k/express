@@ -6,13 +6,13 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
-import { IconBar, IconButton } from './recorderstyles';
+import { IconButton } from './recorderstyles';
 import { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef, setIsModalOpen, iconSize=20, flexDirection="row" }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, setIsModalOpen, iconSize=20, flex="row" }) {
   const router = useRouter();
 
   if (!contentItem || (!privateID && !jwt))
@@ -25,7 +25,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
 
   useEffect(() => {
     if (setIsModalOpen)
-      setIsModalOpen(isEditModalOpen || isVoiceModalOpen)
+      setIsModalOpen(isEditModalOpen || isVoiceModalOpen);
   }, [isEditModalOpen, isVoiceModalOpen]);
 
   const moveSlide = async (increment) => {
@@ -77,15 +77,28 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
     });
   };
 
+  const iconBarStyle = {
+    position: 'absolute',
+    top: '5px',
+    right: '5px',
+    display: 'flex',
+    flexDirection: flex,
+    gap: '2px',
+    transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+    opacity: 1,
+    visibility: 'visible',
+    zIndex: 1
+};
+
   return (
     <>
-      <IconBar flexDirection={flexDirection} iconSize={iconSize}>
+      <div style={iconBarStyle}>
         { dragRef && <IconButton 
           ref={dragRef}
         >
           <FaGripVertical size={iconSize} />
         </IconButton> }
-        { flexDirection === "column" && <>
+        { flex === "column" && <>
           <IconButton onClick={() => moveSlide(-1)}>
             <FaArrowLeft size={iconSize} />
           </IconButton>
@@ -120,9 +133,9 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
         >
           <FaTrash size={iconSize} />
         </IconButton>
-      </IconBar>
-      <ContentEditor contentItem={contentItem} isEditModalOpen={isEditModalOpen} setisEditModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
-      <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setisModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
+      </div>
+      <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
+      <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
     </>
   );
 };

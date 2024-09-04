@@ -61,24 +61,11 @@ export const MenuButton = styled(Button)`
   }
 `;
 
-export const IconBar = styled.div`
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  display: flex;
-  flex-direction: ${props => props.flexDirection};
-  gap: ${props => props.iconSize / 3}px;
-  
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-  opacity: 1;
-  visibility: visible;
-`;
-
 export const IconButton = styled.button`
   background: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 50%;
-  padding: 5px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;

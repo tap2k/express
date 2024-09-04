@@ -7,7 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import { IconBar, IconButton } from './recorderstyles';
+import { IconButton } from './recorderstyles';
 import ChannelInputs from "./channelinputs";
 import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
@@ -87,9 +87,22 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     await router.replace(router.asPath);
   };
 
+  const iconBarStyle = {
+      position: 'absolute',
+      top: '5px',
+      right: '5px',
+      display: 'flex',
+      flexDirection: flex,
+      gap: '2px',
+      transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+      opacity: 1,
+      visibility: 'visible',
+      zIndex: 1
+  };
+
   return (
     <>
-      <IconBar flexDirection="row" iconSize={iconSize}>
+      <div style={iconBarStyle}>
         <IconButton 
           onClick={() => {
               setIsAudioModalOpen(true);
@@ -123,7 +136,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
             >
             <FaTrash size={iconSize} />
         </IconButton> }
-    </IconBar>
+    </div>
 
     <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
       <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
