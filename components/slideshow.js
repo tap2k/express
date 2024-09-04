@@ -137,7 +137,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     fontSize: 'clamp(16px, 2vh, 32px)',
   };
 
-  const buttonStyle = {
+  const arrowButtonStyle = {
     position: 'absolute', 
     top: '50%', 
     transform: 'translateY(-50%)',
@@ -292,8 +292,8 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           </Slider>
           {channel.contents.length > 0 && (
             !privateID && !jwt && !isInactive && false ? <>
-              <ButtonBack key={1} style={{...buttonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={2} style={{...buttonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
+              <ButtonBack key={1} style={{...arrowButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={2} style={{...arrowButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :
             <>
               <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />

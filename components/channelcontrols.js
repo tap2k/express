@@ -7,7 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
-import { IconBar, IconButton, StyledButton } from './recorderstyles';
+import { IconBar, IconButton } from './recorderstyles';
 import ChannelInputs from "./channelinputs";
 import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
@@ -87,19 +87,6 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     await router.replace(router.asPath);
   };
 
-  const buttonStyle = {
-    fontSize: 'medium',
-    width: '100%',
-    padding: '6px',
-    marginTop: '10px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#5dade2', 
-    border: 'none',
-    color: '#ffffff',
-    fontWeight: 'bold',
-  };
-
   return (
     <>
       <IconBar flexDirection="row" iconSize={iconSize}>
@@ -142,8 +129,8 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
       <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
       <ModalBody>
         <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={jwt ? null : emailRef} publicRef={publicRef} allowRef={allowRef} showTitleRef={showTitleRef} intervalRef={intervalRef} />
-        <Button onClick={handleSaveChannel} style={buttonStyle} >
-          Update Reel
+        <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}}>
+          <b>Update Reel</b>
         </Button>
       </ModalBody>
     </Modal>
@@ -159,7 +146,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           color="success"
           style={{marginTop: '10px'}}
         >
-          {'Update Reel'}
+          <b>Update Reel</b>
         </Button>
       </ModalBody>
     </Modal>
@@ -175,7 +162,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           color="success"
           style={{marginTop: '10px'}}
         >
-          {'Update Reel'}
+          <b>Update Reel</b>
         </Button>
       </ModalBody>
     </Modal>
@@ -183,8 +170,8 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isUserModalOpen} toggle={() => {setIsUserModalOpen(false)}}>
       <ModalHeader close={closeBtn(() => setIsUserModalOpen(false))}>Project Editors</ModalHeader>
       <ModalBody>
-            <EditorTable channel={channel} maxHeight={400} jwt={jwt} />
-            <EditorAdder channel={channel} jwt={jwt} />
+        <EditorTable channel={channel} maxHeight={400} jwt={jwt} />
+        <EditorAdder channel={channel} jwt={jwt} />
       </ModalBody>
     </Modal>
   </>
