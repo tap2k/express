@@ -14,7 +14,7 @@ export default function PageMenu( ) {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '0.5rem',
+    padding: '0.35rem',
     backgroundColor: 'transparent',
     gap: '1px'
   };

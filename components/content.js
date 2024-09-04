@@ -52,8 +52,8 @@ export function getMediaInfo(contentItem, thumbnail) {
 
     if (url.indexOf("googleusercontent") != -1)
     {
-      //if (!thumbnail)
-      //  url = url + "=w1920";
+      if (!thumbnail)
+        url = url + "=w1920";
       return { url: url, type: "image/jpeg" };
     }
 
@@ -166,7 +166,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     <div style={containerStyle}>
       {mediaElement}
     </div>
-      { caption && <Caption 
+      { caption && type != "youtube" && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
         // TODO: This is a bit hacky

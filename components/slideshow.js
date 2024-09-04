@@ -209,7 +209,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           <Slider style={{height: height, width: width}}>
             {showTitle && (
               <Slide style={{height: height, width: width}}>
-                <div style={{position: 'relative', height: '100%', width: '100%'}}>
+                <div style={{position: 'relative', height: '100%', width: '100%', backgroundColor: channel.background_color}}>
                   <FullImage 
                     src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
                     width={width} 
