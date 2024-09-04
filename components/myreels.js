@@ -10,6 +10,7 @@ export default function MyReels ({ channels, user, jwt }) {
 
   const router = useRouter();
 
+
   const handleDeleteChannel = (uniqueID) => {
     confirmAlert({
       title: 'Delete reel?',
@@ -36,8 +37,9 @@ export default function MyReels ({ channels, user, jwt }) {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.username} || {user.email}</h5>
-            <Link href="/make" className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', fontSize: '1.2rem'}}>
-              <FaPlus size={12} className="me-1" />NEW
+            <Link href="/make" className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', fontSize: '1.2rem', minWidth: 120}}>
+              <FaPlus size={14} style={{marginRight: '0.5rem', marginBottom: '0.1rem'}} />
+              <span style={{marginTop: '0.1rem'}}>NEW</span>
             </Link>
           </div>
         </Col>
