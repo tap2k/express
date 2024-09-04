@@ -59,7 +59,7 @@ export async function getServerSideProps(context) {
       };
     }
   } catch (error) {
-    console.error('Error during Google callback:', error);
+    console.error('Error during Google callback:', error.response?.data || error.message);
     return {
       props: { error: `Server error: ${error.message}` }
     };
