@@ -15,7 +15,7 @@ export default ({ channel, currslide, privateID, jwt }) => {
 
     return (
         <>
-            {!isInactive && <PageMenu />}
+            {(privateID || jwt) && !isInactive && <PageMenu />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} isInactive={isInactive} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
         </>
     );
@@ -36,7 +36,7 @@ export async function getServerSideProps(ctx) {
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: edit });
         
         if (!channel) {
             return {

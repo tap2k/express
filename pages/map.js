@@ -17,7 +17,7 @@ export default ({ channel, privateID, jwt }) => {
     return (
         <>
             <div style={{ position: 'absolute', width: width}}>
-                <PageMenu />
+                { (privateID || jwt) && <PageMenu /> }
                 <Banner 
                     channel={channel}
                     privateID={privateID}
@@ -46,7 +46,7 @@ export async function getServerSideProps(ctx) {
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: edit });
         
         if (!channel) {
             return {

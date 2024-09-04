@@ -64,7 +64,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt });
+        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
         
         if (!channel) {
             return {
