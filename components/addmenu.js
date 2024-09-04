@@ -25,7 +25,7 @@ export default function AddMenu({ channel, privateID, jwt, user, download }) {
   const audioRef = useRef(null);
 
   const handleDownload = async () => {
-    if (user)
+    if (user?.email)
       await handleEmailSubmit(user.email);
     else
       setIsEmailModalOpen(true);
