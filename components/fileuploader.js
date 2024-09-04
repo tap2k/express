@@ -26,6 +26,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
     try {
       const formData = new FormData();
       uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
+      setUploadedFiles([]);
       
       await uploadSubmission({
         myFormData: formData, 
@@ -43,7 +44,6 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         router
       }); 
       
-      setUploadedFiles([]);
       if (titleRef.current)
         titleRef.current.value = "";
       if (nameRef.current)

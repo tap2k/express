@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
+import { useState } from 'react';;
 import { Card, CardBody } from 'reactstrap';
 import nookies from 'nookies';
 import addChannel from '../hooks/addchannel';
@@ -15,15 +16,20 @@ export default function Home({ jwt }) {
     const [privateID, setPrivateID] = useState(null);
     const [channelName, setChannelName] = useState(null);
     const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+    const router = useRouter();
 
     const handleAddChannel = async (data) => {
         try {
             const respdata = await addChannel({...data, jwt});
-            setChannelName(respdata.name);
-            setPrivateID(respdata.privateID);
-            setChannelID(respdata.uniqueID);
             if (!jwt)
+            {
+                setChannelName(respdata.name);
+                setPrivateID(respdata.privateID);
+                setChannelID(respdata.uniqueID);
                 toggleEmailModal();
+            }
+            else
+                router.push('/editor?channelid='+respdata.uniqueID);
         } catch (error) {
             console.error("Error creating channel:", error);
         }
