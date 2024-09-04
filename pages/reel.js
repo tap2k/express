@@ -15,7 +15,7 @@ export default ({ channel, currslide, privateID, jwt }) => {
 
     return (
         <>
-            {(privateID || jwt) && !isInactive && <PageMenu />}
+            {!isInactive && <PageMenu loggedIn={privateID || jwt} />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} isInactive={isInactive} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
         </>
     );

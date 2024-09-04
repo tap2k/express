@@ -118,6 +118,9 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           gap: iconSize/3,
           zIndex: 1,
           flexDirection: flex,
+          transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+          opacity: 1,
+          visibility: 'visible'
       }}>
         <button 
           onClick={() => {

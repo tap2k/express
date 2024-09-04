@@ -94,7 +94,10 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
         display: 'flex',
         flexDirection: flexDirection,
         gap: iconSize/3,
-        zIndex: 1
+        zIndex: 1,
+        transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+        opacity: 1,
+        visibility: 'visible'
       }}>
         { dragRef && <button 
           ref={dragRef}

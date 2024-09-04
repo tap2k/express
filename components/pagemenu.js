@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
 import { MenuButton } from './recorderstyles';
 
-export default function PageMenu( ) {
+export default function PageMenu({ loggedIn } ) {
   const router = useRouter();
 
   const rowStyle = {
@@ -16,7 +16,10 @@ export default function PageMenu( ) {
     alignItems: 'center',
     padding: '0.35rem',
     backgroundColor: 'transparent',
-    gap: '1px'
+    gap: '1px',
+    transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+    opacity: 1,
+    visibility: 'visible'
   };
 
   const copyUrlToClipboard = () => {
@@ -34,6 +37,11 @@ export default function PageMenu( ) {
   return (
     <>
       <div style={rowStyle}>
+        <Link href="/">
+          <MenuButton>
+            <FaHome />
+          </MenuButton>
+        </Link>
         <Link
           href={{
             pathname: `./reel`,
@@ -64,24 +72,21 @@ export default function PageMenu( ) {
             <FaMap />
           </MenuButton>
         </Link>
-        <Link
-          href={{
-            pathname: `./editor`,
-            query: router.query,
-          }}
-        >
-          <MenuButton>
-            <FaFilm />
+        { loggedIn && <>
+          <Link
+            href={{
+              pathname: `./editor`,
+              query: router.query,
+            }}
+          >
+            <MenuButton>
+              <FaFilm />
+            </MenuButton>
+          </Link>
+          <MenuButton onClick={copyUrlToClipboard}>
+            <FaPaperclip />
           </MenuButton>
-        </Link>
-        <MenuButton onClick={copyUrlToClipboard}>
-          <FaPaperclip />
-        </MenuButton>
-        <Link href="/">
-          <MenuButton>
-            <FaHome />
-          </MenuButton>
-        </Link>
+        </> }
       </div>
     </>
   );

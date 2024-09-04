@@ -32,7 +32,7 @@ export default ({ channel, privateID, jwt }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                { (privateID || jwt) && <PageMenu /> }
+                <PageMenu loggedIn={privateID || jwt} /> 
                 <Banner 
                     channel={channel}
                     privateID={privateID}

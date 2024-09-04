@@ -120,6 +120,9 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     borderRadius: 'clamp(10px, 2vh, 20px)',
     zIndex: 1,
     alignItems: 'center',
+    transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
+    opacity: 1,
+    visibility: 'visible'
   };
 
   const iconButtonStyle = {

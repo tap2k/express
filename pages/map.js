@@ -17,7 +17,7 @@ export default ({ channel, privateID, jwt }) => {
     return (
         <>
             <div style={{ position: 'absolute', width: width}}>
-                { (privateID || jwt) && <PageMenu /> }
+                <PageMenu loggedIn={privateID || jwt} /> 
                 <Banner 
                     channel={channel}
                     privateID={privateID}
