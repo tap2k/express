@@ -2,13 +2,13 @@ import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
-import LoginButton from "../components/addmenu";
+import getUser from "../hooks/getuser";
 import AddMenu from "../components/addmenu";
 import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
-export default ({ channel, privateID, jwt }) => {
+export default ({ channel, privateID, jwt, user }) => {
     
     const backgroundStyle = channel.picture?.url 
         ? {
@@ -44,7 +44,7 @@ export default ({ channel, privateID, jwt }) => {
                     privateID={privateID}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} privateID={privateID} jwt={jwt} download />
+                <AddMenu channel={channel} privateID={privateID} jwt={jwt} user={user} download />
             </div>
         </div>
     );
@@ -64,6 +64,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
+        let user = await getUser(cookies.jwt) || null;
         const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
         
         if (!channel) {
@@ -79,7 +80,8 @@ export async function getServerSideProps(ctx) {
             props: { 
                 channel: channel,
                 privateID: privateID,
-                jwt: channel.canedit ? jwt : null
+                jwt: channel.canedit ? jwt : null,
+                user: user
             } 
         };
     } catch (err) {

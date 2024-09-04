@@ -15,7 +15,7 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddMenu({ channel, privateID, jwt, download }) {
+export default function AddMenu({ channel, privateID, jwt, user, download }) {
   if (!channel)
     return;
 
@@ -23,6 +23,13 @@ export default function AddMenu({ channel, privateID, jwt, download }) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const audioRef = useRef(null);
+
+  const handleDownload = async () => {
+    if (user)
+      await handleEmailSubmit(user.email);
+    else
+      setIsEmailModalOpen(true);
+  }
 
   const handleEmailSubmit = async (email) => {
     if (email)
@@ -74,7 +81,7 @@ export default function AddMenu({ channel, privateID, jwt, download }) {
         { (privateID || jwt) && download && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
-        { download && <CircularMenuButton onClick={() => setIsEmailModalOpen(true)}>
+        { download && <CircularMenuButton onClick={handleDownload}>
           <FaDownload  />
         </CircularMenuButton> }
         {channel.audiofile?.url && (
