@@ -12,7 +12,7 @@ import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
-export default function ChannelControls ({ channel, privateID, jwt, iconSize=20, flex="row" }) {
+export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row" }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -38,13 +38,15 @@ export default function ChannelControls ({ channel, privateID, jwt, iconSize=20,
     return;
 
   useEffect(() => {
+    if (setIsModalOpen)
+      setIsModalOpen(isImageModalOpen || isAudioModalOpen || isChannelModalOpen || isUserModalOpen)
     setUploading(false);
     setDeletePic(false);
     setSelectedImage(null);
     setSelectedAudio(null);
     setUploadedFiles([]);
     setProgress(0);
-  }, [isImageModalOpen, isAudioModalOpen]);
+  }, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isUserModalOpen]);
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>

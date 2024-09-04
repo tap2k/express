@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
@@ -11,16 +11,21 @@ import ContentEditor from "./contenteditor";
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef, iconSize=20, flexDirection="row" }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, setIsModalOpen, iconSize=20, flexDirection="row" }) {
   const router = useRouter();
 
   if (!contentItem || (!privateID && !jwt))
     return;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const mediaType = getMediaInfo(contentItem).type;
+
+  const [isEditModalOpen, setisEditModalOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
-  const mediaType = getMediaInfo(contentItem).type;
+  useEffect(() => {
+    if (setIsModalOpen)
+      setIsModalOpen(isEditModalOpen || isVoiceModalOpen)
+  }, [isEditModalOpen, isVoiceModalOpen]);
 
   const moveSlide = async (increment) => {
     const contentIndex = showTitle ? currSlide - 1 : currSlide;
@@ -115,7 +120,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, ic
         </button> }
         <button 
           onClick={() => {
-            setIsModalOpen(true);
+            setisEditModalOpen(true);
           }} 
           style={iconButtonStyle}
         >
@@ -137,8 +142,8 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, ic
           <FaTrash size={iconSize} color={iconColor} />
         </button>
       </div>
-      <ContentEditor contentItem={contentItem} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} privateID={privateID} jwt={jwt} />
-      <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
+      <ContentEditor contentItem={contentItem} isEditModalOpen={isEditModalOpen} setisEditModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
+      <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setisModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
     </>
   );
 };

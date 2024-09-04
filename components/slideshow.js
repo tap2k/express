@@ -9,7 +9,6 @@ import ItemControls from "./itemcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
-import ContentEditor from "./contenteditor";
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -50,6 +49,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -69,6 +69,10 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
   }, []);
+
+  useEffect(() => {
+    setIsModalOpen(isUploadModalOpen);
+  }, [isUploadModalOpen]);
 
   useEffect(() => {
     if (!audioRef.current)
@@ -150,7 +154,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      {!isInactive && <div style={{
+      {(!isInactive || isModalOpen) && <div style={{
         ...iconBarStyle, 
         bottom: 'clamp(10px, 2vh, 20px)', 
         left: '50%', 
@@ -199,8 +203,8 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         <CarouselProvider 
           isIntrinsicHeight 
           totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
-          touchEnabled={true} 
-          dragEnabled={true} 
+          touchEnabled={!(privateID || jwt)} 
+          dragEnabled={!(privateID || jwt)} 
           infinite 
           currentSlide={currSlide}
           style={{isolation: 'auto !important'}}
@@ -250,6 +254,16 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     }}>
                       {channel.description}
                     </div>
+                    {(privateID || jwt) && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        zIndex: 1000,
+                      }}>
+                        <ChannelControls channel={channel} privateID={privateID} iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </Slide> 
@@ -298,15 +312,13 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         </ModalBody>
       </Modal>
 
-      {(privateID || jwt) && !isInactive && (
+      {(privateID || jwt) && (!isInactive || isModalOpen) && (
         <div style={{
           position: 'absolute',
           top: 10,
           right: 10
         }}>
-        { showTitle && currSlide === 0 ?
-          <ChannelControls channel={channel} privateID={privateID} flex="column" iconSize={24} jwt={jwt} />
-          : <ItemControls contentItem={getCurrentContent()} privateID={privateID} flexDirection="column" iconSize={24} jwt={jwt} /> }
+        { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flexDirection="column" iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 
