@@ -31,6 +31,8 @@ export function isMediaFile(url)
     return false;
   if (validateYouTubeUrl(url))
     return true;
+  if (url.indexOf("googleusercontent") != -1)
+    return true;
   const type = mime.lookup(url);
   return type.startsWith("video") || type.startsWith("image") || type.startsWith("audio");
 }

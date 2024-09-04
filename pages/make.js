@@ -29,7 +29,7 @@ export default function Home({ jwt }) {
                 toggleEmailModal();
             }
             else
-                router.push('/editor?channelid='+respdata.uniqueID);
+                router.push('/editor?channelid='+respdata.uniqueID+'&edit=1');
         } catch (error) {
             console.error("Error creating channel:", error);
         }
