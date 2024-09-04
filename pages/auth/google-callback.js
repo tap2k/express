@@ -15,7 +15,7 @@ export default function GoogleCallback() {
 
       if (access_token) {
         try {
-          const url = getBaseURL() + "/auth/google-callback";
+          const url = getBaseURL() + "/api/auth/google/callback";
           const result = await axios.get(url, {
             params: { 
               access_token: access_token
@@ -66,4 +66,10 @@ export default function GoogleCallback() {
   }
 
   return null;
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {}
+  }
 }
