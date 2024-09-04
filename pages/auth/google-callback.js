@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import axios from 'axios';
 import { setCookie } from 'nookies';
 import getBaseURL from "../../hooks/getbaseurl";
@@ -6,17 +7,18 @@ import getBaseURL from "../../hooks/getbaseurl";
 export default function GoogleCallback({ error, jwt }) {
   const router = useRouter();
 
-  if (jwt) {
-    setCookie(null, 'jwt', jwt, {
-      maxAge: 30 * 24 * 60 * 60, // 30 days
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
-    });
+  useEffect(() => {
+    if (jwt) {
+      setCookie(null, 'jwt', jwt, {
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
 
-    router.push('/myreels');
-    return null;
-  }
+      router.push('/myreels');
+    }
+  }, [jwt, router]);
 
   if (error) {
     return (
@@ -28,7 +30,8 @@ export default function GoogleCallback({ error, jwt }) {
     );
   }
 
-  return null;
+  // Show a loading state while waiting for the redirect
+  return <div>Processing login...</div>;
 }
 
 export async function getServerSideProps(context) {
