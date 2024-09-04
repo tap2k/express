@@ -170,11 +170,11 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
           <FaPlus />
         </button> }
-        <button onClick={togglePlayPause} style={iconButtonStyle}>
-          {isPlaying ? <FaPause /> : <FaPlay />}
-        </button>
         <button onClick={toggleFullScreen} style={iconButtonStyle}>
           <FaExpandArrowsAlt />
+        </button>
+        <button onClick={togglePlayPause} style={iconButtonStyle}>
+          {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
         <button 
           onClick={async () => {
