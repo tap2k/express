@@ -1,58 +1,21 @@
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { setCookie } from 'nookies';
 import getBaseURL from "../../hooks/getbaseurl";
 
-export default function GoogleCallback() {
+export default function GoogleCallback({ error, jwt }) {
   const router = useRouter();
-  const [error, setError] = useState('');
-  const [isProcessing, setIsProcessing] = useState(true);
 
-  useEffect(() => {
-    async function handleCallback() {
-      const { access_token } = router.query;
+  if (jwt) {
+    setCookie(null, 'jwt', jwt, {
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
 
-      if (access_token) {
-        try {
-          const url = getBaseURL() + "/api/auth/google/callback";
-          const result = await axios.get(url, {
-            params: { 
-              access_token: access_token
-            }
-          });
-
-          if (result.data && result.data.jwt) {
-            // Set the JWT in a cookie
-            setCookie(null, 'jwt', result.data.jwt, {
-              maxAge: 30 * 24 * 60 * 60, // 30 days
-              path: '/',
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'strict'
-            });
-
-            // Redirect to dashboard or home page
-            router.push('/myreels');
-          } else {
-            setError('Authentication failed. Please try again.');
-          }
-        } catch (error) {
-            console.error('Error during Google callback:', error);
-            setError(`Error: ${JSON.stringify(error)}`);
-        } finally {
-          setIsProcessing(false);
-        }
-      } else {
-        setError('No access token provided.');
-        setIsProcessing(false);
-      }
-    }
-
-    handleCallback();
-  }, [router]);
-
-  if (isProcessing) {
-    return <div>Processing login...</div>;
+    router.push('/myreels');
+    return null;
   }
 
   if (error) {
@@ -68,8 +31,34 @@ export default function GoogleCallback() {
   return null;
 }
 
-export async function getServerSideProps(ctx) {
-  return {
-    props: {}
+export async function getServerSideProps(context) {
+  const { access_token } = context.query;
+
+  if (!access_token) {
+    return {
+      props: { error: 'No access token provided.' }
+    };
+  }
+
+  try {
+    const url = getBaseURL() + "/api/auth/google/callback";
+    const result = await axios.get(url, {
+      params: { access_token }
+    });
+
+    if (result.data && result.data.jwt) {
+      return {
+        props: { jwt: result.data.jwt }
+      };
+    } else {
+      return {
+        props: { error: 'Authentication failed. Please try again.' }
+      };
+    }
+  } catch (error) {
+    console.error('Error during Google callback:', error);
+    return {
+      props: { error: `Server error: ${error.message}` }
+    };
   }
 }
