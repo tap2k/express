@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/router';
+import { useState, useRef, useEffect } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaEdit, FaTrash, FaImage, FaMusic, FaUserPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
@@ -13,7 +13,6 @@ import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
 export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row" }) {
-  const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -33,6 +32,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   const publicRef = useRef();
   const allowRef = useRef();
   const intervalRef = useRef();
+  const router = useRouter();
 
   if (!channel || (!privateID && !jwt))
     return;

@@ -1,8 +1,35 @@
-import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import Link from 'next/link';
-import { FaUpload, FaEdit, FaShare, FaPlus } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
+import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import deleteChannel from '../hooks/deletechannel';
 
 export default function MyReels ({ channels, user, jwt }) {
+
+  const router = useRouter();
+
+  const handleDeleteChannel = (uniqueID) => {
+    confirmAlert({
+      title: 'Delete reel?',
+      message: 'Are you sure you want to delete this reel?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            await deleteChannel({ channelID: uniqueID, jwt });
+            await router.replace(router.asPath, undefined, { scroll: false });
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
   return (
     <Container className="py-3">
       <Row className="mb-4 p-2 align-items-center">
@@ -31,9 +58,21 @@ export default function MyReels ({ channels, user, jwt }) {
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />
                     </Link>
-                    <Link href={`/upload?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#ff9800', borderColor: '#ff9800', borderRadius: '10px' }} title="Upload">
+                    { (user.id == channel.owner.id) && <button 
+                        onClick={() => handleDeleteChannel(channel.uniqueID)}
+                        className="btn btn-outline-primary m-1"
+                        style={{ 
+                          flexGrow: 1, 
+                          color: '#d9534f',
+                          borderColor: '#d9534f',
+                          borderRadius: '10px' 
+                        }}
+                        >
+                        <FaTrash className="me-1" />
+                    </button> }
+                    {false && <Link href={`/upload?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#ff9800', borderColor: '#ff9800', borderRadius: '10px' }} title="Upload">
                       <FaUpload className="me-1" />
-                    </Link>
+                    </Link>}
                     <Link href={`/reel?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }} title="Share Project">
                       <FaShare className="me-1" />
                     </Link>

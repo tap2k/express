@@ -52,8 +52,8 @@ export function getMediaInfo(contentItem, thumbnail) {
 
     if (url.indexOf("googleusercontent") != -1)
     {
-      if (!thumbnail)
-        url = url + "=w1920";
+      //if (!thumbnail)
+      //  url = url + "=w1920";
       return { url: url, type: "image/jpeg" };
     }
 
