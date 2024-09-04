@@ -6,6 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
+import { IconBar, IconButton } from './recorderstyles';
 import { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
 
@@ -76,75 +77,50 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
     });
   };
 
-  const iconColor = "rgba(0, 0, 0, 0.5)";
-
-  const iconButtonStyle = { 
-    background: 'rgba(255, 255, 255, 0.5)', 
-    border: 'none', 
-    borderRadius: '50%', 
-    padding: '5px' 
-  }
-
   return (
     <>
-      <div style={{
-        position: 'absolute',
-        top: 5,
-        right: 5,
-        display: 'flex',
-        flexDirection: flexDirection,
-        gap: iconSize/3,
-        zIndex: 1,
-        transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
-        opacity: 1,
-        visibility: 'visible'
-      }}>
-        { dragRef && <button 
+      <IconBar flexDirection={flexDirection} iconSize={iconSize}>
+        { dragRef && <IconButton 
           ref={dragRef}
-          style={iconButtonStyle}
         >
-          <FaGripVertical size={iconSize} color={iconColor} />
-        </button> }
+          <FaGripVertical size={iconSize} />
+        </IconButton> }
         { flexDirection === "column" && <>
-          <button onClick={() => moveSlide(-1)} style={iconButtonStyle}>
-            <FaArrowLeft size={iconSize} color={iconColor} />
-          </button>
-          <button onClick={() => moveSlide(1)} style={iconButtonStyle}>
-            <FaArrowRight size={iconSize} color={iconColor} />
-          </button>
+          <IconButton onClick={() => moveSlide(-1)}>
+            <FaArrowLeft size={iconSize} />
+          </IconButton>
+          <IconButton onClick={() => moveSlide(1)}>
+            <FaArrowRight size={iconSize} />
+          </IconButton>
         </> }
-        { mediaType.startsWith("image") && <button 
+        { mediaType.startsWith("image") && <IconButton 
           onClick={() => {
             setIsVoiceModalOpen(true);
           }} 
-          style={iconButtonStyle}
         >
-          <FaMicrophone size={iconSize} color={iconColor} />
-        </button> }
-        <button 
+          <FaMicrophone size={iconSize} />
+        </IconButton> }
+        <IconButton
           onClick={() => {
             setisEditModalOpen(true);
           }} 
-          style={iconButtonStyle}
         >
-          <FaEdit size={20} color={iconColor} />
-        </button>
-        <button 
+          <FaEdit size={iconSize} />
+        </IconButton>
+        <IconButton 
           onClick={handlePublish} 
-          style={iconButtonStyle}
         >
           {contentItem.publishedAt ? 
-            <FaTimes size={iconSize} color={iconColor} /> : 
-            <FaCheck size={iconSize} color={iconColor} />
+            <FaTimes size={iconSize} /> : 
+            <FaCheck size={iconSize} />
           }
-        </button>
-        <button 
+        </IconButton>
+        <IconButton 
           onClick={handleDelete} 
-          style={iconButtonStyle}
         >
-          <FaTrash size={iconSize} color={iconColor} />
-        </button>
-      </div>
+          <FaTrash size={iconSize} />
+        </IconButton>
+      </IconBar>
       <ContentEditor contentItem={contentItem} isEditModalOpen={isEditModalOpen} setisEditModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
       <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setisModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
     </>

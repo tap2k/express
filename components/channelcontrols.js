@@ -7,6 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
 import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { IconBar, IconButton, StyledButton } from './recorderstyles';
 import ChannelInputs from "./channelinputs";
 import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
@@ -86,15 +87,6 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     await router.replace(router.asPath);
   };
 
-  const iconColor = "rgba(0, 0, 0, 0.5)";
-
-  const iconButtonStyle = { 
-    background: 'rgba(255, 255, 255, 0.5)', 
-    border: 'none', 
-    borderRadius: '50%', 
-    padding: '5px' 
-  }
-
   const buttonStyle = {
     fontSize: 'medium',
     width: '100%',
@@ -110,57 +102,41 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
 
   return (
     <>
-      <div style={{
-          position: 'absolute',
-          top: 5,
-          right: 5,
-          display: 'flex',
-          gap: iconSize/3,
-          zIndex: 1,
-          flexDirection: flex,
-          transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
-          opacity: 1,
-          visibility: 'visible'
-      }}>
-        <button 
+      <IconBar flexDirection="row" iconSize={iconSize}>
+        <IconButton 
           onClick={() => {
               setIsAudioModalOpen(true);
           }} 
-          style={iconButtonStyle}
           >
-          <FaMusic size={iconSize} color={iconColor} />
-        </button>
-        <button 
+          <FaMusic size={iconSize} />
+        </IconButton>
+        <IconButton 
           onClick={() => {
               setIsImageModalOpen(true);
           }} 
-          style={iconButtonStyle}
           >
-          <FaImage size={iconSize} color={iconColor} />
-        </button>
-        { jwt && <button 
+          <FaImage size={iconSize} />
+        </IconButton>
+        { channel.owned && <IconButton 
           onClick={() => {
               setIsUserModalOpen(true);
           }} 
-          style={iconButtonStyle}
           >
-          <FaUserPlus size={iconSize} color={iconColor} />
-        </button> }
-        <button 
+          <FaUserPlus size={iconSize} />
+        </IconButton> }
+        <IconButton 
             onClick={() => {
                 setIsChannelModalOpen(true);
             }} 
-            style={iconButtonStyle}
             >
-            <FaEdit size={iconSize} color={iconColor} />
-        </button>
-        { channel.owned && <button 
+            <FaEdit size={iconSize} />
+        </IconButton>
+        { channel.owned && <IconButton 
             onClick={handleDeleteChannel} 
-            style={iconButtonStyle}
             >
-            <FaTrash size={iconSize} color={iconColor} />
-        </button> }
-    </div>
+            <FaTrash size={iconSize} />
+        </IconButton> }
+    </IconBar>
 
     <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
       <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
