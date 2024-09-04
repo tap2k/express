@@ -38,17 +38,7 @@ export default function GoogleCallback() {
           }
         } catch (error) {
             console.error('Error during Google callback:', error);
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              setError(`Server error: ${error.response.data.message || error.response.statusText}`);
-            } else if (error.request) {
-              // The request was made but no response was received
-              setError('No response received from the server. Please try again.');
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              setError(`Error: ${error.message}`);
-            }
+            setError(`Error: ${JSON.stringify(error)}`);
         } finally {
           setIsProcessing(false);
         }
