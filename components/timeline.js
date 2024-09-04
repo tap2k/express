@@ -31,8 +31,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
 
-    console.log(JSON.stringify(contentItem.mediafile));
-
     const calculateTimelineClick = (e) => {
         if (!timelineRef?.current)
             return;
@@ -181,7 +179,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         borderRadius: '10px',
         overflow: 'visible', // Changed from 'hidden' to show time indicators
         cursor: 'pointer',
-        zIndex: 99999,  
+        zIndex: 1,  
         pointerEvents: 'auto',
     };
     

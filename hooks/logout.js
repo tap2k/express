@@ -11,7 +11,9 @@ export default async function logout(router)
     return null;
   }
   try {
-    await axios.post(router.basePath + '/api/logout');
+    await axios.post(router.basePath + '/api/logout', {}, {
+      withCredentials: true
+    });
     return true;
   } catch (err) {
     setError(err);

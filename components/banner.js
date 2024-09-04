@@ -9,7 +9,7 @@ export default function Banner({ channel, privateID, jwt }) {
     position: 'absolute',
     top: '0.8rem',
     right: '20px',
-    zIndex: 100,
+    zIndex: 1,
     padding: 5
   };
 
@@ -20,7 +20,6 @@ export default function Banner({ channel, privateID, jwt }) {
         backgroundColor: 'transparent',
         padding: '1.5rem',
         border: 'none',
-        zIndex: 90
       }}>
         <div style={{
           display: 'flex',

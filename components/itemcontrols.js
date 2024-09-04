@@ -64,7 +64,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef }) 
         right: 5,
         display: 'flex',
         gap: '5px',
-        zIndex: 90
+        zIndex: 1
       }}>
         { dragRef && <button 
           ref={dragRef}

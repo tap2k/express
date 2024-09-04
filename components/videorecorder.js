@@ -190,7 +190,6 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
 
         if (videoRef.current) {
           const url = URL.createObjectURL(recordedBlob);
-          console.log("url = " + url);
           videoRef.current.src = url;
           videoRef.current.srcObject = null;
           videoRef.current.muted = false;
@@ -283,7 +282,7 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
               position: 'absolute',
               top: '10px',
               right: '10px',
-              zIndex: 10,
+              zIndex: 1,
               background: 'white',
               border: 'none',
               borderRadius: '50%',

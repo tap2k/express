@@ -31,9 +31,9 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
   const updateColumns = () => {
     if (containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth;
-      if (containerWidth >= 1200) setColumns(2);
-      else if (containerWidth >= 996) setColumns(2);
-      else if (containerWidth >= 768) setColumns(1);
+      if (containerWidth >= 1200) setColumns(4);
+      else if (containerWidth >= 996) setColumns(3);
+      else if (containerWidth >= 768) setColumns(2);
       else setColumns(1);
     }
   };

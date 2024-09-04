@@ -9,7 +9,7 @@ export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
     width: '20%',
     maxWidth: 200,
     aspectRatio: '1 / 1', 
-    zIndex: 200,
+    zIndex: 1,
     cursor: 'pointer',
     opacity: 0.9
   };

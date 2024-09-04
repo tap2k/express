@@ -12,7 +12,7 @@ export default function setError(err)
     setErrorText(err.response.data.error.message);
   else
   {
-    console.log(err);
+    console.error(err);
     setErrorText("Server error");
   } 
 }  

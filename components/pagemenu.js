@@ -10,7 +10,7 @@ export default function PageMenu( ) {
     position: 'absolute',
     top: '0px',
     left: '0px',
-    zIndex: 100,
+    zIndex: 5,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

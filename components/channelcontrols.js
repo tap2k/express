@@ -112,7 +112,7 @@ export default function ChannelControls ({ channel, privateID, jwt }) {
           right: 5,
           display: 'flex',
           gap: '5px',
-          zIndex: 90
+          zIndex: 1
       }}>
         <button 
           onClick={() => {

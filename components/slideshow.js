@@ -32,7 +32,7 @@ const downloadURL = async (dlurl) => {
     a.click();
     window.URL.revokeObjectURL(url);
   } catch (err) {
-    console.log("Download failed: " + err);
+    console.error("Download failed: " + err);
   }
 }
 
@@ -175,7 +175,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     backgroundColor: 'rgba(50, 50, 50, 0.5)',
     padding: 'clamp(8px, 0.5vh, 20px)',
     borderRadius: 'clamp(10px, 2vh, 20px)',
-    zIndex: 90,
+    zIndex: 1,
     alignItems: 'center',
   };
 
@@ -353,7 +353,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                         position: 'absolute',
                         top: 0,
                         right: 0,
-                        zIndex: 1000,
                       }}>
                         <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />
                       </div>

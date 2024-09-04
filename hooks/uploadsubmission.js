@@ -19,11 +19,11 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
   if (!myFormData)
     myFormData = new FormData();
 
-  if (getFormDataSize(myFormData) > 50e6)
+  /*if (getFormDataSize(myFormData) > 50e6)
   {
     setErrorText("File size too big: Maximum is 50MB");
     return null;
-  }
+  }*/
     
   if (contentID)
     myFormData.append("contentID", contentID);

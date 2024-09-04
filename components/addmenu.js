@@ -65,7 +65,7 @@ export default function AddMenu({ channel, privateID, jwt, download }) {
       bottom: '10px',
       right: '10px',
       display: 'flex',
-      zIndex: 90,
+      zIndex: 1,
   };
 
   return (
