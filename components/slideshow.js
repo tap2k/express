@@ -167,7 +167,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
         { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
           <FaPaperclip />
         </button> }
-        { (privateID || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
+        { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
           <FaPlus />
         </button> }
         <button onClick={togglePlayPause} style={iconButtonStyle}>
