@@ -26,7 +26,7 @@ function getAudioDurationFromFile(file) {
 
 export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
-    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ?(interval / 1000.0) : 0);
+    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ? interval : duration);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
@@ -43,7 +43,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     useEffect(() => {
         if (mediaRef?.current) 
             mediaRef.current.currentTime = startTime;
-        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : duration);
+        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ? interval : duration);
     }, [duration]);
 
     useEffect(() => {
