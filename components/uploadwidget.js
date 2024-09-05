@@ -70,7 +70,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         {uploadedFiles.length > 0 && !dontShowFiles ? (
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(90, Math.min(140, 750 / (uploadedFiles.length)))}px, 1fr))` : '100%',
+            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(120, Math.min(200, 750 / (uploadedFiles.length)))}px, 1fr))` : '100%',
             gap: '12px', 
             width: '100%',
             height: '100%',

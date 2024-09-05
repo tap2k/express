@@ -41,7 +41,10 @@ export default function MediaPreview({ url, type, onRemove }) {
   if (type.startsWith('image/')) {
     mediaElement = <img src={url} alt="Preview" style={mediaStyle} />;
   } else if (type.startsWith('video/')) {
-    mediaElement = <video src={url} style={mediaStyle} controls />;
+    mediaElement = 
+      <>
+        <video src={url} style={mediaStyle} />;
+      </>
   } else if (type.startsWith('audio/')) {
     mediaElement = <audio src={url} controls style={{ width: '100%', maxWidth: '300px' }} />;
   }
