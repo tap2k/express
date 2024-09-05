@@ -35,7 +35,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         if (!timelineRef?.current)
             return;
         const rect = timelineRef.current.getBoundingClientRect();
-        const position = (e.clientX - rect.left) / rect.width;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const position = (clientX - rect.left) / rect.width;
         const newTime = Math.min(Math.max(position * duration, 0), duration);
         return newTime;
     }        
@@ -120,7 +121,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     }, [isPlaying]);
 
     const handleDrag = (e) => {
-        const newTime = calculateTimelineClick(e);
+        const clientX = e.clientX || e.touches[0].clientX;
+        const newTime = calculateTimelineClick({ clientX });
         if (currentHandleRef.current === 'start') {
             if (!mediaRef?.current)
                 return;
@@ -155,13 +157,35 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         document.removeEventListener('mouseup', handleMouseUp);
     };
 
+    const handleTouchStart = (handle) => (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        currentHandleRef.current = handle;
+
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+    };
+
+    const handleTouchMove = (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        handleDrag({ clientX: touch.clientX });
+    };
+
+    const handleTouchEnd = () => {
+        currentHandleRef.current = null;
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+    };
+
     const handleTimelineClick = (e) => {
         if (currentHandleRef.current || !timelineRef.current || !mediaRef?.current) return;
         
         if (e.target.closest('.timeline-handle')) return;
 
         const rect = timelineRef.current.getBoundingClientRect();
-        const clickPosition = (e.clientX - rect.left) / rect.width;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clickPosition = (clientX - rect.left) / rect.width;
         const clickTime = clickPosition * duration;
 
         if (clickTime >= startTime && clickTime <= endTime) 
@@ -232,12 +256,14 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             <div 
                 ref={timelineRef}
                 onClick={handleTimelineClick}
+                onTouchStart={handleTimelineClick}
                 style={timelineStyle}
             >
                 <div style={currWindowStyle} />
                 <div
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('start')}
+                    onTouchStart={handleTouchStart('start')}
                     style={{...handleStyle, left: `${(startTime / duration) * 100}%`}}
                 >
                     <FaGripLinesVertical color="white" size={12} />
@@ -248,6 +274,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 <div
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('end')}
+                    onTouchStart={handleTouchStart('end')}
                     style={{...handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
                 >
                     <FaGripLinesVertical color="white" size={12} />
