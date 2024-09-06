@@ -7,8 +7,6 @@ export default async function dalle(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  console.log(req.body);
-
   try {
     if (!req.body.name)
     {
