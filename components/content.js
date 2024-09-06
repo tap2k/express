@@ -157,6 +157,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         cover={cover}
         controls={controls}
         mediaRef={mediaRef}
+        style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
       />
     );
   }
