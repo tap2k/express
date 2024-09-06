@@ -3,16 +3,15 @@ import { useRef, useState } from "react";
 import { Progress } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
-import { imageOptions } from './fileoptions';
 import { RecorderWrapper, StyledButton } from './recorderstyles';
-import ImageGallery from "./imagegallery";
+import MediaPicker from "./mediapicker";
 import ContentInputs from "./contentinputs";
 
 export default function GreetingCard({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -21,7 +20,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!titleRef.current?.value && !uploadedFiles.length)
+    if (!titleRef.current?.value)
       return;
     if (setUploading)
       setUploading(true);
@@ -51,7 +50,8 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
         name: nameRef.current?.value,
         email: emailRef.current?.value,
         location: locationRef.current?.value,
-        ext_url: extUrlRef.current?.value, 
+        ext_url: extUrlRef.current?.value,
+        textAlignment: 'center', 
         privateID,
         jwt,
         setProgress, 
@@ -71,6 +71,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
         extUrlRef.current.value = "";
     }
     catch (error) {
+      console.log(error.message);
       console.error('Error uploading content:', error);
       setError('Failed to upload content. Please try again.');
     }
@@ -82,7 +83,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
 
   return (
     <RecorderWrapper  {...props}>
-      <ImageGallery imageOptions={imageOptions} selectedImage={selectedImage} setSelectedImage={setSelectedImage} uploading={generating} setUploading={setGenerating} setProgress={setProgress} />
+      <MediaPicker generating={generating} setGenerating={setGenerating} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} gallery="image" dalle setProgress={setProgress} />
       <Progress value={progress} />
       <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
       <StyledButton

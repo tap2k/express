@@ -50,13 +50,12 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, emailRef
         />
       )}
 
-      { // TODO: This is a bit hacky
-      textAlignmentRef && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.mediafile?.url?.includes("dalle") && (
+      {textAlignmentRef && (
         <StyledInput
           type="select"
           innerRef={textAlignmentRef}
           placeholder="Select text alignment"
-          defaultValue={contentItem?.textalignment || 'center'}
+          defaultValue={contentItem?.textalignment || 'top'}
         >
           <option value="top">Top</option>
           <option value="center">Center</option>

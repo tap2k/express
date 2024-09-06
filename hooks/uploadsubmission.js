@@ -7,10 +7,10 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadSubmission({ myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, setProgress, router, channelID, privateID, jwt }) 
+export default async function uploadSubmission({ myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, textAlignment, setProgress, router, channelID, privateID, jwt }) 
 { 
 
-  if (((!channelID || !jwt) && !privateID) || !router)
+  if (!channelID || !router)
   {
     setErrorText("No channel or router provided");
     return null;
@@ -49,16 +49,24 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
   // TODO: FIX THIS!
   //if (published)
   myFormData.append("published", "true");
+  if (textAlignment)
+    myFormData.append("textalignment", textAlignment);
 
   let url = getBaseURL() + "/api/uploadSubmission";
   let headerclause = {};
-  if (privateID)
-    myFormData.append("privateID", privateID);
-  else
+
+  if (jwt)
   {
     myFormData.append("uniqueID", channelID)
     url = getBaseURL() + "/api/uploadContentToChannel";
     headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
+  else
+  {
+    if (privateID)
+      myFormData.append("privateID", privateID);
+    else
+      myFormData.append("uniqueID", channelID)
   }
   
   try {
