@@ -46,7 +46,7 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
           </StyledButton>
         )}
         {setSelectedColor && (
-          <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(False)}}>
+          <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(false)}}>
             Colors
           </StyledButton>
         )}

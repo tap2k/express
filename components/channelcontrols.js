@@ -173,7 +173,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedColor)}
           block
           color="success"
-          style={{marginTop: '10px'}}
+          style={{marginTop: '20px'}}
         >
           <b>Update Reel</b>
         </Button>
