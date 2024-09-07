@@ -20,7 +20,7 @@ export default function MyReels ({ channels, user, jwt }) {
           label: 'Yes',
           onClick: async () => {
             await deleteChannel({ channelID: uniqueID, jwt });
-            await router.replace(router.asPath, undefined, { scroll: false });
+            router.replace(router.asPath, undefined, { scroll: false });
           }
         },
         {

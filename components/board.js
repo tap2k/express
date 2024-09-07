@@ -44,7 +44,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
       return;
     try {
       await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID, jwt });
-      await router.replace(router.asPath, undefined, { scroll: false });
+      router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
     }

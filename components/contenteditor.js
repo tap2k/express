@@ -43,7 +43,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     });
     setUpdating(false);
     setIsModalOpen(false);
-    await router.replace(router.asPath, undefined, { scroll: false });
+    router.replace(router.asPath, undefined, { scroll: false });
   };
   
   const closeBtn = (toggle) => (

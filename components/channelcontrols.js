@@ -62,7 +62,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           label: 'Yes',
           onClick: async () => {
             await deleteChannel({ channelID: channel.uniqueID, privateID, jwt });
-            await router.push('/');
+            router.push('/');
           }
         },
         {
@@ -84,7 +84,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     setIsChannelModalOpen(false);
     setIsAudioModalOpen(false);
     setIsImageModalOpen(false);
-    await router.replace(router.asPath);
+    router.replace(router.asPath);
   };
 
   const iconBarStyle = {

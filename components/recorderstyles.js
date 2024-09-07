@@ -75,4 +75,3 @@ export const IconButton = styled.button`
     color: rgba(0, 0, 0, 0.5);
   }
 `;
-

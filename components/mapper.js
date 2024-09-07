@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { Input } from "reactstrap";
 import { FaUndo } from 'react-icons/fa';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
@@ -6,16 +8,18 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
-import ContentMarker from "../components/contentmarker";
+import updateChannel from "../hooks/updatechannel";
+import ContentMarker from "./contentmarker";
 
-export default function Mapper({ channel, itemWidth, privateID, jwt, autoPlay, animate, tour, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, autoPlay, animate, tour, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
-  const markerRefs = [];
-
   //  TODO: to make sure it loads
   const [mapKey, setMapKey] = useState(0);
+  const router = useRouter();
+
+  const markerRefs = [];
 
   useEffect(() => {
     setMapKey(prevKey => prevKey + 1);
@@ -96,8 +100,37 @@ export default function Mapper({ channel, itemWidth, privateID, jwt, autoPlay, a
     gotoSlide(currSlide-1);
   }
 
+  async function handleTilesetChange(event) {
+    await updateChannel({tileset: event.target.value, channelID: channel.uniqueID, privateID: privateID, jwt: jwt});
+    router.replace(router.asPath, undefined, { scroll: false });
+    //setMapKey(prevKey => prevKey + 1);
+    //router.reload();
+  }
+
   return (
     <div {...props}>
+      {tilesets && tilesets.length && <Input 
+        type="select" 
+        defaultValue={channel.tileset?.id}
+        onChange={handleTilesetChange}
+        style={{
+          position: 'absolute',
+          top: '15px',
+          right: '35px',
+          zIndex: 10,
+          width: 'auto',
+          backgroundColor: 'rgba(92, 131, 156, 0.6)',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        {tilesets.map(tileset => (
+          <option key={tileset.id} value={tileset.id}>{tileset.name}</option>
+        ))}
+      </Input>}
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
         <MarkerClusterGroup

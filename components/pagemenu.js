@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
-import setError, { setErrorText } from "../hooks/seterror";
+import setError from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 
 export default function PageMenu({ loggedIn, editor } ) {

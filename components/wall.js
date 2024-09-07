@@ -68,7 +68,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
       if (!privateID && !jwt)
         return;
       await updateSubmission({ contentID: id, order: prevContents[dropIndex].order, privateID, jwt })
-      await router.replace(router.asPath, undefined, { scroll: false });
+      router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       setError(error);
     }

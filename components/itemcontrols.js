@@ -40,14 +40,14 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
         currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
       };
       setCurrSlide(currSlide + increment);
-      await router.replace({ pathname: router.pathname, query: newQuery });
+      router.replace({ pathname: router.pathname, query: newQuery });
     }
   }
 
   const handlePublish = async () => {
     try {
       await updateSubmission({contentID: contentItem.id, published: !contentItem.publishedAt, jwt});
-      await router.replace(router.asPath, undefined, { scroll: false });
+      router.replace(router.asPath, undefined, { scroll: false });
     } catch (error) {
       console.error("Error updating publish status:", error);
     }
@@ -63,7 +63,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
           onClick: async () => {
             try {
               await deleteSubmission({contentID: contentItem.id, privateID, jwt});
-              await router.replace(router.asPath, undefined, { scroll: false });
+              router.replace(router.asPath, undefined, { scroll: false });
             } catch (error) {
               console.error("Error deleting submission:", error);
             }

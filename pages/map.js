@@ -6,10 +6,11 @@ import PageMenu from '../components/pagemenu';
 import Banner from "../components/banner";
 import AddMenu from "../components/addmenu";
 import getChannel from "../hooks/getchannel";
+import getTilesets from "../hooks/gettilesets";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
-export default ({ channel, privateID, jwt }) => {
+export default ({ channel, tilesets, privateID, jwt }) => {
     const width = "100vw";
     const height = use100vh();
     //const height = "100vh";
@@ -25,7 +26,7 @@ export default ({ channel, privateID, jwt }) => {
                     isSlideshow
                 />
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} jwt={jwt} autoPlay tour />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} height={height} privateID={privateID} tilesets={tilesets} jwt={jwt} autoPlay tour />
             <AddMenu channel={channel} privateID={privateID} jwt={jwt} />
         </>
     );
@@ -45,7 +46,6 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        // TODO: Hack for testing
         const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: edit });
         
         if (!channel) {
@@ -57,11 +57,14 @@ export async function getServerSideProps(ctx) {
             };
         }
 
+        const tilesets = await getTilesets();
+
         return { 
             props: { 
                 channel: channel,
                 privateID: privateID,
-                jwt: channel.canedit && edit ? jwt : null
+                jwt: channel.canedit && edit ? jwt : null,
+                tilesets: tilesets
             } 
         };
     } catch (err) {
