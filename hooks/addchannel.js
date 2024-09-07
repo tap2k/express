@@ -65,7 +65,7 @@ export default async function addChannel({ name, description, email, showtitle, 
                 onUploadProgress: setProgress ? (progressEvent) => {
                         const progress = (progressEvent.loaded / progressEvent.total) * 100;
                         setProgress(progress);
-                    } : {},
+                    } : undefined,
                 },
         );
     return response.data;

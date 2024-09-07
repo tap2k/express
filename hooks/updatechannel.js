@@ -91,7 +91,7 @@ export default async function updateChannel({ myFormData, name, description, int
         onUploadProgress: setProgress ? (progressEvent) => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           setProgress(progress);
-        } : {},
+        } : undefined,
       },
     );
   } catch (err) {

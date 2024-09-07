@@ -60,7 +60,7 @@ export default async function updateSubmission( {myFormData, contentID, order, t
       onUploadProgress: setProgress ? (progressEvent) => {
         const progress = (progressEvent.loaded / progressEvent.total) * 100;
         setProgress(progress);
-      } : {},
+      } : undefined,
     });
   } catch (err) {
     setError(err);

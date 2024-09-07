@@ -33,6 +33,7 @@ export default function Banner({ channel, privateID, jwt }) {
             padding: '1.5rem 3rem',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             backdropFilter: 'blur(5px)',
+            minWidth: '300px'
           }}>
             <h1 style={{
               color: '#0a4f6a',

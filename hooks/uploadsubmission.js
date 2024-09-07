@@ -80,7 +80,7 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
         onUploadProgress: setProgress ? (progressEvent) => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           setProgress(progress);
-        } : {},
+        } : undefined,
       },
     );
 
