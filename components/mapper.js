@@ -103,6 +103,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   async function handleTilesetChange(event) {
     await updateChannel({tileset: event.target.value, channelID: channel.uniqueID, privateID: privateID, jwt: jwt});
     router.replace(router.asPath, undefined, { scroll: false });
+    resetMap();
     //setMapKey(prevKey => prevKey + 1);
     //router.reload();
   }
@@ -115,10 +116,10 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         onChange={handleTilesetChange}
         style={{
           position: 'absolute',
-          top: '15px',
-          right: '35px',
+          top: '10px',
+          right: '10px',
           zIndex: 10,
-          width: 'auto',
+          width: '95px',
           backgroundColor: 'rgba(92, 131, 156, 0.6)',
           color: 'white',
           border: 'none',
