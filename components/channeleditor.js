@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { StyledInput } from './recorderstyles';
-import { Input, Button, FormGroup, Label } from 'reactstrap';
+import { Input, Button, FormGroup, Label, Progress } from 'reactstrap';
 import { imageOptions, audioOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
 import AudioGrid from './audiogrid';
@@ -14,6 +14,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
   const intervalRef = useRef();
   const [showTitleSlide, setShowTitleSlide] = useState(channel ? channel.showtitle : true);
   const [updating, setUpdating] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const [selectedImage, setSelectedImage] = useState(() => {
     if (!channel?.picture?.url) return "None";
@@ -42,7 +43,8 @@ export default function ChannelEditor({ channel, onSubmit }) {
       interval: intervalRef.current?.value,
       //ispublic: true,
       picturefile: selectedImage,
-      audiofile: selectedAudio
+      audiofile: selectedAudio,
+      setProgress: setProgress
     });
     setUpdating(false);
   };
@@ -51,7 +53,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
     fontSize: 'large',
     width: '100%',
     padding: '12px',
-    marginTop: '10px',
+    marginTop: '0px',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     backgroundColor: '#5dade2', 
@@ -162,6 +164,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
           setSelectedAudio={setSelectedAudio}
         />
       
+      <Progress value={progress} />
       <Button
         onClick={handleSubmit}
         style={buttonStyle}
