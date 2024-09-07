@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
+import setError, { setErrorText } from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 
-export default function PageMenu({ loggedIn } ) {
+export default function PageMenu({ loggedIn, editor } ) {
   const router = useRouter();
 
   const rowStyle = {
@@ -21,17 +22,23 @@ export default function PageMenu({ loggedIn } ) {
     visibility: 'visible'
   };
 
+  
   const copyUrlToClipboard = () => {
+    if (typeof window === 'undefined' || !navigator.clipboard) {
+      setError('Clipboard functionality is not available');
+      return;
+    }
     const baseurl = new URL(window.location.href);
-    let channelid = router.query.channelid;
-    if (channelid && channelid.includes(':'))
-        [channelid] = channelid.split(':');
-    let pathname = baseurl.pathname;
-    const url = `${baseurl.origin}${pathname}?channelid=${channelid}`;  
+    let channelid = new URLSearchParams(window.location.search).get('channelid');
+    if (channelid && channelid.includes(':')) {
+      [channelid] = channelid.split(':');
+    }
+    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channelid}`;
+  
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
       .catch(err => console.error('Failed to copy URL: ', err));
-  }
+  };
 
   return (
     <>
@@ -82,9 +89,9 @@ export default function PageMenu({ loggedIn } ) {
               <FaFilm />
             </MenuButton>
           </Link>
-          <MenuButton onClick={copyUrlToClipboard}>
+          {!editor && <MenuButton onClick={copyUrlToClipboard}>
             <FaPaperclip />
-          </MenuButton>
+          </MenuButton>}
         </> }
       </div>
     </>

@@ -33,7 +33,7 @@ export default ({ channel, privateID, jwt, user }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                <PageMenu loggedIn={privateID || jwt} />
+                <PageMenu loggedIn={privateID || jwt} editor />
                 <Banner 
                     channel={channel}
                     privateID={privateID}
@@ -64,7 +64,10 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        let user = await getUser(cookies.jwt) || null;
+        let user = null;
+        if (cookies?.jwt)
+            user = getUser(cookies.jwt) | null;
+
         const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
         
         if (!channel) {
