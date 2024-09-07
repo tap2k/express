@@ -1,5 +1,6 @@
 import axios from 'axios';
 import getBaseURL from "../hooks/getbaseurl";
+import setError from "./seterror";
 
 export default async function addChannel({ name, description, email, showtitle, ispublic, allowsubmissions, interval, picturefile, audiofile, setProgress, jwt }) 
 {    
