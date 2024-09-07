@@ -46,7 +46,7 @@ export const MenuButton = styled(Button)`
   border-radius: 8px;
   cursor: pointer;
   font-size: calc(0.8vmin + 1.0em);
-  padding: 6px 12px;
+  padding: 6px 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;

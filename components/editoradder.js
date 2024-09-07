@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/router';
 import { Button, FormGroup, Form, Input } from "reactstrap";
+import { FaPlus } from 'react-icons/fa';
 import addEditor from "../hooks/addeditor";
 
 export default function EditorAdder ({ channel, jwt, ...props }) 
@@ -26,8 +27,8 @@ export default function EditorAdder ({ channel, jwt, ...props })
     <div {...props}>
       <Form onSubmit={addFormEditor} id="addeditor">
         <FormGroup>
-          <Input id="email" name="email" placeholder="email" type="email" style={{display:"inline-block", width: 260}} />
-          <Button style={{marginLeft: 10}} color="primary" size="sm">add editor</Button>
+          <Input id="email" name="email" placeholder="email" type="email" style={{display:"inline-block", width: 250}} />
+          <Button style={{marginLeft: 10}} color="primary" size="sm"><FaPlus /></Button>
         </FormGroup>
       </Form>
     </div>

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/router';
 import { Button } from "reactstrap";
+import { FaTrash } from 'react-icons/fa';
 import removeEditor from "../hooks/removeeditor";
 
 export default function EditorTable ({ channel, maxHeight, jwt, ...props }) 
@@ -15,7 +16,7 @@ export default function EditorTable ({ channel, maxHeight, jwt, ...props })
 
   return (
     <div {...props}>
-      <div style={{maxHeight: maxHeight, position:'relative', overflowY: "auto"}}>
+      <div style={{maxHeight: maxHeight, maxWidth: '300px', position:'relative', overflowY: "auto"}}>
         <table className="table table-striped w-100">
           <tbody>
           { 
@@ -24,7 +25,7 @@ export default function EditorTable ({ channel, maxHeight, jwt, ...props })
               <tr key={editor.id} className="w-100">
                 <td>{editor.email}</td>
                 <td>
-                  <Button style={{float: 'right', marginRight: 5}} color="primary" size="sm" onClick={(e)=> {e.preventDefault; myRemoveEditor(editor.email)}}>remove</Button></td>
+                  <Button style={{float: 'right', marginRight: 5}} color="primary" size="sm" onClick={(e)=> {e.preventDefault; myRemoveEditor(editor.email)}}><FaTrash /></Button></td>
               </tr>
             )})
           }

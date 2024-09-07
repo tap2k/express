@@ -16,7 +16,6 @@ export default function PageMenu({ loggedIn } ) {
     alignItems: 'center',
     padding: '0.35rem',
     backgroundColor: 'transparent',
-    gap: '1px',
     transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
     opacity: 1,
     visibility: 'visible'

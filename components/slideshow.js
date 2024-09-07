@@ -233,7 +233,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     transform: 'translate(-50%, -50%)',
                     backgroundColor: 'rgba(200,200,200,0.4)',
                     color: 'rgba(255,255,255,0.9)',
-                    borderRadius: '10px',
+                    borderRadius: '20px',
                     padding: '50px',
                     backdropFilter: 'blur(5px)',
                     width: 'max-content',
@@ -242,6 +242,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     overflowWrap: 'break-word',
                     wordWrap: 'break-word',
                     hyphens: 'auto',
+                    minWidth: '300px'
                   }}>
                     <div style={{
                       fontSize: 'clamp(24px, 4vh, 48px)',
