@@ -200,10 +200,9 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         height: '20px',
         backgroundColor: '#ddd',
         bottom: '20px', // Changed from 0px to accommodate time indicators
-        borderRadius: '10px',
         overflow: 'visible', // Changed from 'hidden' to show time indicators
         cursor: 'pointer',
-        zIndex: 1,  
+        zIndex: 10,  
         pointerEvents: 'auto',
     };
     
@@ -252,7 +251,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     };
     
     return (
-        (privateID || jwt) && (
             <div 
                 ref={timelineRef}
                 onClick={handleTimelineClick}
@@ -260,7 +258,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 style={timelineStyle}
             >
                 <div style={currWindowStyle} />
-                <div
+                {(privateID || jwt) && <div
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('start')}
                     onTouchStart={handleTouchStart('start')}
@@ -270,8 +268,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                     <span style={{ ...timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
                         {formatTime(startTime)}
                     </span>
-                </div>
-                <div
+                </div>}
+                {(privateID || jwt) && <div
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('end')}
                     onTouchStart={handleTouchStart('end')}
@@ -281,9 +279,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                     <span style={{ ...timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
                         {formatTime(endTime)}
                     </span>
-                </div>
+                </div>}
                 {mediaRef?.current?.youtube ? "" : <div style={currTimeStyle} />}
             </div>
-        )
     );
 }

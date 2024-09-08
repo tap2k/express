@@ -33,6 +33,8 @@ export function isMediaFile(url)
     return true;
   if (url.indexOf("googleusercontent") != -1)
     return true;
+  if (url.indexOf("vimeo") != -1)
+    return true;
   const type = mime.lookup(url);
   return type.startsWith("video") || type.startsWith("image") || type.startsWith("audio");
 }
@@ -56,6 +58,10 @@ export function getMediaInfo(contentItem, thumbnail) {
       //  url = url + "=w1920";
       return { url: url, type: "image/jpeg" };
     }
+
+    if (url.indexOf("vimeo") != -1)
+      return { url: url, type: "vimeo" };
+  
 
     if (url.startsWith("https://www.dropbox.com")) {
       if (url.endsWith("?dl=0") || url.endsWith("?dl=1"))
@@ -135,7 +141,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         <source src={url} type={videotype} />
       </VideoPlayer>
     );
-  } else if (type.startsWith("youtube")) {
+  } else if (type.startsWith("youtube") || type.startsWith("vimeo")) {
       mediaElement = (
         <MyReactPlayer
           url={url} 
@@ -172,7 +178,6 @@ export default function Content({ contentItem, width, height, cover, controls, a
       { caption && type != "youtube" && <Caption 
         title={contentItem.title}
         url={contentItem.ext_url} 
-        // TODO: This is a bit hacky
         textAlignment={contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
       /> } 

@@ -9,6 +9,7 @@ import ItemControls from "./itemcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
+//import SlideButton from "./slidebutton";
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -50,7 +51,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [likedSlides, setLikedSlides] = useState([]);
+  //const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   
@@ -81,7 +82,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       audioRef.current.play();
     else
       audioRef.current.pause();
-    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') || mediaType?.startsWith('youtube') ? audioRef.current.volume = 0.4 :  audioRef.current.volume = 0.8;
+    mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') || mediaType?.startsWith('youtube') || mediaType?.startsWith('vimeo') ? audioRef.current.volume = 0.4 :  audioRef.current.volume = 0.8;
   }, [currSlide, isPlaying]);
 
   const toggleFullScreen = () => {
@@ -100,13 +101,13 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       .catch(err => console.error('Failed to copy URL: ', err));
   };
 
-  const handleHeartClick = () => {
+  /*const handleHeartClick = () => {
     setLikedSlides(prevLikedSlides => 
       prevLikedSlides.includes(currSlide)
         ? prevLikedSlides.filter(index => index !== currSlide)
         : [...prevLikedSlides, currSlide]
     );
-  };
+  };*/
   
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -118,11 +119,11 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     backgroundColor: 'rgba(50, 50, 50, 0.5)',
     padding: 'clamp(8px, 0.5vh, 20px)',
     borderRadius: 'clamp(10px, 2vh, 20px)',
-    zIndex: 1,
     alignItems: 'center',
     transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
     opacity: 1,
-    visibility: 'visible'
+    visibility: 'visible',
+    zIndex: 1
   };
 
   const iconButtonStyle = {
@@ -137,7 +138,18 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     fontSize: 'clamp(16px, 2vh, 32px)',
   };
 
-  const arrowButtonStyle = {
+  const slideButtonStyle = {
+    position: 'absolute', 
+    top: 0, 
+    width: '20%', 
+    height: '90%', 
+    opacity: 0, 
+    background: 'transparent', 
+    border: 'none',
+    zIndex: 1
+  }
+
+  /*const slideButtonStyle = {
     position: 'absolute', 
     top: '50%', 
     transform: 'translateY(-50%)',
@@ -149,7 +161,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     alignItems: 'center', 
     justifyContent: 'center', 
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
-  }
+  }*/
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
@@ -159,7 +171,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {(!isInactive || isModalOpen) && <div style={{
         ...iconBarStyle, 
-        bottom: 'clamp(10px, 2vh, 20px)', 
+        bottom: 'clamp(40px, 2vh, 80px)', 
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'
@@ -263,7 +275,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                         position: 'absolute',
                         top: 0,
                         right: 0,
-                        zIndex: 1000,
+                        zIndex: 10,
                       }}>
                         <ChannelControls channel={channel} privateID={privateID} iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} />
                       </div>
@@ -286,19 +298,24 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
+                    controls
                   />
                 </Slide>
               );
             })}
           </Slider>
           {channel.contents.length > 0 && (
+            /*<>
+            <SlideButton increment={-1} style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
+            <SlideButton increment={1} style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
+            </>*/
             !privateID && !jwt && !isInactive && false ? <>
-              <ButtonBack key={1} style={{...arrowButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={2} style={{...arrowButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
+              <ButtonBack key={1} style={{...slideButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={2} style={{...slideButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :
             <>
-              <ButtonBack style={{position: 'absolute', top: 0, left: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'w-resize'}} />
-              <ButtonNext style={{position: 'absolute', top: 0, right: 0, width: '20%', height: '100%', opacity: 0, background: 'transparent', border: 'none', cursor: 'e-resize'}} />
+              <ButtonBack style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
+              <ButtonNext style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
             </>
           )}
         </CarouselProvider>

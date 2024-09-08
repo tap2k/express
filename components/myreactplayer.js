@@ -11,25 +11,30 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
 
     useEffect(() => {
         if (mediaRef) {
-            const mediaObject = {
-                play: () => videoRef.current?.getInternalPlayer()?.playVideo(),
-                pause: () => videoRef.current?.getInternalPlayer()?.pauseVideo(),
-                getCurrentTime: () => videoRef.current?.getInternalPlayer()?.getCurrentTime() || 0,
-                getDuration: () => videoRef.current?.getInternalPlayer()?.getDuration() || 0,
-                seekTo: (time) => videoRef.current?.getInternalPlayer()?.seekTo(time),
-                youtube: true
-            };
-    
-            Object.defineProperty(mediaObject, 'currentTime', {
-                get: function() {
-                    return this.getCurrentTime();
-                },
-                set: function(value) {
-                    this.seekTo(value);
-                }
-            });
-    
-            mediaRef.current = mediaObject;
+            if (url.indexOf("vimeo") != -1)
+                mediaRef.current = videoRef.current?.getInternalPlayer();
+            else
+            {
+                const mediaObject = {
+                    play: () => videoRef.current?.getInternalPlayer()?.playVideo(),
+                    pause: () => videoRef.current?.getInternalPlayer()?.pauseVideo(),
+                    getCurrentTime: () => videoRef.current?.getInternalPlayer()?.getCurrentTime() || 0,
+                    getDuration: () => videoRef.current?.getInternalPlayer()?.getDuration() || 0,
+                    seekTo: (time) => videoRef.current?.getInternalPlayer()?.seekTo(time),
+                    youtube: true
+                };
+        
+                Object.defineProperty(mediaObject, 'currentTime', {
+                    get: function() {
+                        return this.getCurrentTime();
+                    },
+                    set: function(value) {
+                        this.seekTo(value);
+                    }
+                });
+        
+                mediaRef.current = mediaObject;
+            }
         }
     }, [mediaRef]);
 

@@ -58,7 +58,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     };
 
     if (mediaRef?.current) {
-      if (!mediaRef.current.youtube)
+      if (mediaRef.current.addEventListener)
         mediaRef.current.addEventListener('ended', onEnded);
     }
 
@@ -68,7 +68,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       if (carouselContext)
         carouselContext.unsubscribe(onChange);
       if (mediaRef?.current) {
-        if (!mediaRef.current.youtube)
+        if (mediaRef.current.removeEventListener)
           mediaRef.current.removeEventListener('ended', onEnded);
       }
     };
