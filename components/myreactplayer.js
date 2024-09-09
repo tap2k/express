@@ -1,5 +1,3 @@
-/* components/myreactplayer.js */
-
 import { useEffect, useRef, useContext } from "react";
 import { CarouselContext } from 'pure-react-carousel';
 import ReactPlayer from 'react-player/lazy';
@@ -11,10 +9,9 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
 
     useEffect(() => {
         if (mediaRef) {
-            if (url.indexOf("vimeo") != -1)
+            if (url.indexOf("vimeo") !== -1) {
                 mediaRef.current = videoRef.current?.getInternalPlayer();
-            else
-            {
+            } else {
                 const mediaObject = {
                     play: () => videoRef.current?.getInternalPlayer()?.playVideo(),
                     pause: () => videoRef.current?.getInternalPlayer()?.pauseVideo(),
@@ -36,7 +33,7 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 mediaRef.current = mediaObject;
             }
         }
-    }, [mediaRef]);
+    }, [mediaRef, url]);
 
     const goToNextSlide = () => {
         if (carouselContext) {
@@ -46,23 +43,21 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     }
 
     const onStateChange = (event) => {
-        if (event.data === -1)
-            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());
-        if (event.data === 0 && autoPlay)
+        if (event.data === 0 && autoPlay) {
             goToNextSlide();
+        }
     };
 
-    const setListeners = () =>
-    {
+    const setListeners = () => {
         if (videoRef?.current?.getInternalPlayer()) {
-            videoRef?.current?.getInternalPlayer().addEventListener("onStateChange", onStateChange);
+            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());
+            videoRef.current.getInternalPlayer().addEventListener("onStateChange", onStateChange);
         }
     }
 
-    const removeListeners = () =>
-    {
+    const removeListeners = () => {
         if (videoRef?.current?.getInternalPlayer()) {
-            videoRef?.current?.getInternalPlayer().removeEventListener("onStateChange", onStateChange);
+            videoRef.current.getInternalPlayer().removeEventListener("onStateChange", onStateChange);
         }
     }
 
@@ -96,9 +91,12 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 url={url}
                 controls={controls}  
                 onReady={setListeners}
-                // TODO: autoplay doesnt work with light
-                light
+                config={{
+                    youtube: {
+                        playerVars: { origin: window.location.origin }
+                    }
+                }}
             />
         </div>
-  );
+    );
 }

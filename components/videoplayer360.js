@@ -1,17 +1,19 @@
 /* components/videoplayer360.js */
 
-import { useEffect, useState } from 'react';
-import { useMap } from 'react-leaflet';
+import { useEffect } from 'react';
 import videojs from 'video.js'
 import 'videojs-errors';
 import 'videojs-vr';
 import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
 
-export default function VideoPlayer360({ width, height, thumbnail, mediaRef, ...props }) 
+export default function VideoPlayer360({ width, height, thumbnail, mediaRef, setDuration, ...props }) 
 {
   useEffect(() => {
     mediaRef.player = loadPlayer();
+    mediaRef.player.ready(function(){
+        this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
+    });
     const controlBar = mediaRef.player.getChild('ControlBar');
     controlBar.el_.style.zIndex = 1000;
     return () => {

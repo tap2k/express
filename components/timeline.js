@@ -26,7 +26,7 @@ function getAudioDurationFromFile(file) {
 
 export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
-    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ? interval : duration);
+    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
@@ -42,9 +42,9 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     }        
 
     useEffect(() => {
-        if (mediaRef?.current) 
-            mediaRef.current.currentTime = startTime;
-        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : interval ? interval : duration);
+        //if (mediaRef?.current) 
+        //    mediaRef.current.currentTime = startTime;
+        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
     }, [duration]);
 
     useEffect(() => {
@@ -86,7 +86,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         }
     
         return () => {
-          if (mediaRef?.current)
+          if (mediaRef?.current && !mediaRef?.player)
             mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
         };
       }, [mediaRef]);
@@ -111,7 +111,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             if (mediaRef?.current)
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
         }
-    }, [mediaRef, endTime]);
+    }, [mediaRef]);
 
     useEffect(() => {
         if (!mediaRef?.current)

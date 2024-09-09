@@ -138,6 +138,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
           height={height}
           controls={controls}
           mediaRef={mediaRef}
+          setDuration={setDuration}
         >
           <source src={url} type={videotype} />
         </VideoPlayer360>
@@ -194,8 +195,6 @@ export default function Content({ contentItem, width, height, cover, controls, a
       />
     );
 
-  const isMedia = type.startsWith("video") || type.startsWith("audio") || type.startsWith("youtube")|| type.startsWith("vimeo");
-
   return (
     <>
     <div style={containerStyle}>
@@ -208,7 +207,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={!isMedia ? interval / 1000 : 0} mediaRef={isMedia ? mediaRef : null} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} />}
+      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} />}
     </>
   );
 }
