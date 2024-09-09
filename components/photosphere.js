@@ -1,44 +1,20 @@
-// components/photosphere.js
-
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { ReactPhotoSphereViewer } from 'react-photo-sphere-viewer';
 
 export default function Photosphere ({ src, width, height, audioUrl, controls, mediaRef }) {
-  const containerRef = useRef(null);
-  const [containerSize, setContainerSize] = useState({ width, height });
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const updateSize = () => {
-      setContainerSize({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight
-      });
-    };
-
-    // Initial size update
-    updateSize();
-
-    // Set up resize observer
-    const resizeObserver = new ResizeObserver(updateSize);
-    resizeObserver.observe(containerRef.current);
-
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  const navbar = controls ? ['autorotate', 'zoom', 'fullscreen'] : [];
+  const navbar = controls ? [/*'autorotate', 'zoom',*/ 'fullscreen'] : [];
 
   return (
     <>
       <div 
-        ref={containerRef} 
         onClick={(e) => e.stopPropagation()} 
-        style={{ width: width, height: height }}
+        style={{ width: width || '100%', height: height || '400px' }}
       >
         <ReactPhotoSphereViewer
           src={src}
-          width={containerSize.width}
-          height={containerSize.height}
+          width="100%"
+          height="100%"
           navbar={navbar}
         />
       </div>
@@ -48,4 +24,3 @@ export default function Photosphere ({ src, width, height, audioUrl, controls, m
     </>
   );
 };
-

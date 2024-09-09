@@ -43,8 +43,8 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     }
 
     const onStateChange = (event) => {
-        /*if (event.data === -1)
-            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());*/
+        if (event.data === -1)
+            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());
         if (event.data === 0 && autoPlay) {
             goToNextSlide();
         }
@@ -95,10 +95,10 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 onReady={setListeners}
                 config={{
                     youtube: {
-                        playerVars: { origin: window.location.origin }
+                        playerVars: { origin: window.location.origin, fs: 0 }
                     }
                 }}
-                light={!setDuration}
+                light
             />
         </div>
     );

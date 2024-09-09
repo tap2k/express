@@ -1,6 +1,5 @@
-/* components/videoplayer360.js */
-
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useMap } from 'react-leaflet';
 import videojs from 'video.js'
 import 'videojs-errors';
 import 'videojs-vr';
@@ -9,13 +8,15 @@ import '../node_modules/videojs-vr/dist/videojs-vr.css';
 
 export default function VideoPlayer360({ width, height, thumbnail, mediaRef, setDuration, ...props }) 
 {
+  const [init, setInit] = useState(false);
+
   useEffect(() => {
     mediaRef.player = loadPlayer();
     mediaRef.player.ready(function(){
         this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
     });
     const controlBar = mediaRef.player.getChild('ControlBar');
-    controlBar.el_.style.zIndex = 1000;
+    controlBar.el_.style.zIndex = 100;
     return () => {
       if (mediaRef?.player && mediaRef.player.vr().renderer)
           mediaRef.player.vr().renderer.dispose();
@@ -43,7 +44,7 @@ export default function VideoPlayer360({ width, height, thumbnail, mediaRef, set
     if (thumbnail)
       mediaRef.props = {bigPlayButton: false, controlBar: {fullscreenToggle: false, pictureInPictureToggle: false, volumePanel: false}, userActions: {doubleClick: false}, ...mediaRef.props};
     else 
-      mediaRef.props = {controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
+      mediaRef.props = {controlBar: {fullscreenToggle: false, pictureInPictureToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
       player.playsinline(true);
@@ -63,6 +64,44 @@ export default function VideoPlayer360({ width, height, thumbnail, mediaRef, set
         player.pause();
     });
     return player;
+  }
+
+  if (!init)
+  {
+    try {
+      const mapref = useMap();
+      if (mapref) {
+        setInit(true);
+        let marker = null;
+  
+        mapref.on('popupopen', function(e) {
+          if (!marker && mediaRef?.player)
+            marker = e.popup._source;
+          
+          if (marker === e.popup._source && mediaRef?.player)
+          {
+            //console.log("loading video");
+            //mediaRef.player.vr().renderer.resetState();
+            mediaRef.player.load();
+          }
+        });
+      
+        mapref.on('popupclose', function(e) {
+          if (!marker && mediaRef?.player)
+            marker = e.popup._source;
+          
+          if (marker === e.popup._source && mediaRef?.player)
+          {
+            //console.log("disposing player");
+            if (mediaRef.player.vr().renderer)
+              mediaRef.player.vr().renderer.dispose();
+          }
+        });
+      }
+    } catch(error)
+    {
+      // TODO: To be expected if not in map
+    }
   }
 
   return (

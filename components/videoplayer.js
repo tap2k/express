@@ -22,6 +22,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
         preload='auto'
         controls={controls}
         controlsList="nodownload nofullscreen noremoteplayback"
+        disablePictureInPicture
       >
         {children}
       </video>

@@ -35,7 +35,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     resetMap();
   }, [mapRef, channel.contents]);
 
-  let tileset = "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
+  let tileset = tilesets;
   let attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href= "https://carto.com/about-carto/">CARTO</a>`;
   //let tileset = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
   //let attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -44,6 +44,11 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   {
     tileset = channel.tileset.urlformatstring;
     attribution = channel.tileset.attribution;
+  }
+  else if (tilesets && tilesets.length)
+  {
+    tileset = tilesets[0].urlformatstring;
+    attribution = tilesets[0].attribution;
   }
 
   function resetMap()
