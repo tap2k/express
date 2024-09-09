@@ -2,14 +2,13 @@ import { Card } from 'reactstrap';
 import Content, { isMediaFile } from './content';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, itemWidth, privateID, jwt, controls, autoPlay, dragRef }) 
+export default function ContentCard({ contentItem, privateID, jwt, controls, autoPlay, dragRef }) 
 {
   return (
     <Card className="mb-2">
-      <div style={{ position: 'relative', width: itemWidth }}>
+      <div style={{ position: 'relative' }}>
         <Content 
           contentItem={contentItem}
-          width={itemWidth} 
           height="auto"
           controls={controls}
           autoPlay={autoPlay}
