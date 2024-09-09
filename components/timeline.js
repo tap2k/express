@@ -78,7 +78,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
           }
         };
     
-        mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+        if (mediaRef.current.addEventListener)
+            mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
     
         // Check if duration is already available
         if (mediaRef.current.readyState >= 1) {
@@ -86,7 +87,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         }
     
         return () => {
-          if (mediaRef?.current && !mediaRef?.player)
+          if (mediaRef?.current && mediaRef.current.removeEventListener)
             mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
         };
       }, [mediaRef]);
@@ -105,10 +106,11 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             }
         };
 
-        mediaRef.current.addEventListener('timeupdate', updateTime);
+        if (mediaRef.current.addEventListener)
+            mediaRef.current.addEventListener('timeupdate', updateTime);
 
         return () => {
-            if (mediaRef?.current)
+            if (mediaRef?.current && mediaRef.current.removeEventListener)
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
         }
     }, [mediaRef]);

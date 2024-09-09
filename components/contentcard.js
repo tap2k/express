@@ -14,7 +14,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
             height="auto"
             controls={controls}
             autoPlay={autoPlay}
-            caption={contentItem.mediafile?.url?.includes("maustrocard")}
+            caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
             thumbnail
             cover
           />
@@ -25,7 +25,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           privateID={privateID}
           jwt={jwt}
         />
-        {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") &&
+        {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
           <div 
             style={{ 
               padding: '10px 15px', 

@@ -43,6 +43,8 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
     }
 
     const onStateChange = (event) => {
+        /*if (event.data === -1)
+            setDuration(videoRef.current?.getInternalPlayer()?.getDuration());*/
         if (event.data === 0 && autoPlay) {
             goToNextSlide();
         }
@@ -96,6 +98,7 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                         playerVars: { origin: window.location.origin }
                     }
                 }}
+                //light
             />
         </div>
     );
