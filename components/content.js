@@ -14,6 +14,8 @@ import PlayIcon from './playicon';
 import Timeline from './timeline';
 
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
+const Photosphere = dynamic(() => import("./photosphere.js"), { ssr: false });
+const VideoPlayer360 = dynamic(() => import("./videoplayer360.js"), { ssr: false });
 
 function validateYouTubeUrl(urlToParse){
   if (urlToParse) {
@@ -62,7 +64,6 @@ export function getMediaInfo(contentItem, thumbnail) {
     if (url.indexOf("vimeo") != -1)
       return { url: url, type: "vimeo" };
   
-
     if (url.startsWith("https://www.dropbox.com")) {
       if (url.endsWith("?dl=0") || url.endsWith("?dl=1"))
         url = ext_url.substring(0, url.length - 5);
@@ -80,11 +81,8 @@ export function getMediaInfo(contentItem, thumbnail) {
     if (type.startsWith("image") && thumbnail && contentItem.mediafile?.formats?.large?.url)
       url = getMediaURL() + contentItem.mediafile.formats.large.url;
 
-    
     if (type && (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio")))
       return { url, type, videotype };
-
-    return { url: "", type: "" };
   }
 
   // TODO: audiofile cant be on dropbox
@@ -96,7 +94,7 @@ export function getMediaInfo(contentItem, thumbnail) {
       return { url, type };
   }
 
-  return {url: "", type: ""};
+  return {url: "", type: "text"};
 }
 
 export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID, jwt }) 
@@ -112,6 +110,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
   useSlideAdvance({index, autoPlay, isPlaying, interval: contentItem.duration ? contentItem.duration : interval});
   const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
+  const is360 = url.indexOf("360") != -1 || url.indexOf("180") != -1 || contentItem.is360;
 
   const containerStyle = {
     position: 'relative',
@@ -128,19 +127,32 @@ export default function Content({ contentItem, width, height, cover, controls, a
         height={height}
         controls={controls}
         mediaRef={mediaRef}
+        style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
       />
     );
   } else if (type.startsWith("video")) {
-    mediaElement = (
-      <VideoPlayer 
-        width={width} 
-        height={height}
-        controls={controls}
-        mediaRef={mediaRef}
-      >
-        <source src={url} type={videotype} />
-      </VideoPlayer>
-    );
+    if (is360)
+      mediaElement = (
+        <VideoPlayer360 
+          width={width} 
+          height={height}
+          controls={controls}
+          mediaRef={mediaRef}
+        >
+          <source src={url} type={videotype} />
+        </VideoPlayer360>
+      );
+    else
+      mediaElement = (
+        <VideoPlayer 
+          width={width} 
+          height={height}
+          controls={controls}
+          mediaRef={mediaRef}
+        >
+          <source src={url} type={videotype} />
+        </VideoPlayer>
+      );
   } else if (type.startsWith("youtube") || type.startsWith("vimeo")) {
       mediaElement = (
         <MyReactPlayer
@@ -148,12 +160,27 @@ export default function Content({ contentItem, width, height, cover, controls, a
           width={width} 
           height={height}
           controls={controls}
-          autoPlay={autoPlay}
           mediaRef={mediaRef}
           setDuration={setDuration}
         />
       );
   } else {
+    if (type.startsWith("image")) {
+      if (url.indexOf("360") != -1 && url.indexOf("180") == -1 && !contentItem.is360)
+        mediaElement = (
+          <Photosphere
+            src={url} 
+            width={width} 
+            height={height} 
+            audioUrl={contentItem.audiofile?.url ? getMediaURL() + contentItem.audiofile?.url : ""}
+            mediaRef={mediaRef}
+            controls={controls}
+          />
+        );
+      }
+  }
+
+  if (!mediaElement)
     mediaElement = (
       <FullImage 
         src={url} 
@@ -166,9 +193,8 @@ export default function Content({ contentItem, width, height, cover, controls, a
         style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
       />
     );
-  }
 
-  const isMedia = type.startsWith("video") || type.startsWith("audio") || type.startsWith("youtube");
+  const isMedia = type.startsWith("video") || type.startsWith("audio") || type.startsWith("youtube")|| type.startsWith("vimeo");
 
   return (
     <>

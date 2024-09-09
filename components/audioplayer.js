@@ -1,5 +1,5 @@
 
-export default function AudioPlayer({ src, width, height, controls, mediaRef }) 
+export default function AudioPlayer({ src, width, height, controls, mediaRef, ...props }) 
 {  
   return (
     <div 
@@ -9,7 +9,7 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef })
         height,
         cursor: 'pointer',
         minHeight: '150px',
-        backgroundColor: 'black'
+        ...props.style
       }} 
     >
       <audio src={src} style={{display: "none"}} ref={mediaRef} />

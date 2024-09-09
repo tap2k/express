@@ -6,6 +6,7 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
   useSlideAdvance({index, autoPlay, interval});
 
   return (
+    <>
       <div 
         style={{
           position: 'relative',
@@ -22,9 +23,10 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
               objectFit: cover ? 'cover' : 'contain'
           }} 
         />}
-        { audioUrl && <>
-            <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
-          </> }
       </div>
+      { audioUrl && <>
+          <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
+        </> }
+    </>
   );
 }
