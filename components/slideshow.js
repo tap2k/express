@@ -298,7 +298,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
-                    controls
                   />
                 </Slide>
               );

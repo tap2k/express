@@ -115,7 +115,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
 
   return (
     <div {...props}>
-      {tilesets && tilesets.length && <Input 
+      {tilesets && tilesets.length && (privateID || jwt) && <Input 
         type="select" 
         defaultValue={channel.tileset?.id}
         onChange={handleTilesetChange}
