@@ -1,15 +1,30 @@
-import { useRef } from 'react';
 import { ReactPhotoSphereViewer } from 'react-photo-sphere-viewer';
+import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function Photosphere ({ src, width, height, audioUrl, controls, mediaRef }) {
-
+export default function Photosphere({ src, width, height, audioUrl, controls, mediaRef }) {
   const navbar = controls ? [/*'autorotate', 'zoom',*/ 'fullscreen'] : [];
+  const { containerSize, containerRef } = useContainerSize(height);
+
+  /* TODO: Hacky, doesnt really work
+  if (!Number.isInteger(height))
+    {
+      if (Number.isInteger(width))
+        height = width;
+      else
+        height = 250;
+    }*/
+
+  const containerStyle = {
+    width: width || '100%',
+    height: `${containerSize.height}px`
+  };
 
   return (
     <>
       <div 
+        ref={containerRef}
         onClick={(e) => e.stopPropagation()} 
-        style={{ width: width || '100%', height: height || '400px' }}
+        style={containerStyle}
       >
         <ReactPhotoSphereViewer
           src={src}

@@ -44,7 +44,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
           </Tooltip>    
         }
         <Popup closeOnClick={false}>
-          <div style={{minWidth: itemWidth}}>
+          <div style={{width: 250}}>
             <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} />
           </div>
         </Popup>

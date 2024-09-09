@@ -92,7 +92,6 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                 {({ dragRef }) => (
                   <div style={{
                       position: 'relative',
-                      height: '400px',
                       border: '1px solid #999999',
                       borderRadius: '10px',
                       overflow: 'hidden',
@@ -101,7 +100,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                     <Content 
                       contentItem={contentItem}
                       width="100%" 
-                      height="100%"
+                      height={400}
                       index={index}
                       privateID={privateID}
                       jwt={jwt}
