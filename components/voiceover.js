@@ -74,6 +74,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
     const doDelete = async () => {
         try {
             await updateSubmission({contentID: contentItem.id, deleteAudio: true, privateID, jwt});
+            router.replace(router.asPath, undefined, { scroll: false }); 
         } catch (error) {
             console.error('Error delete', error);
             setErrorText('Failed to delete audiofile. Please try again.');
@@ -122,7 +123,8 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                         uploadedFiles={uploadedFiles} 
                         setUploadedFiles={setUploadedFiles} 
                         accept="audio/*" 
-                        style={{minHeight: '200px'}} 
+                        style={{minHeight: '200px'}}
+                        //mediaUrl={contentItem.audiofile?.url ? getMediaURL() + contentItem.audiofile?.url : ""}
                     />
                     <Progress value={progress} style={{marginBottom: '20px'}} />
 

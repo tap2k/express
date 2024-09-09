@@ -103,8 +103,8 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
               }}>
                 <MediaPreview 
                   url={mediaUrl} 
-                  type={mime.getType(mediaUrl)} 
-                  onRemove={() => setDeleteMedia(true)} 
+                  type={mime.getType(mediaUrl) || ""} 
+                  onRemove={() => {if (setDeleteMedia) setDeleteMedia(true)}} 
                 /> 
               </div>
         ) : (
