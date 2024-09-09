@@ -60,22 +60,22 @@ export default function PageMenu({ loggedIn, editor } ) {
         </Link>
         <Link
           href={{
-            pathname: `./board`,
-            query: router.query,
-          }}
-        >
-          <MenuButton>
-            <FaTh />
-          </MenuButton>
-        </Link>
-        <Link
-          href={{
             pathname: `./map`,
             query: router.query,
           }}
         >
           <MenuButton>
             <FaMap />
+          </MenuButton>
+        </Link>
+        <Link
+          href={{
+            pathname: `./board`,
+            query: router.query,
+          }}
+        >
+          <MenuButton>
+            <FaTh />
           </MenuButton>
         </Link>
         { loggedIn && <>
