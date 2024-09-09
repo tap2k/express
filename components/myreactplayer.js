@@ -98,7 +98,7 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                         playerVars: { origin: window.location.origin }
                     }
                 }}
-                //light
+                light={!setDuration}
             />
         </div>
     );
