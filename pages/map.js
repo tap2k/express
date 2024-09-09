@@ -26,7 +26,7 @@ export default ({ channel, tilesets, privateID, jwt }) => {
                     isSlideshow
                 />
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} privateID={privateID} tilesets={tilesets} jwt={jwt} autoPlay tour />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} privateID={privateID} tilesets={tilesets} jwt={jwt} tour />
             <AddMenu channel={channel} privateID={privateID} jwt={jwt} />
         </>
     );

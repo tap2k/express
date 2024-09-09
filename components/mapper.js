@@ -11,7 +11,7 @@ import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, autoPlay, animate, tour, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -56,6 +56,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     if (!mapRef)
       return;
     
+    markerRefs.map((marker)=>marker.closePopup());
     const locationArray = markerRefs.map(marker => marker.getLatLng());
 
     if (locationArray.length)
@@ -125,6 +126,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           right: '10px',
           zIndex: 10,
           width: '95px',
+          height: '50px',
           backgroundColor: 'rgba(92, 131, 156, 0.6)',
           color: 'white',
           border: 'none',
@@ -145,7 +147,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         >
           {
             channel.contents && channel.contents.map((contentItem) => {
-              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} jwt={jwt} autoPlay={autoPlay} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
+              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} jwt={jwt} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
             })
           }
         </MarkerClusterGroup>
