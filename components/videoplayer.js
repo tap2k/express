@@ -22,6 +22,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
         controls={controls}
         controlsList="nodownload nofullscreen noremoteplayback"
         disablePictureInPicture
+        onTouchStart={(e)=>{e.preventDefault(); e.stopPropagation();}}
       >
         {children}
       </video>
