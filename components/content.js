@@ -167,7 +167,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
       );
   } else {
     if (type.startsWith("image")) {
-      if (url.indexOf("360") != -1 && url.indexOf("180") == -1 && !contentItem.is360)
+      if (is360)
         mediaElement = (
           <Photosphere
             src={url} 
