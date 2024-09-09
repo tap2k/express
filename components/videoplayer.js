@@ -7,8 +7,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
         position: 'relative',
         width,
         height,
-        backgroundColor: '#000',
-        cursor: 'pointer'
+        backgroundColor: '#000'
       }} 
     >
       <video 
