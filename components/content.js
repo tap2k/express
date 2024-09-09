@@ -202,6 +202,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     </div>
       { caption && type != "youtube" && <Caption 
         title={contentItem.title}
+        name={contentItem.textalignment == "center" ? contentItem.name : ""}
         url={contentItem.ext_url} 
         textAlignment={contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}

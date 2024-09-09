@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useState } from 'react';
 import useGeolocation from "react-hook-geolocation";
-import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope } from 'react-icons/fa';
+import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope, FaFont } from 'react-icons/fa';
 import { ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
@@ -78,7 +78,7 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
           color={activeComponent === 'card' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('card')}
         >
-          <FaEnvelope />
+          <FaFont />
         </StyledButton>
       </ButtonGroup>
 

@@ -1,7 +1,7 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
 
-export default function Caption({ title, subtitle, url, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
+export default function Caption({ title, subtitle, name, url, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
 {
     if (!title && !url) return null;
 
@@ -72,12 +72,23 @@ export default function Caption({ title, subtitle, url, textAlignment = 'center'
         marginTop: '10px',
     };
 
+    const nameStyle = {
+        fontSize: size === "small" ? '14px' : 
+                    size === "big" ? 'clamp(18px, 2.5vh, 32px)' : 
+                    'clamp(16px, 2vh, 24px)',
+        lineHeight: size === "big" ? 1.2 : 1.3,
+        textAlign: 'right',
+        marginTop: '25px'
+    };
+    
+
     return (
         <>
             {(title || subtitle) && (
                 <div style={captionStyle}>
                     {title && <div style={titleStyle}>{title}</div>}
-                    {subtitle && !size === "small" & <div style={subtitleStyle}>{subtitle}</div>}
+                    {subtitle && !size === "small" && <div style={subtitleStyle}>{subtitle}</div>}
+                    {name && <div style={nameStyle}>{name}</div>}
                 </div>
             )}
             {url && !(size === "small") && !isMediaFile(url) && (
