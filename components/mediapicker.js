@@ -40,7 +40,7 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
             Gallery
           </StyledButton>
         )}
-        {dalle && (
+        {dalle && process.env.NEXT_PUBLIC_AI_ENABLED === "true" && (
           <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(true); setShowUpload(false)}}>
             AI Image
           </StyledButton>

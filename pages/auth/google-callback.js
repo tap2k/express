@@ -45,6 +45,7 @@ export async function getServerSideProps(context) {
 
   try {
     const url = getBaseURL() + "/api/auth/google/callback";
+
     const result = await axios.get(url, {
       params: { access_token }
     });
