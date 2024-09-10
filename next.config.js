@@ -4,7 +4,7 @@ const nextConfig = {
     "react-leaflet-cluster"
   ],
   images: {
-    domains: ['mvc-prod.nyc3.digitaloceanspaces.com']
+    domains: ['mvc-prod.nyc3.digitaloceanspaces.com','mvc-dev.nyc3.digitaloceanspaces.com']
   },
   compiler: {
     styledComponents: true,
