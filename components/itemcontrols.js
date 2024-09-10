@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight, FaImage } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteSubmission from '../hooks/deletesubmission';
@@ -9,6 +9,8 @@ import updateSubmission from '../hooks/updatesubmission';
 import { IconButton } from './recorderstyles';
 import { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
+import MediaPicker from './mediapicker';
+
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 

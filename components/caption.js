@@ -58,29 +58,41 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
     const linkStyleTop = { ...linkStyleBase, top: '2.5vh' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
+    const textOutlineStyle = {
+        textShadow: `
+            -1px -1px 0 #333,  
+             1px -1px 0 #333,
+            -1px  1px 0 #333,
+             1px  1px 0 #333
+        `,
+        color: '#fff'
+    };
+    
     const titleStyle = {
         fontSize: size === "small" ? '16px' : 
                   size === "big" ? 'clamp(24px, 4vh, 48px)' : 
                   'clamp(18px, 3vh, 32px)',
         lineHeight: size === "big" ? 1.1 : 1.2,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        ...textOutlineStyle
     };
     
     const subtitleStyle = {
         fontSize: size === "big" ? 'clamp(18px, 2vh, 32px)' : 'clamp(14px, 1.5vh, 24px)',
         lineHeight: size === "big" ? 1.2 : 1.3,
         marginTop: '10px',
+        ...textOutlineStyle
     };
-
+    
     const nameStyle = {
         fontSize: size === "small" ? '14px' : 
                     size === "big" ? 'clamp(18px, 2.5vh, 32px)' : 
                     'clamp(16px, 2vh, 24px)',
         lineHeight: size === "big" ? 1.2 : 1.3,
         textAlign: 'right',
-        marginTop: '25px'
+        marginTop: '25px',
+        ...textOutlineStyle
     };
-    
 
     return (
         <>

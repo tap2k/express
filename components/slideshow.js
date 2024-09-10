@@ -149,6 +149,48 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     zIndex: 1
   }
 
+  const textOutlineStyle = {
+    textShadow: `
+        -1px -1px 0 #333,  
+         1px -1px 0 #333,
+        -1px  1px 0 #333,
+         1px  1px 0 #333
+    `,
+    color: '#fff'
+};
+
+const containerStyle = {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'rgba(200,200,200,0.4)',
+    borderRadius: '20px',
+    padding: '50px',
+    backdropFilter: 'blur(5px)',
+    width: 'max-content',
+    maxWidth: '80%',
+    textAlign: 'center',
+    overflowWrap: 'break-word',
+    wordWrap: 'break-word',
+    hyphens: 'auto',
+    minWidth: '300px'
+};
+
+const titleStyle = {
+    fontSize: 'clamp(24px, 4vh, 48px)',
+    lineHeight: '1.1',
+    fontWeight: 'bold',
+    ...textOutlineStyle
+};
+
+const descriptionStyle = {
+    fontSize: 'clamp(18px, 2vh, 32px)',
+    lineHeight: '1.2',
+    marginTop: '10px',
+    ...textOutlineStyle
+};
+
   /*const slideButtonStyle = {
     position: 'absolute', 
     top: '50%', 
@@ -238,36 +280,11 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     autoPlay={isPlaying}
                     interval={channel.interval} 
                   />
-                  <div style={{
-                    position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'rgba(200,200,200,0.4)',
-                    color: 'rgba(255,255,255,0.9)',
-                    borderRadius: '20px',
-                    padding: '50px',
-                    backdropFilter: 'blur(5px)',
-                    width: 'max-content',
-                    maxWidth: '80%',
-                    textAlign: 'center',
-                    overflowWrap: 'break-word',
-                    wordWrap: 'break-word',
-                    hyphens: 'auto',
-                    minWidth: '300px'
-                  }}>
-                    <div style={{
-                      fontSize: 'clamp(24px, 4vh, 48px)',
-                      lineHeight: '1.1',
-                      fontWeight: 'bold'
-                    }}>
+                  <div style={containerStyle}>
+                    <div style={titleStyle}>
                       {channel.name}
                     </div>
-                    <div style={{
-                      fontSize: 'clamp(18px, 2vh, 32px)',
-                      lineHeight: '1.2',
-                      marginTop: '10px',
-                    }}>
+                    <div style={descriptionStyle}>
                       {channel.description}
                     </div>
                     {(privateID || jwt) && (
