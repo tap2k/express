@@ -1,9 +1,7 @@
 const nextConfig = {
   reactStrictMode: true,  
   transpilePackages: [
-    "react-leaflet-cluster",
-    "react-photo-sphere-viewer",
-    "@photo-sphere-viewer/core"
+    "react-leaflet-cluster"
   ],
   images: {
     domains: ['mvc-prod.nyc3.digitaloceanspaces.com']
