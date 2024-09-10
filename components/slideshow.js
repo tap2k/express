@@ -1,9 +1,11 @@
+import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { FaExpandArrowsAlt, FaPlus, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import getMediaURL from "../hooks/getmediaurl";
+import updateSubmission from '../hooks/updatesubmission';
 import ChannelControls from "./channelcontrols"
 import ItemControls from "./itemcontrols"
 import FullImage from "./fullimage";
@@ -54,6 +56,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   //const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
+  const router = useRouter();
   
   const getCurrentContent = () => {
     const index = showTitle ? currSlide - 1 : currSlide;
@@ -109,6 +112,21 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     );
   };*/
   
+  const moveSlide = async (increment) => {
+    const contentIndex = showTitle ? currSlide - 1 : currSlide;
+    if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
+    const contentToMove = channel.contents[contentIndex];
+    if (contentToMove) {
+      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID, jwt});
+      const newQuery = { 
+        ...router.query, 
+        currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
+      };
+      setCurrSlide(currSlide + increment);
+      router.replace({ pathname: router.pathname, query: newQuery });
+    }
+  }
+
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
@@ -355,7 +373,7 @@ const descriptionStyle = {
           top: 10,
           right: 10
         }}>
-          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={24} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
+          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={24} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 

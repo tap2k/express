@@ -12,7 +12,7 @@ export default function MediaPicker({ mediaUrl, progress, uploadedFiles, setUplo
   const [showColors, setShowColors] = useState(false);
   const [showDalle, setShowDalle] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
-
+  
   useEffect(() => {
     if (!multiple && setUploadedFiles)
       setUploadedFiles([]);

@@ -97,7 +97,7 @@ export function getMediaInfo(contentItem, thumbnail) {
   return {url: "", type: "text"};
 }
 
-export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID, jwt }) 
+export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID, jwt, ...props }) 
 {
   if (!contentItem)
     return;
@@ -116,6 +116,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
     position: 'relative',
     width,
     height,
+    ...props.style
   };
 
   let mediaElement;

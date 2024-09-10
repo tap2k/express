@@ -1,50 +1,45 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight, FaImage } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import mime from 'mime-types';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
 import { IconButton } from './recorderstyles';
-import { getMediaInfo } from "./content";
 import ContentEditor from "./contenteditor";
 import MediaPicker from './mediapicker';
-
+import getMediaURL from "@/hooks/getmediaurl";
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef, setIsModalOpen, iconSize=20, flex="row" }) {
-  const router = useRouter();
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, moveSlide, setIsModalOpen, iconSize=20, flex="row" }) {
 
   if (!contentItem || (!privateID && !jwt))
     return;
 
-  const mediaType = getMediaInfo(contentItem).type;
+  const router = useRouter();
 
+  let mediaType = mime.lookup(contentItem.mediafile?.url);
+  if (!mediaType)
+    mediaType = "text";
+
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isEditModalOpen, setisEditModalOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(contentItem?.background_color);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [deleteImage, setDeleteImage] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (setIsModalOpen)
-      setIsModalOpen(isEditModalOpen || isVoiceModalOpen);
-  }, [isEditModalOpen, isVoiceModalOpen]);
-
-  const moveSlide = async (increment) => {
-    const contentIndex = showTitle ? currSlide - 1 : currSlide;
-    if ((contentIndex + increment) < 0 || (contentIndex + increment) >= channel.contents.length) return;
-    
-    const contentToMove = channel.contents[contentIndex];
-    if (contentToMove) {
-      await updateSubmission({contentID: contentToMove.id, order: channel.contents[contentIndex + increment].order, privateID, jwt});
-      const newQuery = { 
-        ...router.query, 
-        currslide: Math.min(currSlide + increment, showTitle ? channel.contents.length : channel.contents.length - 1)
-      };
-      setCurrSlide(currSlide + increment);
-      router.replace({ pathname: router.pathname, query: newQuery });
-    }
-  }
+      setIsModalOpen(isEditModalOpen || isVoiceModalOpen || isImageModalOpen);
+  }, [isEditModalOpen, isVoiceModalOpen, isImageModalOpen]);
 
   const handlePublish = async () => {
     try {
@@ -79,6 +74,33 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
     });
   };
 
+  const handleUpload = async ( ) => {
+    setUploading(true);
+    const myFormData = new FormData();
+    if (selectedImage && selectedImage !== "None") {
+      if (selectedImage.startsWith('data:image/png;base64,')) {
+        // This is a DALL-E generated image
+        const response = await fetch(selectedImage);
+        const blob = await response.blob();
+        myFormData.append('mediafile', blob, 'dalle-image.png');
+      } else {
+        // This is a regular gallery image
+        const response = await fetch(`images/${selectedImage}`);
+        const blob = await response.blob();
+        myFormData.append('mediafile', blob, "maustrocard-"+selectedImage);
+      }
+    }
+    else
+    {
+      if (uploadedFiles.length)
+        myFormData.append("mediafile", uploadedFiles[0], uploadedFiles[0].name);
+    }
+    await updateSubmission({contentID: contentItem.id, myFormData: myFormData, backgroundColor: selectedColor, deleteMedia: deleteImage, setProgress, privateID, jwt});
+    setIsImageModalOpen(false);
+    setUploading(false);
+    router.replace(router.asPath);
+  };
+
   const iconBarStyle = {
     position: 'absolute',
     top: '5px',
@@ -90,7 +112,11 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
     opacity: 1,
     visibility: 'visible',
     zIndex: 1
-};
+  };
+
+  const closeBtn = (toggle) => (
+    <button className="close" onClick={toggle}>&times;</button>
+  );
 
   return (
     <>
@@ -100,7 +126,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
         >
           <FaGripVertical size={iconSize} />
         </IconButton> }
-        { flex === "column" && <>
+        { moveSlide && <>
           <IconButton onClick={() => moveSlide(-1)}>
             <FaArrowLeft size={iconSize} />
           </IconButton>
@@ -114,6 +140,13 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
           }} 
         >
           <FaMicrophone size={iconSize} />
+        </IconButton> }
+        { (((mediaType.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") !== -1) ||contentItem.mediafile?.url.indexOf("dalle") !== -1)) || mediaType.startsWith("text") || true) && <IconButton 
+          onClick={() => {
+            setIsImageModalOpen(true);
+          }} 
+        >
+          <FaImage size={iconSize} />
         </IconButton> }
         <IconButton
           onClick={() => {
@@ -138,6 +171,21 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, se
       </div>
       <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
       <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
+      <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
+      <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+      <ModalBody>
+        <MediaPicker mediaUrl={contentItem.mediafile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" />
+        <Button
+          onClick={handleUpload}
+          disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor)}
+          block
+          color="success"
+          style={{marginTop: '10px'}}
+        >
+          <b>Update Item</b>
+        </Button>
+      </ModalBody>
+    </Modal>
     </>
   );
 };

@@ -10,7 +10,7 @@ import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, StyledButton } from './recorderstyles';
 import UploadWidget from './uploadwidget';
 
-const AudioWidget = dynamic(() => import("./audiowidget"), { ssr: false });
+const AudioWidget = dynamic(() => import("./audiowidget"), { ssr: false, loading: () => <p>Loading...</p> });
 
 export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, setIsModalOpen }) {
 
@@ -60,7 +60,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
             if (blob)
                 myFormData.append('audiofile', blob, 'audio.' + fileExt);    
             else
-                myFormData.append('mediafile', uploadedFiles[0], 'audio.' + fileExt);
+                myFormData.append('audiofile', uploadedFiles[0], 'audio.' + fileExt);
             await updateSubmission({myFormData, contentID: contentItem.id, setProgress, privateID, jwt});
         } catch (error) {
             console.error('Error uploading content:', error);
@@ -133,7 +133,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                         size="lg" 
                         block 
                         onClick={handleDelete}
-                        disabled={recording || uploading || !contentItem.audiofile?.url || uploadedFiles.length || blob}
+                        disabled={!!(recording || uploading || !contentItem.audiofile?.url || uploadedFiles.length || blob)}
                         style={{marginBottom: '10px'}}
                     >
                         Delete
@@ -143,7 +143,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                         size="lg" 
                         block 
                         onClick={handleUpload}
-                        disabled={recording || uploading || (!blob && uploadedFiles.length === 0)}
+                        disabled={!!(recording || uploading || (!blob && uploadedFiles.length === 0))}
                     >
                         Submit
                     </StyledButton>

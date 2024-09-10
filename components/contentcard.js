@@ -17,39 +17,44 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           cover
         />
       </div>
+      
       <ItemControls 
         contentItem={contentItem} 
         dragRef={dragRef}
         privateID={privateID}
         jwt={jwt}
       />
+      
       {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
-        <div 
-          style={{ 
-            padding: '10px 15px', 
-            fontSize: '16px',
-            fontWeight: 'bold',
-            lineHeight: '1.4',
-          }}
-        >
-          {contentItem.title}
-        </div>
+        <>
+          <div 
+            style={{ 
+              padding: '10px 15px', 
+              fontSize: '16px',
+              fontWeight: 'bold',
+              lineHeight: '1.4',
+            }}
+          >
+            {contentItem.title}
+          </div>
+          {contentItem.name &&
+            <div 
+              style={{ 
+                padding: '5px 10px', 
+                fontSize: '16px',
+                fontWeight: 'bold',
+                lineHeight: '1.4',
+                textAlign: 'right',
+                marginRight: '10px',
+                color: '#aaaaaa'
+              }}
+            >
+              {contentItem.name}{contentItem.location ? ', ' + contentItem.location : ""}
+            </div>
+          }
+        </>
       }
-      {contentItem.name &&
-        <div 
-          style={{ 
-            padding: '5px 10px', 
-            fontSize: '16px',
-            fontWeight: 'bold',
-            lineHeight: '1.4',
-            textAlign: 'right',
-            marginRight: '10px',
-            color: '#aaaaaa'
-          }}
-        >
-          {contentItem.name}{contentItem.location ? ', ' + contentItem.location : ""}
-        </div>
-      }
+
       {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
         <div 
           style={{ 

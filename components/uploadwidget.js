@@ -1,12 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Progress } from "reactstrap";
 import mime from 'mime';
 import getMediaURL from "../hooks/getmediaurl";
 import { StyledButton } from './recorderstyles';
 import MediaPreview from "./mediapreview";
 
-export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, deleteMedia, setDeleteMedia, accept, multiple, text, dontShowFiles, ...props }) {
+export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUploadedFiles, setDeleteMedia, accept, multiple, text, dontShowFiles, ...props }) {
     const [isDragging, setIsDragging] = useState(false);
+    const [localDelete, setLocalDelete] = useState(false);
     const fileInputRef = useRef();
     
     if (!text)
@@ -15,6 +16,12 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
     if (mediaUrl) {
       mediaUrl = getMediaURL() + mediaUrl;
     }
+
+    useEffect(() => {
+      if (setDeleteMedia)
+        setDeleteMedia(localDelete);
+    }, [localDelete]);
+  
   
     const addFile = (e) => {
       const newFiles = Array.from(e.target.files).filter(file => 
@@ -92,7 +99,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
               );
             })}
           </div>
-        ) : mediaUrl && !deleteMedia ? (
+        ) : mediaUrl && !localDelete ? (
               <div style={{ 
                 display: 'flex', 
                 justifyContent: 'center', 
@@ -104,7 +111,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
                 <MediaPreview 
                   url={mediaUrl} 
                   type={mime.getType(mediaUrl) || ""} 
-                  onRemove={() => {if (setDeleteMedia) setDeleteMedia(true)}} 
+                  onRemove={() => {setLocalDelete(true)}} 
                 /> 
               </div>
         ) : (
