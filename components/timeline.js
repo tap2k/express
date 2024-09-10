@@ -113,7 +113,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             if (mediaRef?.current && mediaRef.current.removeEventListener)
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
         }
-    }, [mediaRef]);
+    }, [mediaRef, endTime]);
 
     useEffect(() => {
         if (!mediaRef?.current)
