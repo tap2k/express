@@ -11,7 +11,6 @@ import updateSubmission from '../hooks/updatesubmission';
 import { IconButton } from './recorderstyles';
 import ContentEditor from "./contenteditor";
 import MediaPicker from './mediapicker';
-import getMediaURL from "@/hooks/getmediaurl";
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
@@ -141,7 +140,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        { (((mediaType.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") !== -1) ||contentItem.mediafile?.url.indexOf("dalle") !== -1)) || mediaType.startsWith("text") || true) && <IconButton 
+        {(((mediaType.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") !== -1) ||contentItem.mediafile?.url.indexOf("dalle") !== -1)) || mediaType.startsWith("text")) && <IconButton 
           onClick={() => {
             setIsImageModalOpen(true);
           }} 
