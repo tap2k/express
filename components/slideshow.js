@@ -231,7 +231,7 @@ const descriptionStyle = {
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {(!isInactive || isModalOpen) && <div style={{
         ...iconBarStyle, 
-        bottom: 'clamp(40px, 2vh, 80px)', 
+        bottom: 'clamp(20px, 2vh, 40px)', 
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'

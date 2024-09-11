@@ -22,7 +22,6 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
   const router = useRouter();
 
   let {url, type} = getMediaInfo(contentItem);
-  console.log(url + " " + type);
 
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
