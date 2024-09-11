@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, ...props }) {
   const [isSetup, setIsSetup] = useState(false);
@@ -141,8 +141,9 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
           <audio 
             src={src}
             ref={mediaRef}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', filter: 'sepia(90%) saturate(100%) grayscale(1) contrast(70%) invert(12%)', opacity: 0.9 }}
             crossOrigin="anonymous"
+            controls
           />
         </div>
       ) : (

@@ -24,7 +24,7 @@ function getAudioDurationFromFile(file) {
     });
   }
 
-export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt }) {
+export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt, ...props }) {
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
     const [currentTime, setCurrentTime] = useState(contentItem.start_time);
@@ -206,6 +206,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         cursor: 'pointer',
         zIndex: 10,  
         pointerEvents: 'auto',
+        ...props.style
     };
     
     const currWindowStyle = {
@@ -213,7 +214,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         left: `${(startTime / duration) * 100}%`,
         width: `${((endTime - startTime) / duration) * 100}%`,
         height: '100%',
-        backgroundColor: '#999'
+        backgroundColor: props.style?.backgroundColor ? props.style?.backgroundColor : '#999'
     };
     
     const handleStyle = {

@@ -1,9 +1,32 @@
+import { useRef } from "react";
 import useSlideAdvance from "../hooks/useslideadvance";
 
 export default function FullImage({ src, width, height, audioUrl, controls, autoPlay, interval, mediaRef, cover, index, ...props }) 
 {  
+  const imgRef = useRef(null);
+
   // TODO: Just for title, a bit hacky
   useSlideAdvance({index, autoPlay, interval});
+
+  const fullscreen = () => {
+    //if (slideshow && (map || isSafari))
+    if (!controls)
+      return;
+    if (imgRef.current.requestFullscreen) {
+        imgRef.current.requestFullscreen();
+        /*imgRef.current.requestFullscreen({ navigationUI: "show" }).then(e => {console.log("fullscreened")}).catch(err => {
+          alert(`An error occurred while trying to switch into full-screen mode: ${err.message} (${err.name})`);
+        });*/
+    } else if (imgRef.current.msRequestFullscreen) {
+        imgRef.current.msRequestFullscreen();
+    } else if (imgRef.current.mozRequestFullScreen) {
+        imgRef.current.mozRequestFullScreen();
+    } else if (imgRef.current.webkitRequestFullscreen) {
+        imgRef.current.webkitRequestFullscreen();
+    } else {
+        alert("Sorry, your browser is too old and doesn't support fullscreen")
+    }
+  }
 
   return (
     <>
@@ -21,7 +44,9 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
               width: '100%',
               height: '100%',
               objectFit: cover ? 'cover' : 'contain'
-          }} 
+            }}
+            ref={imgRef}
+            onDoubleClick={fullscreen}
         />}
       </div>
       { audioUrl && <>

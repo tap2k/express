@@ -199,9 +199,9 @@ export default function Content({ contentItem, width, height, cover, controls, a
 
   return (
     <>
-    <div style={containerStyle}>
-      {mediaElement}
-    </div>
+      <div style={containerStyle}>
+        {mediaElement}
+      </div>
       { caption && type != "youtube" && <Caption 
         title={contentItem.title}
         name={contentItem.textalignment == "center" ? contentItem.name : ""}
@@ -209,7 +209,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         textAlignment={contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
       /> } 
-      { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url ) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
+      { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       { (privateID || jwt) && <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} />}
     </>
   );

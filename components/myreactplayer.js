@@ -95,7 +95,7 @@ export default function MyReactPlayer({ url, width, height, controls, autoPlay, 
                 onReady={setListeners}
                 config={{
                     youtube: {
-                        playerVars: { origin: window.location.origin, fs: 0 }
+                        playerVars: { origin: window.location.origin, fs: 1 }
                     }
                 }}
                 light

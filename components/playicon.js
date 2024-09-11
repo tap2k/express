@@ -1,5 +1,5 @@
 
-export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
+export default function PlayIcon({ isPlaying, toggle, inverted = false, ...props }) {
   
   const containerStyle = {
     position: 'absolute',
@@ -11,7 +11,8 @@ export default function PlayIcon({ isPlaying, toggle, inverted = false }) {
     aspectRatio: '1 / 1', 
     zIndex: 100,
     cursor: 'pointer',
-    opacity: 0.9
+    opacity: 0.9,
+    ...props.style
   };
 
   const iconStyle = {

@@ -13,7 +13,6 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           controls={controls}
           autoPlay={autoPlay}
           caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
-          thumbnail
           cover
         />
       </div>

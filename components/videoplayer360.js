@@ -7,7 +7,7 @@ import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
 import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function VideoPlayer360({ height, thumbnail, mediaRef, setDuration, ...props }) 
+export default function VideoPlayer360({ height, mediaRef, setDuration, ...props }) 
 {
   const [init, setInit] = useState(false);
   const { containerSize, containerRef } = useContainerSize(height);
@@ -46,10 +46,10 @@ export default function VideoPlayer360({ height, thumbnail, mediaRef, setDuratio
       projection = "360_TB";
 
   const loadPlayer = () => {      
-    if (thumbnail)
+    /*if (thumbnail)
       mediaRef.props = {bigPlayButton: false, controlBar: {fullscreenToggle: false, pictureInPictureToggle: false, volumePanel: false}, userActions: {doubleClick: false}, ...mediaRef.props};
-    else 
-      mediaRef.props = {controlBar: {fullscreenToggle: false, pictureInPictureToggle: false}, ...mediaRef.props};
+    else */
+    mediaRef.props = {controlBar: {fullscreenToggle: true, pictureInPictureToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
       player.playsinline(true);

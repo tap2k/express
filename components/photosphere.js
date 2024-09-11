@@ -2,7 +2,7 @@ import { ReactPhotoSphereViewer } from 'react-photo-sphere-viewer';
 //import { useContainerSize } from '../hooks/usecontainersize';
 
 export default function Photosphere({ src, width, height, audioUrl, controls, mediaRef }) {
-  const navbar = controls ? [/*'autorotate', 'zoom',*/ 'fullscreen'] : [];
+  const navbar = controls ? ['autorotate', 'zoom', 'fullscreen'] : [];
   //const { containerSize, containerRef } = useContainerSize(height);
 
   // TODO: Hacky, doesnt really work
