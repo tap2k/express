@@ -45,7 +45,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
         }
         <Popup closeOnClick={false}>
           <div style={{width: 250}}>
-            <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} controls />
+            <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} />
           </div>
         </Popup>
       </Marker>
