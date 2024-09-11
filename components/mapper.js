@@ -126,7 +126,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           right: '10px',
           zIndex: 10,
           width: '95px',
-          height: '50px',
+          height: '35px',
           backgroundColor: 'rgba(92, 131, 156, 0.6)',
           color: 'white',
           border: 'none',
@@ -142,7 +142,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
         <MarkerClusterGroup
-          chunkedLoading
+          //chunkedLoading
           maxClusterRadius={15}
         >
           {
