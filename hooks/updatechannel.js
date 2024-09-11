@@ -61,7 +61,7 @@ export default async function updateChannel({ myFormData, name, description, int
     myFormData.append("picturefile", pictureblob, picturefile);
   if (audioblob) 
     myFormData.append("audiofile", audioblob, audiofile);
-  if (backgroundColor) 
+  if (backgroundColor != undefined) 
     myFormData.append("background_color", backgroundColor);
   if (email !== undefined) 
     myFormData.append("email", email);

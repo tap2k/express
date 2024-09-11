@@ -5,9 +5,9 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { FaGripVertical, FaEdit, FaTrash, FaCheck, FaTimes, FaMicrophone, FaArrowLeft, FaArrowRight, FaImage } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import mime from 'mime-types';
 import deleteSubmission from '../hooks/deletesubmission';
 import updateSubmission from '../hooks/updatesubmission';
+import { getMediaInfo } from './content';
 import { IconButton } from './recorderstyles';
 import ContentEditor from "./contenteditor";
 import MediaPicker from './mediapicker';
@@ -21,9 +21,8 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
 
   const router = useRouter();
 
-  let mediaType = mime.lookup(contentItem.mediafile?.url);
-  if (!mediaType)
-    mediaType = "text";
+  let {url, type} = getMediaInfo(contentItem);
+  console.log(url + " " + type);
 
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -133,14 +132,14 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
             <FaArrowRight size={iconSize} />
           </IconButton>
         </> }
-        { (mediaType.startsWith("image") || mediaType.startsWith("text")) && <IconButton 
+        { (type.startsWith("image") || type.startsWith("text")) && <IconButton 
           onClick={() => {
             setIsVoiceModalOpen(true);
           }} 
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {(((mediaType.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") !== -1) ||contentItem.mediafile?.url.indexOf("dalle") !== -1)) || mediaType.startsWith("text")) && <IconButton 
+        {((type.startsWith("image") && ((contentItem.mediafile?.url.indexOf("maustrocard") != -1) || contentItem.mediafile?.url.indexOf("dalle") != -1)) || (type.startsWith("text"))) && <IconButton 
           onClick={() => {
             setIsImageModalOpen(true);
           }} 

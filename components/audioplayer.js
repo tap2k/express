@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function AudioPlayer({ src, width, height, controls, mediaRef, oscilloscope = true, ...props }) {
+export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, ...props }) {
   const [isSetup, setIsSetup] = useState(false);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -56,10 +56,13 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef, os
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
 
-    // Set canvas size to match container
     const resizeCanvas = () => {
-      canvas.width = containerRef.current.clientWidth;
-      canvas.height = containerRef.current.clientHeight;
+      const containerHeight = containerRef.current.clientHeight;
+      const containerWidth = containerRef.current.clientWidth;
+      const controlsHeight = controls ? 50 : 0;
+      
+      canvas.width = containerWidth;
+      canvas.height = containerHeight - controlsHeight;
     };
 
     resizeCanvas();
@@ -70,11 +73,11 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef, os
 
       analyserRef.current.getByteTimeDomainData(dataArray);
 
-      canvasCtx.fillStyle = 'rgb(0, 0, 0)'; // Black background
+      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
       canvasCtx.lineWidth = 2;
-      canvasCtx.strokeStyle = 'rgb(0, 255, 0)'; // Green line
+      canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
 
       canvasCtx.beginPath();
 
@@ -113,28 +116,41 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef, os
         position: 'relative',
         width,
         height,
-        cursor: 'pointer',
         minHeight: '150px',
+        display: 'flex',
+        flexDirection: 'column',
         ...props.style
       }} 
     >
-      <audio 
-        src={src}
-        style={{display: "none"}} 
-        ref={mediaRef}
-        controls={controls}
-        crossOrigin="anonymous"
-      />
       {oscilloscope && (
-        <canvas 
-          ref={canvasRef} 
-          style={{
-            position: 'absolute', 
-            top: 0, 
-            left: 0, 
-            width: '100%', 
-            height: '100%'
-          }} 
+        <div style={{ flex: 1, position: 'relative' }}>
+          <canvas 
+            ref={canvasRef} 
+            style={{
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%'
+            }} 
+          />
+        </div>
+      )}
+      {controls ? (
+        <div style={{ height: '20px', width: '100%' }}>
+          <audio 
+            src={src}
+            ref={mediaRef}
+            style={{ width: '100%', height: '100%' }}
+            crossOrigin="anonymous"
+          />
+        </div>
+      ) : (
+        <audio 
+          src={src}
+          style={{ display: "none" }} 
+          ref={mediaRef}
+          crossOrigin="anonymous"
         />
       )}
     </div>
