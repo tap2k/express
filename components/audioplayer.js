@@ -123,6 +123,7 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef, os
         style={{display: "none"}} 
         ref={mediaRef}
         controls={controls}
+        crossOrigin="anonymous"
       />
       {oscilloscope && (
         <canvas 
