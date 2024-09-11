@@ -9,7 +9,6 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
   useSlideAdvance({index, autoPlay, interval});
 
   const fullscreen = () => {
-    //if (slideshow && (map || isSafari))
     if (!controls)
       return;
     if (imgRef.current.requestFullscreen) {
