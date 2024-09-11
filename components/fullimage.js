@@ -51,7 +51,7 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
         ) : (
           <div style={{
             width: '100%',
-            paddingBottom: '100%', // This creates a 16:9 aspect ratio
+            paddingBottom: '80%', // This creates a 16:9 aspect ratio
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
