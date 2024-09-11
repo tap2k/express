@@ -373,7 +373,7 @@ const descriptionStyle = {
           top: 10,
           right: 10
         }}>
-          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={24} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
+          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={22} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 

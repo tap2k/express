@@ -145,7 +145,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 1;
           }
           .zoomed-card-content {
             transition: all 0.3s ease-in-out;

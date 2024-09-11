@@ -109,7 +109,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
     transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
     opacity: 1,
     visibility: 'visible',
-    zIndex: 1
+    zIndex: 100
   };
 
   const closeBtn = (toggle) => (
