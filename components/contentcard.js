@@ -2,11 +2,11 @@ import { Card } from 'reactstrap';
 import Content, { isMediaFile } from './content';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, privateID, jwt, controls, autoPlay, dragRef }) 
+export default function ContentCard({ contentItem, privateID, jwt, controls, autoPlay, dragRef, ...props }) 
 {
   return (
     <Card className="mb-2">
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', ...props.style }}>
         <Content 
           contentItem={contentItem}
           height="auto"
@@ -14,6 +14,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           autoPlay={autoPlay}
           caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
           cover
+          thumbnail
         />
       </div>
       

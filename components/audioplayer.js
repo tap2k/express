@@ -76,7 +76,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       canvasCtx.fillStyle = props.style?.backgroundColor ? props.style?.backgroundColor : 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-      canvasCtx.lineWidth = 2;
+      canvasCtx.lineWidth = 4;
       canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
 
       canvasCtx.beginPath();
@@ -87,6 +87,8 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       for (let i = 0; i < bufferLength; i++) {
         const v = dataArray[i] / 128.0;
         const y = v * canvas.height / 2;
+        //const amplitudeScale = 1.0; // Adjust this value between 0 and 1
+        //const y = (v - 1) * amplitudeScale * canvas.height / 2 + canvas.height / 2;
 
         if (i === 0) {
           canvasCtx.moveTo(x, y);
@@ -116,14 +118,14 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         position: 'relative',
         width,
         height,
-        minHeight: '150px',
+        minHeight: '200px',
         display: 'flex',
         flexDirection: 'column',
         ...props.style
       }} 
     >
       {oscilloscope && (
-        <div style={{ flex: 1, position: 'relative' }}>
+        <div style={{ flex: 1, position: 'relative', paddingTop: '56.25%' }}>
           <canvas 
             ref={canvasRef} 
             style={{

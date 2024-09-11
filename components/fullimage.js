@@ -37,7 +37,8 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
           ...props.style
         }} 
       >
-        { src && <img 
+        {src ? (
+          <img 
             src={src} 
             style={{
               width: '100%',
@@ -46,7 +47,16 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
             }}
             ref={imgRef}
             onDoubleClick={fullscreen}
-        />}
+          />
+        ) : (
+          <div style={{
+            width: '100%',
+            paddingBottom: '100%', // This creates a 16:9 aspect ratio
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }} />
+  )}
       </div>
       { audioUrl && <>
           <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
