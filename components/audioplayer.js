@@ -119,7 +119,7 @@ export default function AudioPlayer({ src, width, height, controls, mediaRef, os
       }} 
     >
       <audio 
-        src={"http://localhost:3001/audio/farting.mp3"}
+        src={src}
         style={{display: "none"}} 
         ref={mediaRef}
         controls={controls}
