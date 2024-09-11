@@ -129,7 +129,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         controls={controls}
         mediaRef={mediaRef}
         style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
-        oscilloscope
+        oscilloscope={!contentItem.title}
       />
     );
   } else if (type.startsWith("video")) {

@@ -45,7 +45,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         mediaRef.current.removeEventListener('play', initializeAudio);
       }
     };
-  }, [mediaRef, isSetup]);
+  }, [mediaRef, oscilloscope, isSetup]);
 
   useEffect(() => {
     if (!oscilloscope || !isSetup || !containerRef.current) return;
@@ -73,7 +73,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
 
       analyserRef.current.getByteTimeDomainData(dataArray);
 
-      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+      canvasCtx.fillStyle = props.style?.backgroundColor ? props.style?.backgroundColor : 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
       canvasCtx.lineWidth = 2;
@@ -107,7 +107,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       cancelAnimationFrame(animationFrameRef.current);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [isSetup]);
+  }, [isSetup, oscilloscope, props]);
 
   return (
     <div 

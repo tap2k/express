@@ -139,7 +139,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {((type.startsWith("image") && ((contentItem.mediafile?.url.indexOf("maustrocard") != -1) || contentItem.mediafile?.url.indexOf("dalle") != -1)) || (type.startsWith("text"))) && <IconButton 
+        {((type.startsWith("image") && ((contentItem.mediafile?.url.indexOf("maustrocard") != -1) || contentItem.mediafile?.url.indexOf("dalle") != -1)) || type.startsWith("text") || type.startsWith("audio")) && <IconButton 
           onClick={() => {
             setIsImageModalOpen(true);
           }} 
@@ -175,7 +175,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         <MediaPicker mediaUrl={contentItem.mediafile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" />
         <Button
           onClick={handleUpload}
-          disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor)}
+          disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor && !deleteImage)}
           block
           color="success"
           style={{marginTop: '10px'}}
