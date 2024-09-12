@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import useSlideAdvance from "../hooks/useslideadvance";
 
-export default function FullImage({ src, width, height, audioUrl, controls, autoPlay, interval, mediaRef, cover, index, ...props }) 
+export default function FullImage({ src, width, height, controls, autoPlay, interval, cover, index, ...props }) 
 {  
   const imgRef = useRef(null);
 
@@ -58,9 +58,6 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
           }} />
   )}
       </div>
-      { audioUrl && <>
-          <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
-        </> }
     </>
   );
 }

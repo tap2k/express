@@ -171,30 +171,37 @@ export default function Content({ contentItem, width, height, cover, controls, a
     if (type.startsWith("image")) {
       if (is360)
         mediaElement = (
-          <Photosphere
-            src={url} 
-            width={width} 
-            height={height} 
-            audioUrl={contentItem.audiofile?.url ? getMediaURL() + contentItem.audiofile?.url : ""}
-            mediaRef={mediaRef}
-            controls={controls}
-          />
+          <>
+            <Photosphere
+              src={url} 
+              width={width} 
+              height={height} 
+              mediaRef={mediaRef}
+              controls={controls}
+            />
+            {contentItem.audiofile && 
+              <audio src={getMediaURL() + contentItem.audiofile?.url} style={{display: "none"}} ref={mediaRef} />
+            }
+          </>
         );
       }
   }
 
   if (!mediaElement)
     mediaElement = (
-      <FullImage 
-        src={url} 
-        width={width} 
-        height={height} 
-        audioUrl={contentItem.audiofile?.url ? getMediaURL() + contentItem.audiofile?.url : ""}
-        cover={cover}
-        controls={controls}
-        mediaRef={mediaRef}
-        style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
-      />
+      <>
+        <FullImage 
+          src={url} 
+          width={width} 
+          height={height} 
+          cover={cover}
+          controls={controls}
+          style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
+        />
+        {contentItem.audiofile && 
+          <audio src={getMediaURL() + contentItem.audiofile?.url} style={{display: "none"}} ref={mediaRef} />
+        }
+      </>
     );
 
   return (
@@ -210,7 +217,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { (privateID || jwt || mediaRef.current) && false && 
+      { ((privateID || jwt) || (mediaRef.current && false)) && 
         <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} /> }
     </>
   );

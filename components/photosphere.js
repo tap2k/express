@@ -1,7 +1,7 @@
 import { ReactPhotoSphereViewer } from 'react-photo-sphere-viewer';
 import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function Photosphere({ src, width, height, audioUrl, controls, mediaRef }) {
+export default function Photosphere({ src, width, height, controls }) {
   const navbar = controls ? ['autorotate', 'zoom', 'fullscreen'] : [];
   const { containerSize, containerRef } = useContainerSize(height);
 
@@ -34,9 +34,6 @@ export default function Photosphere({ src, width, height, audioUrl, controls, me
           navbar={navbar}
         />
       </div>
-      {audioUrl && 
-        <audio src={audioUrl} style={{display: "none"}} ref={mediaRef} />
-      }
     </>
   );
 };

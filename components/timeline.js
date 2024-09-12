@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useLayoutEffect } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
 function getAudioDurationFromFile(file) {
@@ -45,7 +45,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         //if (mediaRef?.current) 
         //    mediaRef.current.currentTime = startTime;
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
-    }, [duration]);
+    }, [mediaRef, duration]);
 
     useEffect(() => {
         if (!mediaRef?.current || mediaRef.current.youtube)
@@ -72,6 +72,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     
         const handleLoadedMetadata = () => {
           if (isFinite(mediaRef.current.duration) && mediaRef.current.duration > 0) {
+            console.log("duration = " + mediaRef.current.duration);
             setDuration(mediaRef.current.duration);
           } else {
             updateDuration();
@@ -194,58 +195,56 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             mediaRef.current.currentTime = clickTime;
     }
 
-    const timelineStyle = {
-        position: 'absolute',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '100%',
-        height: '10px',
-        backgroundColor: '#ddd',
-        bottom: '0px', // Changed from 0px to accommodate time indicators
-        overflow: 'visible', // Changed from 'hidden' to show time indicators
-        cursor: 'pointer',
-        zIndex: 1000,  
-        pointerEvents: 'auto',
-        ...props.style
-    };
-    
-    const currWindowStyle = {
-        position: 'absolute',
-        left: `${(startTime / duration) * 100}%`,
-        width: `${((endTime - startTime) / duration) * 100}%`,
-        height: '100%',
-        backgroundColor: props.style?.backgroundColor ? props.style?.backgroundColor : '#999'
-    };
-    
-    const handleStyle = {
-        position: 'absolute',
-        width: '20px',
-        height: '100%',
-        backgroundColor: '#666',
-        cursor: 'ew-resize',
-        borderRadius: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    };
-    
-    const currTimeStyle = {
-        position: 'absolute',
-        left: `${(currentTime / duration) * 100}%`,
-        width: '2px',
-        height: '100%',
-        backgroundColor: 'red',
-        pointerEvents: 'none'
-    };
-    
-    const timeIndicatorStyle = {
-        position: 'absolute',
-        bottom: '-20px', // Position below the timeline
-        fontSize: '12px',
-        fontWeight: 'bold',
-        color: 'white',
-        whiteSpace: 'nowrap',
-    };
+    const styles = useMemo(() => ({
+        timelineStyle: {
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100%',
+            height: '15px',
+            backgroundColor: '#ddd',
+            bottom: '20px',
+            overflow: 'visible',
+            cursor: 'pointer',
+            zIndex: 1000,
+            pointerEvents: 'auto',
+            ...props.style
+        },
+        currWindowStyle: {
+            position: 'absolute',
+            left: `${(startTime / duration) * 100}%`,
+            width: `${((endTime - startTime) / duration) * 100}%`,
+            height: '100%',
+            backgroundColor: props.style?.backgroundColor ? props.style?.backgroundColor : '#999'
+        },
+        handleStyle: {
+            position: 'absolute',
+            width: '20px',
+            height: '100%',
+            backgroundColor: '#666',
+            cursor: 'ew-resize',
+            borderRadius: '5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        currTimeStyle: {
+            position: 'absolute',
+            left: `${(currentTime / duration) * 100}%`,
+            width: '2px',
+            height: '100%',
+            backgroundColor: 'red',
+            pointerEvents: 'none'
+        },
+        timeIndicatorStyle: {
+            position: 'absolute',
+            bottom: '-20px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            color: 'white',
+            whiteSpace: 'nowrap',
+        }
+    }), [startTime, endTime, currentTime, duration, props.style]);
     
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
@@ -258,17 +257,18 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 ref={timelineRef}
                 onClick={handleTimelineClick}
                 onTouchStart={handleTimelineClick}
-                style={timelineStyle}
+                style={styles.timelineStyle}
+                key={duration}
             >
-                <div style={currWindowStyle} />
+                <div style={styles.currWindowStyle} />
                 {(privateID || jwt) && <div
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('start')}
                     onTouchStart={handleTouchStart('start')}
-                    style={{...handleStyle, left: `${(startTime / duration) * 100}%`}}
+                    style={{...styles.handleStyle, left: `${(startTime / duration) * 100}%`}}
                 >
                     <FaGripLinesVertical color="white" size={12} />
-                    <span style={{ ...timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
+                    <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
                         {formatTime(startTime)}
                     </span>
                 </div>}
@@ -276,14 +276,14 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                     className="timeline-handle"
                     onMouseDown={handleMouseDown('end')}
                     onTouchStart={handleTouchStart('end')}
-                    style={{...handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
+                    style={{...styles.handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
                 >
                     <FaGripLinesVertical color="white" size={12} />
-                    <span style={{ ...timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
+                    <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
                         {formatTime(endTime)}
                     </span>
                 </div>}
-                {mediaRef?.current?.youtube ? "" : <div style={currTimeStyle} />}
+                {mediaRef?.current?.youtube ? "" : <div style={styles.currTimeStyle} />}
             </div>
     );
 }

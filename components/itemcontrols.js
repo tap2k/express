@@ -169,20 +169,20 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
       <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
       <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
-      <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
-      <ModalBody>
-        <MediaPicker mediaUrl={contentItem.mediafile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" />
-        <Button
-          onClick={handleUpload}
-          disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor && !deleteImage)}
-          block
-          color="success"
-          style={{marginTop: '10px'}}
-        >
-          <b>Update Item</b>
-        </Button>
-      </ModalBody>
-    </Modal>
+        <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
+        <ModalBody>
+          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" />
+          <Button
+            onClick={handleUpload}
+            disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor && !deleteImage)}
+            block
+            color="success"
+            style={{marginTop: '10px'}}
+          >
+            <b>Update Item</b>
+          </Button>
+        </ModalBody>
+        </Modal>
     </>
   );
 };
