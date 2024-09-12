@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import useSlideAdvance from "../hooks/useslideadvance";
 
-export default function FullImage({ src, width, height, controls, autoPlay, interval, cover, index, ...props }) 
+export default function FullImage({ src, width, height, controls, cover, autoPlay, interval, index, ...props }) 
 {  
   const imgRef = useRef(null);
 

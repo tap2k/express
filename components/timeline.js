@@ -72,7 +72,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
     
         const handleLoadedMetadata = () => {
           if (isFinite(mediaRef.current.duration) && mediaRef.current.duration > 0) {
-            console.log("duration = " + mediaRef.current.duration);
             setDuration(mediaRef.current.duration);
           } else {
             updateDuration();
