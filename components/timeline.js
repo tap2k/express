@@ -199,12 +199,12 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         left: '50%',
         transform: 'translateX(-50%)',
         width: '100%',
-        height: '20px',
+        height: '10px',
         backgroundColor: '#ddd',
-        bottom: '20px', // Changed from 0px to accommodate time indicators
+        bottom: '0px', // Changed from 0px to accommodate time indicators
         overflow: 'visible', // Changed from 'hidden' to show time indicators
         cursor: 'pointer',
-        zIndex: 10,  
+        zIndex: 1000,  
         pointerEvents: 'auto',
         ...props.style
     };

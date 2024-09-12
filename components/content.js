@@ -115,7 +115,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
   const containerStyle = {
     position: 'relative',
     width,
-    height,
+    height: (privateID || jwt || mediaRef.current) && false ? 'calc(${height} - 20px)' : height,
     ...props.style
   };
 
@@ -210,7 +210,8 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { (privateID || jwt) && <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} />}
+      { (privateID || jwt || mediaRef.current) && false && 
+        <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} /> }
     </>
   );
 }

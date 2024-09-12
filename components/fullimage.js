@@ -46,7 +46,7 @@ export default function FullImage({ src, width, height, audioUrl, controls, auto
               objectFit: cover ? 'cover' : 'contain'
             }}
             ref={imgRef}
-            onDoubleClick={fullscreen}
+            //onDoubleClick={fullscreen}
           />
         ) : (
           <div style={{
