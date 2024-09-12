@@ -14,10 +14,10 @@ export default ({ channel, currslide, privateID, jwt }) => {
     //const height = "100vh";
 
     return (
-        <>
-            {!isInactive && <PageMenu loggedIn={privateID || jwt} />}
-            <Slideshow channel={channel} width={width} height={height} startSlide={currslide} isInactive={isInactive} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
-        </>
+        <div className={isInactive ? 'inactive-ui' : ''}>
+            <PageMenu loggedIn={privateID || jwt} />
+            <Slideshow channel={channel} width={width} height={height} startSlide={currslide} privateID={privateID} jwt={jwt} style={{backgroundColor: 'black'}}/>
+        </div>
     );
 }
 

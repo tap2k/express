@@ -52,7 +52,7 @@ export default function GoogleCallback({ error, jwt }) {
           marginBottom: '40px',
           fontFamily: 'Arial, sans-serif'
         }}>
-          {JSON.stringify(error)}
+          {error}
         </p>
         <Button 
           color="primary"

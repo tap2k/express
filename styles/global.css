@@ -1,0 +1,11 @@
+.hide-on-inactive {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease-in;
+  }
+  
+  .inactive-ui .hide-on-inactive {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+  }

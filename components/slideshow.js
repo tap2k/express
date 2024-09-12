@@ -138,9 +138,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     padding: 'clamp(8px, 0.5vh, 20px)',
     borderRadius: 'clamp(10px, 2vh, 20px)',
     alignItems: 'center',
-    transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
-    opacity: 1,
-    visibility: 'visible',
     zIndex: 1
   };
 
@@ -229,9 +226,9 @@ const descriptionStyle = {
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      {(!isInactive || isModalOpen) && <div style={{
+      {!isModalOpen && <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
-        bottom: 'clamp(20px, 2vh, 40px)', 
+        bottom: 'clamp(25px, 3.5vh, 50px)', 
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'
@@ -333,6 +330,7 @@ const descriptionStyle = {
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
+                    timeline
                   />
                 </Slide>
               );
@@ -343,9 +341,9 @@ const descriptionStyle = {
             <SlideButton increment={-1} style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
             <SlideButton increment={1} style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
             </>*/
-            !privateID && !jwt && !isInactive && false ? <>
-              <ButtonBack key={1} style={{...slideButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={2} style={{...slideButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
+            !privateID && !jwt && false ? <>
+              <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :
             <>
               <ButtonBack style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
@@ -367,8 +365,8 @@ const descriptionStyle = {
         </ModalBody>
       </Modal>
 
-      {(privateID || jwt) && (!isInactive || isModalOpen) && (
-        <div style={{
+      {(privateID || jwt) && (!isModalOpen) && (
+        <div className="hide-on-inactive" style={{
           position: 'absolute',
           top: 10,
           right: 10

@@ -97,7 +97,7 @@ export function getMediaInfo(contentItem, thumbnail) {
   return {url: "", type: "text"};
 }
 
-export default function Content({ contentItem, width, height, cover, controls, autoPlay, interval, caption, thumbnail, index, privateID, jwt, ...props }) 
+export default function Content({ contentItem, width, height, autoPlay, interval, caption, thumbnail, cover, controls, timeline, index, privateID, jwt, ...props }) 
 {
   if (!contentItem)
     return;
@@ -217,7 +217,7 @@ export default function Content({ contentItem, width, height, cover, controls, a
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { ((privateID || jwt) || (mediaRef.current && false)) && 
+      { ((privateID || jwt) || (mediaRef.current && timeline)) && 
         <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} /> }
     </>
   );

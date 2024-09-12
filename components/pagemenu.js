@@ -4,7 +4,7 @@ import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/
 import setError from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 
-export default function PageMenu({ loggedIn, editor } ) {
+export default function PageMenu({ loggedIn, editor, ...props } ) {
   const router = useRouter();
 
   const rowStyle = {
@@ -17,11 +17,7 @@ export default function PageMenu({ loggedIn, editor } ) {
     alignItems: 'center',
     padding: '0.35rem',
     backgroundColor: 'transparent',
-    transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
-    opacity: 1,
-    visibility: 'visible'
   };
-
   
   const copyUrlToClipboard = () => {
     if (typeof window === 'undefined' || !navigator.clipboard) {
@@ -41,8 +37,7 @@ export default function PageMenu({ loggedIn, editor } ) {
   };
 
   return (
-    <>
-      <div style={rowStyle}>
+      <div style={rowStyle} className="hide-on-inactive" {...props}>
         <Link href="/">
           <MenuButton>
             <FaHome />
@@ -94,6 +89,5 @@ export default function PageMenu({ loggedIn, editor } ) {
           </MenuButton>}
         </> }
       </div>
-    </>
   );
 }
