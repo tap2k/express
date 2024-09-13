@@ -11,7 +11,7 @@ import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, isPlaying, interval, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -98,12 +98,12 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
 
   function nextSlide()
   {
-    gotoSlide(currSlide+1);
+    gotoSlide((currSlide + 1) % channel.contents.length);
   }
 
   function prevSlide()
   {
-    gotoSlide(currSlide-1);
+    gotoSlide((currSlide - 1 + channel.contents.length) % channel.contents.length);
   }
 
   async function handleTilesetChange(event) {
@@ -122,11 +122,11 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         onChange={handleTilesetChange}
         style={{
           position: 'absolute',
-          top: '10px',
+          top: '7px',
           right: '10px',
           zIndex: 10,
           width: '95px',
-          height: '35px',
+          height: '40px',
           backgroundColor: 'rgba(92, 131, 156, 0.6)',
           color: 'white',
           border: 'none',
