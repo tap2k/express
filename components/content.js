@@ -218,7 +218,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       { ((privateID || jwt) || (mediaRef.current)) && 
-        <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} /> }
+        <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} pause={pause} duration={duration} setDuration={setDuration} hidden={!timeline} privateID={privateID} jwt={jwt} /> }
     </>
   );
 }

@@ -329,6 +329,7 @@ const descriptionStyle = {
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
+                    timeline
                   />
                 </Slide>
               );

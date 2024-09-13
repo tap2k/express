@@ -105,7 +105,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                       privateID={privateID}
                       jwt={jwt}
                       caption
-                      thumbnail
+                      timeline
                       cover
                     />
                     <ItemControls 
