@@ -30,12 +30,10 @@ function formatTime (time) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt, ...props }) {
+export default function Timeline({ contentItem, mediaRef, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
     const [currentTime, setCurrentTime] = useState(0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
-
-    console.log(contentItem);
 
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
@@ -103,18 +101,13 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
     const updateTime = useCallback(() => {
         if (!mediaRef?.current || mediaRef.current.readyState < 2 || mediaRef.current.paused) return;
-        
-        const currentMediaTime = mediaRef.current.currentTime;
-        console.log("current " + currentMediaTime);
-        console.log("start " + startTime);
-        console.log("end " + endTime);
-        
-        setCurrentTime(mediaRef.current.currentTime);
         if (mediaRef.current.currentTime >= endTime) {
             pause();
             mediaRef.current.currentTime = startTime;
             setCurrentTime(startTime);
         }
+        else
+            setCurrentTime(mediaRef.current.currentTime);
     }, [mediaRef, startTime, endTime]);
 
     useEffect(() => {
@@ -123,6 +116,11 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         const media = mediaRef.current;
     
         const handlePlay = () => {
+            if (mediaRef.current.currentTime < startTime)
+            {
+                mediaRef.current.currentTime = startTime;
+                setCurrentTime(startTime);
+            }
             media.addEventListener('timeupdate', updateTime);
         };
     
@@ -143,14 +141,8 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             media.removeEventListener('pause', handlePause);
             media.removeEventListener('timeupdate', updateTime);
         };
-    }, [mediaRef, updateTime]);
+    }, [mediaRef]);
 
-    /*useEffect(() => {
-        if (!mediaRef?.current)
-            return;
-        if (isPlaying && mediaRef.current.currentTime >= endTime - 0.1)
-            mediaRef.current.currentTime = startTime;
-    }, [isPlaying]);*/
 
     const handleDrag = useCallback((e) => {
         const clientX = e.clientX || e.touches[0].clientX;
@@ -223,13 +215,14 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             mediaRef.current.currentTime = clickTime;
     }, [startTime, endTime, duration, mediaRef]);
 
+
     const styles = useMemo(() => ({
         timelineStyle: {
             position: 'absolute',
             left: '50%',
             transform: 'translateX(-50%)',
             width: '100%',
-            height: '20px',
+            height: privateID || jwt ? '15px' : '10px',
             backgroundColor: privateID || jwt ? '#ddd' : 'transparent',
             bottom: privateID || jwt ? '20px' : '0px',
             overflow: 'visible',
@@ -281,7 +274,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             onTouchStart={handleTimelineClick}
             style={styles.timelineStyle}
             key={duration}
-            className="hide-on-inactive" 
+            className="hide-on-inactive"
         >
             <div style={styles.currWindowStyle} />
             {(privateID || jwt) && <div
