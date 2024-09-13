@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
@@ -8,7 +9,8 @@ import Banner from '../components/banner';
 import Board from "../components/board";
 
 export default ({ channel, privateID, jwt }) => {
-    
+    const [isPlaying, setIsPlaying] = useState(false);
+
     const backgroundStyle = channel.picture?.url 
         ? {
             backgroundImage: `url(${getMediaURL() + channel.picture.url})`,
@@ -43,7 +45,7 @@ export default ({ channel, privateID, jwt }) => {
                     privateID={privateID}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} privateID={privateID} jwt={jwt} />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />
             </div>
         </div>
     );

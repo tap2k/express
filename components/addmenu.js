@@ -15,11 +15,10 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddMenu({ channel, privateID, jwt, user, download }) {
+export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, jwt, user, download }) {
   if (!channel)
     return;
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const audioRef = useRef(null);
@@ -59,12 +58,14 @@ export default function AddMenu({ channel, privateID, jwt, user, download }) {
   );
 
   const togglePlayPause = () => {
-      if (isPlaying) {
+    if (audioRef.current)
+    {
+      if (isPlaying) 
           audioRef.current.pause();
-      } else {
+      else
           audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+    }
+    setIsPlaying(!isPlaying);
   };
 
   const containerStyle = {
@@ -84,18 +85,14 @@ export default function AddMenu({ channel, privateID, jwt, user, download }) {
         { download && <CircularMenuButton onClick={handleDownload}>
           <FaDownload  />
         </CircularMenuButton> }
-        {channel.audiofile?.url && (
-            <>
-                <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
-                <CircularMenuButton onClick={togglePlayPause}>
-                    {isPlaying ? (
-                        <FaPause />
-                    ) : (
-                        <FaPlay />
-                    )}
-                </CircularMenuButton>
-            </>
-        )}
+        {channel.audiofile?.url && <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />}
+        <CircularMenuButton onClick={togglePlayPause}>
+            {isPlaying ? (
+                <FaPause />
+            ) : (
+                <FaPlay />
+            )}
+        </CircularMenuButton>
         { (privateID || jwt || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
           <FaPlus />
         </CircularMenuButton> }

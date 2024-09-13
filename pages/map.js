@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
@@ -11,6 +12,8 @@ import getTilesets from "../hooks/gettilesets";
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
 export default ({ channel, tilesets, privateID, jwt }) => {
+    const [isPlaying, setIsPlaying] = useState(false);
+
     const width = "100vw";
     const height = use100vh();
     //const height = "100vh";
@@ -26,8 +29,8 @@ export default ({ channel, tilesets, privateID, jwt }) => {
                     isSlideshow
                 />
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} privateID={privateID} tilesets={tilesets} jwt={jwt} tour />
-            <AddMenu channel={channel} privateID={privateID} jwt={jwt} />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} privateID={privateID} tilesets={tilesets} jwt={jwt} tour />
+            <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />
         </>
     );
 }

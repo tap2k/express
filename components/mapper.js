@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Input } from "reactstrap";
 import { FaUndo } from 'react-icons/fa';
 import MarkerClusterGroup from 'react-leaflet-cluster';
@@ -11,7 +11,7 @@ import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, isPlaying, interval, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, isPlaying, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -68,14 +68,12 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       mapRef.setView({lat: channel.lat? channel.lat : 40.7736, lng: channel.long ? channel.long : -73.941}, channel.zoom ? channel.zoom : 11.2);
   }
 
-  function gotoSlide(goSlide)
-  {
+  const gotoSlide = useCallback((goSlide) => {
     if (goSlide == markerRefs.length || goSlide == -1)
       resetMap();
 
-    if (goSlide > markerRefs.length)
+    if (goSlide > markerRefs.length - 1)
       goSlide = 0;
-
     else if (goSlide < -1)
       goSlide = markerRefs.length - 1;
 
@@ -94,7 +92,19 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       mapRef.setView(markerRefs[goSlide].getLatLng(), 18);
       markerRefs[goSlide].openPopup();
     }
-  }
+  }, [markerRefs, mapRef, animate, resetMap]);
+
+  useEffect(() => {
+    let tourTimer;
+    if (isPlaying && tour && channel.contents.length > 0) {
+      tourTimer = setInterval(() => {
+        gotoSlide((currSlide + 1) % channel.contents.length);
+      }, channel.interval ? channel.interval : 5000);
+    }
+    return () => {
+      if (tourTimer) clearInterval(tourTimer);
+    };
+  }, [isPlaying, channel, currSlide]);
 
   function nextSlide()
   {
