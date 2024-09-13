@@ -94,15 +94,12 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
       display: 'flex',
       flexDirection: flex,
       gap: '2px',
-      transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
-      opacity: 1,
-      visibility: 'visible',
       zIndex: 1
   };
 
   return (
     <>
-      <div style={iconBarStyle}>
+      <div style={iconBarStyle} className="hide-on-inactive">
         <IconButton 
           onClick={() => {
               setIsAudioModalOpen(true);

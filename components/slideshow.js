@@ -193,14 +193,14 @@ const containerStyle = {
 };
 
 const titleStyle = {
-    fontSize: 'clamp(24px, 4vh, 48px)',
+    fontSize: 'clamp(32px, 6vh, 64px)',
     lineHeight: '1.1',
     fontWeight: 'bold',
     ...textOutlineStyle
 };
 
 const descriptionStyle = {
-    fontSize: 'clamp(18px, 2vh, 32px)',
+    fontSize: 'clamp(18px, 3vh, 32px)',
     lineHeight: '1.2',
     marginTop: '10px',
     ...textOutlineStyle
