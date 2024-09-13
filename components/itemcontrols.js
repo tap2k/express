@@ -104,7 +104,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
     right: '5px',
     display: 'flex',
     flexDirection: flex,
-    gap: '2px',
+    gap: '5px',
     transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
     opacity: 1,
     visibility: 'visible',

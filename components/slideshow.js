@@ -228,7 +228,7 @@ const descriptionStyle = {
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       {!isModalOpen && <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
-        bottom: 'clamp(25px, 3.5vh, 50px)', 
+        bottom: '15px', 
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'
@@ -367,10 +367,10 @@ const descriptionStyle = {
       {(privateID || jwt) && (!isModalOpen) && (
         <div className="hide-on-inactive" style={{
           position: 'absolute',
-          top: 10,
-          right: 10
+          top: 5,
+          right: 5
         }}>
-          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={22} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
+          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={'calc(0.8vmin + 1.0em)'} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 
