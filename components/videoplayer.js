@@ -14,7 +14,8 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
         ref={mediaRef}
         style={{
           width: '100%',
-          height: '100%'
+          height: '100%',
+          pointerEvents: 'none'
         }}
         playsInline
         preload='auto'
