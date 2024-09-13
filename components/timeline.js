@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
 function getAudioDurationFromFile(file) {
@@ -22,16 +22,25 @@ function getAudioDurationFromFile(file) {
   
       reader.readAsArrayBuffer(file);
     });
-  }
+}
+
+function formatTime (time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
 
 export default function Timeline({ contentItem, mediaRef, interval, isPlaying, pause, duration, setDuration, privateID, jwt, ...props }) {
-    const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
+    const [currentTime, setCurrentTime] = useState(0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
-    const [currentTime, setCurrentTime] = useState(contentItem.start_time);
+    const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
+
+    console.log(contentItem);
+
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
 
-    const calculateTimelineClick = (e) => {
+    const calculateTimelineClick = useCallback((e) => {
         if (!timelineRef?.current)
             return;
         const rect = timelineRef.current.getBoundingClientRect();
@@ -39,90 +48,111 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         const position = (clientX - rect.left) / rect.width;
         const newTime = Math.min(Math.max(position * duration, 0), duration);
         return newTime;
-    }        
+    }, [timelineRef, duration]);
 
     useEffect(() => {
-        //if (mediaRef?.current) 
-        //    mediaRef.current.currentTime = startTime;
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
-    }, [mediaRef, duration]);
-
-    useEffect(() => {
-        if (!mediaRef?.current || mediaRef.current.youtube)
-          return;
-    
-        const updateDuration = async () => {
-          if (mediaRef.current.readyState >= 1) {
-            let audioDuration = mediaRef.current.duration;
-            
-            // Check if it's an MP3 file and duration is not available
-            if (mediaRef.current.src.toLowerCase().endsWith('.mp3') && 
-                (!isFinite(audioDuration) || audioDuration <= 0)) {
-              try {
-                const file = await fetch(mediaRef.current.src).then(r => r.blob());
-                audioDuration = await getAudioDurationFromFile(file);
-              } catch (error) {
-                console.error('Error getting audio duration:', error);
-              }
-            }
-    
-            setDuration(audioDuration);
-          }
-        };
-    
-        const handleLoadedMetadata = () => {
-          if (isFinite(mediaRef.current.duration) && mediaRef.current.duration > 0) {
-            setDuration(mediaRef.current.duration);
-          } else {
-            updateDuration();
-          }
-        };
-    
-        if (mediaRef.current.addEventListener)
-            mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-    
-        // Check if duration is already available
-        if (mediaRef.current.readyState >= 1) {
-          handleLoadedMetadata();
-        }
-    
-        return () => {
-          if (mediaRef?.current && mediaRef.current.removeEventListener)
-            mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        };
-      }, [mediaRef]);
-      
-    useEffect(() => {
-        if (!mediaRef?.current || mediaRef.current.youtube)
-            return;
-
-        const updateTime = () => {
-            if (!mediaRef?.current)
-                return;
-            setCurrentTime(mediaRef.current.currentTime);
-            if (mediaRef.current.currentTime >= endTime) {
-                pause();
-                mediaRef.current.currentTime = endTime;
-            }
-        };
-
-        if (mediaRef.current.addEventListener)
-            mediaRef.current.addEventListener('timeupdate', updateTime);
-
-        return () => {
-            if (mediaRef?.current && mediaRef.current.removeEventListener)
-                mediaRef.current.removeEventListener('timeupdate', updateTime);
-        }
-    }, [mediaRef, endTime]);
+    }, [duration]);
 
     useEffect(() => {
         if (!mediaRef?.current)
             return;
+        mediaRef.current.currentTime = startTime;
+        setCurrentTime(startTime);
+    }, [startTime]);
+
+    useEffect(() => {
+        if (!mediaRef?.current || mediaRef.current.youtube)
+            return;
+    
+        const updateDuration = async () => {
+            if (mediaRef.current.readyState >= 1) {
+                let audioDuration = mediaRef.current.duration;
+                
+                if (mediaRef.current.src.toLowerCase().endsWith('.mp3') && 
+                    (!isFinite(audioDuration) || audioDuration <= 0)) {
+                    try {
+                        const file = await fetch(mediaRef.current.src).then(r => r.blob());
+                        audioDuration = await getAudioDurationFromFile(file);
+                    } catch (error) {
+                        console.error('Error getting audio duration:', error);
+                    }
+                }
+    
+                setDuration(audioDuration);
+            }
+        };
+    
+        const handleLoadedMetadata = () => {
+            updateDuration();
+        };
+    
+        mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+        
+        // Initial call in case the metadata is already loaded
+        if (mediaRef.current.readyState >= 1) {
+            updateDuration();
+        }
+    
+        return () => {
+            if (mediaRef?.current) {
+                mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            }
+        };
+    }, [mediaRef]);
+
+    const updateTime = useCallback(() => {
+        if (!mediaRef?.current || mediaRef.current.readyState < 2 || mediaRef.current.paused) return;
+        
+        const currentMediaTime = mediaRef.current.currentTime;
+        console.log("current " + currentMediaTime);
+        console.log("start " + startTime);
+        console.log("end " + endTime);
+        
+        setCurrentTime(mediaRef.current.currentTime);
+        if (mediaRef.current.currentTime >= endTime) {
+            pause();
+            mediaRef.current.currentTime = startTime;
+            setCurrentTime(startTime);
+        }
+    }, [mediaRef, startTime, endTime]);
+
+    useEffect(() => {
+        if (!mediaRef?.current || mediaRef.current.youtube) return;
+    
+        const media = mediaRef.current;
+    
+        const handlePlay = () => {
+            media.addEventListener('timeupdate', updateTime);
+        };
+    
+        const handlePause = () => {
+            media.removeEventListener('timeupdate', updateTime);
+        };
+    
+        media.addEventListener('play', handlePlay);
+        media.addEventListener('pause', handlePause);
+    
+        // Initial setup
+        if (!media.paused) {
+            media.addEventListener('timeupdate', updateTime);
+        }
+    
+        return () => {
+            media.removeEventListener('play', handlePlay);
+            media.removeEventListener('pause', handlePause);
+            media.removeEventListener('timeupdate', updateTime);
+        };
+    }, [mediaRef, updateTime]);
+
+    /*useEffect(() => {
+        if (!mediaRef?.current)
+            return;
         if (isPlaying && mediaRef.current.currentTime >= endTime - 0.1)
             mediaRef.current.currentTime = startTime;
-    }, [isPlaying]);
+    }, [isPlaying]);*/
 
-    const handleDrag = (e) => {
+    const handleDrag = useCallback((e) => {
         const clientX = e.clientX || e.touches[0].clientX;
         const newTime = calculateTimelineClick({ clientX });
         if (currentHandleRef.current === 'start') {
@@ -130,7 +160,6 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
                 return;
             const newStartTime = Math.min(newTime, endTime - 1.0);
             setStartTime(newStartTime);
-            mediaRef.current.currentTime = newStartTime;
             contentItem.start_time = newStartTime;
             contentItem.duration = endTime - newStartTime;
         } else if (currentHandleRef.current === 'end') {
@@ -140,47 +169,47 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             setEndTime(newEndTime);
             if (mediaRef?.current)
                 mediaRef.current.currentTime = newEndTime;
-            contentItem.duration = newEndTime - startTime;
+            contentItem.duration = newEndTime - contentItem.start_time;
         }
-    };
+    }, [startTime, endTime, mediaRef]);
 
-    const handleMouseDown = (handle) => (e) => {
+    const handleMouseDown = useCallback((handle) => (e) => {
         e.preventDefault();
         e.stopPropagation();
         currentHandleRef.current = handle;
 
         document.addEventListener('mousemove', handleDrag);
         document.addEventListener('mouseup', handleMouseUp);
-    };
+    }, [handleDrag]);
 
-    const handleMouseUp = () => {
+    const handleMouseUp = useCallback(() => {
         currentHandleRef.current = null;
         document.removeEventListener('mousemove', handleDrag);
         document.removeEventListener('mouseup', handleMouseUp);
-    };
+    }, [handleDrag]);
 
-    const handleTouchStart = (handle) => (e) => {
+    const handleTouchStart = useCallback((handle) => (e) => {
         e.preventDefault();
         e.stopPropagation();
         currentHandleRef.current = handle;
 
         document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
-    };
+    }, []);
 
-    const handleTouchMove = (e) => {
+    const handleTouchMove = useCallback((e) => {
         e.preventDefault();
         const touch = e.touches[0];
         handleDrag({ clientX: touch.clientX });
-    };
+    }, [handleDrag]);
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = useCallback(() => {
         currentHandleRef.current = null;
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
-    };
+    }, [handleTouchMove]);
 
-    const handleTimelineClick = (e) => {
+    const handleTimelineClick = useCallback((e) => {
         if (currentHandleRef.current || !timelineRef.current || !mediaRef?.current) return;
         
         if (e.target.closest('.timeline-handle')) return;
@@ -192,7 +221,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
 
         if (clickTime >= startTime && clickTime <= endTime) 
             mediaRef.current.currentTime = clickTime;
-    }
+    }, [startTime, endTime, duration, mediaRef]);
 
     const styles = useMemo(() => ({
         timelineStyle: {
@@ -200,9 +229,9 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             left: '50%',
             transform: 'translateX(-50%)',
             width: '100%',
-            height: '15px',
-            backgroundColor: '#ddd',
-            bottom: '20px',
+            height: '20px',
+            backgroundColor: privateID || jwt ? '#ddd' : 'transparent',
+            bottom: privateID || jwt ? '20px' : '0px',
             overflow: 'visible',
             cursor: 'pointer',
             zIndex: 1000,
@@ -214,7 +243,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             left: `${(startTime / duration) * 100}%`,
             width: `${((endTime - startTime) / duration) * 100}%`,
             height: '100%',
-            backgroundColor: props.style?.backgroundColor ? props.style?.backgroundColor : '#999'
+            backgroundColor: privateID || jwt ? '#999' : 'rgba(100, 100, 100, 0.2)'
         },
         handleStyle: {
             position: 'absolute',
@@ -232,7 +261,7 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
             left: `${(currentTime / duration) * 100}%`,
             width: '2px',
             height: '100%',
-            backgroundColor: 'red',
+            backgroundColor: privateID || jwt ? 'red' : 'rgba(255, 0, 0, 0.6)',
             pointerEvents: 'none'
         },
         timeIndicatorStyle: {
@@ -245,44 +274,39 @@ export default function Timeline({ contentItem, mediaRef, interval, isPlaying, p
         }
     }), [startTime, endTime, currentTime, duration, props.style]);
     
-    const formatTime = (time) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    };
-    
     return (
-            <div 
-                ref={timelineRef}
-                onClick={handleTimelineClick}
-                onTouchStart={handleTimelineClick}
-                style={styles.timelineStyle}
-                key={duration}
+        <div 
+            ref={timelineRef}
+            onClick={handleTimelineClick}
+            onTouchStart={handleTimelineClick}
+            style={styles.timelineStyle}
+            key={duration}
+            className="hide-on-inactive" 
+        >
+            <div style={styles.currWindowStyle} />
+            {(privateID || jwt) && <div
+                className="timeline-handle"
+                onMouseDown={handleMouseDown('start')}
+                onTouchStart={handleTouchStart('start')}
+                style={{...styles.handleStyle, left: `${(startTime / duration) * 100}%`}}
             >
-                <div style={styles.currWindowStyle} />
-                {(privateID || jwt) && <div
-                    className="timeline-handle"
-                    onMouseDown={handleMouseDown('start')}
-                    onTouchStart={handleTouchStart('start')}
-                    style={{...styles.handleStyle, left: `${(startTime / duration) * 100}%`}}
-                >
-                    <FaGripLinesVertical color="white" size={12} />
-                    <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
-                        {formatTime(startTime)}
-                    </span>
-                </div>}
-                {(privateID || jwt) && <div
-                    className="timeline-handle"
-                    onMouseDown={handleMouseDown('end')}
-                    onTouchStart={handleTouchStart('end')}
-                    style={{...styles.handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
-                >
-                    <FaGripLinesVertical color="white" size={12} />
-                    <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
-                        {formatTime(endTime)}
-                    </span>
-                </div>}
-                {mediaRef?.current?.youtube ? "" : <div style={styles.currTimeStyle} />}
-            </div>
+                <FaGripLinesVertical color="white" size={12} />
+                <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
+                    {formatTime(startTime)}
+                </span>
+            </div>}
+            {(privateID || jwt) && <div
+                className="timeline-handle"
+                onMouseDown={handleMouseDown('end')}
+                onTouchStart={handleTouchStart('end')}
+                style={{...styles.handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
+            >
+                <FaGripLinesVertical color="white" size={12} />
+                <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
+                    {formatTime(endTime)}
+                </span>
+            </div>}
+            {mediaRef?.current?.youtube ? "" : <div style={styles.currTimeStyle} />}
+        </div>
     );
 }

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useContext, useRef } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
+import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext, WithStore } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
 import { FaExpandArrowsAlt, FaPlus, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import getMediaURL from "../hooks/getmediaurl";
@@ -44,6 +44,11 @@ const SlideTracker = ({ setCurrSlide }) => {
 
   return null;
 };
+
+const LazySlide = WithStore(Slide, state => ({
+  currentSlide: state.currentSlide,
+  totalSlides: state.totalSlides,
+}))
 
 export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
 {
@@ -279,12 +284,12 @@ const descriptionStyle = {
           dragEnabled={!(privateID || jwt)} 
           infinite 
           currentSlide={currSlide}
-          style={{isolation: 'auto !important'}}
+          lazyLoad={2}  // This will render the current slide, plus one on each side
         >
           <SlideTracker setCurrSlide={setCurrSlide} />
           <Slider style={{height: height, width: width}}>
             {showTitle && (
-              <Slide style={{height: height, width: width}}>
+              <LazySlide style={{height: height, width: width}}>
                 <div style={{position: 'relative', height: '100%', width: '100%', backgroundColor: channel.background_color}}>
                   <FullImage 
                     src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
@@ -314,7 +319,7 @@ const descriptionStyle = {
                     )}
                   </div>
                 </div>
-              </Slide> 
+              </LazySlide> 
             )}
             {channel.contents && channel.contents.map((contentItem, index) => {
               index = showTitle ? index + 1 : index;
@@ -330,7 +335,6 @@ const descriptionStyle = {
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
-                    timeline
                   />
                 </Slide>
               );

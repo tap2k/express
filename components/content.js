@@ -1,7 +1,7 @@
 // components/content.js
 
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
@@ -97,7 +97,7 @@ export function getMediaInfo(contentItem, thumbnail) {
   return {url: "", type: "text"};
 }
 
-export default function Content({ contentItem, width, height, autoPlay, interval, caption, thumbnail, cover, controls, timeline, index, privateID, jwt, ...props }) 
+export function Content({ contentItem, width, height, autoPlay, interval, caption, thumbnail, cover, controls, timeline, index, privateID, jwt, ...props }) 
 {
   if (!contentItem)
     return;
@@ -217,8 +217,10 @@ export default function Content({ contentItem, width, height, autoPlay, interval
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
-      { ((privateID || jwt) || (mediaRef.current && timeline)) && 
+      { ((privateID || jwt) || (mediaRef.current)) && 
         <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} isPlaying={isPlaying} pause={pause} duration={duration} setDuration={setDuration} privateID={privateID} jwt={jwt} /> }
     </>
   );
 }
+
+export default memo(Content);
