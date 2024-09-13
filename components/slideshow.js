@@ -276,8 +276,8 @@ const descriptionStyle = {
         <CarouselProvider 
           isIntrinsicHeight 
           totalSlides={showTitle ? channel.contents.length + 1 : channel.contents.length} 
-          touchEnabled={false} 
-          dragEnabled={false} 
+          touchEnabled={true} 
+          dragEnabled={true} 
           infinite 
           currentSlide={currSlide}
         >
