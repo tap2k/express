@@ -27,8 +27,8 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
         ...props.style
     };
     
-    const captionStyleTop = { ...captionStyleBase, top: '2vh' };
-    const captionStyleBottom = { ...captionStyleBase, bottom: '3vh' };
+    const captionStyleTop = { ...captionStyleBase, top: '3.5vh' };
+    const captionStyleBottom = { ...captionStyleBase, bottom: '5vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
         textAlignment === 'top' ? captionStyleTop :
