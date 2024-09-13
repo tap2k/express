@@ -51,7 +51,15 @@ export default function Banner({ channel, privateID, jwt }) {
                 {channel.description}
               </h3>
             )}
-            {(privateID || jwt) && <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />}
+            {(privateID || jwt) && 
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                zIndex: 10,
+              }}>
+                <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />
+              </div>}
           </div>
         </div>
       </Alert>
