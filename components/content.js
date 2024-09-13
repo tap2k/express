@@ -38,7 +38,7 @@ export function isMediaFile(url)
   if (url.indexOf("vimeo") != -1)
     return true;
   const type = mime.lookup(url);
-  return type.startsWith("video") || type.startsWith("image") || type.startsWith("audio");
+  return type && (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio"));
 }
 
 export function getMediaInfo(contentItem, thumbnail) {
@@ -90,7 +90,7 @@ export function getMediaInfo(contentItem, thumbnail) {
   {
     url = getMediaURL() + contentItem.audiofile.url;
     const type = mime.lookup(url);
-    if (type.startsWith("audio"))
+    if (type && type.startsWith("audio"))
       return { url, type };
   }
 

@@ -154,12 +154,13 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
   };
 
   const slideButtonStyle = {
-    position: 'absolute', 
-    top: 0, 
-    width: '20%', 
-    height: '90%', 
-    opacity: 0, 
-    background: 'transparent', 
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '20%',
+    height: '60%',
+    opacity: 0,
+    background: 'transparent',
     border: 'none',
     zIndex: 1
   }
@@ -206,7 +207,7 @@ const descriptionStyle = {
     ...textOutlineStyle
 };
 
-  /*const slideButtonStyle = {
+  const slideButtonStyle2 = {
     position: 'absolute', 
     top: '50%', 
     transform: 'translateY(-50%)',
@@ -218,7 +219,7 @@ const descriptionStyle = {
     alignItems: 'center', 
     justifyContent: 'center', 
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
-  }*/
+  }
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
@@ -226,7 +227,7 @@ const descriptionStyle = {
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      {!isModalOpen && <div className="hide-on-inactive" style={{
+      <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
         bottom: '15px', 
         left: '50%', 
@@ -269,7 +270,7 @@ const descriptionStyle = {
             <FaHeart />
           </button>
         */}
-      </div>}
+      </div>
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 
@@ -340,9 +341,9 @@ const descriptionStyle = {
             <SlideButton increment={-1} style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
             <SlideButton increment={1} style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
             </>*/
-            !privateID && !jwt && false ? <>
-              <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle, right: '1%'}}><FaChevronRight /></ButtonNext>
+            (privateID || jwt) && false ? <>
+              <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle2, left: '1%'}}><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle2, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :
             <>
               <ButtonBack style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
@@ -364,7 +365,7 @@ const descriptionStyle = {
         </ModalBody>
       </Modal>
 
-      {(privateID || jwt) && (!isModalOpen) && (
+      {(privateID || jwt) && (
         <div className="hide-on-inactive" style={{
           position: 'absolute',
           top: 5,

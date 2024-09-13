@@ -38,12 +38,12 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(200,200,200,0.4)',
+        backgroundColor: 'rgba(100,100,100,0.4)',
         color: 'rgba(255,255,255,0.9)',
         borderRadius: '25px',
         padding: '10px 20px',
         pointerEvents: 'auto',
-        fontSize: 'clamp(16px, 2.5vh, 24px)',
+        fontSize: 'clamp(18px, 2.5vh, 32px)',
         fontWeight: 'bold',
         textDecoration: 'none',
         display: 'flex',
@@ -54,8 +54,8 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 10vh, 120px)' };
-    const linkStyleTop = { ...linkStyleBase, top: '2.5vh' };
+    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 8vh, 120px)' };
+    const linkStyleTop = { ...linkStyleBase, top: 'clamp(50px, 2.5vh, 120px)' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
     const textOutlineStyle = {
