@@ -10,7 +10,6 @@ export default function MyReels ({ channels, user, jwt }) {
 
   const router = useRouter();
 
-
   const handleDeleteChannel = (uniqueID) => {
     confirmAlert({
       title: 'Delete reel?',
@@ -33,7 +32,7 @@ export default function MyReels ({ channels, user, jwt }) {
 
   return (
     <Container className="py-3">
-      <Row className="mb-4 p-2 align-items-center">
+      {user && <Row className="mb-4 p-2 align-items-center">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.username} || {user.email}</h5>
@@ -42,7 +41,7 @@ export default function MyReels ({ channels, user, jwt }) {
             </Link>
           </div>
         </Col>
-      </Row>
+      </Row> }
       <Row>
         {channels.map((channel) => (
           <Col key={channel.uniqueID} xs="12" sm="6" lg="4" className="mb-4">
@@ -54,8 +53,8 @@ export default function MyReels ({ channels, user, jwt }) {
               }}
             >
               <CardBody className="d-flex flex-column">
-                <CardTitle tag="h2" className="p-2" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold' }}>{channel.name}</CardTitle>
-                  <div className="mt-auto d-flex flex-wrap justify-content-between">
+                <CardTitle tag="h2" className="p-2" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold' }}><Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link></CardTitle>
+                  { jwt && <div className="mt-auto d-flex flex-wrap justify-content-between">
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />
                     </Link>
@@ -77,7 +76,7 @@ export default function MyReels ({ channels, user, jwt }) {
                     <Link href={`/reel?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }} title="Share Project">
                       <FaShare className="me-1" />
                     </Link>
-                  </div>
+                  </div> }
               </CardBody>
             </Card>
           </Col>

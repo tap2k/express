@@ -1,6 +1,7 @@
 import nookies, { destroyCookie } from 'nookies';
 import getUser from "../hooks/getuser";
 import getMyChannels from "../hooks/getmychannels";
+import getPublicChannels from "../hooks/getpublicchannels";
 import { RecorderWrapper } from '../components/recorderstyles';
 import BannerTwo from '../components/bannertwo';
 import MyReels from "../components/myreels";
@@ -19,8 +20,9 @@ export const getServerSideProps = async (ctx) => {
   const cookies = nookies.get(ctx);    
   if (!cookies?.jwt)
   {
+    let channels = await getPublicChannels();
     return {
-      redirect: { permanent: false, destination: '/' }
+      props: { channels }
     }
   }
 
@@ -36,6 +38,6 @@ export const getServerSideProps = async (ctx) => {
   }
 
   return {
-    props: { user: user, jwt: cookies.jwt, channels: channels }
+    props: { user, jwt: cookies.jwt, channels }
   };
 }
