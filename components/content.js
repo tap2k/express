@@ -8,7 +8,7 @@ import useMediaControl from "../hooks/usemediacontrol";
 import useSlideAdvance from "../hooks/useslideadvance";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
-import VideoPlayer from './videoplayerjs';
+//import VideoPlayer from './videoplayerjs';
 import Caption from "./caption";
 import PlayIcon from './playicon';
 import Timeline from './timeline';
@@ -16,7 +16,7 @@ import Timeline from './timeline';
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
 const Photosphere = dynamic(() => import("./photosphere.js"), { ssr: false });
 const VideoPlayer360 = dynamic(() => import("./videoplayer360.js"), { ssr: false });
-//const VideoPlayer = dynamic(() => import("./videoplayerjs.js"), { ssr: false });
+const VideoPlayer = dynamic(() => import("./videoplayerjs.js"), { ssr: false });
 
 function validateYouTubeUrl(urlToParse){
   if (urlToParse) {
