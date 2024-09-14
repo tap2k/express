@@ -43,47 +43,51 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             <FaHome />
           </MenuButton>
         </Link>
-        <a
+        <Link
           href={{
-            pathname: `./reel`,
+            pathname: `/reel`,
             query: router.query,
           }}
+          prefetch={false}
         >
           <MenuButton>
             <FaImages />
           </MenuButton>
-        </a>
-        <a
+        </Link>
+        <Link
           href={{
-            pathname: `./map`,
+            pathname: `/map`,
             query: router.query,
           }}
+          prefetch={false}
         >
           <MenuButton>
             <FaMap />
           </MenuButton>
-        </a>
-        <a
+        </Link>
+        <Link
           href={{
-            pathname: `./board`,
+            pathname: `/board`,
             query: router.query,
           }}
+          prefetch={false}
         >
           <MenuButton>
             <FaTh />
           </MenuButton>
-        </a>
+        </Link>
         { loggedIn && <>
-          <a
+          <Link
             href={{
-              pathname: `./editor`,
+              pathname: `/editor`,
               query: router.query,
             }}
+            prefetch={false}
           >
             <MenuButton>
               <FaFilm />
             </MenuButton>
-          </a>
+          </Link>
           {!editor && <MenuButton onClick={copyUrlToClipboard}>
             <FaPaperclip />
           </MenuButton>}
