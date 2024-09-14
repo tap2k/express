@@ -18,7 +18,7 @@ export default function VideoPlayer({ width, height, controls, mediaRef, childre
           pointerEvents: 'none'
         }}
         playsInline
-        preload='auto'
+        preload='metadata'
         controls={controls}
         controlsList="nodownload noremoteplayback"
         disablePictureInPicture
