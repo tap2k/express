@@ -21,21 +21,21 @@ export default function EmailModal ({isOpen, onSubmit, toggle, headerText, bodyT
 
   return (
         <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle} close={closeBtn}>
-            {headerText}
-        </ModalHeader>
-        <ModalBody>
-            <p>{bodyText}</p>
-            <StyledInput 
-            type="email" 
-            placeholder="Enter your email address" 
-            innerRef={emailInputRef}
-            />
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={handleSubmit}>Submit</Button>
-            <Button color="secondary" onClick={toggle}>Cancel</Button>
-        </ModalFooter>
+          <ModalHeader toggle={toggle} close={closeBtn}>
+              {headerText}
+          </ModalHeader>
+          <ModalBody>
+              <p>{bodyText}</p>
+              <StyledInput 
+              type="email" 
+              placeholder="Enter your email address" 
+              innerRef={emailInputRef}
+              />
+          </ModalBody>
+          <ModalFooter>
+              <Button color="primary" onClick={handleSubmit}>Submit</Button>
+              <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
         </Modal>
   );
 };

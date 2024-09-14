@@ -43,7 +43,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             <FaHome />
           </MenuButton>
         </Link>
-        <Link
+        <a
           href={{
             pathname: `./reel`,
             query: router.query,
@@ -52,8 +52,8 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
           <MenuButton>
             <FaImages />
           </MenuButton>
-        </Link>
-        <Link
+        </a>
+        <a
           href={{
             pathname: `./map`,
             query: router.query,
@@ -62,8 +62,8 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
           <MenuButton>
             <FaMap />
           </MenuButton>
-        </Link>
-        <Link
+        </a>
+        <a
           href={{
             pathname: `./board`,
             query: router.query,
@@ -72,9 +72,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
           <MenuButton>
             <FaTh />
           </MenuButton>
-        </Link>
+        </a>
         { loggedIn && <>
-          <Link
+          <a
             href={{
               pathname: `./editor`,
               query: router.query,
@@ -83,7 +83,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             <MenuButton>
               <FaFilm />
             </MenuButton>
-          </Link>
+          </a>
           {!editor && <MenuButton onClick={copyUrlToClipboard}>
             <FaPaperclip />
           </MenuButton>}
