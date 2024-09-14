@@ -107,7 +107,6 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                       caption
                       timeline
                       thumbnail
-                      cover
                     />
                     <ItemControls 
                       contentItem={contentItem} 

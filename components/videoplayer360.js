@@ -112,7 +112,7 @@ export default function VideoPlayer360({ height, mediaRef, setDuration, ...props
 
   return (
     <div ref={containerRef} data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>
-      <video crossOrigin="anonymous" preload='auto' ref={mediaRef} className="video-js vjs-default-skin" width={containerSize.width} height={containerSize.height} {...props}>
+      <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className="video-js vjs-default-skin" width={containerSize.width} height={containerSize.height} {...props}>
         {props.children}
       </video>
     </div>

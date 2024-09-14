@@ -45,10 +45,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
         </Link>
         <Link
           href={{
-            pathname: `/reel`,
+            pathname: `./reel`,
             query: router.query,
           }}
-          prefetch={false}
         >
           <MenuButton>
             <FaImages />
@@ -56,10 +55,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
         </Link>
         <Link
           href={{
-            pathname: `/map`,
+            pathname: `./map`,
             query: router.query,
           }}
-          prefetch={false}
         >
           <MenuButton>
             <FaMap />
@@ -67,10 +65,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
         </Link>
         <Link
           href={{
-            pathname: `/board`,
+            pathname: `./board`,
             query: router.query,
           }}
-          prefetch={false}
         >
           <MenuButton>
             <FaTh />
@@ -79,10 +76,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
         { loggedIn && <>
           <Link
             href={{
-              pathname: `/editor`,
+              pathname: `./editor`,
               query: router.query,
             }}
-            prefetch={false}
           >
             <MenuButton>
               <FaFilm />

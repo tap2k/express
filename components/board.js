@@ -60,7 +60,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
   };
 
   const handleContentClick = (contentItem) => {
-    setZoomedContent(contentItem);
+    //setZoomedContent(contentItem);
   };
 
   const handleCloseZoom = () => {

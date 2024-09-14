@@ -1,5 +1,5 @@
 import { FaArrowLeft } from 'react-icons/fa';
-import ContentCard from './contentcard';
+import Content from './content';
 
 const zoomedContentStyle = {
   position: 'fixed',
@@ -34,28 +34,13 @@ const contentWrapperStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '800px',
-  maxHeight: '80vh',
+  width: '80vw',
+  maxWidth: '1200px', // Add a maximum width
+  height: '80vh',
+  maxHeight: '800px', // Add a maximum height
   padding: '40px',
   boxSizing: 'border-box',
-  overflowY: 'auto',
-};
-
-const zoomedCardStyle = {
-  '& .card': {
-    border: 'none',
-    boxShadow: 'none',
-    minHeight: '500px'
-  },
-  '& img, & video': {
-    width: '100%',
-    height: 'auto',
-    maxHeight: '60vh',
-    objectFit: 'contain',
-  },
-  '& .mb-2': {
-    marginBottom: '0 !important',
-  },
+  overflow: 'auto', // Add scroll if content exceeds wrapper size
 };
 
 export default function Zoomed({ contentItem, onClose }) {
@@ -65,12 +50,11 @@ export default function Zoomed({ contentItem, onClose }) {
         <FaArrowLeft />
       </button>
       <div style={contentWrapperStyle}>
-        <div style={zoomedCardStyle}>
-          <ContentCard 
-            contentItem={contentItem} 
-            controls={true}
-          />
-        </div>
+        <Content 
+          contentItem={contentItem}
+          height="auto"
+          caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
+        />
       </div>
     </div>
   );
