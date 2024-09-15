@@ -14,6 +14,11 @@ export default function VideoPlayer({ mediaRef, setDuration, cover, ...props })
         this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
       });
     });
+
+    return () => {
+      if (mediaRef?.player)
+          mediaRef.player.dispose();
+    }
   }, [mediaRef]);
 
   let vjsclass = 'vjs-fill';

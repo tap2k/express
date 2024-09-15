@@ -1,5 +1,5 @@
 const nextConfig = {
-  reactStrictMode: true,  
+  reactStrictMode: false,  
   transpilePackages: [
     "react-leaflet-cluster"
   ],
