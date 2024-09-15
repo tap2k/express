@@ -22,12 +22,13 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       }
       timeoutRef.current = setTimeout(() => {
         setIsVisible(false);
-      }, 1000);
+      }, 2000);
     };
 
     const audioElement = mediaRef.current;
     audioElement.addEventListener('mousemove', handleInteraction);
     audioElement.addEventListener('touchstart', handleInteraction);
+    audioElement.addEventListener('play', handleInteraction);
 
     // Initial timeout
     handleInteraction();
@@ -35,6 +36,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
     return () => {
       audioElement.removeEventListener('mousemove', handleInteraction);
       audioElement.removeEventListener('touchstart', handleInteraction);
+      audioElement.removeEventListener('play', handleInteraction);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -179,7 +181,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
               width: '100%', 
               height: '100%', 
               filter: 'sepia(90%) saturate(100%) grayscale(1) contrast(70%) invert(12%)', 
-              opacity: isVisible ? 0.9 : 0,
+              opacity: isVisible ? 0.9 : 0.0,
               transition: 'opacity 0.5s ease-in-out'
             }}
             crossOrigin="anonymous"
