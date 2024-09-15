@@ -14,6 +14,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           autoPlay={autoPlay}
           caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
           thumbnail
+          timeline
           cover
         />
       </div>

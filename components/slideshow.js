@@ -318,7 +318,7 @@ const descriptionStyle = {
             )}
             {channel.contents && channel.contents.map((contentItem, index) => {
               index = showTitle ? index + 1 : index;
-              // TAP: Only render current slide
+              // TODO: Only render current slide
               return (
                 <Slide style={{height: height, width: width}} key={index} index={index}> 
                   <Content 
@@ -331,6 +331,7 @@ const descriptionStyle = {
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
+                    controls
                     timeline
                   />
                 </Slide>
