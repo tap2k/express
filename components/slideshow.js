@@ -45,22 +45,6 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
-const useIsSlideVisible = (index) => {
-  const carouselContext = useContext(CarouselContext);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const onChange = () => {
-      const currentSlide = carouselContext.state.currentSlide;
-      setIsVisible(index === currentSlide);
-    };
-    carouselContext.subscribe(onChange);
-    return () => carouselContext.unsubscribe(onChange);
-  }, [carouselContext, index]);
-
-  return isVisible;
-};
-
 export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
 {
   if (!channel) return;
@@ -335,6 +319,7 @@ const descriptionStyle = {
             )}
             {channel.contents && channel.contents.map((contentItem, index) => {
               index = showTitle ? index + 1 : index;
+              // TAP: Only render current slide
               return (
                 <Slide style={{height: height, width: width}} key={index} index={index}>
                   {currSlide == index && <Content 
