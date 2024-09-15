@@ -221,6 +221,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         size={thumbnail ? "small" : "medium"}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
+      {/* TODO: Have the timeline? */}
       { ((privateID || jwt) || (mediaRef.current && false)) && 
         <Timeline contentItem={contentItem} interval={interval / 1000} mediaRef={mediaRef} pause={pause} duration={duration} setDuration={setDuration} hidden={!timeline} privateID={privateID} jwt={jwt} /> }
     </>

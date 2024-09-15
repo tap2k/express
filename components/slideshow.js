@@ -45,6 +45,22 @@ const SlideTracker = ({ setCurrSlide }) => {
   return null;
 };
 
+const useIsSlideVisible = (index) => {
+  const carouselContext = useContext(CarouselContext);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => {
+      const currentSlide = carouselContext.state.currentSlide;
+      setIsVisible(index === currentSlide);
+    };
+    carouselContext.subscribe(onChange);
+    return () => carouselContext.unsubscribe(onChange);
+  }, [carouselContext, index]);
+
+  return isVisible;
+};
+
 export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
 {
   if (!channel) return;
@@ -280,6 +296,7 @@ const descriptionStyle = {
           dragEnabled={false} 
           infinite 
           currentSlide={currSlide}
+          visibleSlides={1}
         >
           <SlideTracker setCurrSlide={setCurrSlide} />
           <Slider style={{height: height, width: width}}>
@@ -320,7 +337,7 @@ const descriptionStyle = {
               index = showTitle ? index + 1 : index;
               return (
                 <Slide style={{height: height, width: width}} key={index} index={index}>
-                  <Content 
+                  {currSlide == index && <Content 
                     key={contentItem.id} 
                     contentItem={contentItem}
                     width={width} 
@@ -331,7 +348,7 @@ const descriptionStyle = {
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
                     timeline
-                  />
+                  />}
                 </Slide>
               );
             })}
