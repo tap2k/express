@@ -333,6 +333,7 @@ const descriptionStyle = {
                     caption
                     controls
                     timeline
+                    style={{display: currSlide === index ? 'block' : 'none'}}
                   />
                 </Slide>
               );
