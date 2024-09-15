@@ -22,7 +22,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       }
       timeoutRef.current = setTimeout(() => {
         setIsVisible(false);
-      }, 3000);
+      }, 1000);
     };
 
     const audioElement = mediaRef.current;
