@@ -322,7 +322,8 @@ const descriptionStyle = {
               // TAP: Only render current slide
               return (
                 <Slide style={{height: height, width: width}} key={index} index={index}>
-                  {currSlide == index && <Content 
+                {(Math.abs(currSlide - index) <= 1 || (index === 0 && currSlide === channel.contents.length - 1) || (index === channel.contents.length - 1 && currSlide === 0)) && 
+                  <Content 
                     key={contentItem.id} 
                     contentItem={contentItem}
                     width={width} 
