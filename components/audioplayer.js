@@ -2,12 +2,44 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, ...props }) {
   const [isSetup, setIsSetup] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const audioContextRef = useRef(null);
   const sourceNodeRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!mediaRef.current)
+      return;
+
+    const handleInteraction = () => {
+      setIsVisible(true);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
+    };
+
+    const audioElement = mediaRef.current;
+    audioElement.addEventListener('mousemove', handleInteraction);
+    audioElement.addEventListener('touchstart', handleInteraction);
+
+    // Initial timeout
+    handleInteraction();
+
+    return () => {
+      audioElement.removeEventListener('mousemove', handleInteraction);
+      audioElement.removeEventListener('touchstart', handleInteraction);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [mediaRef]);
 
   useEffect(() => {
     if (!mediaRef.current || !oscilloscope || isSetup) return;
@@ -143,7 +175,13 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
           <audio 
             src={src}
             ref={mediaRef}
-            style={{ width: '100%', height: '100%', filter: 'sepia(90%) saturate(100%) grayscale(1) contrast(70%) invert(12%)', opacity: 0.9 }}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              filter: 'sepia(90%) saturate(100%) grayscale(1) contrast(70%) invert(12%)', 
+              opacity: isVisible ? 0.9 : 0,
+              transition: 'opacity 0.5s ease-in-out'
+            }}
             crossOrigin="anonymous"
             controls
           />
