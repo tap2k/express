@@ -10,7 +10,9 @@ export default function VideoPlayer({ mediaRef, setDuration, cover, ...props })
       mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
       player.playsinline(true);
-      setDuration(mediaRef.current.duration)
+      mediaRef.player.ready(function(){
+        this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
+      });
     });
   }, [mediaRef]);
 
@@ -23,7 +25,7 @@ export default function VideoPlayer({ mediaRef, setDuration, cover, ...props })
   // see https://github.com/videojs/video.js/pull/3856
   return (
       <span onClick={(e) => e.stopPropagation()}>
-        <video crossOrigin="anonymous" preload='auto' ref={mediaRef} className={`video-js vjs-default-skin ${vjsclass}`} playsInline {...props}>
+        <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className={`video-js vjs-default-skin ${vjsclass}`} playsInline {...props}>
           {props.children}
         </video>
       </span>

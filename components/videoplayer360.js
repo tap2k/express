@@ -5,28 +5,28 @@ import 'videojs-errors';
 import 'videojs-vr';
 import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
-import { useContainerSize } from '../hooks/usecontainersize';
+//import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function VideoPlayer360({ height, mediaRef, setDuration, ...props }) 
+export default function VideoPlayer360({ height, mediaRef, cover, setDuration, ...props }) 
 {
   const [init, setInit] = useState(false);
-  const { containerSize, containerRef } = useContainerSize(height);
+  //const { containerSize, containerRef } = useContainerSize(height);
 
   useEffect(() => {
-    if (containerSize.width > 0 && containerSize.height > 0) {
+    //if (containerSize.width > 0 && containerSize.height > 0) {
       mediaRef.player = loadPlayer();
       mediaRef.player.ready(function(){
           this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
       });
       const controlBar = mediaRef.player.getChild('ControlBar');
       controlBar.el_.style.zIndex = 100;
-    }
+    //}
 
     return () => {
       if (mediaRef?.player && mediaRef.player.vr().renderer)
           mediaRef.player.vr().renderer.dispose();
     }
-  }, [mediaRef, containerSize]);
+  }, [mediaRef]);
 
   let projection = "Sphere";
 
@@ -60,15 +60,16 @@ export default function VideoPlayer360({ height, mediaRef, setDuration, ...props
         motionControls: false,
       });
     });
-    player.on('touchstart', function() {
+    return player;
+
+    /*player.on('touchstart', function() {
       if (player.paused())
         player.play();
       else
         player.pause();
-    });
-    player.width(containerSize.width);
-    player.height(containerSize.height);
-    return player;
+    });*/
+    /*player.width(containerSize.width);
+    player.height(containerSize.height);*/
   }
 
   if (!init)
@@ -107,12 +108,23 @@ export default function VideoPlayer360({ height, mediaRef, setDuration, ...props
 
   const containerStyle = {
     width: '100%',
-    height: `${containerSize.height}px`
+    //height: `${containerSize.height}px`
+    height: '100%'
   };
 
+  let vjsclass = 'vjs-fill';
+  if (cover)
+    vjsclass = 'vjs-fluid';
+
+  {/*<div ref={containerRef} data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>
+    <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className={`video-js vjs-default-skin ${vjsclass}`} width={containerSize.width} height={containerSize.height} {...props}>
+      {props.children}
+    </video>
+  </div>*/}
+
   return (
-    <div ref={containerRef} data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>
-      <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className="video-js vjs-default-skin" width={containerSize.width} height={containerSize.height} {...props}>
+    <div data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>
+      <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className={`video-js vjs-default-skin ${vjsclass}`} {...props}>
         {props.children}
       </video>
     </div>

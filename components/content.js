@@ -142,6 +142,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           controls={controls}
           mediaRef={mediaRef}
           setDuration={setDuration}
+          cover={cover}
         >
           <source src={url} type={videotype} />
         </VideoPlayer360>
