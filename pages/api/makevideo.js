@@ -1,14 +1,17 @@
-
 import axios from 'axios';
 import sendEmail from "../../hooks/sendemail";
 import setError from "../../hooks/seterror";
 
-async function processVideoAndSendEmail(channelid, email) {
+async function processVideoAndSendEmail(channelid, email, mvcurl) {
     const baseUrl = process.env.VIDEO_SERVER_URL || 'https://video.mahabot.in';
 
     try {
-        const url = `${baseUrl}/mvc_video?channelid=${channelid}`;        
-        const resp = await axios.get(url, {timeout: 3600000});
+        const url = `${baseUrl}/mvc_video`;
+        const resp = await axios.post(url, {
+            channelid: channelid,
+            url: mvcurl
+        }, {timeout: 3600000});
+        
         const data = resp.data;
         const videourl = data["video_url"];
 
@@ -43,9 +46,10 @@ export default async function handler(req, res) {
 
         // Send immediate response
         res.status(202).json({ message: 'Request accepted, processing started' });
+        const mvcurl = process.env.NEXT_PUBLIC_STRAPI_HOST ? process.env.NEXT_PUBLIC_STRAPI_HOST : "http://localhost:1337";
 
         // Continue processing in the background
-        processVideoAndSendEmail(channelid, email).catch(error => {
+        processVideoAndSendEmail(channelid, email, mvcurl).catch(error => {
             console.error('Background processing error:', error);
             setError(error);
         });
