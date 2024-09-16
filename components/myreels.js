@@ -5,6 +5,7 @@ import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteChannel from '../hooks/deletechannel';
+import Content from './content';
 
 export default function MyReels ({ channels, user, jwt }) {
 
@@ -54,7 +55,7 @@ export default function MyReels ({ channels, user, jwt }) {
             >
               <CardBody className="d-flex flex-column">
                 <CardTitle tag="h2" className="p-2" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold' }}><Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link></CardTitle>
-                  { jwt && <div className="mt-auto d-flex flex-wrap justify-content-between">
+                  { jwt ? <div className="mt-auto d-flex flex-wrap justify-content-between">
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />
                     </Link>
@@ -76,7 +77,14 @@ export default function MyReels ({ channels, user, jwt }) {
                     <Link href={`/reel?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }} title="Share Project">
                       <FaShare className="me-1" />
                     </Link>
-                  </div> }
+                  </div> : 
+                      channel.contents?.length ? <div style={{position: 'relative'}}><Content 
+                        contentItem={channel.contents[0]}
+                        height={150}
+                        caption={channel.contents[0].mediafile?.url?.includes("maustrocard") || channel.contents[0].background_color}
+                        thumbnail
+                      /></div> : ""
+                  }
               </CardBody>
             </Card>
           </Col>

@@ -359,7 +359,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
                     controls
-                    timeline
                   />}
                 </Slide>
               );
