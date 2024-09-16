@@ -90,7 +90,8 @@ export default function MyReels ({ channels, user, jwt }) {
                               width={200} 
                               height={250} 
                               buttons 
-                              thumbnail 
+                              thumbnail
+                              hideTitle
                               style={{backgroundColor: 'black'}} 
                             />}
                         </div> : ""

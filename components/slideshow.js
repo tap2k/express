@@ -71,7 +71,7 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
   }, [isPlaying, carouselContext.state.currentSlide, getCurrentContent, interval, advanceSlide]);
 };
 
-export default function Slideshow({ channel, height, width, buttons, thumbnail, startSlide, isInactive, privateID, jwt, ...props }) 
+export default function Slideshow({ channel, height, width, buttons, thumbnail, hideTitle, startSlide, isInactive, privateID, jwt, ...props }) 
 {
   if (!channel) return;
 
@@ -89,7 +89,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
     return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
   };  
 
-  const showTitle = channel.showtitle || privateID;
+  const showTitle = (channel.showtitle || privateID || jwt) && !hideTitle;
 
   useEffect(() => {
     const handleFullScreenChange = () => {
