@@ -60,7 +60,7 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
     const currentContent = getCurrentContent();
     const mediaType = getMediaInfo(currentContent).type;
 
-    if (mediaType.startsWith("audio") || mediaType.startsWith("video")) {
+    if (mediaType.startsWith("audio") || mediaType.startsWith("video") || currentContent?.audiofile?.url) {
       clearTimeout(timerRef.current);
     } else {
       clearTimeout(timerRef.current);
@@ -78,6 +78,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currSlide, setCurrSlide] = useState(parseInt(startSlide) || 0);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  // TODO: Dont need this?
   const [isModalOpen, setIsModalOpen] = useState(false);
   //const [likedSlides, setLikedSlides] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
