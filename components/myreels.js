@@ -55,7 +55,7 @@ export default function MyReels ({ channels, user, jwt }) {
               }}
             >
               <CardBody className="d-flex flex-column">
-                <CardTitle tag="h2" className="p-2" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold' }}><Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link></CardTitle>
+                <CardTitle tag="h2" className="p-2 d-flex align-items-center" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold', height: '60px' }}><Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link></CardTitle>
                   { jwt ? <div className="mt-auto d-flex flex-wrap justify-content-between">
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />
