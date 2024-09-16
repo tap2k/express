@@ -13,11 +13,25 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
   const animationFrameRef = useRef(null);
 
   useEffect(() => {
-    mediaRef.props = {bigPlayButton: false, inactivityTimeout: 100, controlBar: {pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
+    mediaRef.props = {bigPlayButton: false, userActions: {hotkeys: true}, controlBar: {fadeTime: 1000, autoHide: true, pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
     mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
-    //const player = this;
-    //player.playsinline(true);
-    mediaRef.player.ready(function(){
+    
+    const player = this;
+    var timeout;
+    
+    player.on('useractive', function() {
+      player.controlBar.show();
+      player.controlBar.el().style.opacity = 1;
+      clearTimeout(timeout);
+    });
+
+    player.on('userinactive', function() {
+      timeout = setTimeout(function() {
+        player.controlBar.el().style.opacity = 0;
+      }, 1000); 
+    });
+
+    player.ready(function(){
       this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
     });
   });
@@ -156,7 +170,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         </div>
       )}
       {controls ? (
-        <div style={{ height: '20px', width: '100%' }}>
+        <div style={{ height: '20px', width: '100%'}}>
           <audio 
             ref={mediaRef}
             style={{ 

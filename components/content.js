@@ -203,7 +203,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           <AudioPlayer 
             src={getMediaURL() + contentItem.audiofile?.url} 
             width={'100%'} 
-            height={'20px'}
+            height={'0px'}
             controls={controls}
             setDuration={setDuration}
             mediaRef={mediaRef}
