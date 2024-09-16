@@ -6,7 +6,7 @@ import '../node_modules/video.js/dist/video-js.css';
 export default function VideoPlayer({ mediaRef, setDuration, cover, ...props }) 
 {
   useLayoutEffect(() => {
-      mediaRef.props = {controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
+      mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
       mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
       player.playsinline(true);

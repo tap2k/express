@@ -8,7 +8,7 @@ import useMediaControl from "../hooks/usemediacontrol";
 import useSlideAdvance from "../hooks/useslideadvance";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
-//import VideoPlayer from './videoplayerjs';
+//import VideoPlayer from './videoplayer';
 import Caption from "./caption";
 import PlayIcon from './playicon';
 import Timeline from './timeline';
