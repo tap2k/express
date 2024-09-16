@@ -17,7 +17,7 @@ export default function GoogleCallback({ error, jwt }) {
         sameSite: 'strict'
       });
 
-      router.push('/myreels');
+      router.push('/');
     }
   }, [jwt, router]);
 
