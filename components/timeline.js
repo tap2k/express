@@ -100,7 +100,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     }, [mediaRef]);
 
     const updateTime = useCallback(() => {
-        if (!mediaRef?.current || mediaRef.current.readyState < 2 || mediaRef.current.paused) return;
+        if (!mediaRef?.current || mediaRef.current.readyState < 2) return;
         if (mediaRef.current.currentTime >= endTime) {
             pause();
             mediaRef.current.currentTime = startTime;
@@ -160,7 +160,10 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
                 setStartTime(0);
             setEndTime(newEndTime);
             if (mediaRef?.current)
+            {
                 mediaRef.current.currentTime = newEndTime;
+                setCurrentTime(clickTime);
+            }
             contentItem.duration = newEndTime - contentItem.start_time;
         }
     }, [startTime, endTime, mediaRef]);
@@ -212,7 +215,10 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         const clickTime = clickPosition * duration;
 
         if (clickTime >= startTime && clickTime <= endTime) 
+        {
             mediaRef.current.currentTime = clickTime;
+            setCurrentTime(clickTime);
+        }
     }, [startTime, endTime, duration, mediaRef]);
 
 
