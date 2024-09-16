@@ -33,7 +33,20 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 marginBottom: '10px'
                 }}
             >
-                {showTitleRef && <FormGroup check style={{ marginRight: '20px'}}>
+
+                {publicRef && <FormGroup check style={{ marginRight: '20px'}}>
+                    <Label check>
+                        <Input
+                            type="checkbox"
+                            innerRef={publicRef}
+                            defaultChecked={channel ? channel?.public : true}
+                            style={{ marginRight: '5px', fontSize: 'large' }}
+                        />
+                        <span style={{fontSize: 'large'}}>Public</span>
+                    </Label>
+                </FormGroup>}
+
+                {showTitleRef && <FormGroup check style={{ marginRight: '15px'}}>
                     <Label check>
                         <Input
                             type="checkbox"
@@ -42,18 +55,6 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                             style={{ marginRight: '5px', fontSize: 'large'}}
                         />
                         <span style={{fontSize: 'large'}}>Show title slide</span>
-                    </Label>
-                </FormGroup> }
-
-                {publicRef && false && <FormGroup check>
-                    <Label check>
-                        <Input
-                            type="checkbox"
-                            innerRef={publicRef}
-                            defaultChecked={channel ? channel?.public : true}
-                            style={{ marginRight: '5px', fontSize: 'large' }}
-                        />
-                        <span style={{fontSize: 'large'}}>Let participants view</span>
                     </Label>
                 </FormGroup>}
 
@@ -70,22 +71,22 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 </FormGroup>}
 
                 {timerRef && false && <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Label for="interval" style={{ margin: 0 }}>
-                        Timer:
-                    </Label>
-                    <Input
-                        type="number"
-                        id="interval"
-                        innerRef={intervalRef}
-                        defaultValue={channel?.interval || 0}
-                        style={{
-                        width: '80px',
-                        height: '32px',
-                        marginLeft: '5px'
-                        }}
-                        min="0"
-                    />
-                </div> }
+                        <Label for="interval" style={{ margin: 0 }}>
+                            Timer:
+                        </Label>
+                        <Input
+                            type="number"
+                            id="interval"
+                            innerRef={intervalRef}
+                            defaultValue={channel?.interval || 0}
+                            style={{
+                            width: '80px',
+                            height: '32px',
+                            marginLeft: '5px'
+                            }}
+                            min="0"
+                        />
+                    </div>}
             </div>
         </div>
     )
