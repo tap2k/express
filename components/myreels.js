@@ -88,7 +88,7 @@ export default function MyReels ({ channels, user, jwt }) {
                             <Slideshow 
                               channel={channel} 
                               width={200} 
-                              height={200} 
+                              height={250} 
                               buttons 
                               thumbnail 
                               style={{backgroundColor: 'black'}} 
