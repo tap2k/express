@@ -69,7 +69,7 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
     };
     
     const titleStyle = {
-        fontSize: size === "small" ? '24px' : 
+        fontSize: size === "small" ? '18px' : 
                   size === "big" ? 'clamp(48px, 6vh, 64px)' : 
                   'clamp(24px, 4vh, 48px)',
         lineHeight: size === "big" ? 1.1 : 1.2,

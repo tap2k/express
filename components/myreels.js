@@ -5,7 +5,7 @@ import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteChannel from '../hooks/deletechannel';
-//import Content from './content';
+import Content from './content';
 import Slideshow from './slideshow';
 
 export default function MyReels ({ channels, user, jwt }) {
@@ -80,12 +80,19 @@ export default function MyReels ({ channels, user, jwt }) {
                     </Link>
                   </div> : 
                       channel.contents?.length ? <div style={{position: 'relative'}}>
-                          {/*<Content 
+                          {false ? <Content 
                             contentItem={channel.contents[0]}
                             height={150}
                             caption={channel.contents[0].mediafile?.url?.includes("maustrocard") || channel.contents[0].background_color}
-                            thumbnail />*/}
-                            <Slideshow channel={channel} width={200} height={250} buttons thumbnail style={{backgroundColor: 'black'}} />
+                            thumbnail /> : 
+                            <Slideshow 
+                              channel={channel} 
+                              width={200} 
+                              height={150} 
+                              buttons 
+                              thumbnail 
+                              style={{backgroundColor: 'black'}} 
+                            />}
                         </div> : ""
                   }
               </CardBody>
