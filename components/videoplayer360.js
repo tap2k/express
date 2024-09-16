@@ -129,7 +129,8 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
   const containerStyle = {
     width: '100%',
     //height: `${containerSize.height}px`
-    height: '100%'
+    height: '100%',
+    minHeight: '250px'
   };
 
   let vjsclass = 'vjs-fill';

@@ -6,7 +6,7 @@ import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
 import FullImage from './fullimage';
-import AudioPlayer from './audioplayer';
+import AudioPlayer from './audioplayerjs';
 //import VideoPlayer from './videoplayer';
 import Caption from "./caption";
 import PlayIcon from './playicon';
@@ -123,6 +123,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         width={width} 
         height={height}
         controls={controls}
+        setDuration={setDuration}
         mediaRef={mediaRef}
         style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
         oscilloscope={!contentItem.title}
@@ -199,7 +200,15 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
         />
         {contentItem.audiofile && 
-          <audio src={getMediaURL() + contentItem.audiofile?.url} style={{display: "none"}} ref={mediaRef} />
+          <AudioPlayer 
+            src={getMediaURL() + contentItem.audiofile?.url} 
+            width={'100%'} 
+            height={'20px'}
+            controls={controls}
+            setDuration={setDuration}
+            mediaRef={mediaRef}
+            style={{position: 'absolute', bottom: 0}}
+        />
         }
       </>
     );
