@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
@@ -31,8 +31,15 @@ const downloadURL = async (dlurl) => {
   }
 }
 
-const SlideTracker = ({ setCurrSlide }) => {
+const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) => {
   const carouselContext = useContext(CarouselContext);
+  const timerRef = useRef(null);
+
+  const advanceSlide = useCallback(() => {
+    if (!carouselContext) return;
+    const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
+    carouselContext.setStoreState({ currentSlide: nextSlideIndex });
+  }, [carouselContext]);
 
   useEffect(() => {
     const onChange = () => {
@@ -40,9 +47,27 @@ const SlideTracker = ({ setCurrSlide }) => {
     };
     carouselContext.subscribe(onChange);
     return () => carouselContext.unsubscribe(onChange);
-  }, [carouselContext]);
+  }, [carouselContext, setCurrSlide]);
 
-  return null;
+  useEffect(() => {
+    if (!isPlaying) {
+      clearTimeout(timerRef.current);
+      return;
+    }
+
+    const currentContent = getCurrentContent();
+    const mediaType = getMediaInfo(currentContent).type;
+    console.log("current type = " + mediaType);
+
+    if (mediaType.startsWith("audio") || mediaType.startsWith("video")) {
+      clearTimeout(timerRef.current);
+    } else {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(advanceSlide, interval);
+    }
+
+    return () => clearTimeout(timerRef.current);
+  }, [isPlaying, carouselContext.state.currentSlide, getCurrentContent, interval, advanceSlide]);
 };
 
 export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
@@ -84,6 +109,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       audioRef.current.play();
     else
       audioRef.current.pause();
+    // TODO: What if its not playing?
     const mediaType = getMediaInfo(getCurrentContent()).type;
     mediaType?.startsWith('video/') || mediaType?.startsWith('audio/') || mediaType?.startsWith('youtube') || mediaType?.startsWith('vimeo') ? audioRef.current.volume = 0.4 :  audioRef.current.volume = 0.8;
   }, [currSlide, isPlaying]);
@@ -165,48 +191,6 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     zIndex: 1
   }
 
-  const textOutlineStyle = {
-    textShadow: `
-        -1px -1px 0 #333,  
-         1px -1px 0 #333,
-        -1px  1px 0 #333,
-         1px  1px 0 #333
-    `,
-    color: '#fff'
-};
-
-const containerStyle = {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'rgba(200,200,200,0.4)',
-    borderRadius: '20px',
-    padding: '50px',
-    backdropFilter: 'blur(5px)',
-    width: 'max-content',
-    maxWidth: '80%',
-    textAlign: 'center',
-    overflowWrap: 'break-word',
-    wordWrap: 'break-word',
-    hyphens: 'auto',
-    minWidth: '300px'
-};
-
-const titleStyle = {
-    fontSize: 'clamp(32px, 6vh, 64px)',
-    lineHeight: '1.1',
-    fontWeight: 'bold',
-    ...textOutlineStyle
-};
-
-const descriptionStyle = {
-    fontSize: 'clamp(18px, 3vh, 32px)',
-    lineHeight: '1.2',
-    marginTop: '10px',
-    ...textOutlineStyle
-};
-
   const slideButtonStyle2 = {
     position: 'absolute', 
     top: '50%', 
@@ -221,6 +205,48 @@ const descriptionStyle = {
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
 
+  const textOutlineStyle = {
+    textShadow: `
+        -1px -1px 0 #333,  
+         1px -1px 0 #333,
+        -1px  1px 0 #333,
+         1px  1px 0 #333
+    `,
+    color: '#fff'
+  };
+
+  const containerStyle = {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: 'rgba(200,200,200,0.4)',
+      borderRadius: '20px',
+      padding: '50px',
+      backdropFilter: 'blur(5px)',
+      width: 'max-content',
+      maxWidth: '80%',
+      textAlign: 'center',
+      overflowWrap: 'break-word',
+      wordWrap: 'break-word',
+      hyphens: 'auto',
+      minWidth: '300px'
+  };
+
+  const titleStyle = {
+      fontSize: 'clamp(32px, 6vh, 64px)',
+      lineHeight: '1.1',
+      fontWeight: 'bold',
+      ...textOutlineStyle
+  };
+
+  const descriptionStyle = {
+      fontSize: 'clamp(18px, 3vh, 32px)',
+      lineHeight: '1.2',
+      marginTop: '10px',
+      ...textOutlineStyle
+  };
+
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
   );
@@ -234,9 +260,6 @@ const descriptionStyle = {
         transform: 'translateX(-50%)', 
         gap: '25px'
       }}>
-        { false && <button onClick={copyUrlToClipboard} style={iconButtonStyle}>
-          <FaPaperclip />
-        </button> }
         { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
           <FaPlus />
         </button> }
@@ -281,7 +304,7 @@ const descriptionStyle = {
           infinite 
           currentSlide={currSlide}
         >
-          <SlideTracker setCurrSlide={setCurrSlide} />
+          <SlideTracker setCurrSlide={setCurrSlide} getCurrentContent={getCurrentContent} isPlaying={isPlaying} interval={channel.interval || 3000}  />
           <Slider style={{height: height, width: width}}>
             {showTitle && (
               <Slide style={{height: height, width: width}}>
@@ -321,7 +344,9 @@ const descriptionStyle = {
               // TODO: Only render current slide
               return (
                 <Slide style={{height: height, width: width}} key={index} index={index}> 
-                  <Content 
+                  {(Math.abs(currSlide - index) <= 1 || 
+                    (index === 0 && currSlide === channel.contents.length - 1) || 
+                    (index === channel.contents.length - 1 && currSlide === 0)) && <Content 
                     key={contentItem.id} 
                     contentItem={contentItem}
                     width={width} 
@@ -333,7 +358,7 @@ const descriptionStyle = {
                     caption
                     controls
                     timeline
-                  />
+                  />}
                 </Slide>
               );
             })}

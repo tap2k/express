@@ -1,12 +1,8 @@
 import { useRef } from "react";
-import useSlideAdvance from "../hooks/useslideadvance";
 
-export default function FullImage({ src, width, height, controls, cover, autoPlay, interval, index, ...props }) 
+export default function FullImage({ src, width, height, controls, cover, ...props }) 
 {  
   const imgRef = useRef(null);
-
-  // TODO: Just for title, a bit hacky
-  useSlideAdvance({index, autoPlay, interval});
 
   const fullscreen = () => {
     if (!controls)
@@ -46,7 +42,7 @@ export default function FullImage({ src, width, height, controls, cover, autoPla
               objectFit: cover ? 'cover' : 'contain'
             }}
             ref={imgRef}
-            //onDoubleClick={fullscreen}
+            onDoubleClick={fullscreen}
           />
         ) : (
           <div style={{

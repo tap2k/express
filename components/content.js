@@ -5,7 +5,6 @@ import { useRef, useState, memo } from "react";
 import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
-import useSlideAdvance from "../hooks/useslideadvance";
 import FullImage from './fullimage';
 import AudioPlayer from './audioplayer';
 //import VideoPlayer from './videoplayer';
@@ -103,13 +102,9 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
   if (!contentItem)
     return;
 
-  if (!interval)
-    interval = 5000;
-
   const mediaRef = useRef();
   const [duration, setDuration] = useState(20.0);
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
-  useSlideAdvance({index, autoPlay, isPlaying, interval: contentItem.duration ? contentItem.duration : interval});
   const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
   const is360 = url.indexOf("360") != -1 || url.indexOf("180") != -1 || contentItem.is360;
 
