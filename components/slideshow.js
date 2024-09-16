@@ -59,7 +59,6 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
 
     const currentContent = getCurrentContent();
     const mediaType = getMediaInfo(currentContent).type;
-    console.log("current type = " + mediaType);
 
     if (mediaType.startsWith("audio") || mediaType.startsWith("video")) {
       clearTimeout(timerRef.current);
@@ -257,7 +256,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
-        bottom: '15px', 
+        bottom: '30px', 
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'
