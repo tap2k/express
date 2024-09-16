@@ -3,7 +3,7 @@ import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaExpandArrowsAlt, FaPlus, FaPaperclip, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaExpandArrowsAlt, FaPlus, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import ChannelControls from "./channelcontrols"
@@ -12,6 +12,8 @@ import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
 //import SlideButton from "./slidebutton";
+
+const defaultInterval = 3000;
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -304,7 +306,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
           infinite 
           currentSlide={currSlide}
         >
-          <SlideTracker setCurrSlide={setCurrSlide} getCurrentContent={getCurrentContent} isPlaying={isPlaying} interval={channel.interval || 3000}  />
+          <SlideTracker setCurrSlide={setCurrSlide} getCurrentContent={getCurrentContent} isPlaying={isPlaying} interval={channel.interval || defaultInterval}  />
           <Slider style={{height: height, width: width}}>
             {showTitle && (
               <Slide style={{height: height, width: width}}>
@@ -352,7 +354,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     width={width} 
                     height={height} 
                     autoPlay={isPlaying} 
-                    interval={channel.interval} 
+                    interval={channel.interval || defaultInterval} 
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption

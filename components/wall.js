@@ -6,6 +6,8 @@ import { Draggable, DragArea } from './draggable';
 import Content from "./content";
 import ItemControls from './itemcontrols';
 
+const defaultInterval = 3000;
+
 const Grid = ({ children, columns }) => (
   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '10px' }}>
     {children}
@@ -101,6 +103,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                       contentItem={contentItem}
                       width="100%" 
                       height={400}
+                      interval={channel.interval || defaultInterval}
                       index={index}
                       privateID={privateID}
                       jwt={jwt}
