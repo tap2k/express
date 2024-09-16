@@ -21,8 +21,12 @@ export const getServerSideProps = async (ctx) => {
   if (!cookies?.jwt)
   {
     let channels = await getPublicChannels();
+    const processedChannels = channels.map(channel => ({
+      ...channel,
+      contents: channel.contents ? channel.contents.slice(0, 3) : []
+  }));
     return {
-      props: { channels }
+      props: { channels: processedChannels }
     }
   }
 
