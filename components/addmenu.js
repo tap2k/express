@@ -85,14 +85,17 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
         { download && <CircularMenuButton onClick={handleDownload}>
           <FaDownload  />
         </CircularMenuButton> }
-        {channel.audiofile?.url && <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />}
-        <CircularMenuButton onClick={togglePlayPause}>
-            {isPlaying ? (
-                <FaPause />
-            ) : (
-                <FaPlay />
-            )}
-        </CircularMenuButton>
+        {channel.audiofile?.url && 
+          <>
+            <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
+            <CircularMenuButton onClick={togglePlayPause}>
+                {isPlaying ? (
+                    <FaPause />
+                ) : (
+                    <FaPlay />
+                )}
+            </CircularMenuButton> 
+          </> }
         { (privateID || jwt || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
           <FaPlus />
         </CircularMenuButton> }

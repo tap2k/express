@@ -59,6 +59,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
     }
   };
 
+  // TODO: Get this to work
   const handleContentClick = (contentItem) => {
     //setZoomedContent(contentItem);
   };

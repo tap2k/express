@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome } from 'react-icons/fa';
+import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome, FaShareAlt } from 'react-icons/fa';
 import setError from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 
@@ -29,7 +29,9 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
     if (channelid && channelid.includes(':')) {
       [channelid] = channelid.split(':');
     }
-    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channelid}`;
+    let url = `${baseurl.origin}${baseurl.pathname}?channelid=${channelid}`;
+    if (editor)
+      url = `${baseurl.origin}/reel?channelid=${channelid}`;
   
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
@@ -73,21 +75,21 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             <FaTh />
           </MenuButton>
         </Link>
-        { loggedIn && <>
-          <Link
-            href={{
-              pathname: `./editor`,
-              query: router.query,
-            }}
-          >
-            <MenuButton>
-              <FaFilm />
-            </MenuButton>
-          </Link>
-          {!editor && <MenuButton onClick={copyUrlToClipboard}>
-            <FaPaperclip />
-          </MenuButton>}
-        </> }
+        { loggedIn && 
+            <Link
+              href={{
+                pathname: `./editor`,
+                query: router.query,
+              }}
+            >
+              <MenuButton>
+                <FaFilm />
+              </MenuButton>
+            </Link> 
+        }
+        <MenuButton onClick={copyUrlToClipboard}>
+          <FaShareAlt />
+        </MenuButton>
       </div>
   );
 }

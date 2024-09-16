@@ -132,6 +132,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
     if (is360)
       mediaElement = (
         <VideoPlayer360 
+          src={url}
           width={width} 
           height={height}
           controls={controls}

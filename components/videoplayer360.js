@@ -7,7 +7,7 @@ import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
 //import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function VideoPlayer360({ height, mediaRef, cover, setDuration, ...props }) 
+export default function VideoPlayer360({ src, height, mediaRef, cover, setDuration, ...props }) 
 {
   const [init, setInit] = useState(false);
   //const { containerSize, containerRef } = useContainerSize(height);
@@ -29,21 +29,40 @@ export default function VideoPlayer360({ height, mediaRef, cover, setDuration, .
   }, [mediaRef]);
 
   let projection = "Sphere";
-
-  if (props.mapping == "cubemap")
+  let filename = src.split('/').pop().toLowerCase();
+  
+  if (props.mapping == "cubemap") {
     projection = "Cube";
-
-  if (props.mapping === "equirect180")
-    if (props.packing === "none")
+  } else if (props.mapping === "equirect180") {
+    if (props.packing === "none") {
       projection = "180_MONO";
-    else
+    } else {
       projection = "180_LR";
-
-  if (props.mapping == "equirect360")
-    if (props.packing === "leftright")
+    }
+  } else if (props.mapping == "equirect360") {
+    if (props.packing === "leftright") {
       projection = "360_LR";
-    else if (props.packing === "topbottom")
+    } else if (props.packing === "topbottom") {
       projection = "360_TB";
+    }
+  } else {
+    // Check filename if props.mapping is not set
+    if (filename.includes('_180')) {
+      projection = filename.includes('_lr') || filename.includes('_sbs') ? "180_LR" : "180_MONO";
+    } else if (filename.includes('_360')) {
+      if (filename.includes('_lr') || filename.includes('_sbs')) {
+        projection = "360_LR";
+      } else if (filename.includes('_tb') || filename.includes('_ou')) {
+        projection = "360_TB";
+      } else {
+        projection = "360_MONO";
+      }
+    } else if (filename.includes('_fisheye')) {
+      projection = "Fisheye";
+    } else if (filename.includes('_cubemap')) {
+      projection = "Cube";
+    }
+  }
 
   const loadPlayer = () => {      
     /*if (thumbnail)
@@ -68,6 +87,7 @@ export default function VideoPlayer360({ height, mediaRef, cover, setDuration, .
       else
         player.pause();
     });*/
+
     /*player.width(containerSize.width);
     player.height(containerSize.height);*/
   }
