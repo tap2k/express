@@ -171,7 +171,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" dalle />
+          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} setProgress={setProgress} generating={uploading} setGenerating={setUploading} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedColor={selectedColor} setSelectedColor={setSelectedColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" dalle />
           <Button
             onClick={handleUpload}
             disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedColor && !deleteImage)}

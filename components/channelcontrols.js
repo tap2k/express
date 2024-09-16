@@ -164,13 +164,13 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
       <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
       <ModalBody>
-        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} accept="image/*" gallery="image" dalle />
+        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle />
         <Button
           onClick={handleSaveChannel}
           disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedColor)}
           block
           color="success"
-          style={{marginTop: '20px'}}
+          style={{marginTop: '10px'}}
         >
           <b>Update Reel</b>
         </Button>
