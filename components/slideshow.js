@@ -71,7 +71,7 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
   }, [isPlaying, carouselContext.state.currentSlide, getCurrentContent, interval, advanceSlide]);
 };
 
-export default function Slideshow({ channel, height, width, startSlide, isInactive, privateID, jwt, ...props }) 
+export default function Slideshow({ channel, height, width, buttons, thumbnail, startSlide, isInactive, privateID, jwt, ...props }) 
 {
   if (!channel) return;
 
@@ -221,7 +221,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      backgroundColor: 'rgba(200,200,200,0.4)',
+      backgroundColor: 'rgba(50,50,50,0.4)',
       borderRadius: '20px',
       padding: '50px',
       backdropFilter: 'blur(5px)',
@@ -231,18 +231,18 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
       overflowWrap: 'break-word',
       wordWrap: 'break-word',
       hyphens: 'auto',
-      minWidth: '300px'
+      minWidth: '200px'
   };
 
   const titleStyle = {
-      fontSize: 'clamp(32px, 6vh, 64px)',
+      fontSize: thumbnail ? '24px' : 'clamp(32px, 6vh, 64px)',
       lineHeight: '1.1',
       fontWeight: 'bold',
       ...textOutlineStyle
   };
 
   const descriptionStyle = {
-      fontSize: 'clamp(18px, 3vh, 32px)',
+      fontSize: thumbnail ? '18px' : 'clamp(18px, 3vh, 32px)',
       lineHeight: '1.2',
       marginTop: '10px',
       ...textOutlineStyle
@@ -254,7 +254,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
 
   return (
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
-      <div className="hide-on-inactive" style={{
+      { !buttons && <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
         bottom: '30px', 
         left: '50%', 
@@ -294,7 +294,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
             <FaHeart />
           </button>
         */}
-      </div>
+      </div>}
 
       <div style={{width: width, height: height, position: "relative"}}>
         <CarouselProvider 
@@ -317,7 +317,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     index={0}
                     cover
                     autoPlay={isPlaying}
-                    interval={channel.interval} 
+                    interval={channel.interval}
                   />
                   <div style={containerStyle}>
                     <div style={titleStyle}>
@@ -358,6 +358,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption
                     controls
+                    thumbnail={thumbnail}
                   />}
                 </Slide>
               );
@@ -368,7 +369,7 @@ export default function Slideshow({ channel, height, width, startSlide, isInacti
             <SlideButton increment={-1} style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
             <SlideButton increment={1} style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
             </>*/
-            (privateID || jwt) && false ? <>
+            buttons ? <>
               <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle2, left: '1%'}}><FaChevronLeft /></ButtonBack>
               <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle2, right: '1%'}}><FaChevronRight /></ButtonNext>
             </> :

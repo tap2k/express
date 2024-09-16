@@ -9,7 +9,7 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(200,200,200,0.4)',
+        backgroundColor: 'rgba(150,150,150,0.4)',
         color: 'rgba(255,255,255,0.9)',
         borderRadius: '10px',
         padding: '20px',
