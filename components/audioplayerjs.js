@@ -17,22 +17,30 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
     mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
     
     const player = this;
-    var timeout;
-    
-    player.on('useractive', function() {
-      player.controlBar.show();
-      player.controlBar.el().style.opacity = 1;
-      clearTimeout(timeout);
-    });
-
-    player.on('userinactive', function() {
-      timeout = setTimeout(function() {
-        player.controlBar.el().style.opacity = 0;
-      }, 1000); 
-    });
 
     player.ready(function(){
       this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
+
+      var timeout;
+      this.on('useractive', function() {
+        player.controlBar.show();
+        player.controlBar.el().style.opacity = 1;
+        clearTimeout(timeout);
+      });
+
+      this.on('play', function() {
+        player.userActive(true);
+      });
+
+      this.on('pause', function() {
+        player.userActive(true);
+      });
+  
+      this.on('userinactive', function() {
+        timeout = setTimeout(function() {
+          player.controlBar.el().style.opacity = 0;
+        }, 2000); 
+      });
     });
   });
 
@@ -170,7 +178,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         </div>
       )}
       {controls ? (
-        <div style={{ height: '20px', width: '100%'}}>
+        <div style={{ height: '20px', width: '100%', zIndex: 100}}>
           <audio 
             ref={mediaRef}
             style={{ 
