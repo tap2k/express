@@ -5,6 +5,7 @@ import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteChannel from '../hooks/deletechannel';
+import getMediaURL from "../hooks/getmediaurl";
 import Content from './content';
 import Slideshow from './slideshow';
 
@@ -51,7 +52,8 @@ export default function MyReels ({ channels, user, jwt }) {
               className="h-100 shadow" 
               style={{
                 borderRadius: '10px',
-                backgroundColor: '#fcfcfc',
+                //backgroundColor: jwt ? '#fcfcfc' : channel.background_color,
+                //backgroundImage: jwt ? "" : channel.picture?.url ? `url(${getMediaURL() + channel.picture.url})` : ""
               }}
             >
               <CardBody className="d-flex flex-column">
@@ -80,7 +82,7 @@ export default function MyReels ({ channels, user, jwt }) {
                     </Link>
                   </div> : 
                       channel.contents?.length ? <div style={{position: 'relative'}}>
-                          {false ? <Content 
+                          {true ? <Content 
                             contentItem={channel.contents[0]}
                             height={150}
                             caption={channel.contents[0].mediafile?.url?.includes("maustrocard") || channel.contents[0].background_color}

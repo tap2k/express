@@ -356,7 +356,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
                     interval={channel.interval || defaultInterval} 
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
-                    caption={!hideTitle}
+                    caption={!hideTitle || contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
                     controls
                     thumbnail={thumbnail}
                   />}
