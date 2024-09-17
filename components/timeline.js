@@ -91,24 +91,24 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             updateDuration();
         };
 
-        if (mediaRef.current.player) {
+        if (mediaRef.current?.player) {
             mediaRef.current.player.ready(function() {
                 this.on('loadedmetadata', handleLoadedMetadata);
                 this.on('timeupdate', updateTime);
             });
-        } else {
+        } else if (typeof mediaRef.current.addEventListener === 'function') {
             mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
         }
-
+    
         // Initial call in case the metadata is already loaded
         updateDuration();
-
+    
         return () => {
             if (mediaRef?.current) {
                 if (mediaRef.current.player) {
                     mediaRef.current.player.off('loadedmetadata', handleLoadedMetadata);
                     mediaRef.current.player.off('timeupdate', updateTime);
-                } else {
+                } else if (typeof mediaRef.current.removeEventListener === 'function') {
                     mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 }
             }
@@ -118,7 +118,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     const updateTime = useCallback(() => {
         if (!mediaRef?.current) return;
         let currentTime;
-        if (mediaRef.current.player) {
+        if (mediaRef.current?.player) {
             currentTime = mediaRef.current.player.currentTime();
         } else if (mediaRef.current.readyState >= 2) {
             currentTime = mediaRef.current.currentTime;
@@ -128,7 +128,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
 
         if (currentTime >= endTime) {
             pause();
-            if (mediaRef.current.player) {
+            if (mediaRef.current?.player) {
                 mediaRef.current.player.currentTime(startTime);
             } else {
                 mediaRef.current.currentTime = startTime;
@@ -141,11 +141,9 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
 
     useEffect(() => {
         if (!mediaRef?.current) return;
-
-        const media = mediaRef.current;
-
+        
         const handlePlay = () => {
-            if (mediaRef.current.player) {
+            if (mediaRef.current?.player) {
                 if (mediaRef.current.player.currentTime() < startTime) {
                     mediaRef.current.player.currentTime(startTime);
                     setCurrentTime(startTime);
@@ -156,44 +154,46 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
                     mediaRef.current.currentTime = startTime;
                     setCurrentTime(startTime);
                 }
-                media.addEventListener('timeupdate', updateTime);
+                mediaRef.current.addEventListener('timeupdate', updateTime);
             }
         };
-
+    
         const handlePause = () => {
-            if (mediaRef.current.player) {
+            if (mediaRef.current?.player) {
                 mediaRef.current.player.off('timeupdate', updateTime);
-            } else {
-                media.removeEventListener('timeupdate', updateTime);
+            } else if (typeof mediaRef.current.removeEventListener === 'function') {
+                mediaRef.current.removeEventListener('timeupdate', updateTime);
             }
         };
-
-        if (mediaRef.current.player) {
+    
+        if (mediaRef.current?.player) {
             mediaRef.current.player.on('play', handlePlay);
             mediaRef.current.player.on('pause', handlePause);
         } else {
-            media.addEventListener('play', handlePlay);
-            media.addEventListener('pause', handlePause);
+            if (typeof mediaRef.current.addEventListener === 'function') {
+                mediaRef.current.addEventListener('play', handlePlay);
+                mediaRef.current.addEventListener('pause', handlePause);
+            }
         }
-
+    
         // Initial setup
         if (mediaRef.current.player) {
             if (!mediaRef.current.player.paused()) {
                 mediaRef.current.player.on('timeupdate', updateTime);
             }
-        } else if (!media.paused) {
-            media.addEventListener('timeupdate', updateTime);
+        } else if (!mediaRef.current.paused && typeof mediaRef.current.addEventListener === 'function') {
+            mediaRef.current.addEventListener('timeupdate', updateTime);
         }
-
+    
         return () => {
             if (mediaRef.current.player) {
                 mediaRef.current.player.off('play', handlePlay);
                 mediaRef.current.player.off('pause', handlePause);
                 mediaRef.current.player.off('timeupdate', updateTime);
-            } else {
-                media.removeEventListener('play', handlePlay);
-                media.removeEventListener('pause', handlePause);
-                media.removeEventListener('timeupdate', updateTime);
+            } else if (typeof mediaRef.current.removeEventListener === 'function') {
+                mediaRef.current.removeEventListener('play', handlePlay);
+                mediaRef.current.removeEventListener('pause', handlePause);
+                mediaRef.current.removeEventListener('timeupdate', updateTime);
             }
         };
     }, [mediaRef, updateTime]);

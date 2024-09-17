@@ -13,6 +13,9 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
   const animationFrameRef = useRef(null);
 
   useEffect(() => {
+    if (!mediaRef.current) 
+      return;
+
     mediaRef.props = {bigPlayButton: false, userActions: {hotkeys: true}, controlBar: {fadeTime: 1000, autoHide: true, pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
     mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
     
@@ -20,6 +23,9 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
     mediaRef.current.player = this;
 
     player.ready(function(){
+      if (!this || typeof this.on !== 'function')
+        return;
+
       this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
 
       var timeout;
@@ -40,7 +46,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       this.on('userinactive', function() {
         timeout = setTimeout(function() {
           player.controlBar.el().style.opacity = 0;
-        }, 2000); 
+        }, 1000); 
       });
     });
   });
