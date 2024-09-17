@@ -6,9 +6,6 @@ import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
 import FullImage from './fullimage';
-//import AudioPlayer from './audioplayerjs';
-//import VideoPlayer from './videoplayer';
-//import Timeline from './timeline';
 import Caption from "./caption";
 import PlayIcon from './playicon';
 
@@ -96,7 +93,7 @@ export function getMediaInfo(contentItem, thumbnail) {
       return { url, type };
   }
 
-  return {url: "", type: "text"};
+  return {url: "", type: ""};
 }
 
 export function Content({ contentItem, width, height, autoPlay, interval, caption, thumbnail, cover, controls, timeline, index, privateID, jwt, ...props }) 
