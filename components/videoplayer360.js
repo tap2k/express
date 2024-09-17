@@ -14,18 +14,17 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
 
   useEffect(() => {
     //if (containerSize.width > 0 && containerSize.height > 0) {
-      mediaRef.player = loadPlayer();
-      mediaRef.current.player = mediaRef.player;
-      mediaRef.player.ready(function(){
+      mediaRef.current.player = loadPlayer();
+      mediaRef.current.player.ready(function(){
           this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
       });
-      const controlBar = mediaRef.player.getChild('ControlBar');
+      const controlBar = mediaRef.current.player.getChild('ControlBar');
       controlBar.el_.style.zIndex = 100;
     //}
 
     return () => {
-      if (mediaRef?.player && mediaRef.player.vr().renderer)
-          mediaRef.player.vr().renderer.dispose();
+      if (mediaRef?.current?.player && mediaRef.current.player.vr().renderer)
+          mediaRef.current.player.vr().renderer.dispose();
     }
   }, [mediaRef]);
 
@@ -102,23 +101,23 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
         let marker = null;
   
         mapref.on('popupopen', function(e) {
-          if (!marker && mediaRef?.player)
+          if (!marker && mediaRef?.current?.player)
             marker = e.popup._source;
           
-          if (marker === e.popup._source && mediaRef?.player)
+          if (marker === e.popup._source && mediaRef?.current?.player)
           {
-            mediaRef.player.load();
+            mediaRef.current.player.load();
           }
         });
       
         mapref.on('popupclose', function(e) {
-          if (!marker && mediaRef?.player)
+          if (!marker && mediaRef?.current?.player)
             marker = e.popup._source;
           
-          if (marker === e.popup._source && mediaRef?.player)
+          if (marker === e.popup._source && mediaRef?.current?.player)
           {
-            if (mediaRef.player.vr().renderer)
-              mediaRef.player.vr().renderer.dispose();
+            if (mediaRef.current.player.vr().renderer)
+              mediaRef.current.player.vr().renderer.dispose();
           }
         });
       }

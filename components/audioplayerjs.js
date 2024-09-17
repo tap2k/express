@@ -17,10 +17,8 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       return;
 
     mediaRef.props = {bigPlayButton: false, userActions: {hotkeys: true}, controlBar: {fadeTime: 1000, autoHide: true, pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
-    mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
-    
-    const player = this;
-    mediaRef.current.player = this;
+    const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
+    mediaRef.current.player = player;
 
     player.ready(function(){
       if (!this || typeof this.on !== 'function')
@@ -52,8 +50,8 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
   });
 
     return () => {
-      if (mediaRef?.player)
-          mediaRef.player.dispose();
+      if (mediaRef?.current?.player)
+          mediaRef.current.player.dispose();
     }
   }, [mediaRef]);
 

@@ -70,26 +70,26 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
     if (player) {
       if (typeof player.on === 'function') {
         player.on('ended', onEnded);
-      } else {
+      } else if (typeof player.addEventListener === 'function') {
         player.addEventListener('ended', onEnded);
       }
     }
-
+  
     if (carouselContext)
       carouselContext.subscribe(onChange);
-
+  
     return () => {
       if (carouselContext)
         carouselContext.unsubscribe(onChange);
       if (player) {
         if (typeof player.off === 'function') {
           player.off('ended', onEnded);
-        } else {
+        } else if (typeof player.removeEventListener === 'function') {
           player.removeEventListener('ended', onEnded);
         }
       }
     };
-  }, [autoPlay, getPlayer, carouselContext, index, play, pause, reset, goToNextSlide]);
+  }, [autoPlay, getPlayer, carouselContext, index]);
 
   useEffect(() => {
     if (!carouselContext) {
