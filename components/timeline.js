@@ -68,6 +68,8 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             return;
 
         const updateDuration = async () => {
+            if (!mediaRef?.current)
+                return;
             if (mediaRef.current.player) {
                 setDuration(mediaRef.current.player.duration());
             } else if (mediaRef.current.readyState >= 1) {
@@ -143,6 +145,8 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         if (!mediaRef?.current) return;
         
         const handlePlay = () => {
+            if (!mediaRef?.current) return;
+
             if (mediaRef.current?.player) {
                 if (mediaRef.current.player.currentTime() < startTime) {
                     mediaRef.current.player.currentTime(startTime);
@@ -186,6 +190,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         }
     
         return () => {
+            if (!mediaRef.current) return;
             if (mediaRef.current.player) {
                 mediaRef.current.player.off('play', handlePlay);
                 mediaRef.current.player.off('pause', handlePause);
