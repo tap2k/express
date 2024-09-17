@@ -1,42 +1,52 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
 export default function useMediaControl({mediaRef, index, autoPlay}) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const carouselContext = useContext(CarouselContext);
 
-  const play = () => {
-    if (mediaRef?.current) {
+  const getPlayer = useCallback(() => {
+    return mediaRef?.current?.player || mediaRef?.current;
+  }, [mediaRef]);
+
+  const play = useCallback(() => {
+    const player = getPlayer();
+    if (player) {
       setIsPlaying(true);
-      mediaRef.current.play();
+      player.play().catch(error => console.error('Playback failed:', error));
     }
-  }
+  }, [getPlayer]);
 
-  const pause = () => {
-    if (mediaRef?.current) {
+  const pause = useCallback(() => {
+    const player = getPlayer();
+    if (player) {
       setIsPlaying(false);
-      mediaRef.current.pause();
+      player.pause();
     }
-  }
+  }, [getPlayer]);
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     isPlaying ? pause() : play();
-  }
+  }, [isPlaying, play, pause]);
 
-  const reset = () => {
-    mediaRef.current.currentTime = 0;
-  }
+  const reset = useCallback(() => {
+    const player = getPlayer();
+    if (player) {
+      player.currentTime = 0;
+    }
+  }, [getPlayer]);
 
-  const goToNextSlide = () => {
+  const goToNextSlide = useCallback(() => {
     if (carouselContext) {
       const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
       carouselContext.setStoreState({ currentSlide: nextSlideIndex });
     }
-  }
+  }, [carouselContext]);
 
   useEffect(() => {
     const onChange = () => {
-      if (!mediaRef?.current) return;
+      const player = getPlayer();
+      if (!player) return;
 
       if (carouselContext.state.currentSlide === index) {
         if (autoPlay) {
@@ -44,7 +54,6 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
           play();
         }
       } else {
-        // TODO: Make this wait to make it smoother?
         pause();
         reset();
       }
@@ -57,31 +66,36 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
         goToNextSlide();
     };
 
-    if (mediaRef?.current) {
-      if (mediaRef.current.addEventListener)
-        mediaRef.current.addEventListener('ended', onEnded);
+    const player = getPlayer();
+    if (player) {
+      if (typeof player.on === 'function') {
+        player.on('ended', onEnded);
+      } else {
+        player.addEventListener('ended', onEnded);
+      }
     }
 
     if (carouselContext)
       carouselContext.subscribe(onChange);
+
     return () => {
       if (carouselContext)
         carouselContext.unsubscribe(onChange);
-      if (mediaRef?.current) {
-        if (mediaRef.current.removeEventListener)
-          mediaRef.current.removeEventListener('ended', onEnded);
+      if (player) {
+        if (typeof player.off === 'function') {
+          player.off('ended', onEnded);
+        } else {
+          player.removeEventListener('ended', onEnded);
+        }
       }
     };
-  }, [autoPlay, mediaRef, carouselContext]);
+  }, [autoPlay, getPlayer, carouselContext, index, play, pause, reset, goToNextSlide]);
 
   useEffect(() => {
-    if (!carouselContext)
-    {
-      if (autoPlay && mediaRef?.current)
-      {
+    if (!carouselContext) {
+      if (autoPlay && getPlayer()) {
         reset();
-        if (carouselContext && autoPlay)
-          play();
+        play();
       }
       return;
     }  
@@ -90,7 +104,7 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
       play();
     else
       pause();
-  }, [autoPlay, mediaRef, carouselContext]);
+  }, [autoPlay, getPlayer, carouselContext, index, play, pause, reset]);
 
   return { isPlaying, play, pause, toggle };
 };
