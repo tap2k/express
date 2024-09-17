@@ -43,12 +43,8 @@ export default async function addChannel({ name, description, email, showtitle, 
         myFormData.append("showtitle", showtitle);
     if (ispublic !== undefined) 
         myFormData.append("ispublic", ispublic);
-    else
-        myFormData.append("ispublic", true);
     if (allowsubmissions !== undefined) 
         myFormData.append("allowsubmissions", allowsubmissions);
-    else
-        myFormData.append("allowsubmissions", true);
     if (pictureblob) 
         myFormData.append("picturefile", pictureblob, picturefile);
     if (audioblob) 

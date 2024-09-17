@@ -90,25 +90,14 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
         {
           label: 'OK',
           onClick: () => {
-            router.replace(router.asPath, undefined, { scroll: false });
+            // TODO: Hacky
+            //const newQuery = { ...router.query, end: '1' };
+            const newQuery = { ...router.query };
+            router.replace({pathname: router.pathname, query: newQuery}, undefined, { scroll: false });
           }
         }
       ];
   
-      // TODO: hacky
-      if (router.asPath.includes('upload') && response.data?.[0]?.channel?.public) {
-        buttons.push({
-          label: 'Go to Reel',
-          onClick: () => {
-            const currentQuery = router.query;
-            router.push({
-              pathname: '/reel',
-              query: currentQuery
-            });
-          }
-        });
-      }
-
       confirmAlert({
         title: 'Thanks for your submission!',
         message: 'Your file was uploaded successfully',

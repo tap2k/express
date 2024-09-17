@@ -20,6 +20,8 @@ export function createPrivateID(publicID) {
 
 // Function to retrieve and verify the public ID from the private ID
 export function getPublicID(privateID) {
+  if (!privateID)
+    return "";
   const [publicID, hashHex] = privateID.split(':');
   
   const privateSeed = process.env.PRIVATE_SEED;

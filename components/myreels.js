@@ -5,7 +5,7 @@ import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import deleteChannel from '../hooks/deletechannel';
-import getMediaURL from "../hooks/getmediaurl";
+import addChannel from '../hooks/addchannel';
 import Content from './content';
 import Slideshow from './slideshow';
 
@@ -33,15 +33,20 @@ export default function MyReels ({ channels, user, jwt }) {
     });
   };
 
+  const handleAddChannel = async () => {
+    const newChannel = await addChannel({ name: "New Channel", jwt });
+    router.push(`/editor?channelid=${newChannel.uniqueID}`);
+  };
+
   return (
     <Container className="py-3">
       {user && <Row className="mb-4 p-2 align-items-center">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.username} || {user.email}</h5>
-            <Link href="/make" className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', marginBottom: '10px' }}>
+            <button onClick={handleAddChannel} className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', marginBottom: '10px' }}>
               <FaPlus size={24} />
-            </Link>
+            </button>
           </div>
         </Col>
       </Row> }

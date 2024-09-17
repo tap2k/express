@@ -22,7 +22,7 @@ export default ({ channel, currslide, privateID, jwt }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    let { channelid, currslide, edit } = ctx.query;
+    let { channelid, currslide, edit, end } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
     let privateID = null;
@@ -50,7 +50,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                currslide : currslide ? currslide : 0,
+                currslide : currslide ? currslide : end ? channel.contents.length: 0,
                 privateID: privateID,
                 jwt: channel.canedit && edit ? jwt : null
             } 
