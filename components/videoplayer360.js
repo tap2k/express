@@ -15,6 +15,7 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
   useEffect(() => {
     //if (containerSize.width > 0 && containerSize.height > 0) {
       mediaRef.player = loadPlayer();
+      mediaRef.current.player = mediaRef.player;
       mediaRef.player.ready(function(){
           this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
       });

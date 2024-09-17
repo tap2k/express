@@ -9,6 +9,7 @@ export default function VideoPlayer({ mediaRef, setDuration, cover, ...props })
       mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
       mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
+      mediaRef.current.player = this;
       player.playsinline(true);
       mediaRef.player.ready(function(){
         this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});

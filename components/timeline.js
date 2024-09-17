@@ -55,16 +55,22 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     useEffect(() => {
         if (!mediaRef?.current)
             return;
-        mediaRef.current.currentTime = startTime;
+        if (mediaRef.current.player) {
+            mediaRef.current.player.currentTime(startTime);
+        } else {
+            mediaRef.current.currentTime = startTime;
+        }
         setCurrentTime(startTime);
     }, [startTime]);
 
     useEffect(() => {
-        if (!mediaRef?.current || mediaRef.current.youtube)
+        if (!mediaRef?.current)
             return;
-    
+
         const updateDuration = async () => {
-            if (mediaRef.current.readyState >= 1) {
+            if (mediaRef.current.player) {
+                setDuration(mediaRef.current.player.duration());
+            } else if (mediaRef.current.readyState >= 1) {
                 let audioDuration = mediaRef.current.duration;
                 
                 if (mediaRef.current.src.toLowerCase().endsWith('.mp3') && 
@@ -80,68 +86,117 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
                 setDuration(audioDuration);
             }
         };
-    
+
         const handleLoadedMetadata = () => {
             updateDuration();
         };
-    
-        mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-        
-        // Initial call in case the metadata is already loaded
-        if (mediaRef.current.readyState >= 1) {
-            updateDuration();
+
+        if (mediaRef.current.player) {
+            mediaRef.current.player.ready(function() {
+                this.on('loadedmetadata', handleLoadedMetadata);
+                this.on('timeupdate', updateTime);
+            });
+        } else {
+            mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
         }
-    
+
+        // Initial call in case the metadata is already loaded
+        updateDuration();
+
         return () => {
             if (mediaRef?.current) {
-                mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+                if (mediaRef.current.player) {
+                    mediaRef.current.player.off('loadedmetadata', handleLoadedMetadata);
+                    mediaRef.current.player.off('timeupdate', updateTime);
+                } else {
+                    mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+                }
             }
         };
     }, [mediaRef]);
 
     const updateTime = useCallback(() => {
-        if (!mediaRef?.current || mediaRef.current.readyState < 2) return;
-        if (mediaRef.current.currentTime >= endTime) {
-            pause();
-            mediaRef.current.currentTime = startTime;
-            setCurrentTime(startTime);
+        if (!mediaRef?.current) return;
+        let currentTime;
+        if (mediaRef.current.player) {
+            currentTime = mediaRef.current.player.currentTime();
+        } else if (mediaRef.current.readyState >= 2) {
+            currentTime = mediaRef.current.currentTime;
+        } else {
+            return;
         }
-        else
-            setCurrentTime(mediaRef.current.currentTime);
-    }, [mediaRef, startTime, endTime]);
+
+        if (currentTime >= endTime) {
+            pause();
+            if (mediaRef.current.player) {
+                mediaRef.current.player.currentTime(startTime);
+            } else {
+                mediaRef.current.currentTime = startTime;
+            }
+            setCurrentTime(startTime);
+        } else {
+            setCurrentTime(currentTime);
+        }
+    }, [mediaRef, startTime, endTime, pause]);
 
     useEffect(() => {
-        if (!mediaRef?.current || mediaRef.current.youtube) return;
-    
+        if (!mediaRef?.current) return;
+
         const media = mediaRef.current;
-    
+
         const handlePlay = () => {
-            if (mediaRef.current.currentTime < startTime)
-            {
-                mediaRef.current.currentTime = startTime;
-                setCurrentTime(startTime);
+            if (mediaRef.current.player) {
+                if (mediaRef.current.player.currentTime() < startTime) {
+                    mediaRef.current.player.currentTime(startTime);
+                    setCurrentTime(startTime);
+                }
+                mediaRef.current.player.on('timeupdate', updateTime);
+            } else {
+                if (mediaRef.current.currentTime < startTime) {
+                    mediaRef.current.currentTime = startTime;
+                    setCurrentTime(startTime);
+                }
+                media.addEventListener('timeupdate', updateTime);
             }
-            media.addEventListener('timeupdate', updateTime);
         };
-    
+
         const handlePause = () => {
-            media.removeEventListener('timeupdate', updateTime);
+            if (mediaRef.current.player) {
+                mediaRef.current.player.off('timeupdate', updateTime);
+            } else {
+                media.removeEventListener('timeupdate', updateTime);
+            }
         };
-    
-        media.addEventListener('play', handlePlay);
-        media.addEventListener('pause', handlePause);
-    
+
+        if (mediaRef.current.player) {
+            mediaRef.current.player.on('play', handlePlay);
+            mediaRef.current.player.on('pause', handlePause);
+        } else {
+            media.addEventListener('play', handlePlay);
+            media.addEventListener('pause', handlePause);
+        }
+
         // Initial setup
-        if (!media.paused) {
+        if (mediaRef.current.player) {
+            if (!mediaRef.current.player.paused()) {
+                mediaRef.current.player.on('timeupdate', updateTime);
+            }
+        } else if (!media.paused) {
             media.addEventListener('timeupdate', updateTime);
         }
-    
+
         return () => {
-            media.removeEventListener('play', handlePlay);
-            media.removeEventListener('pause', handlePause);
-            media.removeEventListener('timeupdate', updateTime);
+            if (mediaRef.current.player) {
+                mediaRef.current.player.off('play', handlePlay);
+                mediaRef.current.player.off('pause', handlePause);
+                mediaRef.current.player.off('timeupdate', updateTime);
+            } else {
+                media.removeEventListener('play', handlePlay);
+                media.removeEventListener('pause', handlePause);
+                media.removeEventListener('timeupdate', updateTime);
+            }
         };
-    }, [mediaRef]);
+    }, [mediaRef, updateTime]);
 
 
     const handleDrag = useCallback((e) => {
@@ -161,8 +216,9 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             setEndTime(newEndTime);
             if (mediaRef?.current)
             {
+                pause();
                 mediaRef.current.currentTime = newEndTime;
-                setCurrentTime(clickTime);
+                setCurrentTime(newEndTime);
             }
             contentItem.duration = newEndTime - contentItem.start_time;
         }

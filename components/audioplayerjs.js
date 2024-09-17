@@ -17,6 +17,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
     mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
     
     const player = this;
+    mediaRef.current.player = this;
 
     player.ready(function(){
       this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});

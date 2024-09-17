@@ -6,16 +6,18 @@ import mime from 'mime-types';
 import getMediaURL from "../hooks/getmediaurl";
 import useMediaControl from "../hooks/usemediacontrol";
 import FullImage from './fullimage';
-import AudioPlayer from './audioplayerjs';
+//import AudioPlayer from './audioplayerjs';
 //import VideoPlayer from './videoplayer';
+//import Timeline from './timeline';
 import Caption from "./caption";
 import PlayIcon from './playicon';
-import Timeline from './timeline';
 
 const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
 const Photosphere = dynamic(() => import("./photosphere.js"), { ssr: false });
 const VideoPlayer360 = dynamic(() => import("./videoplayer360.js"), { ssr: false });
 const VideoPlayer = dynamic(() => import("./videoplayerjs.js"), { ssr: false });
+const AudioPlayer = dynamic(() => import("./audioplayerjs.js"), { ssr: false });
+const Timeline = dynamic(() => import("./timeline.js"), { ssr: false });
 
 function validateYouTubeUrl(urlToParse){
   if (urlToParse) {
