@@ -28,6 +28,7 @@ export default function Banner({ channel, privateID, jwt }) {
           textAlign: 'center',
         }}>
           <div style={{
+            position: 'relative',
             backgroundColor: 'rgba(230, 240, 255, 0.6)',
             borderRadius: '10px',
             padding: '1.5rem 3rem',

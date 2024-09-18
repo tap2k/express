@@ -35,7 +35,8 @@ export default function MyReels ({ channels, user, jwt }) {
 
   const handleAddChannel = async () => {
     const newChannel = await addChannel({ name: "New Channel", jwt });
-    router.push(`/editor?channelid=${newChannel.uniqueID}`);
+    if (newChannel)
+      router.push(`/editor?channelid=${newChannel.uniqueID}`);
   };
 
   return (

@@ -3,10 +3,17 @@ import getBaseURL from "../hooks/getbaseurl";
 import setError from "./seterror";
 
 export default async function addChannel({ name, description, email, showtitle, ispublic, allowsubmissions, interval, picturefile, audiofile, setProgress, jwt }) 
-{    
-    let url = getBaseURL() + "/api/createSubmissionChannel";
-    if (jwt)
-        url = getBaseURL() + "/api/createChannel";
+{   
+    // TODO: Without logging in? 
+    //let url = getBaseURL() + "/api/createSubmissionChannel";
+
+    if (!jwt)
+    {
+        setError("Please login first");
+        return null;
+    }
+
+    url = getBaseURL() + "/api/createChannel";
     const myFormData = new FormData();
 
     let audioblob = null;

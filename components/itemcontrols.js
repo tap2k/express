@@ -138,7 +138,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {((type.startsWith("image") && ((contentItem.mediafile?.url.indexOf("maustrocard") != -1) || contentItem.mediafile?.url.indexOf("dalle") != -1)) || type.startsWith("text") || type.startsWith("audio")) && <IconButton 
+        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || type.startsWith("text") || type.startsWith("audio")) && <IconButton 
           onClick={() => {
             setIsImageModalOpen(true);
           }} 
@@ -152,14 +152,14 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaEdit size={iconSize} />
         </IconButton>
-        <IconButton 
+        {/* <IconButton 
           onClick={handlePublish} 
         >
           {contentItem.publishedAt ? 
             <FaTimes size={iconSize} /> : 
             <FaCheck size={iconSize} />
           }
-        </IconButton>
+        </IconButton> */}
         <IconButton 
           onClick={handleDelete} 
         >

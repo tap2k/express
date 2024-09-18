@@ -6,6 +6,8 @@ import '../node_modules/video.js/dist/video-js.css';
 export default function VideoPlayer({ mediaRef, setDuration, cover, ...props }) 
 {
   useLayoutEffect(() => {
+      if (!mediaRef.current)
+        return;
       mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
       mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       mediaRef.current.player = this;

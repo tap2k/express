@@ -400,7 +400,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
           top: 5,
           right: 5
         }}>
-          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={'calc(0.8vmin + 1.0em)'} moveSlide={moveSlide} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
+          { !(showTitle && currSlide === 0) && <ItemControls contentItem={getCurrentContent()} privateID={privateID} flex="column" iconSize={'calc(0.8vmin + 1.0em)'} moveSlide={null} setIsModalOpen={setIsModalOpen} jwt={jwt} /> }
         </div>
       )}
 

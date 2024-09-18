@@ -18,7 +18,9 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
 
     mediaRef.props = {bigPlayButton: false, userActions: {hotkeys: true}, controlBar: {fadeTime: 1000, autoHide: true, pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
-    mediaRef.current.player = player;
+    
+    if (mediaRef.current)
+      mediaRef.current.player = player;
 
     player.ready(function(){
       if (!this || typeof this.on !== 'function')
