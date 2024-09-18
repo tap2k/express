@@ -24,6 +24,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
+  const [orientation, setOrientation] = useState('portrait');
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -32,48 +33,56 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
 
   useEffect(() => {
     checkForMultipleCameras();
+    handleOrientationChange();
+    window.addEventListener('orientationchange', handleOrientationChange);
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange);
+    };
   }, []);
 
-  const handleUpload = async (e) =>  
-    {
-      e.preventDefault();
-      if (setUploading)
-        setUploading(true);
+  const handleOrientationChange = () => {
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    setOrientation(isPortrait ? 'portrait' : 'landscape');
+  };
 
-      try {
-        const formData = require('form-data');
-        const myFormData = new formData();
-        
-        const blob = await (await fetch(dataUri)).blob();
-        if (!blob)
-        {
-          setErrorText("No blob found!");
-          if (setUploading)
-            setUploading(false);
-          return; 
-        }
-  
-        myFormData.append('mediafile', blob, "image.png");
-        await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, privateID, jwt, setProgress, router});
-        if (titleRef.current)
-          titleRef.current.value = "";
-        if (nameRef.current)
-          nameRef.current.value = "";
-        if (emailRef.current)
-          emailRef.current.value = "";
-        if (locationRef.current)
-          locationRef.current.value = "";
-        if (extUrlRef.current)
-          extUrlRef.current.value = "";
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (setUploading)
+      setUploading(true);
+
+    try {
+      const formData = require('form-data');
+      const myFormData = new formData();
+      
+      const blob = await (await fetch(dataUri)).blob();
+      if (!blob) {
+        setErrorText("No blob found!");
+        if (setUploading)
+          setUploading(false);
+        return; 
       }
-      catch (error) {
-        console.error('Error uploading content:', error);
-        setErrorText('Failed to upload content. Please try again.');
-      }
-  
-      if (setUploading)
-        setUploading(false);
-    }  
+
+      myFormData.append('mediafile', blob, "image.png");
+      await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, privateID, jwt, setProgress, router});
+      if (titleRef.current)
+        titleRef.current.value = "";
+      if (nameRef.current)
+        nameRef.current.value = "";
+      if (emailRef.current)
+        emailRef.current.value = "";
+      if (locationRef.current)
+        locationRef.current.value = "";
+      if (extUrlRef.current)
+        extUrlRef.current.value = "";
+    }
+    catch (error) {
+      console.error('Error uploading content:', error);
+      setErrorText('Failed to upload content. Please try again.');
+    }
+
+    if (setUploading)
+      setUploading(false);
+  }  
 
   const checkForMultipleCameras = async () => {
     if (isMobileSafari()) setHasMultipleCameras(true);
@@ -156,19 +165,33 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
 
   return (
     <RecorderWrapper {...props}>
-      <div style={{ marginTop: '10px', marginBottom: '10px', position: 'relative' }}>
+      <div style={{ 
+        marginTop: '10px', 
+        marginBottom: '10px', 
+        position: 'relative',
+        width: '100%',
+        height: orientation === 'portrait' ? '80vh' : '60vh'
+      }}>
         {dataUri ? 
-          <div>
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <img 
               src={dataUri} 
               style={{
                 width: '100%',
-                height: 'auto',
+                height: '100%',
+                objectFit: 'contain',
                 borderRadius: '10px'
               }}
             />
             {Object.keys(filterPreviews).length === filterNames.length && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: '10px' }}>
+              <div style={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                justifyContent: 'center', 
+                marginTop: '10px',
+                overflowX: 'auto',
+                maxHeight: orientation === 'portrait' ? '20%' : '30%'
+              }}>
                 {filterNames.map(filterName => (
                   <div 
                     key={filterName} 
@@ -178,7 +201,8 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
                       cursor: 'pointer',
                       border: currentFilter === filterName ? '2px solid blue' : '2px solid transparent',
                       borderRadius: '5px',
-                      padding: '2px'
+                      padding: '2px',
+                      flexShrink: 0
                     }}
                   >
                     <img 
@@ -186,20 +210,20 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
                       alt={filterName}
                       data-filter={filterName}
                       style={{
-                        width: '80px',
-                        height: '80px',
+                        width: '60px',
+                        height: '60px',
                         objectFit: 'cover',
                         borderRadius: '3px'
                       }}
                     />
-                    <p style={{ textAlign: 'center', fontSize: '12px', margin: '2px 0 0 0' }}>{filterName}</p>
+                    <p style={{ textAlign: 'center', fontSize: '10px', margin: '2px 0 0 0' }}>{filterName}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
           : 
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', height: '100%' }}>
             <Camera
               onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
               idealFacingMode={facingMode || FACING_MODES.USER}
@@ -215,8 +239,6 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                //maxHeight: '60vh',
-                //objectFit: 'contain',
                 borderRadius: '10px'
               }}
             />
@@ -256,7 +278,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
                 fontWeight: 'bold',
               }}
             >
-              {countdown === null ? /*'📷'*/ null : countdown}
+              {countdown === null ? null : countdown}
             </button>
             {hasMultipleCameras && (
               <button onClick={handleFlipCamera}

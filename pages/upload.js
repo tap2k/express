@@ -44,7 +44,8 @@ export async function getServerSideProps(ctx) {
               channel: channel,
               privateID: privateID,
               jwt: channel.canedit ? jwt : null,
-              useLocation: uselocation ? uselocation : false
+              //useLocation: uselocation ? uselocation : false
+              useLocation: true
           } 
       };
   } catch (err) {
