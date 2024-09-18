@@ -30,17 +30,14 @@ export const audioOptions = [
 ];
 
 export const colorOptions = [
-  "#FFFFFF",
-  "#000000",
-  "#E6F3FF",
-  "#F5F5F5",
-  "#F1FFF0",
-  "#FFFFD4",
-  "#F0E6FF",
-  "#FFE5B4",
-  "#87CEEB",
-  "#F08080",
-  "#F5F5DC",
-  "#FFE4E1"
+  ["#FFFFFFAA", "#000000AA"], // White on Black (grayscale)
+  ["#E6F3FFAA", "#0047ABAA"], // Light Blue on Cobalt Blue
+  ["#F1FFF0AA", "#228B22AA"], // Mint Cream on Forest Green
+  ["#FFFFD4AA", "#8B4513AA"], // Light Yellow on Saddle Brown
+  ["#F0E6FFAA", "#4B0082AA"], // Lavender on Indigo
+  ["#FFE5B4AA", "#8B0000AA"], // Peach on Dark Red
+  ["#87CEEBAA", "#191970AA"], // Sky Blue on Midnight Blue
+  ["#F08080AA", "#006400AA"], // Light Coral on Dark Green
+  ["#F5F5DCAA", "#8B4513AA"], // Beige on Saddle Brown
+  ["#FFE4E1AA", "#800000AA"]  // Misty Rose on Maroon
 ];
-

@@ -7,7 +7,7 @@ import ImageGrid from './imagegrid';
 import UploadWidget from "./uploadwidget";
 import DalleWidget from "./dallewidget";
 
-export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedColor, setSelectedColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, ...props }) {
+export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, ...props }) {
   const [showGallery, setShowGallery] = useState(true);
   const [showColors, setShowColors] = useState(false);
   const [showDalle, setShowDalle] = useState(false);
@@ -30,7 +30,7 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
       setUploadedFiles([]);
     if (setDeleteMedia)
       setDeleteMedia(true);
-  }, [selectedColor]);
+  }, [selectedBackgroundColor]);
 
   return (
     <div {...props}>
@@ -45,7 +45,7 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
             AI Image
           </StyledButton>
         )}
-        {setSelectedColor && (
+        {setSelectedBackgroundColor && (
           <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(false)}}>
             Colors
           </StyledButton>
@@ -79,8 +79,10 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
       ) : showColors ? (
         <ColorGrid  
           colorOptions={colorOptions}           
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
+          selectedBackgroundColor={selectedBackgroundColor}
+          setSelectedBackgroundColor={setSelectedBackgroundColor}
+          selectedForegroundColor={selectedForegroundColor}
+          setSelectedForegroundColor={setSelectedForegroundColor}
         />
       ) : showUpload && (
         <UploadWidget

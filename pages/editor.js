@@ -38,6 +38,7 @@ export default ({ channel, privateID, jwt, user }) => {
                 <PageMenu loggedIn={privateID || jwt} editor />
                 <Banner 
                     channel={channel}
+                    foregroundColor={channel.foreground_color}
                     privateID={privateID}
                     jwt={jwt}
                 />

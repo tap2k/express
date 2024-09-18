@@ -7,7 +7,7 @@ import setError, { setErrorText } from "./seterror";
 const getFormDataSize = (formData) => 
   [...formData].reduce((size, [name, value]) => size + (typeof value === 'string' ? value.length : value.size), 0);
 
-export default async function uploadSubmission({ myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, textAlignment, backgroundColor, setProgress, router, channelID, privateID, jwt }) 
+export default async function uploadSubmission({ myFormData, contentID, title, description, name, email, location, ext_url, lat, long, published, textAlignment, backgroundColor, foregroundColor, setProgress, router, channelID, privateID, jwt }) 
 { 
 
   if (!channelID || !router)
@@ -47,12 +47,14 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
   if (ext_url)
     myFormData.append("ext_url", ext_url);
   // TODO: FIX THIS!
-  //if (published)
+  // if (published)
   myFormData.append("published", "true");
   if (textAlignment)
     myFormData.append("textalignment", textAlignment);
   if (backgroundColor)
     myFormData.append("background_color", backgroundColor);
+  if (foregroundColor)
+    myFormData.append("foreground_color", foregroundColor);
 
   let url = getBaseURL() + "/api/uploadSubmission";
   let headerclause = {};

@@ -22,12 +22,12 @@ export default ({ channel, tilesets, privateID, jwt }) => {
         <>
             <div style={{ position: 'absolute', width: width}}>
                 <PageMenu loggedIn={privateID || jwt} /> 
-                <Banner 
+                {/*<Banner 
                     channel={channel}
+                    foregroundColor={channel.foreground_color}
                     privateID={privateID}
                     jwt={jwt}
-                    isSlideshow
-                />
+                />*/}
             </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} privateID={privateID} tilesets={tilesets} jwt={jwt} tour />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />

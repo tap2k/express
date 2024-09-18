@@ -37,6 +37,7 @@ export default ({ channel, privateID, jwt }) => {
                 <PageMenu loggedIn={privateID || jwt} /> 
                 <Banner 
                     channel={channel}
+                    foregroundColor={!channel.picture?.url && channel.foreground_color}
                     privateID={privateID}
                     jwt={jwt}
                 />

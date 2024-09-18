@@ -2,7 +2,7 @@ import { Alert } from 'reactstrap';
 import LoginButton from "../components/loginbutton";
 import ChannelControls from "./channelcontrols";
 
-export default function Banner({ channel, privateID, jwt }) {
+export default function Banner({ channel, foregroundColor, privateID, jwt }) {
   if (!channel) return null;
 
   const makeStyle = {
@@ -20,6 +20,7 @@ export default function Banner({ channel, privateID, jwt }) {
         backgroundColor: 'transparent',
         padding: '1.5rem',
         border: 'none',
+        zIndex: 10
       }}>
         <div style={{
           display: 'flex',
@@ -29,7 +30,7 @@ export default function Banner({ channel, privateID, jwt }) {
         }}>
           <div style={{
             position: 'relative',
-            backgroundColor: 'rgba(230, 240, 255, 0.6)',
+            backgroundColor: foregroundColor ? foregroundColor : '#E6F0FF99',
             borderRadius: '10px',
             padding: '1.5rem 3rem',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',

@@ -18,7 +18,8 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [deletePic, setDeletePic] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(null);
+  const [selectedForegroundColor, setSelectedForegroundColor] = useState(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [deleteAudio, setDeleteAudio] = useState(false);
@@ -77,7 +78,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID, jwt});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedBackgroundColor, foregroundColor: selectedForegroundColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID, jwt});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }
@@ -159,7 +160,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
         <MediaPicker mediaUrl={channel.audiofile?.url} progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedAudio} setSelectedMedia={setSelectedAudio} deleteMedia={deleteAudio} setDeleteMedia={setDeleteAudio} accept="audio/*" gallery="audio" />
         <Button
           onClick={handleSaveChannel}
-          disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio && !selectedColor)}
+          disabled={uploading || (!uploadedFiles.length && !deleteAudio && !selectedAudio && !selectedBackgroundColor)}
           block
           color="success"
           style={{marginTop: '10px'}}
@@ -172,10 +173,10 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
       <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
       <ModalBody>
-        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle />
+        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle />
         <Button
           onClick={handleSaveChannel}
-          disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedColor)}
+          disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedBackgroundColor)}
           block
           color="success"
           style={{marginTop: '10px'}}

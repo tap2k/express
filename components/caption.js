@@ -1,7 +1,7 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
 
-export default function Caption({ title, subtitle, name, url, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
+export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
 {
     if (!title && !url) return null;
 
@@ -10,7 +10,7 @@ export default function Caption({ title, subtitle, name, url, textAlignment = 'c
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: 'rgba(150,150,150,0.4)',
-        color: 'rgba(255,255,255,0.9)',
+        color: foregroundColor ? foregroundColor: '#969696CC',
         borderRadius: '10px',
         padding: '20px',
         backdropFilter: 'blur(5px)',

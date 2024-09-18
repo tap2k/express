@@ -17,6 +17,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
     alignItems: 'center',
     padding: '0.35rem',
     backgroundColor: 'transparent',
+    zIndex: 50
   };
   
 

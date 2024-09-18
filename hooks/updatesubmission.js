@@ -2,7 +2,7 @@ import axios from 'axios';
 import getBaseURL from "./getbaseurl";
 import setError, { setErrorText } from "./seterror";
 
-export default async function updateSubmission({ myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteMedia, deleteAudio, textAlignment, backgroundColor, setProgress, privateID, jwt }) 
+export default async function updateSubmission({ myFormData, contentID, order, title, description, name, email, location, lat, long, ext_url, published, deleteMedia, deleteAudio, textAlignment, backgroundColor, foregroundColor, setProgress, privateID, jwt }) 
 {    
   if (!contentID || (!privateID && !jwt))
   {
@@ -43,6 +43,8 @@ export default async function updateSubmission({ myFormData, contentID, order, t
     myFormData.append("textalignment", textAlignment);
   if (backgroundColor != undefined)
     myFormData.append("background_color", backgroundColor);
+  if (foregroundColor != undefined)
+    myFormData.append("foreground_color", foregroundColor);
   
   let url = getBaseURL() + "/api/updateSubmission";
   let headerclause = {};
