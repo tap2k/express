@@ -1,12 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/router';
+import { useState, useRef, useEffect } from "react";
 import { Progress } from "reactstrap";
-import { MdFlipCameraIos, MdCamera } from 'react-icons/md';
+import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
+import { MdFlipCameraIos } from 'react-icons/md';
 import { createFilter } from "cc-gram";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
 import { RecorderWrapper, ButtonGroup, StyledButton } from './recorderstyles';
 import ContentInputs from "./contentinputs";
+
+function isMobileSafari() {
+  const ua = navigator.userAgent;
+  return /iPhone|iPad|iPod/.test(ua) && !window.MSStream && /Safari/.test(ua) && !/Chrome/.test(ua);
+}
 
 export default function MyCamera({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
   const router = useRouter();
@@ -17,82 +24,76 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
+  const extUrlRef = useRef();
 
   useEffect(() => {
     checkForMultipleCameras();
-    startCamera();
-    return () => {
-      stopCamera();
-    };
-  }, [facingMode]);
+  }, []);
+
+  const handleUpload = async (e) =>  
+    {
+      e.preventDefault();
+      if (setUploading)
+        setUploading(true);
+
+      try {
+        const formData = require('form-data');
+        const myFormData = new formData();
+        
+        const blob = await (await fetch(dataUri)).blob();
+        if (!blob)
+        {
+          setErrorText("No blob found!");
+          if (setUploading)
+            setUploading(false);
+          return; 
+        }
+  
+        myFormData.append('mediafile', blob, "image.png");
+        await uploadSubmission({myFormData, channelID, lat, long, title: titleRef.current?.value, name: nameRef.current?.value, email: emailRef.current?.value, location: locationRef.current?.value, privateID, jwt, setProgress, router});
+        if (titleRef.current)
+          titleRef.current.value = "";
+        if (nameRef.current)
+          nameRef.current.value = "";
+        if (emailRef.current)
+          emailRef.current.value = "";
+        if (locationRef.current)
+          locationRef.current.value = "";
+        if (extUrlRef.current)
+          extUrlRef.current.value = "";
+      }
+      catch (error) {
+        console.error('Error uploading content:', error);
+        setErrorText('Failed to upload content. Please try again.');
+      }
+  
+      if (setUploading)
+        setUploading(false);
+    }  
 
   const checkForMultipleCameras = async () => {
+    if (isMobileSafari()) setHasMultipleCameras(true);
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter(device => device.kind === 'videoinput');
     setHasMultipleCameras(videoDevices.length > 1);
   };
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facingMode }
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (err) {
-      console.error("Error accessing the camera", err);
-      setErrorText("Failed to access the camera. Please check your permissions.");
-    }
-  };
-
-  const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
-    }
-  };
-
-  const handleCapture = () => {
-    if (canvasRef.current && videoRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      canvasRef.current.width = videoRef.current.videoWidth;
-      canvasRef.current.height = videoRef.current.videoHeight;
-      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-      const capturedDataUri = canvasRef.current.toDataURL('image/png');
-      setDataUri(capturedDataUri);
-      generateFilterPreviews(capturedDataUri);
-    }
-  };
-
-  const handleFlipCamera = () => {
-    setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
-  };
-
-  const handleRetake = () => {
-    setDataUri(null);
-    setCurrentFilter('normal');
-    setFilterPreviews({});
-    startCamera();
-  };
-
   const ccgramFilter = createFilter({ init: false });
   const filterNames = ['normal', 'moon', 'lofi', 'xpro2', 'brannan', 'gingham'];
 
-  const applyFilter = (filter) => {
+  async function applyFilter(filter) {
     setCurrentFilter(filter);
     setDataUri(filterPreviews[filter]);
-  };
+  }
 
-  const generateFilterPreviews = async (imageDataUri) => {
+  async function generateFilterPreviews(imageDataUri) {
     const previews = { normal: imageDataUri };
-    for (const filter of filterNames) {
+    for (let i = 0; i < filterNames.length; i++) {
+      const filter = filterNames[i];
       if (filter !== 'normal') {
         const img = new Image();
         img.src = imageDataUri;
@@ -102,178 +103,214 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
         previews[filter] = await ccgramFilter.getDataURL(img);
       }
     }
-    setFilterPreviews(previews);
-  };
+    return previews;
+  }
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (setUploading) setUploading(true);
-
-    try {
-      const formData = new FormData();
-      const blob = await (await fetch(dataUri)).blob();
-      if (!blob) {
-        setErrorText("No image data found!");
-        if (setUploading) setUploading(false);
-        return;
-      }
-
-      formData.append('mediafile', blob, "image.png");
-      await uploadSubmission({
-        myFormData: formData,
-        channelID,
-        lat,
-        long,
-        title: titleRef.current?.value,
-        name: nameRef.current?.value,
-        email: emailRef.current?.value,
-        location: locationRef.current?.value,
-        privateID,
-        jwt,
-        setProgress,
-        router
-      });
-
-      // Clear input fields
-      [titleRef, nameRef, emailRef, locationRef].forEach(ref => {
-        if (ref.current) ref.current.value = "";
-      });
-    } catch (error) {
-      console.error('Error uploading content:', error);
-      setErrorText('Failed to upload content. Please try again.');
+  async function handleTakePhotoAnimationDone(myDataUri) {
+    // unmirror the image if it was taken with the front camera
+    if (facingMode !== FACING_MODES.ENVIRONMENT) {
+      const img = new Image();
+      img.src = myDataUri;
+      await new Promise((resolve) => { img.onload = resolve; });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, -img.width, 0);
+      myDataUri = canvas.toDataURL('image/png');
     }
+    setDataUri(myDataUri);
+    const previews = await generateFilterPreviews(myDataUri);
+    setFilterPreviews(previews);
+  }
+  
+  function handleRetake() {
+    setDataUri(null);
+    setCurrentFilter('normal');
+    setFilterPreviews({});
+    setCountdown(null);
+  }
 
-    if (setUploading) setUploading(false);
+  const startCountdown = () => {
+    setCountdown(4);
+    
+    const countdownInterval = setInterval(() => {
+      setCountdown(prevCount => {
+        if (prevCount <= 1) {
+          clearInterval(countdownInterval);
+          // Trigger photo capture when countdown reaches 0
+          document.querySelector('#outer-circle').click();
+          return null;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
   };
+
+  function handleFlipCamera() {
+    setFacingMode(prevMode => 
+      prevMode === FACING_MODES.USER ? FACING_MODES.ENVIRONMENT : FACING_MODES.USER
+    );
+  }
 
   return (
-    <RecorderWrapper {...props} style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0, left: 0, zIndex: 1000 }}>
-      {!dataUri ? (
-        <div style={{ height: '100%', width: '100%', position: 'relative' }}>
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-          <button
-            onClick={handleCapture}
-            style={{
-              position: 'absolute',
-              bottom: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 1,
-              background: 'rgba(255, 255, 255, 0.7)',
-              border: 'none',
-              borderRadius: '50%',
-              width: '60px',
-              height: '60px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            <MdCamera size={36} />
-          </button>
-          {hasMultipleCameras && (
+    <RecorderWrapper {...props}>
+      <div style={{ marginTop: '10px', marginBottom: '10px', position: 'relative' }}>
+        {dataUri ? 
+          <div>
+            <img 
+              src={dataUri} 
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: '10px'
+              }}
+            />
+            {Object.keys(filterPreviews).length === filterNames.length && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: '10px' }}>
+                {filterNames.map(filterName => (
+                  <div 
+                    key={filterName} 
+                    onClick={() => applyFilter(filterName)}
+                    style={{
+                      margin: '5px',
+                      cursor: 'pointer',
+                      border: currentFilter === filterName ? '2px solid blue' : '2px solid transparent',
+                      borderRadius: '5px',
+                      padding: '2px'
+                    }}
+                  >
+                    <img 
+                      src={filterPreviews[filterName]}
+                      alt={filterName}
+                      data-filter={filterName}
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        objectFit: 'cover',
+                        borderRadius: '3px'
+                      }}
+                    />
+                    <p style={{ textAlign: 'center', fontSize: '12px', margin: '2px 0 0 0' }}>{filterName}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          : 
+          <div style={{ position: 'relative' }}>
+            <Camera
+              onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
+              idealFacingMode={facingMode || FACING_MODES.USER}
+              isFullscreen={false}
+              imageType={IMAGE_TYPES.PNG}
+              sizeFactor={1}
+              isDisplayStartCameraError={true}
+              isImageMirror={facingMode !== FACING_MODES.ENVIRONMENT}
+              style={{ 
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                //maxHeight: '60vh',
+                //objectFit: 'contain',
+                borderRadius: '10px'
+              }}
+            />
+            {countdown !== null && (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: '72px',
+                fontWeight: 'bold',
+                color: 'white',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+              }}>
+                {countdown}
+              </div>
+            )}
             <button
-              onClick={handleFlipCamera}
+              onClick={startCountdown}
+              disabled={countdown !== null || uploading}
               style={{
                 position: 'absolute',
-                top: '20px',
-                right: '20px',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
                 zIndex: 1,
                 background: 'rgba(255, 255, 255, 0.7)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '40px',
-                height: '40px',
+                width: '60px',
+                height: '60px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 cursor: 'pointer',
+                fontSize: '24px',
+                fontWeight: 'bold',
               }}
             >
-              <MdFlipCameraIos size={24} />
+              {countdown === null ? /*'📷'*/ null : countdown}
             </button>
-          )}
-        </div>
-      ) : (
-        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <img 
-            src={dataUri} 
-            style={{
-              width: '100%',
-              height: '70%',
-              objectFit: 'contain',
-            }}
-          />
-          {Object.keys(filterPreviews).length === filterNames.length && (
-            <div style={{ 
-              display: 'flex',
-              overflowX: 'auto',
-              padding: '10px',
-              background: 'rgba(0,0,0,0.5)',
-            }}>
-              {filterNames.map(filterName => (
-                <div 
-                  key={filterName} 
-                  onClick={() => applyFilter(filterName)}
-                  style={{
-                    margin: '0 5px',
-                    cursor: 'pointer',
-                    border: currentFilter === filterName ? '2px solid blue' : '2px solid transparent',
-                    borderRadius: '5px',
-                    padding: '2px',
-                    flexShrink: 0
-                  }}
-                >
-                  <img 
-                    src={filterPreviews[filterName]}
-                    alt={filterName}
-                    style={{
-                      width: '60px',
-                      height: '60px',
-                      objectFit: 'cover',
-                      borderRadius: '3px'
-                    }}
-                  />
-                  <p style={{ textAlign: 'center', fontSize: '10px', margin: '2px 0 0 0', color: 'white' }}>{filterName}</p>
-                </div>
-              ))}
-            </div>
-          )}
-          <ContentInputs 
-            style={{padding: '10px'}} 
-            titleRef={titleRef} 
-            nameRef={jwt ? null : nameRef} 
-            emailRef={true ? null : emailRef} 
-            locationRef={locationRef} 
-          />
-          <ButtonGroup style={{padding: '10px'}}>
-            <StyledButton 
-              color="secondary" 
-              size="lg"
-              onClick={handleRetake} 
-              disabled={uploading}
-            >
-              Retake
-            </StyledButton>
-            <StyledButton
-              color="success"
-              size="lg"
-              onClick={handleUpload}
-              disabled={uploading}
-            >
-              Submit
-            </StyledButton>
-          </ButtonGroup>
-          {uploading && <Progress value={progress} />}
-        </div>
-      )}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+            {hasMultipleCameras && (
+              <button onClick={handleFlipCamera}
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  zIndex: 1,
+                  background: 'rgba(255, 255, 255, 0.7)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  transition: 'background 0.3s ease'
+                }}
+              >
+                <MdFlipCameraIos size={24} />
+              </button>
+            )}
+          </div>
+        }
+      </div>
+
+      { dataUri && <Progress value={progress} /> }
+      <ContentInputs 
+        style={{marginBottom: '20px'}} 
+        titleRef={titleRef} 
+        nameRef={jwt ? null : nameRef} 
+        emailRef={true ? null : emailRef} 
+        locationRef={locationRef} 
+      />
+
+      <ButtonGroup style={{marginBottom: '10px' }}>
+        <StyledButton 
+          color="secondary" 
+          size="lg"
+          onClick={handleRetake} 
+          disabled={!dataUri || uploading}
+        >
+          Retake
+        </StyledButton>
+        <StyledButton
+          color="success"
+          size="lg"
+          onClick={handleUpload}
+          disabled={!dataUri || uploading}
+        >
+          Submit
+        </StyledButton>
+      </ButtonGroup>
     </RecorderWrapper>
   );
 }
