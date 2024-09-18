@@ -26,19 +26,9 @@ export default function BannerTwo({ jwt, nologin }) {
                     color: '#ffffff', 
                     textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'
                 }}>
-                <Link href="/" style={{ 
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        margin: 0,
-                        padding: 0,
-                        textDecoration: 'none',  // Remove underline from link
-                        color: "#ffffff"
-                }}>
+
                     EXPRESS
-                    </Link>
-            </b>
+                </b>
             </NavbarBrand>
             { !nologin && <div style={{ 
                 position: 'absolute',
