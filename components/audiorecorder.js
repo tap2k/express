@@ -88,8 +88,8 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
       <ContentInputs 
         style={{marginBottom: '20px'}} 
         titleRef={titleRef} 
-        //nameRef={nameRef} 
-        //emailRef={emailRef} 
+        nameRef={jwt ? null : nameRef} 
+        emailRef={true ? null : emailRef} 
         locationRef={locationRef} 
       />
       

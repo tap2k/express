@@ -70,11 +70,11 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
       <Progress value={progress} />
       <ContentInputs 
         style={{marginTop: '15px', marginBottom: '20px'}} 
-        //titleRef={titleRef} 
-        //nameRef={nameRef} 
-        //emailRef={emailRef} 
-        //locationRef={locationRef} 
-        //extUrlRef={extUrlRef} 
+        titleRef={jwt ? null : titleRef} 
+        nameRef={jwt ? null : nameRef} 
+        emailRef={true ? null : emailRef} 
+        locationRef={jwt ? null : locationRef} 
+        extUrlRef={true ? null : extUrlRef} 
         />
       <StyledButton
         color="success"

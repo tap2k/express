@@ -8,7 +8,7 @@ import { RecorderWrapper } from '../components/recorderstyles';
 export default ({ channel, privateID, jwt, useLocation }) => {
   return (
     <RecorderWrapper>
-        <BannerTwo />
+        <BannerTwo nologin />
         <Uploader channelID={channel.uniqueID} useLocation={useLocation} privateID={privateID} jwt={jwt} />
     </RecorderWrapper>
   )

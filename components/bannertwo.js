@@ -2,7 +2,7 @@ import React from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import LoginButton from './loginbutton';
 
-export default function BannerTwo({ jwt }) {
+export default function BannerTwo({ jwt, nologin }) {
     return (
         <Navbar style={{ 
             backgroundColor: 'rgba(26, 95, 122, 0.9)', 
@@ -28,14 +28,14 @@ export default function BannerTwo({ jwt }) {
                     EXPRESS
                 </b>
             </NavbarBrand>
-            <div style={{ 
+            { !nologin && <div style={{ 
                 position: 'absolute',
                 right: '2%',  // Percentage-based right positioning
                 top: '50%',
                 transform: 'translateY(-50%)'
             }}>
                 <LoginButton jwt={jwt} />
-            </div>
+            </div> }
         </Navbar>
     );
 }

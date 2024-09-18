@@ -21,8 +21,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!titleRef.current?.value)
-      return;
+
     if (setUploading)
       setUploading(true);
     try {
@@ -91,9 +90,9 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
         style={{marginTop: '20px', marginBottom: '20px'}} 
         titleRef={titleRef} 
         nameRef={nameRef} 
-        //emailRef={emailRef} 
+        emailRef={true ? null : emailRef} 
         locationRef={locationRef} 
-        //extUrlRef={extUrlRef} 
+        extUrlRef={true ? null : extUrlRef} 
       />
       <StyledButton
         color="success"
