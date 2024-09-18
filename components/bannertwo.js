@@ -33,7 +33,8 @@ export default function BannerTwo({ jwt, nologin }) {
                         transform: 'translate(-50%, -50%)',
                         margin: 0,
                         padding: 0,
-                        textDecoration: 'none'  // Remove underline from link
+                        textDecoration: 'none',  // Remove underline from link
+                        color: "#ffffff"
                 }}>
                     EXPRESS
                     </Link>

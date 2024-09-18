@@ -13,7 +13,7 @@ export default async function addChannel({ name, description, email, showtitle, 
         return null;
     }
 
-    url = getBaseURL() + "/api/createChannel";
+    const url = getBaseURL() + "/api/createChannel";
     const myFormData = new FormData();
 
     let audioblob = null;
