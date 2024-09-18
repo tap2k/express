@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useState, useRef } from 'react';
 import { FaPlay, FaPause, FaPlus, FaDownload, FaSave } from 'react-icons/fa';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import styled from 'styled-components';
 import saveChannel from "../hooks/savechannel";
 import getMediaURL from "../hooks/getmediaurl";
@@ -24,11 +26,27 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   const audioRef = useRef(null);
 
   const handleDownload = async () => {
-    if (user?.email)
-      await handleEmailSubmit(user.email);
-    else
-      setIsEmailModalOpen(true);
-  }
+    confirmAlert({
+      title: 'Create Video',
+      message: 'Are you sure you want to create this video?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            if (user?.email) {
+              handleEmailSubmit(user.email);
+            } else {
+              setIsEmailModalOpen(true);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {} // Do nothing if they click No
+        }
+      ]
+    });
+  };
 
   const handleEmailSubmit = async (email) => {
     if (email)
@@ -45,6 +63,8 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
       });
       alert("Your video has been submitted for processing! You will receive an email when it is completed.");
     }
+    else
+      alert("You can't make a video without providing a valid email address.");
     setIsEmailModalOpen(false);
   };
 
@@ -76,13 +96,14 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
       zIndex: 1,
   };
 
+  // TODO: Can only download if logged in; save automatically with download
   return (
     <>
       <div style={containerStyle}>
-        { (privateID || jwt) && download && <CircularMenuButton onClick={handleSaveChannel} >
+        { (privateID || jwt) && download && false && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
-        { download && <CircularMenuButton onClick={handleDownload}>
+        { jwt && download && <CircularMenuButton onClick={handleDownload}>
           <FaDownload  />
         </CircularMenuButton> }
         {channel.audiofile?.url && 

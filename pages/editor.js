@@ -65,6 +65,17 @@ export async function getServerSideProps(ctx) {
         channelid = publicID;
     }
 
+    // TODO: Cant edit if not logged in
+    if (!privateID && !jwt)
+    {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+
     try {
         let user = null;
         if (cookies?.jwt)
