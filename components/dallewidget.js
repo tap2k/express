@@ -50,7 +50,7 @@ export default function DalleWidget({ selectedImage, setSelectedImage, generatin
 
     return (
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ height: 120, width: '100%', aspectRatio: '1', marginBottom: '10px' }}>
+            <div style={{ height: 200, width: '100%', aspectRatio: '1', marginBottom: '10px' }}>
                 {selectedImage?.startsWith('data:image/png;base64,') && <img src={selectedImage} alt="DALL-E generated" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />}
             </div>
             <input

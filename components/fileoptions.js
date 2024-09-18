@@ -7,10 +7,13 @@ export const imageOptions = [
   "meadow.jpg", 
   "robin.jpg", 
   "trees.jpg",
+  "pattern.png",
+  "textile.jpg",
+  "flowers7.png",
+  "flowers4.jpg", 
   /*"flowers1.png", 
   "flowers2.png", 
   "flowers3.png", 
-  "flowers4.png", 
   "flowers.png", 
   "flowers7.png",*/ 
 ];
@@ -38,6 +41,7 @@ export const colorOptions = [
   ["#FFE5B4AA", "#8B0000AA"], // Peach on Dark Red
   ["#87CEEBAA", "#191970AA"], // Sky Blue on Midnight Blue
   ["#F08080AA", "#006400AA"], // Light Coral on Dark Green
-  ["#F5F5DCAA", "#8B4513AA"], // Beige on Saddle Brown
-  ["#FFE4E1AA", "#800000AA"]  // Misty Rose on Maroon
+  ["#FFDAB9AA", "#2F4F4FAA"], // Peach Puff on Dark Slate Gray
+  ["#E0FFFFAA", "#8B008BAA"], // Light Cyan on Dark Magenta
+  ["#FFFACDAA", "#B8860BAA"]  // Lemon Chiffon on Dark Goldenrod
 ];

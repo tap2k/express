@@ -26,7 +26,7 @@ export default function ColorGrid({
     overflow: 'hidden',
     borderRadius: '8px',
     cursor: 'pointer',
-    height: '80px',
+    height: '90px',
     width: '100%',
     border: '1px solid #ccc',
     display: 'flex',
@@ -59,6 +59,28 @@ export default function ColorGrid({
 
   return (
     <div style={colorGridStyle}>
+      {/* None option */}
+      <div
+        style={{
+          ...itemStyle,
+          boxShadow: (selectedForegroundColor === '' && selectedBackgroundColor === '') 
+            ? '0 0 0 3px #007bff' 
+            : 'none'
+        }}
+        onClick={() => {
+          setSelectedForegroundColor('');
+          setSelectedBackgroundColor('');
+        }}
+      >
+        <div style={{...colorHalfStyle, backgroundColor: 'white'}}>
+          None
+        </div>
+        {(selectedForegroundColor === '' && selectedBackgroundColor === '') && (
+          <div style={selectedOverlayStyle}>✓</div>
+        )}
+      </div>
+
+      {/* Color options */}
       {colorOptions.map(([foreground, background], index) => (
         <div
           key={index}
