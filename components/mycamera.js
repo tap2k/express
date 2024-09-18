@@ -285,7 +285,13 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
       </div>
 
       { dataUri && <Progress value={progress} /> }
-      <ContentInputs style={{marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} />
+      <ContentInputs 
+        style={{marginBottom: '20px'}} 
+        titleRef={titleRef} 
+        //nameRef={nameRef} 
+        //emailRef={emailRef} 
+        locationRef={locationRef} 
+      />
 
       <ButtonGroup style={{marginBottom: '10px' }}>
         <StyledButton 

@@ -81,10 +81,10 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           style={{marginBottom: '15px'}} 
           contentItem={contentItem} 
           titleRef={titleRef} 
-          nameRef={nameRef} 
-          emailRef={emailRef} 
+          //nameRef={nameRef} 
+          //emailRef={emailRef} 
           locationRef={locationRef} 
-          extUrlRef={extUrlRef} 
+          //extUrlRef={extUrlRef} 
           textAlignmentRef={textAlignmentRef} 
         />
         <ButtonGroup>

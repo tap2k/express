@@ -1,7 +1,7 @@
 import { FormGroup, Label, Input } from "reactstrap";
 import { StyledInput } from './recorderstyles';
 
-export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef, showTitleRef, publicRef, allowRef, intervalRef, timerRef, ...props }) {
+export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef, showTitleRef, publicRef, allowRef, intervalRef, ...props }) {
 
     return (
         <div {...props}>
@@ -70,7 +70,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                     </Label>
                 </FormGroup>}
 
-                {timerRef && false && <div style={{ display: 'flex', alignItems: 'center' }}>
+                {intervalRef && <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Label for="interval" style={{ margin: 0 }}>
                             Timer:
                         </Label>
@@ -80,9 +80,9 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                             innerRef={intervalRef}
                             defaultValue={channel?.interval || 0}
                             style={{
-                            width: '80px',
-                            height: '32px',
-                            marginLeft: '5px'
+                                width: '80px',
+                                height: '32px',
+                                marginLeft: '5px'
                             }}
                             min="0"
                         />

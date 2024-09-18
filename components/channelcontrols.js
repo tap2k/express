@@ -138,7 +138,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isChannelModalOpen} toggle={() => setIsChannelModalOpen(false)}>
       <ModalHeader close={closeBtn(() => setIsChannelModalOpen(false))}></ModalHeader>
       <ModalBody>
-        <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={jwt ? null : emailRef} publicRef={publicRef} allowRef={allowRef} showTitleRef={showTitleRef} intervalRef={intervalRef} />
+        <ChannelInputs channel={channel} titleRef={titleRef} subtitleRef={subtitleRef} emailRef={jwt ? null : emailRef} publicRef={publicRef} allowRef={allowRef} showTitleRef={showTitleRef} />
         <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}}>
           <b>Update Reel</b>
         </Button>

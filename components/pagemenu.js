@@ -19,7 +19,49 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
     backgroundColor: 'transparent',
   };
   
-  const copyUrlToClipboard = () => {
+
+  const shareUrl = () => {
+    if (typeof window === 'undefined') {
+      setError('Sharing functionality is not available');
+      return;
+    }
+  
+    const baseurl = new URL(window.location.href);
+    let channelid = new URLSearchParams(window.location.search).get('channelid');
+    if (channelid && channelid.includes(':')) {
+      [channelid] = channelid.split(':');
+    }
+    let url = `${baseurl.origin}${baseurl.pathname}?channelid=${channelid}`;
+    if (editor)
+      url = `${baseurl.origin}/reel?channelid=${channelid}`;
+  
+    if (navigator.share) {
+      navigator.share({
+        title: 'Share this channel',
+        text: 'Check out this channel!',
+        url: url
+      }).then(() => {
+        console.log('Successfully shared');
+      }).catch((error) => {
+        console.error('Error sharing:', error);
+        fallbackToClipboard(url);
+      });
+    } else {
+      fallbackToClipboard(url);
+    }
+  };
+  
+  const fallbackToClipboard = (url) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url)
+        .then(() => alert('URL copied to clipboard!'))
+        .catch(err => console.error('Failed to copy URL: ', err));
+    } else {
+      setError('Sharing and clipboard functionality are not available');
+    }
+  };
+
+  /*const copyUrlToClipboard = () => {
     if (typeof window === 'undefined' || !navigator.clipboard) {
       setError('Clipboard functionality is not available');
       return;
@@ -36,7 +78,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
       .catch(err => console.error('Failed to copy URL: ', err));
-  };
+  };*/
 
   return (
       <div style={rowStyle} className="hide-on-inactive" {...props}>
@@ -87,7 +129,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
               </MenuButton>
             </Link> 
         }
-        <MenuButton onClick={copyUrlToClipboard}>
+        <MenuButton onClick={shareUrl}>
           <FaShareAlt />
         </MenuButton>
       </div>
