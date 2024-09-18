@@ -87,7 +87,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
     <RecorderWrapper  {...props}>
       <MediaPicker generating={generating} setGenerating={setGenerating} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedColor={selectedColor} setSelectedColor={setSelectedColor} gallery="image" dalle setProgress={setProgress} />
       <Progress value={progress} />
-      <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ContentInputs style={{marginTop: '20px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} locationRef={locationRef} />
       <StyledButton
         color="success"
         size="lg"

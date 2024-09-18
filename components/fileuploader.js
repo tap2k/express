@@ -16,6 +16,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
+  // TODO: More inputs?
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -68,7 +69,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
     <RecorderWrapper  {...props}>
       <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
       <Progress value={progress} />
-      <ContentInputs style={{marginTop: '15px', marginBottom: '20px'}} titleRef={titleRef} nameRef={nameRef} emailRef={emailRef} locationRef={locationRef} extUrlRef={extUrlRef} />
+      <ContentInputs style={{marginTop: '15px', marginBottom: '20px'}} nameRef={nameRef} locationRef={locationRef} />
       <StyledButton
         color="success"
         size="lg"
