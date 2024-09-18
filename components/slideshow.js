@@ -13,7 +13,7 @@ import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
 //import SlideButton from "./slidebutton";
 
-const defaultInterval = 3000;
+const defaultInterval = 5000;
 
 const downloadURL = async (dlurl) => {
   if (!dlurl) return;
@@ -58,8 +58,10 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
     }
 
     const currentContent = getCurrentContent();
-    const mediaType = getMediaInfo(currentContent).type;
+    if (currentContent?.duration)
+      interval = currentContent.duration * 1000;
 
+    const mediaType = getMediaInfo(currentContent).type;
     if (mediaType.startsWith("image") || !mediaType) {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(advanceSlide, interval);
