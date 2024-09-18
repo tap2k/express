@@ -26,7 +26,7 @@ export default function ColorGrid({
     overflow: 'hidden',
     borderRadius: '8px',
     cursor: 'pointer',
-    height: '90px',
+    height: '80px',
     width: '100%',
     border: '1px solid #ccc',
     display: 'flex',
