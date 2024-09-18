@@ -184,29 +184,20 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
           />
         </div>
       )}
-      {controls ? (
-        <div style={{ height: oscilloscope ? '20px' : 'auto', width: '100%', zIndex: 100}}>
-          <audio 
-            ref={mediaRef}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-            }}
-            className={`video-js vjs-default-skin`}
-            crossOrigin="anonymous"
-            controls
-          >
-            <source src={src} />
-          </audio>
-        </div>
-      ) : (
+      <div style={{ height: oscilloscope ? '20px' : 'auto', width: '100%', zIndex: 100}}>
         <audio 
-          src={src}
-          style={{ display: "none" }} 
           ref={mediaRef}
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+          }}
+          className={`video-js vjs-default-skin`}
           crossOrigin="anonymous"
-        />
-      )}
+          controls={controls}
+        >
+          <source src={src} />
+        </audio>
+      </div>
     </div>
   );
 }
