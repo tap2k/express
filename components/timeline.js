@@ -40,7 +40,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
 
     useEffect(() => {
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
-    }, [duration]);
+    }, [mediaRef, duration]);
 
     useEffect(() => {
         if (!mediaRef?.current)
@@ -51,7 +51,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             mediaRef.current.currentTime = startTime;
         }
         setCurrentTime(startTime);
-    }, [startTime]);
+    }, [startTime, mediaRef, player]);
 
     useEffect(() => {
         if (!mediaRef?.current)
@@ -68,7 +68,6 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 console.error("No audio duration found for: " + src);
                 try {
                     const file = await fetch(src).then(r => r.blob());
-                    console.log(file);
                     audioDuration = await getAudioDurationFromFile(file);
                 } catch (error) {
                     console.error('Error getting audio duration:', error);
@@ -330,7 +329,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             color: 'white',
             whiteSpace: 'nowrap',
         }
-    }), [startTime, endTime, currentTime, duration, props.style]);
+    }), [startTime, endTime, currentTime, duration]);
     
     return (
         <div 

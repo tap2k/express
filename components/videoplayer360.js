@@ -67,8 +67,13 @@ export default function VideoPlayer360({ src, height, cover, mediaRef, player, s
   useEffect(() => {
     if (!mediaRef.current)
       return;
+    
+    const player = loadPlayer()
     if (setPlayer)
-      setPlayer(loadPlayer());
+    {
+      setPlayer(player);
+      mediaRef.current.player = player;
+    }
 
     return () => {
       if (player && player.vr().renderer)

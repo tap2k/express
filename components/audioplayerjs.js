@@ -49,8 +49,11 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       });
     });
 
-    if (player)
+    if (player && setPlayer)
+    {
       setPlayer(player);
+      mediaRef.current.player = player;
+    }
 
     return () => {
       if (player)

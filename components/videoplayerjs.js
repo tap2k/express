@@ -13,8 +13,12 @@ export default function VideoPlayer({ cover, mediaRef, player, setPlayer, setDur
       //this.playsinline(true);
       this.on('loadedmetadata', () => {if (setDuration) setDuration(this.duration())});
     });
+
     if (setPlayer)
+    {
       setPlayer(player);
+      mediaRef.current.player = player;
+    }
 
     return () => {
       if (player)
