@@ -15,10 +15,7 @@ export default function VideoPlayer({ cover, mediaRef, player, setPlayer, setDur
     });
 
     if (setPlayer)
-    {
       setPlayer(player);
-      mediaRef.current.player = player;
-    }
 
     return () => {
       if (player)

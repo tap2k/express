@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { CarouselContext } from 'pure-react-carousel';
 
-export default function useMediaControl({mediaRef, index, autoPlay}) {
+export default function useMediaControl({mediaRef, player, index, autoPlay}) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const carouselContext = useContext(CarouselContext);
 
   const getPlayer = useCallback(() => {
-    return mediaRef?.current?.player || mediaRef?.current;
-  }, [mediaRef]);
+    return player || mediaRef?.current;
+  }, [mediaRef, player]);
 
   const play = useCallback(() => {
     const player = getPlayer();
