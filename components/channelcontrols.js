@@ -9,7 +9,6 @@ import deleteChannel from '../hooks/deletechannel';
 import sendEmailLinks from '../hooks/sendemaillinks';
 import { IconButton } from './recorderstyles';
 import ChannelInputs from "./channelinputs";
-import EditorAdder from "./editoradder";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
@@ -189,8 +188,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isUserModalOpen} toggle={() => {setIsUserModalOpen(false)}}>
       <ModalHeader close={closeBtn(() => setIsUserModalOpen(false))}>Project Editors</ModalHeader>
       <ModalBody>
-        <EditorTable channel={channel} maxHeight={400} jwt={jwt} />
-        <EditorAdder channel={channel} jwt={jwt} />
+        <EditorTable channel={channel} maxHeight={450} jwt={jwt} />
       </ModalBody>
     </Modal>
   </>

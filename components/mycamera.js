@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
 import { Progress } from "reactstrap";
-import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
-import 'react-html5-camera-photo/build/css/index.css';
 import { MdFlipCameraIos } from 'react-icons/md';
 import { createFilter } from "cc-gram";
 import uploadSubmission from "../hooks/uploadsubmission";
@@ -24,6 +22,8 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
   const [currentFilter, setCurrentFilter] = useState('normal');
   const [filterPreviews, setFilterPreviews] = useState({});
   const [countdown, setCountdown] = useState(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
   const titleRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
@@ -32,7 +32,21 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
 
   useEffect(() => {
     checkForMultipleCameras();
+    startCamera();
   }, []);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode }
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error accessing the camera", err);
+    }
+  };
 
   const handleUpload = async (e) =>  
     {
@@ -106,23 +120,17 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
     return previews;
   }
 
-  async function handleTakePhotoAnimationDone(myDataUri) {
-    // unmirror the image if it was taken with the front camera
-    if (facingMode !== FACING_MODES.ENVIRONMENT) {
-      const img = new Image();
-      img.src = myDataUri;
-      await new Promise((resolve) => { img.onload = resolve; });
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.scale(-1, 1);
-      ctx.drawImage(img, -img.width, 0);
-      myDataUri = canvas.toDataURL('image/png');
+  async function capturePhoto() {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      context.drawImage(videoRef.current, 0, 0);
+      const myDataUri = canvasRef.current.toDataURL('image/png');
+      setDataUri(myDataUri);
+      const previews = await generateFilterPreviews(myDataUri);
+      setFilterPreviews(previews);
     }
-    setDataUri(myDataUri);
-    const previews = await generateFilterPreviews(myDataUri);
-    setFilterPreviews(previews);
   }
   
   function handleRetake() {
@@ -130,6 +138,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
     setCurrentFilter('normal');
     setFilterPreviews({});
     setCountdown(null);
+    startCamera();
   }
 
   const startCountdown = () => {
@@ -139,8 +148,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
       setCountdown(prevCount => {
         if (prevCount <= 1) {
           clearInterval(countdownInterval);
-          // Trigger photo capture when countdown reaches 0
-          document.querySelector('#outer-circle').click();
+          capturePhoto();
           return null;
         }
         return prevCount - 1;
@@ -150,8 +158,9 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
 
   function handleFlipCamera() {
     setFacingMode(prevMode => 
-      prevMode === FACING_MODES.USER ? FACING_MODES.ENVIRONMENT : FACING_MODES.USER
+      prevMode === 'user' ? 'environment' : 'user'
     );
+    startCamera();
   }
 
   return (
@@ -200,26 +209,18 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
           </div>
           : 
           <div style={{ position: 'relative' }}>
-            <Camera
-              onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
-              idealFacingMode={facingMode || FACING_MODES.USER}
-              isFullscreen={false}
-              imageType={IMAGE_TYPES.PNG}
-              sizeFactor={1}
-              isDisplayStartCameraError={true}
-              isImageMirror={facingMode !== FACING_MODES.ENVIRONMENT}
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
               style={{ 
-                position: 'absolute',
-                top: 0,
-                left: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                //maxHeight: '60vh',
-                //objectFit: 'contain',
                 borderRadius: '10px'
               }}
             />
+            <canvas ref={canvasRef} style={{ display: 'none' }} />
             {countdown !== null && (
               <div style={{
                 position: 'absolute',
@@ -256,7 +257,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
                 fontWeight: 'bold',
               }}
             >
-              {countdown === null ? /*'📷'*/ null : countdown}
+              {countdown === null ? null : countdown}
             </button>
             {hasMultipleCameras && (
               <button onClick={handleFlipCamera}

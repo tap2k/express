@@ -1,13 +1,28 @@
 /* components/editortable.js */
 
 import { useRouter } from 'next/router';
-import { Button } from "reactstrap";
-import { FaTrash } from 'react-icons/fa';
+import { Button, FormGroup, Form, Input } from "reactstrap";
+import { FaPlus, FaTrash } from 'react-icons/fa';
+import addEditor from "../hooks/addeditor";
 import removeEditor from "../hooks/removeeditor";
 
 export default function EditorTable ({ channel, maxHeight, jwt, ...props }) 
 { 
   const router = useRouter();
+
+  //TODO: Cant do confirmation because Z index?
+  const addFormEditor = async (e) => {
+      e.preventDefault(); 
+      const FormData = require("form-data");
+      const myFormData = new FormData(e.target);
+      const formProps = Object.fromEntries(myFormData);
+  
+      if (!formProps.email)
+        return;
+
+      await addEditor({channelID: channel.uniqueID, email: formProps.email, jwt: jwt}); 
+      router.replace(router.asPath, null, { scroll: false });
+  }
 
   const myRemoveEditor = async (email) => {
     await removeEditor(channel.uniqueID, email, jwt); 
@@ -32,6 +47,12 @@ export default function EditorTable ({ channel, maxHeight, jwt, ...props })
           </tbody>
         </table>
       </div>
+      <Form onSubmit={addFormEditor} id="addeditor">
+        <FormGroup>
+          <Input id="email" name="email" placeholder="email" type="email" style={{display:"inline-block", width: 250}} />
+          <Button style={{marginLeft: 10}} color="primary" size="sm"><FaPlus /></Button>
+        </FormGroup>
+      </Form>
     </div>
   );
 };
