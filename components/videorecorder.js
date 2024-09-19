@@ -233,34 +233,34 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
           }}
         />
         {status !== 'stopped' && (
-        <div 
-          onClick={status === 'recording' ? stopRecording : (countdown === null ? startRecording : null)}
-          style={{
-            position: 'absolute',
-            bottom: '50px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            backgroundColor: 'rgb(255, 0, 0)', 
-            border: '15px solid rgba(215, 215, 215)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-            cursor: countdown !== null ? 'default' : 'pointer',
-          }}
-        >
-          {status === 'recording' && (
-            <div style={{
-              width: '30px',
-              height: '30px',
-              backgroundColor: 'rgb(0, 0, 0)',
-              flexShrink: 0
-            }} />
-          )}
-        </div> )}
+          <div 
+            onClick={status === 'recording' ? stopRecording : (countdown === null ? startRecording : null)}
+            style={{
+              position: 'absolute',
+              bottom: '5%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              backgroundColor: 'rgb(255, 0, 0)', 
+              border: '15px solid rgba(215, 215, 215)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+              cursor: countdown !== null ? 'default' : 'pointer',
+            }}
+          >
+            {status === 'recording' && (
+              <div style={{
+                width: '30px',
+                height: '30px',
+                backgroundColor: 'rgb(0, 0, 0)',
+                flexShrink: 0
+              }} />
+            )}
+          </div> )}
         {status === 'recording' && (
           <div style={{
             position: 'absolute',
