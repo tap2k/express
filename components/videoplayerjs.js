@@ -1,25 +1,24 @@
-import { useLayoutEffect} from "react";
+import { useLayoutEffect, useEffect } from "react";
 import videojs from 'video.js'
 import 'videojs-errors';
 import '../node_modules/video.js/dist/video-js.css';
 
-export default function VideoPlayer({ mediaRef, setDuration, cover, ...props }) 
+export default function VideoPlayer({ cover, mediaRef, player, setPlayer, setDuration, ...props }) 
 {
-  useLayoutEffect(() => {
-      if (!mediaRef.current)
-        return;
-      mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
-      mediaRef.player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
-      mediaRef.current.player = this;
-      //mediaRef.current.player.playsinline(true);
-      mediaRef.player.ready(function(){
-        this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
-      });
+  useEffect(() => {
+    if (!mediaRef.current)
+      return;
+    mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
+    const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
+      //this.playsinline(true);
+      this.on('loadedmetadata', () => {setDuration(this.duration())});
     });
+    if (setPlayer)
+      setPlayer(player);
 
     return () => {
-      if (mediaRef?.player)
-          mediaRef.player.dispose();
+      if (player)
+          player.dispose();
     }
   }, [mediaRef]);
 

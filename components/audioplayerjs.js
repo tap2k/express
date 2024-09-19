@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import videojs from 'video.js'
 import 'videojs-errors';
 import '../node_modules/video.js/dist/video-js.css';
 
-export default function AudioPlayer({ src, width, height, oscilloscope, controls, setDuration, mediaRef, ...props }) {
+export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, player, setPlayer, setDuration, ...props }) {
   const [isSetup, setIsSetup] = useState(false);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -18,14 +18,9 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
 
     mediaRef.props = {bigPlayButton: false, userActions: {hotkeys: true}, controlBar: {fadeTime: 1000, autoHide: true, pictureInPictureToggle: false, fullscreenToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
-    
-    if (mediaRef.current)
-      mediaRef.current.player = player;
-
-    player.ready(function(){
+      
       if (!this || typeof this.on !== 'function')
         return;
-
       this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
 
       var timeout;
@@ -49,11 +44,13 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         }, 1000); 
       });
     });
-  });
+
+    if (player)
+      setPlayer(player);
 
     return () => {
-      if (mediaRef?.current?.player)
-          mediaRef.current.player.dispose();
+      if (player)
+          player.dispose();
     }
   }, [mediaRef]);
 

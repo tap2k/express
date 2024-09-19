@@ -1,34 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import videojs from 'video.js'
 import 'videojs-errors';
 import 'videojs-vr';
 import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
-//import { useContainerSize } from '../hooks/usecontainersize';
 
-export default function VideoPlayer360({ src, height, mediaRef, cover, setDuration, ...props }) 
+export default function VideoPlayer360({ src, height, cover, mediaRef, player, setPlayer, setDuration, ...props }) 
 {
   const [init, setInit] = useState(false);
-  //const { containerSize, containerRef } = useContainerSize(height);
-
-  useEffect(() => {
-    //if (containerSize.width > 0 && containerSize.height > 0) {
-      if (!mediaRef.current)
-        return;
-      mediaRef.current.player = loadPlayer();
-      mediaRef.current.player.ready(function(){
-          this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
-      });
-      const controlBar = mediaRef.current.player.getChild('ControlBar');
-      controlBar.el_.style.zIndex = 100;
-    //}
-
-    return () => {
-      if (mediaRef?.current?.player && mediaRef.current.player.vr().renderer)
-          mediaRef.current.player.vr().renderer.dispose();
-    }
-  }, [mediaRef]);
 
   let projection = "Sphere";
   let filename = src.split('/').pop().toLowerCase();
@@ -67,12 +47,10 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
   }
 
   const loadPlayer = () => {      
-    /*if (thumbnail)
-      mediaRef.props = {bigPlayButton: false, controlBar: {fullscreenToggle: false, pictureInPictureToggle: false, volumePanel: false}, userActions: {doubleClick: false}, ...mediaRef.props};
-    else */
     mediaRef.props = {controlBar: {fullscreenToggle: true, pictureInPictureToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
+      player.on('loadedmetadata', () => {setDuration(player.duration())});
       player.playsinline(true);
       player.mediainfo = player.mediainfo || {};
       player.mediainfo.projection = projection;
@@ -81,56 +59,60 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
         motionControls: false,
       });
     });
+    const controlBar = player.getChild('ControlBar');
+    controlBar.el_.style.zIndex = 100;
     return player;
-
-    /*player.on('touchstart', function() {
-      if (player.paused())
-        player.play();
-      else
-        player.pause();
-    });*/
-
-    /*player.width(containerSize.width);
-    player.height(containerSize.height);*/
   }
 
-  if (!init)
-  {
-    try {
-      const mapref = useMap();
-      if (mapref) {
-        setInit(true);
-        let marker = null;
-  
-        mapref.on('popupopen', function(e) {
-          if (!marker && mediaRef?.current?.player)
-            marker = e.popup._source;
-          
-          if (marker === e.popup._source && mediaRef?.current?.player)
-          {
-            mediaRef.current.player.load();
-          }
-        });
-      
-        mapref.on('popupclose', function(e) {
-          if (!marker && mediaRef?.current?.player)
-            marker = e.popup._source;
-          
-          if (marker === e.popup._source && mediaRef?.current?.player)
-          {
-            if (mediaRef.current.player.vr().renderer)
-              mediaRef.current.player.vr().renderer.dispose();
-          }
-        });
-      }
-    } catch(error) {
-      // To be expected if not in map
+  useEffect(() => {
+    if (!mediaRef.current)
+      return;
+    if (setPlayer)
+      setPlayer(loadPlayer());
+
+    return () => {
+      if (player && player.vr().renderer)
+          player.vr().renderer.dispose();
     }
-  }
+  }, [mediaRef]);
+
+  useEffect(() => {
+    if (!init) {
+      try {
+        const mapref = useMap();
+        if (mapref) {
+          setInit(true);
+          let marker = null;
+  
+          mapref.on('popupopen', function(e) {
+            if (!marker && mediaRef?.current?.player)
+              marker = e.popup._source;
+            
+            if (marker === e.popup._source && mediaRef?.current?.player)
+            {
+              player.load();
+            }
+          });
+        
+          mapref.on('popupclose', function(e) {
+            if (!marker && mediaRef?.current?.player)
+              marker = e.popup._source;
+            
+            if (marker === e.popup._source && mediaRef?.current?.player)
+            {
+              if (player.vr().renderer)
+                player.vr().renderer.dispose();
+            }
+          });
+        }
+      } catch(error) {
+        // To be expected if not in map
+      }
+    }
+  }, [init, mediaRef]);
 
   const containerStyle = {
     width: '100%',
-    //height: `${containerSize.height}px`
     height: '100%',
     minHeight: '250px'
   };
@@ -138,12 +120,6 @@ export default function VideoPlayer360({ src, height, mediaRef, cover, setDurati
   let vjsclass = 'vjs-fill';
   if (cover)
     vjsclass = 'vjs-fluid';
-
-  {/*<div ref={containerRef} data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>
-    <video crossOrigin="anonymous" preload='metadata' ref={mediaRef} className={`video-js vjs-default-skin ${vjsclass}`} width={containerSize.width} height={containerSize.height} {...props}>
-      {props.children}
-    </video>
-  </div>*/}
 
   return (
     <div data-vjs-player onClick={(e) => e.stopPropagation()} style={containerStyle}>

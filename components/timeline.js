@@ -30,23 +30,13 @@ function formatTime (time) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export default function Timeline({ contentItem, mediaRef, interval, pause, duration, setDuration, hidden, privateID, jwt, ...props }) {
+export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, hidden, privateID, jwt, ...props }) {
     const [currentTime, setCurrentTime] = useState(0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
 
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
-
-    const calculateTimelineClick = useCallback((e) => {
-        if (!timelineRef?.current)
-            return;
-        const rect = timelineRef.current.getBoundingClientRect();
-        const clientX = e.clientX || e.touches[0].clientX;
-        const position = (clientX - rect.left) / rect.width;
-        const newTime = Math.min(Math.max(position * duration, 0), duration);
-        return newTime;
-    }, [timelineRef, duration]);
 
     useEffect(() => {
         setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
@@ -55,8 +45,8 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     useEffect(() => {
         if (!mediaRef?.current)
             return;
-        if (mediaRef.current.player) {
-            mediaRef.current.player.currentTime(startTime);
+        if (player) {
+            player.currentTime(startTime);
         } else {
             mediaRef.current.currentTime = startTime;
         }
@@ -70,8 +60,8 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         const updateDuration = async () => {
             if (!mediaRef?.current)
                 return;
-            if (mediaRef.current.player) {
-                setDuration(mediaRef.current.player.duration());
+            if (player) {
+                setDuration(player.duration());
             } else if (mediaRef.current.readyState >= 1) {
                 let audioDuration = mediaRef.current.duration;
                 
@@ -93,8 +83,8 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             updateDuration();
         };
 
-        if (mediaRef.current?.player) {
-            mediaRef.current.player.ready(function() {
+        if (player) {
+            player.ready(function() {
                 this.on('loadedmetadata', handleLoadedMetadata);
                 this.on('timeupdate', updateTime);
             });
@@ -107,52 +97,52 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     
         return () => {
             if (mediaRef?.current) {
-                if (mediaRef.current.player) {
-                    mediaRef.current.player.off('loadedmetadata', handleLoadedMetadata);
-                    mediaRef.current.player.off('timeupdate', updateTime);
+                if (player) {
+                    player.off('loadedmetadata', handleLoadedMetadata);
+                    player.off('timeupdate', updateTime);
                 } else if (typeof mediaRef.current.removeEventListener === 'function') {
                     mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 }
             }
         };
-    }, [mediaRef]);
+    }, [mediaRef, player]);
 
     const updateTime = useCallback(() => {
-        if (!mediaRef?.current) return;
-        let currentTime;
-        if (mediaRef.current?.player) {
-            currentTime = mediaRef.current.player.currentTime();
+        if (!mediaRef?.current && !player) return;
+        let newCurrentTime;
+        if (player) {
+            newCurrentTime = player.currentTime();
         } else if (mediaRef.current.readyState >= 2) {
-            currentTime = mediaRef.current.currentTime;
+            newCurrentTime = mediaRef.current.currentTime;
         } else {
             return;
         }
 
-        if (currentTime >= endTime) {
+        if (newCurrentTime >= endTime) {
             pause();
-            if (mediaRef.current?.player) {
-                mediaRef.current.player.currentTime(startTime);
+            if (player) {
+                player.currentTime(startTime);
             } else {
                 mediaRef.current.currentTime = startTime;
             }
             setCurrentTime(startTime);
         } else {
-            setCurrentTime(currentTime);
+            setCurrentTime(newCurrentTime);
         }
-    }, [mediaRef, startTime, endTime, pause]);
+    }, [mediaRef, player, startTime, endTime]);
 
     useEffect(() => {
-        if (!mediaRef?.current) return;
+        if (!mediaRef?.current && !player) return;
         
         const handlePlay = () => {
-            if (!mediaRef?.current) return;
+            if (!mediaRef?.current && !player) return;
 
-            if (mediaRef.current?.player) {
-                if (mediaRef.current.player.currentTime() < startTime) {
-                    mediaRef.current.player.currentTime(startTime);
+            if (player) {
+                if (player.currentTime() < startTime) {
+                    player.currentTime(startTime);
                     setCurrentTime(startTime);
                 }
-                mediaRef.current.player.on('timeupdate', updateTime);
+                player.on('timeupdate', updateTime);
             } else {
                 if (mediaRef.current.currentTime < startTime) {
                     mediaRef.current.currentTime = startTime;
@@ -163,16 +153,16 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         };
     
         const handlePause = () => {
-            if (mediaRef.current?.player) {
-                mediaRef.current.player.off('timeupdate', updateTime);
+            if (player) {
+                player.off('timeupdate', updateTime);
             } else if (typeof mediaRef.current.removeEventListener === 'function') {
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
             }
         };
     
-        if (mediaRef.current?.player) {
-            mediaRef.current.player.on('play', handlePlay);
-            mediaRef.current.player.on('pause', handlePause);
+        if (player) {
+            player.on('play', handlePlay);
+            player.on('pause', handlePause);
         } else {
             if (typeof mediaRef.current.addEventListener === 'function') {
                 mediaRef.current.addEventListener('play', handlePlay);
@@ -181,9 +171,9 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
         }
     
         // Initial setup
-        if (mediaRef.current.player) {
-            if (!mediaRef.current.player.paused()) {
-                mediaRef.current.player.on('timeupdate', updateTime);
+        if (player) {
+            if (!player.paused()) {
+                player.on('timeupdate', updateTime);
             }
         } else if (!mediaRef.current.paused && typeof mediaRef.current.addEventListener === 'function') {
             mediaRef.current.addEventListener('timeupdate', updateTime);
@@ -191,18 +181,27 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
     
         return () => {
             if (!mediaRef.current) return;
-            if (mediaRef.current.player) {
-                mediaRef.current.player.off('play', handlePlay);
-                mediaRef.current.player.off('pause', handlePause);
-                mediaRef.current.player.off('timeupdate', updateTime);
+            if (player) {
+                player.off('play', handlePlay);
+                player.off('pause', handlePause);
+                player.off('timeupdate', updateTime);
             } else if (typeof mediaRef.current.removeEventListener === 'function') {
                 mediaRef.current.removeEventListener('play', handlePlay);
                 mediaRef.current.removeEventListener('pause', handlePause);
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
             }
         };
-    }, [mediaRef, updateTime]);
+    }, [mediaRef, player]);
 
+    const calculateTimelineClick = useCallback((e) => {
+        if (!timelineRef?.current)
+            return;
+        const rect = timelineRef.current.getBoundingClientRect();
+        const clientX = e.clientX || e.touches[0].clientX;
+        const position = (clientX - rect.left) / rect.width;
+        const newTime = Math.min(Math.max(position * duration, 0), duration);
+        return newTime;
+    }, [timelineRef, duration]);
 
     const handleDrag = useCallback((e) => {
         const clientX = e.clientX || e.touches[0].clientX;
@@ -227,7 +226,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             }
             contentItem.duration = newEndTime - contentItem.start_time;
         }
-    }, [startTime, endTime, mediaRef]);
+    }, [startTime, endTime, mediaRef, player]);
 
     const handleMouseDown = useCallback((handle) => (e) => {
         e.preventDefault();
@@ -280,7 +279,7 @@ export default function Timeline({ contentItem, mediaRef, interval, pause, durat
             mediaRef.current.currentTime = clickTime;
             setCurrentTime(clickTime);
         }
-    }, [startTime, endTime, duration, mediaRef]);
+    }, [startTime, endTime, duration, mediaRef, player]);
 
 
     const styles = useMemo(() => ({

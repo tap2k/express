@@ -102,6 +102,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
     return;
 
   const mediaRef = useRef();
+  const [player, setPlayer] = useState();
   const [duration, setDuration] = useState(20.0);
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, index, autoPlay});
   const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
@@ -122,6 +123,8 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         width={width} 
         height={height}
         controls={controls}
+        player={player}
+        setPlayer={setPlayer}
         setDuration={setDuration}
         mediaRef={mediaRef}
         style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
@@ -137,6 +140,8 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           height={height}
           controls={controls}
           mediaRef={mediaRef}
+          player={player}
+          setPlayer={setPlayer}
           setDuration={setDuration}
           cover={cover}
         >
@@ -150,6 +155,8 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           height={height}
           controls={controls}
           mediaRef={mediaRef}
+          player={player}
+          setPlayer={setPlayer}
           setDuration={setDuration}
           cover={cover}
         >
@@ -204,8 +211,10 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
             width={'100%'} 
             height={'0px'}
             controls={controls}
-            setDuration={setDuration}
             mediaRef={mediaRef}
+            player={player}
+            setPlayer={setPlayer}
+            setDuration={setDuration}
             style={{position: 'absolute', bottom: 0}}
         />
         }
@@ -228,7 +237,17 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       {/* TODO: Have the timeline? */}
       { ((privateID || jwt) || (mediaRef.current && false)) && 
-        <Timeline contentItem={contentItem} interval={interval/1000.0} mediaRef={mediaRef} pause={pause} duration={duration} setDuration={setDuration} hidden={!timeline} privateID={privateID} jwt={jwt} /> }
+        <Timeline 
+          contentItem={contentItem} 
+          interval={interval/1000.0} 
+          mediaRef={mediaRef}
+          player={player} 
+          pause={pause} 
+          duration={duration} 
+          setDuration={setDuration} 
+          hidden={!timeline} 
+          privateID={privateID} 
+          jwt={jwt} /> }
     </>
   );
 }
