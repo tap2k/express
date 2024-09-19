@@ -186,9 +186,18 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
               mediaRef={mediaRef}
               controls={controls}
             />
-            {contentItem.audiofile && 
-              <audio src={getMediaURL() + contentItem.audiofile?.url} style={{display: "none"}} ref={mediaRef} />
-            }
+            { contentItem.audiofile && 
+              <AudioPlayer 
+                src={getMediaURL() + contentItem.audiofile?.url} 
+                width={'100%'} 
+                height={'0px'}
+                controls={controls}
+                mediaRef={mediaRef}
+                player={player}
+                setPlayer={setPlayer}
+                setDuration={setDuration}
+                style={{position: 'absolute', bottom: 0}}
+            /> }`
           </>
         );
       }
@@ -205,7 +214,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           controls={controls}
           style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
         />
-        {contentItem.audiofile && 
+        { contentItem.audiofile && 
           <AudioPlayer 
             src={getMediaURL() + contentItem.audiofile?.url} 
             width={'100%'} 
@@ -216,8 +225,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
             setPlayer={setPlayer}
             setDuration={setDuration}
             style={{position: 'absolute', bottom: 0}}
-        />
-        }
+        /> }
       </>
     );
 

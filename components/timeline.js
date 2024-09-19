@@ -60,24 +60,22 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
         const updateDuration = async () => {
             if (!mediaRef?.current)
                 return;
-            if (player) {
-                setDuration(player.duration());
-            } else if (mediaRef.current.readyState >= 1) {
-                let audioDuration = mediaRef.current.duration;
-                
-                if (mediaRef.current.src.toLowerCase().endsWith('.mp3') && 
-                    (!isFinite(audioDuration) || audioDuration <= 0)) {
-                    try {
-                        const file = await fetch(mediaRef.current.src).then(r => r.blob());
-                        audioDuration = await getAudioDurationFromFile(file);
-                    } catch (error) {
-                        console.error('Error getting audio duration:', error);
-                    }
+
+            let audioDuration = player ? player.duration() : mediaRef.current.duration;            
+            const src = player ? player.currentSrc() : mediaRef.current.src;
+
+            if (src && src.toLowerCase().endsWith('.mp3') && (audioDuration === Infinity)) {
+                console.error("No audio duration found for: " + src);
+                try {
+                    const file = await fetch(src).then(r => r.blob());
+                    console.log(file);
+                    audioDuration = await getAudioDurationFromFile(file);
+                } catch (error) {
+                    console.error('Error getting audio duration:', error);
                 }
-    
-                setDuration(audioDuration);
             }
-        };
+            setDuration(audioDuration);
+        }
 
         const handleLoadedMetadata = () => {
             updateDuration();

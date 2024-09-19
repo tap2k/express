@@ -53,32 +53,33 @@ export default function AudioGrid({ audioOptions, selectedAudio, setSelectedAudi
     wordBreak: 'break-word',
   };
 
-  return (  <div style={{...audioGridStyle, marginBottom: '5px'}}>
-  {audioOptions.map((audio, index) => (
-    <div 
-      key={index} 
-      style={{
-        ...audioItemStyle,
-        backgroundColor: selectedAudio === audio ? '#e6f2ff' : '#f8f9fa',
-      }}
-      onClick={() => handleAudioToggle(index)}
-    >
-      {audio === "None" ? (
-        <span>None</span>
-      ) : (
-        <>
-          {playingAudioIndex === index ? (
-            <FaPause />
+  return ( 
+    <div style={{...audioGridStyle, marginBottom: '5px'}}>
+      {audioOptions.map((audio, index) => (
+        <div 
+          key={index} 
+          style={{
+            ...audioItemStyle,
+            backgroundColor: selectedAudio === audio ? '#e6f2ff' : '#f8f9fa',
+          }}
+          onClick={() => handleAudioToggle(index)}
+        >
+          {audio === "None" ? (
+            <span>None</span>
           ) : (
-            <FaPlay />
+            <>
+              {playingAudioIndex === index ? (
+                <FaPause />
+              ) : (
+                <FaPlay />
+              )}
+              <span style={audioNameStyle}>{audio}</span>
+            </>
           )}
-          <span style={audioNameStyle}>{audio}</span>
-        </>
-      )}
-    </div>
-  ))}
-        <audio ref={audioRef} style={{ display: 'none' }}>
+        </div>
+      ))}
+      <audio ref={audioRef} style={{ display: 'none' }}>
         Your browser does not support the audio element.
       </audio>
-</div>
+    </div>
 )}
