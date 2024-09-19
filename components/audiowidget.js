@@ -10,7 +10,7 @@ function Output({ src }) {
       controls 
       style={{ width: '100%', marginBottom: '10px' }}
     >
-      {isSafari && <source src={src} type="audio/aac" />}
+      {isSafari && <source src={src} type="audio/mp3" />}
       Your browser does not support the audio element.
     </audio>
   );
@@ -18,11 +18,11 @@ function Output({ src }) {
 
 const formatTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
+  const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileExt=".mp3"  }) {
+export default function AudioWidget({ onStop, mediaBlobUrl, setRecording }) {
   const [recordingTime, setRecordingTime] = useState(0);
   const [status, setStatus] = useState("idle");
   const mediaRecorderRef = useRef(null);
@@ -43,7 +43,7 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event) => {
@@ -53,18 +53,43 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: `audio/${fileExt.substr(1)}` });
-        const url = URL.createObjectURL(blob);
+        const webmBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
         
-        // Get the correct duration
-        const audio = new Audio(url);
-        audio.addEventListener('loadedmetadata', () => {
-          const duration = audio.duration;
-          // Create a new blob with the correct duration
-          const newBlob = new Blob(chunksRef.current, { type: `audio/${fileExt}` });
-          const newUrl = URL.createObjectURL(newBlob);
-          onStop(newUrl, newBlob, duration);
-        });
+        // Convert WebM to MP3
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const audioBuffer = await audioContext.decodeAudioData(e.target.result);
+          
+          const offlineContext = new OfflineAudioContext(
+            audioBuffer.numberOfChannels,
+            audioBuffer.length,
+            audioBuffer.sampleRate
+          );
+          
+          const source = offlineContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(offlineContext.destination);
+          source.start(0);
+          
+          const renderedBuffer = await offlineContext.startRendering();
+          
+          const mp3Blob = await new Promise((resolve) => {
+            const worker = new Worker('/path/to/lame.min.js');
+            worker.postMessage({ cmd: 'init', config: { bitrate: 128 } });
+            worker.postMessage({ cmd: 'encode', buf: renderedBuffer.getChannelData(0) });
+            worker.postMessage({ cmd: 'finish' });
+            worker.onmessage = (e) => {
+              if (e.data.cmd === 'end') {
+                resolve(new Blob(e.data.buf, { type: 'audio/mp3' }));
+              }
+            };
+          });
+          
+          const url = URL.createObjectURL(mp3Blob);
+          onStop(url, mp3Blob, audioBuffer.duration);
+        };
+        reader.readAsArrayBuffer(webmBlob);
       };
 
       mediaRecorder.start();
@@ -123,14 +148,10 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          color: recordingTime > 150 ? 'white' : 'black',
-          fontWeight: 'bold',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%'
+          color: recordingTime > 30 ? 'white' : 'black',
+          fontWeight: 'bold'
         }}>
-          <span style={{ marginRight: '10px' }}>{formatTime(recordingTime)}</span>
+          {formatTime(recordingTime)}
         </div>
       </div>
 
