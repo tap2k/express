@@ -31,7 +31,7 @@ function formatTime (time) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, hidden, privateID, jwt, ...props }) {
+export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
     const [currentTime, setCurrentTime] = useState(0);
     const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval);
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
@@ -296,7 +296,6 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             cursor: 'pointer',
             zIndex: 1000,
             pointerEvents: 'auto',
-            display: hidden ? 'none' : 'block',
             ...props.style
         },
         currWindowStyle: {

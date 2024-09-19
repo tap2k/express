@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
@@ -11,6 +12,7 @@ import Slideshow from './slideshow';
 
 export default function MyReels ({ channels, user, jwt }) {
 
+  const [uploading, setUploading] = useState(false);
   const router = useRouter();
 
   const handleDeleteChannel = (uniqueID) => {
@@ -21,7 +23,9 @@ export default function MyReels ({ channels, user, jwt }) {
         {
           label: 'Yes',
           onClick: async () => {
+            setUploading(true);
             await deleteChannel({ channelID: uniqueID, jwt });
+            setUploading(false);
             router.replace(router.asPath, undefined, { scroll: false });
           }
         },
@@ -34,7 +38,9 @@ export default function MyReels ({ channels, user, jwt }) {
   };
 
   const handleAddChannel = async () => {
+    setUploading(true);
     const newChannel = await addChannel({ name: "New Channel", jwt });
+    setUploading(false);
     if (newChannel)
       router.push(`/editor?channelid=${newChannel.uniqueID}`);
   };
@@ -45,7 +51,7 @@ export default function MyReels ({ channels, user, jwt }) {
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.username} || {user.email}</h5>
-            <button onClick={handleAddChannel} className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', marginBottom: '10px' }}>
+            <button onClick={handleAddChannel} className="btn btn-primary btn-sm px-3 py-2" style={{ borderRadius: '20px', marginBottom: '10px' }} disabled={uploading}>
               <FaPlus size={24} />
             </button>
           </div>
@@ -77,6 +83,7 @@ export default function MyReels ({ channels, user, jwt }) {
                           borderColor: '#d9534f',
                           borderRadius: '10px' 
                         }}
+                        disabled={uploading}
                         >
                         <FaTrash className="me-1" />
                     </button> }
