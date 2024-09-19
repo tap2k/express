@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import videojs from 'video.js'
 import 'videojs-errors';
@@ -6,7 +6,7 @@ import 'videojs-vr';
 import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/videojs-vr/dist/videojs-vr.css';
 
-export default function VideoPlayer360({ src, height, cover, mediaRef, player, setPlayer, setDuration, ...props }) 
+export default function VideoPlayer360({ src, height, cover, mediaRef, player, setPlayer, ...props }) 
 {
   const [init, setInit] = useState(false);
 
@@ -50,7 +50,7 @@ export default function VideoPlayer360({ src, height, cover, mediaRef, player, s
     mediaRef.props = {controlBar: {fullscreenToggle: true, pictureInPictureToggle: false}, ...mediaRef.props};
     const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
       const player = this;
-      player.on('loadedmetadata', () => {setDuration(player.duration())});
+      //player.on('loadedmetadata', () => {setDuration(player.duration())});
       player.playsinline(true);
       player.mediainfo = player.mediainfo || {};
       player.mediainfo.projection = projection;

@@ -125,7 +125,6 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         controls={controls}
         player={player}
         setPlayer={setPlayer}
-        setDuration={setDuration}
         mediaRef={mediaRef}
         style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
         oscilloscope={!contentItem.title}
@@ -142,7 +141,6 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           mediaRef={mediaRef}
           player={player}
           setPlayer={setPlayer}
-          setDuration={setDuration}
           cover={cover}
         >
           <source src={url} type={videotype} />
@@ -195,7 +193,6 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
                 mediaRef={mediaRef}
                 player={player}
                 setPlayer={setPlayer}
-                setDuration={setDuration}
                 style={{position: 'absolute', bottom: 0}}
             /> }`
           </>
@@ -223,7 +220,6 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
             mediaRef={mediaRef}
             player={player}
             setPlayer={setPlayer}
-            setDuration={setDuration}
             style={{position: 'absolute', bottom: 0}}
         /> }
       </>
