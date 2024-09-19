@@ -251,7 +251,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         url={contentItem.ext_url} 
         textAlignment={contentItem.textalignment} 
         size={thumbnail ? "small" : "medium"}
-        foregroundColor={type === "text" || !type ? contentItem.foreground_color : null}
+        foregroundColor={!type || type === "text" ? contentItem.foreground_color : null}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       {/* TODO: Have the timeline? */}

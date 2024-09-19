@@ -19,10 +19,6 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
   if (!contentItem || (!privateID && !jwt))
     return;
 
-  const router = useRouter();
-
-  let {url, type} = getMediaInfo(contentItem);
-
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isEditModalOpen, setisEditModalOpen] = useState(false);
@@ -33,6 +29,9 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
   const [selectedImage, setSelectedImage] = useState(null);
   const [deleteImage, setDeleteImage] = useState(null);
   const [progress, setProgress] = useState(0);
+
+  const router = useRouter();
+  const type = getMediaInfo(contentItem).type;
 
   useEffect(() => {
     if (setIsModalOpen)
@@ -139,7 +138,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || type.startsWith("text") || type.startsWith("audio") || !type) && <IconButton 
+        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && <IconButton 
           onClick={() => {
             setIsImageModalOpen(true);
           }} 

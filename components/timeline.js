@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
+import { getMediaInfo } from './content';
 
 function getAudioDurationFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -32,14 +33,17 @@ function formatTime (time) {
 
 export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, hidden, privateID, jwt, ...props }) {
     const [currentTime, setCurrentTime] = useState(0);
-    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
+    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval);
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
 
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
 
     useEffect(() => {
-        setEndTime(contentItem.duration ? contentItem.start_time + contentItem.duration : mediaRef?.current ? duration : interval);
+        const type = getMediaInfo(contentItem).type;
+        if (contentItem.duration || !type || type.startsWith("image"))
+            return;
+        setEndTime(duration);
     }, [mediaRef, duration]);
 
     useEffect(() => {
