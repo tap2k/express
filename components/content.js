@@ -9,7 +9,7 @@ import FullImage from './fullimage';
 import Caption from "./caption";
 import PlayIcon from './playicon';
 
-const MyReactPlayer = dynamic(() => import("./myreactplayer.js"), { ssr: false });
+const Youtube = dynamic(() => import("./youtube.js"), { ssr: false });
 const Photosphere = dynamic(() => import("./photosphere.js"), { ssr: false });
 const VideoPlayer360 = dynamic(() => import("./videoplayer360.js"), { ssr: false });
 const VideoPlayer = dynamic(() => import("./videoplayerjs.js"), { ssr: false });
@@ -118,17 +118,27 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
   let mediaElement;
   if (type.startsWith("audio")) {
     mediaElement = (
-      <AudioPlayer 
-        src={url} 
-        width={width} 
-        height={height}
-        controls={controls}
-        player={player}
-        setPlayer={setPlayer}
-        mediaRef={mediaRef}
-        style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
-        oscilloscope={!contentItem.title}
-      />
+      <>
+        { contentItem.title && 
+          <FullImage 
+            width={width} 
+            height={height} 
+            cover={cover}
+            style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
+          /> }
+          <AudioPlayer 
+            src={url} 
+            width={width} 
+            height={height}
+            controls={controls}
+            player={player}
+            setPlayer={setPlayer}
+            setDuration={setDuration}
+            mediaRef={mediaRef}
+            style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
+            oscilloscope={!contentItem.title}
+          />
+      </>
     );
   } else if (type.startsWith("video")) {
     if (is360)
@@ -141,6 +151,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           mediaRef={mediaRef}
           player={player}
           setPlayer={setPlayer}
+          setDuration={setDuration}
           cover={cover}
         >
           <source src={url} type={videotype} />
@@ -163,12 +174,14 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
       );
   } else if (type.startsWith("youtube") || type.startsWith("vimeo")) {
       mediaElement = (
-        <MyReactPlayer
+        <Youtube
           url={url} 
           width={width} 
           height={height}
           controls={controls}
           mediaRef={mediaRef}
+          player={player}
+          setPlayer={setPlayer}
           setDuration={setDuration}
         />
       );
@@ -193,6 +206,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
                 mediaRef={mediaRef}
                 player={player}
                 setPlayer={setPlayer}
+                setDuration={setDuration}
                 style={{position: 'absolute', bottom: 0}}
             /> }`
           </>
@@ -220,6 +234,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
             mediaRef={mediaRef}
             player={player}
             setPlayer={setPlayer}
+            setDuration={setDuration}
             style={{position: 'absolute', bottom: 0}}
         /> }
       </>

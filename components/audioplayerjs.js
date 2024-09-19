@@ -3,7 +3,7 @@ import videojs from 'video.js'
 import 'videojs-errors';
 import '../node_modules/video.js/dist/video-js.css';
 
-export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, player, setPlayer, ...props }) {
+export default function AudioPlayer({ src, width, height, oscilloscope, controls, mediaRef, player, setPlayer, setDuration, ...props }) {
   const [isSetup, setIsSetup] = useState(false);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -21,10 +21,12 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       
       if (!this || typeof this.on !== 'function')
         return;
-      //this.on('loadedmetadata', () => {setDuration(mediaRef.current.duration)});
+      this.on('loadedmetadata', () => {if (setDuration) setDuration(mediaRef.current.duration)});
 
       var timeout;
       this.on('useractive', function() {
+        if (!player?.controlBar?.el())
+          return;
         player.controlBar.show();
         player.controlBar.el().style.opacity = 1;
         clearTimeout(timeout);
@@ -40,6 +42,8 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
   
       this.on('userinactive', function() {
         timeout = setTimeout(function() {
+          if (!player?.controlBar?.el())
+            return;
           player.controlBar.el().style.opacity = 0;
         }, 1000); 
       });

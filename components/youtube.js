@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext } from "react";
 import { CarouselContext } from 'pure-react-carousel';
 import ReactPlayer from 'react-player/lazy';
 
-export default function MyReactPlayer({ url, width, height, controls, autoPlay, setDuration, mediaRef }) 
+export default function Youtube({ url, width, height, controls, autoPlay, setDuration, mediaRef }) 
 {
     const carouselContext = useContext(CarouselContext);
     const videoRef = useRef();

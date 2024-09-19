@@ -32,7 +32,10 @@ export default function useMediaControl({mediaRef, index, autoPlay}) {
   const reset = useCallback(() => {
     const player = getPlayer();
     if (player) {
-      player.currentTime = 0;
+      if (typeof player.currentTime == "function")
+        player.currentTime(0);
+      else
+        player.currentTime = 0;
     }
   }, [getPlayer]);
 

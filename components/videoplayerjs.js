@@ -3,13 +3,16 @@ import videojs from 'video.js'
 import 'videojs-errors';
 import '../node_modules/video.js/dist/video-js.css';
 
-export default function VideoPlayer({ cover, mediaRef, player, setPlayer, ...props }) 
+export default function VideoPlayer({ cover, mediaRef, player, setPlayer, setDuration, ...props }) 
 {
   useEffect(() => {
     if (!mediaRef.current)
       return;
     mediaRef.props = {bigPlayButton: false, controlBar: {pictureInPictureToggle: false}, ...mediaRef.props};
-    const player = videojs(mediaRef.current, mediaRef.props);
+    const player = videojs(mediaRef.current, mediaRef.props, function onPlayerReady() {
+      //this.playsinline(true);
+      this.on('loadedmetadata', () => {if (setDuration) setDuration(this.duration())});
+    });
     if (setPlayer)
       setPlayer(player);
 
