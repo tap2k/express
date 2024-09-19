@@ -3,7 +3,7 @@ import { useState } from 'react';
 import useGeolocation from "react-hook-geolocation";
 import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope, FaFont } from 'react-icons/fa';
 import { ButtonGroup, StyledButton } from '../components/recorderstyles';
-import MyCamera from '../components/mycamera';
+import MyCamera from '../components/mycamera2';
 import FileUploader from '../components/fileuploader';
 import GreetingCard from '../components/greetingcard';
 import AudioRecorder from '../components/audiorecorder';
