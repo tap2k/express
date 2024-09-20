@@ -9,7 +9,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import purgeTags from "../hooks/purgetags";
 import combineTags from "../hooks/combinetags";
 
-export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMyTags, combine, jwt, privateID, ...props }) 
+export default function TagSearch ({ channel, currTag, setCurrTag, combine, jwt, privateID, ...props }) 
 {
   const router = useRouter();
 
@@ -27,8 +27,6 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
     await combineTags({tagsourceID, tagdestID, jwt, privateID});
     //TODO: hacky
     router.reload();
-    myTags.splice(i, 1);
-    setMyTags([...myTags]);
   }
 
   const confirmCombineTags = (tagsource, tagsourceID, tagdest, tagdestID, i) => {
@@ -136,7 +134,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
           gap: '5px',
           marginBottom: '20px',
         }}>
-          {myTags && myTags.map((tag, index) => (
+          {channel.tags && channel.tags.map((tag, index) => (
             <TagBadge tag={tag} key={index} index={index} />
           ))}
         </div>

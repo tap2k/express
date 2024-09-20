@@ -16,7 +16,6 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
     return;
 
   const [columns, setColumns] = useState(1);
-  const [myTags, setMyTags] = useState(channel.tags);
   const [currTag, setCurrTag] = useState(null);
   const containerRef = useRef(null);
 
@@ -42,7 +41,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
 
   return (
     <>
-      { myTags?.length > 0 && <div style={{
+      { channel.tags?.length > 0 && <div style={{
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
@@ -57,8 +56,6 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
           channel={channel}
           currTag={currTag}
           setCurrTag={setCurrTag}
-          myTags={myTags}
-          setMyTags={setMyTags}
           combine
           jwt={jwt}
         />
@@ -95,8 +92,8 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
                 />
               </div>
               <ContentTagger 
-                contentItem={contentItem} 
-                suggestions={channel.tags} 
+                contentItem={contentItem}
+                tags={channel.tags} 
                 jwt={jwt} 
                 privateID={privateID} 
                 style={{width: '325px', marginTop: '10px', marginBottom: '10px'}} 
