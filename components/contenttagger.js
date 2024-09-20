@@ -14,7 +14,7 @@ function convertArray(myArray) {
     return myArray.map(item => ({id: item.id.toString(), text: item.tag}));
 }
 
-export default function ContentTagger({ contentItem, currTag, suggestions, jwt, privateID, ...props }) {
+export default function ContentTagger({ contentItem, suggestions, jwt, privateID, ...props }) {
     if (!contentItem) return null;
 
     const router = useRouter();

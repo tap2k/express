@@ -166,7 +166,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
           <FaTrash size={iconSize} />
         </IconButton>
       </div>
-      <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} />
+      <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} tagger />
       <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>

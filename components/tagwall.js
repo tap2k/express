@@ -95,7 +95,6 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
               </div>
               <ContentTagger 
                 contentItem={contentItem} 
-                currTag={currTag} 
                 suggestions={channel.tags} 
                 jwt={jwt} 
                 privateID={privateID} 

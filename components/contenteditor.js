@@ -2,12 +2,14 @@ import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import axios from 'axios';
+import { ButtonGroup, StyledButton } from './recorderstyles'; 
 import updateSubmission from "../hooks/updatesubmission";
 import { getMediaInfo } from "./content";
 import ContentInputs from "./contentinputs";
-import { ButtonGroup, StyledButton } from './recorderstyles'; // Import your styled components
+import ContentTagger from "./contenttagger";
 
-export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, privateID, jwt }) {
+
+export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, tagger, privateID, jwt }) {
   
   if (!contentItem)
     return;
@@ -105,6 +107,12 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
             {updating ? 'Updating...' : 'Update Slide'}
           </StyledButton>
         </ButtonGroup>
+        { tagger && <ContentTagger 
+          contentItem={contentItem} 
+          jwt={jwt} 
+          privateID={privateID} 
+          style={{width: '450px', marginTop: '10px', marginBottom: '10px'}} 
+          /> }
       </ModalBody>
     </Modal>
   );

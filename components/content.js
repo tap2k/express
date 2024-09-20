@@ -208,7 +208,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
                 setPlayer={setPlayer}
                 setDuration={setDuration}
                 style={{position: 'absolute', bottom: 0}}
-            /> }`
+            /> }
           </>
         );
       }

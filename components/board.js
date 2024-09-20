@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Draggable, DragArea } from './draggable.js';
 import Masonry from 'react-masonry-css';
@@ -88,7 +88,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
               >
                 {({ dragRef }) => (
                   <div onDoubleClick={() => handleContentClick(contentItem)}>
-                    <ContentCard contentItem={contentItem} privateID={privateID} jwt={jwt} dragRef={dragRef} controls />
+                    <ContentCard contentItem={contentItem} privateID={privateID} jwt={jwt} dragRef={dragRef} controls tags />
                   </div>
                 )}
               </Draggable>

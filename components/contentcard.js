@@ -1,11 +1,11 @@
-import { Card } from 'reactstrap';
+import { Card, Badge } from 'reactstrap';
 import Content, { isMediaFile } from './content';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, privateID, jwt, controls, autoPlay, dragRef, ...props }) 
+export default function ContentCard({ contentItem, privateID, jwt, controls, tags, autoPlay, dragRef, ...props }) 
 {
   return (
-    <Card className="mb-2">
+    <Card className="mb-2" style={{backgroundColor: '#fafafa'}}>
       <div style={{ position: 'relative', ...props.style }}>
         <Content 
           contentItem={contentItem}
@@ -26,13 +26,14 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
       />
       
       {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
-        <>
+        <div style={{position: 'relative'}}>
           <div 
             style={{ 
               padding: '10px 15px', 
               fontSize: '16px',
               fontWeight: 'bold',
               lineHeight: '1.4',
+              color: '#333333'
             }}
           >
             {contentItem.title}
@@ -52,7 +53,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
               {contentItem.name}{contentItem.location ? ', ' + contentItem.location : ""}
             </div>
           }
-        </>
+        </div>
       }
 
       {contentItem.ext_url && !isMediaFile(contentItem.ext_url) &&
@@ -70,7 +71,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: '#0066cc', // Change this to your preferred color
+              color: '#0066cc',
               textDecoration: 'none',
             }}
           >
@@ -78,6 +79,26 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, aut
           </a>
         </div>
       }
+
+      {tags && contentItem.tags && contentItem.tags.length > 0 && (
+        <div style={{ margin: '5px' }}>
+          {contentItem.tags.map((tagObj, index) => (
+            <Badge 
+              key={index} 
+              color="primary" 
+              pill 
+              style={{
+                backgroundColor: '#007bff',
+                padding: '5px 10px',
+                fontSize: '12px'
+              }}
+            >
+              {tagObj.tag}
+            </Badge>
+          ))}
+        </div>
+      )}
     </Card>
   );
 }
+

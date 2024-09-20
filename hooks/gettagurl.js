@@ -1,5 +1,16 @@
-/* hooks/geTagURL.js */
 import getMediaURL from "../hooks/getmediaurl";
+
+const colors = [
+  "black",
+  "violet",
+  "orange",
+  "blue",
+  "yellow",
+  "red",
+  "gold",
+  //"green",
+  "grey"
+];
 
 export default function getTagURL(tag) 
 {
@@ -21,5 +32,7 @@ export default function getTagURL(tag)
       return 'marker-icon-2x-' + tag.markercolor + '.png';
   }
 
-  return null;
+  const colorIndex = tag.id % colors.length;
+  const selectedColor = colors[colorIndex];
+  return `marker-icon-2x-${selectedColor}.png`;
 } 

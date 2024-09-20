@@ -10,8 +10,9 @@ import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
+import getTagURL from "../hooks/gettagurl";
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, isPlaying, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, tags, jwt, animate, tour, legend, isPlaying, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -19,6 +20,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   const [mapKey, setMapKey] = useState(0);
   const router = useRouter();
 
+  console.log(tags);
   const markerRefs = [];
 
   useEffect(() => {
@@ -184,6 +186,30 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           </button>
         </div>
       </MapContainer>
+      { legend && 
+        <div style={{position: 'absolute', left: 10, bottom: 90, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+          <table>
+            <tbody>
+              {
+                tags && tags.map(tag => {
+                  let url = getTagURL(tag);
+                  if (url && tag.contents?.length)
+                    return (
+                      <tr key={tag.id}>
+                        <td style={{color: 'rgba(255, 255, 255, 1.0)', padding: 15}}>
+                          <small>{tag.tag}</small>
+                        </td>
+                        <td style={{paddingRight:15}}>
+                          <img width={25} src={url}/> 
+                        </td>
+                      </tr>
+                  )
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
   );
 }
