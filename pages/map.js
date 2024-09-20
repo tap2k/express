@@ -2,7 +2,6 @@ import { useState } from 'react';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
-import getTags from "../hooks/gettags";
 import PageMenu from '../components/pagemenu';
 //import Banner from "../components/banner";
 import AddMenu from "../components/addmenu";
@@ -11,7 +10,7 @@ import getTilesets from "../hooks/gettilesets";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
-export default ({ channel, tilesets, tags, jwt }) => {
+export default ({ channel, tilesets, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const width = "100vw";
@@ -28,7 +27,7 @@ export default ({ channel, tilesets, tags, jwt }) => {
                     jwt={jwt}
                 />*/}
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} tags={tags} jwt={jwt} tour legend />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} jwt={jwt} tour legend />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
         </>
     );
@@ -51,14 +50,12 @@ export async function getServerSideProps(ctx) {
             };
         }
 
-        const tags = await getTags(channelid);
         const tilesets = await getTilesets();
 
         return { 
             props: { 
                 channel: channel,
                 jwt: channel.canedit && edit ? jwt : null,
-                tags: tags,
                 tilesets: tilesets
             } 
         };

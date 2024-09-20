@@ -12,7 +12,7 @@ import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
 import getTagURL from "../hooks/gettagurl";
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, tags, jwt, animate, tour, legend, isPlaying, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, legend, isPlaying, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -20,7 +20,6 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, tags, 
   const [mapKey, setMapKey] = useState(0);
   const router = useRouter();
 
-  console.log(tags);
   const markerRefs = [];
 
   useEffect(() => {
@@ -186,14 +185,14 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, tags, 
           </button>
         </div>
       </MapContainer>
-      { legend && 
+      { legend && channel.tags && channel.tags.length && 
         <div style={{position: 'absolute', left: 10, bottom: 90, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
           <table>
             <tbody>
               {
-                tags && tags.map(tag => {
+               channel.tags && channel.tags.map(tag => {
                   let url = getTagURL(tag);
-                  if (url && tag.contents?.length)
+                  if (url)
                     return (
                       <tr key={tag.id}>
                         <td style={{color: 'rgba(255, 255, 255, 1.0)', padding: 15}}>
