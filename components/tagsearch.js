@@ -71,14 +71,6 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
     const ref = useRef(null);
     const type = "TagBadge";
   
-    const handleDoubleClick = () => {
-      if (currTag && currTag.id === tag.id) {
-        setCurrTag(null);
-      } else {
-        setCurrTag(tag);
-      }
-    };
-  
     const [{ isOver }, drop] = useDrop({
       accept: type,
       collect: (monitor) => ({
@@ -104,8 +96,8 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
         ref={ref} 
         style={{ opacity: isDragging ? 0.5 : 1, padding: 0 }} 
         tag={tag}
-        onDoubleClick={() => setCurrTag(tag)}
-        onClick={() => setCurrTag(null)}
+        //onDoubleClick={() => setCurrTag(tag)}
+        onClick={(e) => {e.stopPropagation(); setCurrTag(tag)}}
       >
         <Badge
           pill
@@ -130,7 +122,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
   };
 
   return (
-    <div style={{
+    <div onClick={() => setCurrTag(null)} style={{
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
       borderRadius: '12px',
       padding: '20px',
@@ -141,7 +133,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '10px',
+          gap: '5px',
           marginBottom: '20px',
         }}>
           {myTags && myTags.map((tag, index) => (
@@ -155,7 +147,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
       }}>
         <button 
           style={{
-            backgroundColor: '#dc3545',
+            backgroundColor: '#ff6b6b',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
@@ -167,8 +159,8 @@ export default function TagSearch ({ channel, currTag, setCurrTag, myTags, setMy
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           }}
           onClick={confirmPurgeTags}
-          onMouseEnter={(e) => e.target.style.backgroundColor = '#c82333'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = '#dc3545'}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#ff5252'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}
         >
           Purge Tags
         </button>
