@@ -38,6 +38,16 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
           >
             {contentItem.title}
           </div>
+          <div 
+            style={{ 
+              padding: '0px 15px', 
+              fontSize: '14px',
+              lineHeight: '1.2',
+              color: '#333333'
+            }}
+          >
+            {contentItem.description}
+          </div>
           {contentItem.name &&
             <div 
               style={{ 
