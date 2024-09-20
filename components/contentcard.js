@@ -43,7 +43,8 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
               padding: '0px 15px', 
               fontSize: '14px',
               lineHeight: '1.2',
-              color: '#333333'
+              color: '#333333',
+              whiteSpace: 'pre-wrap'
             }}
           >
             {contentItem.description}
