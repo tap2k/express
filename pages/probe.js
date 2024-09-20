@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router'
 import { useState } from 'react';;
 import { Card, CardBody, Button } from 'reactstrap';
 import nookies from 'nookies';
@@ -32,7 +31,8 @@ export default function Home({ jwt }) {
     const handleEmailSubmit = async (email) => {
         if (email) {
             try {
-                await updateChannel({email: email, privateID: privateID, jwt: jwt});
+                if (!jwt)
+                    await updateChannel({email: email, privateID: privateID, jwt: jwt});
                 await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email, jwt: jwt});
                 alert('Email sent successfully!');
             } catch (error) {
@@ -93,7 +93,7 @@ export default function Home({ jwt }) {
                             </Card>
                             <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                 <CardBody style={{padding: '15px'}}>
-                                    <Link href={`/tagger?channelid=${jwt ? channelID : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                    <Link href={`/tagger?channelid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
                                         <strong style={{fontSize: 'x-large'}}>Tag</strong>
                                         <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Edit and tag your probe data</p>
                                     </Link>
@@ -113,7 +113,6 @@ export default function Home({ jwt }) {
                             <StyledInput 
                                 type="text" 
                                 placeholder="Enter channel name" 
-                                value={channelName}
                                 onChange={(e) => setChannelName(e.target.value)}
                                 style={{marginBottom: '10px'}}
                             />

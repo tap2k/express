@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 import { useRouter } from 'next/router';
 import { useState, useRef } from "react";
-import { Progress } from "reactstrap";
+import { Progress, Button } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import { setErrorText } from '../hooks/seterror';
-import { RecorderWrapper, StyledButton } from './recorderstyles';
+import { RecorderWrapper } from './recorderstyles';
 import UploadWidget from './uploadwidget';
 import ContentInputs from "./contentinputs";
 
@@ -93,7 +93,7 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
         locationRef={locationRef} 
       />
       
-      <StyledButton 
+      <Button 
         color="success" 
         size="lg" 
         block 
@@ -101,7 +101,7 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
         disabled={!blob || uploading || recording}
       >
         Submit
-      </StyledButton>
+      </Button>
     </RecorderWrapper>
   );
 }

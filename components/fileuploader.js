@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { useRef, useState } from "react";
-import { Progress } from "reactstrap";
+import { Progress, Button } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
-import { RecorderWrapper, StyledButton } from './recorderstyles';
+import { RecorderWrapper } from './recorderstyles';
 import UploadWidget from "./uploadwidget";
 import ContentInputs from "./contentinputs";
 
@@ -76,7 +76,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         locationRef={jwt ? null : locationRef} 
         extUrlRef={true ? null : extUrlRef} 
         />
-      <StyledButton
+      <Button
         color="success"
         size="lg"
         onClick={handleUpload}
@@ -84,6 +84,6 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         disabled={uploading}
       >
         Submit
-      </StyledButton>
+      </Button>
   </RecorderWrapper>
 )}

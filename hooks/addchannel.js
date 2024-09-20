@@ -4,7 +4,7 @@ import setError from "./seterror";
 
 export default async function addChannel({ name, description, email, showtitle, ispublic, allowsubmissions, interval, picturefile, audiofile, setProgress, jwt }) 
 {   
-    // TODO: Without logging in? 
+    //TODO: Without logging in? 
     //let url = getBaseURL() + "/api/createSubmissionChannel";
 
     if (!jwt)

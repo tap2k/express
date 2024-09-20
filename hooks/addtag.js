@@ -17,9 +17,8 @@ export default async function addTag({ contentID, tag, jwt, privateID })
   if (jwt)
     headerclause = {'Authorization': 'Bearer ' + jwt};
 
-
   try {
-    const resp = await axios.post(url, { contentID: contentID, tag: tag, privateID : privateID ? privatedID : null },
+    const resp = await axios.post(url, { contentID: contentID, tag: tag, privateID : privateID ? privateID : null },
       {
         headers: headerclause
       }
