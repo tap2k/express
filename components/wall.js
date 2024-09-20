@@ -116,6 +116,8 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
                       dragRef={dragRef}
                       privateID={privateID}
                       jwt={jwt}
+                      tagger
+                      publisher
                     />
                   </div>
                 )}

@@ -408,7 +408,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
               privateID={privateID} 
               flex="column" 
               iconSize={'calc(0.8vmin + 1.0em)'} 
-              //moveSlide={moveSlide}
+              moveSlide={moveSlide}
               setIsModalOpen={setIsModalOpen} 
               jwt={jwt} /> }
         </div>

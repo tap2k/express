@@ -89,6 +89,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
                   contentItem={contentItem} 
                   privateID={privateID}
                   jwt={jwt}
+                  publisher
                 />
               </div>
               <ContentTagger 

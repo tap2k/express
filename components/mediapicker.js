@@ -8,10 +8,10 @@ import UploadWidget from "./uploadwidget";
 import DalleWidget from "./dallewidget";
 
 export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, ...props }) {
-  const [showGallery, setShowGallery] = useState(true);
+  const [showGallery, setShowGallery] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showDalle, setShowDalle] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
+  const [showUpload, setShowUpload] = useState(true);
   
   useEffect(() => {
     if (!multiple && setUploadedFiles)

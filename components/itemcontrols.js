@@ -14,7 +14,7 @@ import MediaPicker from './mediapicker';
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef, moveSlide, setIsModalOpen, iconSize=20, flex="row" }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, moveSlide, setIsModalOpen, publisher, tagger, iconSize=20, flex="row" }) {
 
   if (!contentItem || (!privateID && !jwt))
     return;
@@ -152,21 +152,21 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaEdit size={iconSize} />
         </IconButton>
-        <IconButton 
+        {publisher && <IconButton 
           onClick={handlePublish} 
         >
           {contentItem.publishedAt ? 
             <FaTimes size={iconSize} /> : 
             <FaCheck size={iconSize} />
           }
-        </IconButton>
+        </IconButton>}
         {jwt && <IconButton 
           onClick={handleDelete} 
         >
           <FaTrash size={iconSize} />
         </IconButton>}
       </div>
-      <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} tagger />
+      <ContentEditor contentItem={contentItem} isModalOpen={isEditModalOpen} setIsModalOpen={setisEditModalOpen} privateID={privateID} jwt={jwt} tagger={tagger} />
       <Voiceover contentItem={contentItem} isModalOpen={isVoiceModalOpen} setIsModalOpen={setIsVoiceModalOpen} privateID={privateID} jwt={jwt} />
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>

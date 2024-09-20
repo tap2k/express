@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
-import { getMediaInfo } from './content';
 
 function getAudioDurationFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -40,8 +39,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
     const currentHandleRef = useRef(null);
 
     useEffect(() => {
-        const type = getMediaInfo(contentItem).type;
-        if (!type || type.startsWith("image"))
+        if (!mediaRef)
         {
             setDuration(20.0);
             setEndTime(5.0);
@@ -77,12 +75,6 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             let audioDuration = player ? player.duration() : mediaRef.current.duration;            
             const src = player ? player.currentSrc() : mediaRef.current.src;
 
-            if (src && src.toLowerCase().endsWith('.mp3'))
-            {
-                console.log(src);
-                console.log(audioDuration);
-            }
-
             if (src && src.toLowerCase().endsWith('.mp3') && (audioDuration === Infinity)) {
                 console.error("No audio duration found for: " + src);
                 try {
@@ -93,7 +85,6 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 }
             }
             setDuration(audioDuration);
-            setEndTime(audioDuration);
         }
 
         const handleLoadedMetadata = () => {
