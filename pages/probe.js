@@ -1,35 +1,29 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { useState } from 'react';;
-import { Card, CardBody } from 'reactstrap';
+import { Card, CardBody, Button } from 'reactstrap';
 import nookies from 'nookies';
 import addChannel from '../hooks/addchannel';
 import updateChannel from "../hooks/updatechannel";
 import sendEmailLinks from '../hooks/sendemaillinks';
+import { RecorderWrapper, StyledInput } from '../components/recorderstyles';
 import BannerTwo from '../components/bannertwo';
-import { RecorderWrapper } from '../components/recorderstyles';
-import ChannelEditor from '../components/channeleditor';
 import EmailModal from '../components/emailmodal'; 
+//import ChannelEditor from '../components/channeleditor';
 
 export default function Home({ jwt }) {
     const [channelID, setChannelID] = useState(null);
     const [privateID, setPrivateID] = useState(null);
     const [channelName, setChannelName] = useState(null);
     const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
-    const router = useRouter();
 
-    const handleAddChannel = async (data) => {
+    const handleAddChannel = async () => {
         try {
-            const respdata = await addChannel({...data, jwt});
-            if (!jwt)
-            {
-                setChannelName(respdata.name);
-                setPrivateID(respdata.privateID);
-                setChannelID(respdata.uniqueID);
-                toggleEmailModal();
-            }
-            else
-                router.push('/editor?channelid='+respdata.uniqueID+'&edit=1');
+            const respdata = await addChannel({name: channelName, allowsubmissions: true, jwt});
+            setChannelName(respdata.name);
+            setPrivateID(respdata.privateID);
+            setChannelID(respdata.uniqueID);
+            toggleEmailModal();
         } catch (error) {
             console.error("Error creating channel:", error);
         }
@@ -89,16 +83,6 @@ export default function Home({ jwt }) {
                             <p style={{fontSize: 'large', color: '#6c757d', marginBottom: '40px'}}>
                                 Your new reel <strong>{channelName}</strong> has been created. You can manage or share your reel using the links below
                             </p>
-                            {(privateID || jwt) && (
-                                <Card style={{...linkCardStyle, marginBottom: '20px'}}>
-                                    <CardBody style={{padding: '15px'}}>
-                                        <Link href={`/tagger?channelid=${jwt ? channelID + "&edit=1" : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
-                                            <strong style={{fontSize: 'x-large'}}>Edit</strong>
-                                            <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Tag your probe data</p>
-                                        </Link>
-                                    </CardBody>
-                                </Card>
-                            )}
                             <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                 <CardBody style={{padding: '15px'}}>
                                     <Link href={`/upload?channelid=${channelID}`} style={{...linkStyle, color: '#ff9800'}} rel="noopener noreferrer" target="_blank">
@@ -107,17 +91,37 @@ export default function Home({ jwt }) {
                                     </Link>
                                 </CardBody>
                             </Card>
+                            <Card style={{...linkCardStyle, marginBottom: '20px'}}>
+                                <CardBody style={{padding: '15px'}}>
+                                    <Link href={`/tagger?channelid=${jwt ? channelID : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                        <strong style={{fontSize: 'x-large'}}>Tag</strong>
+                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Edit and tag your probe data</p>
+                                    </Link>
+                                </CardBody>
+                            </Card>
                             <Card style={linkCardStyle}>
                                 <CardBody style={{padding: '15px'}}>
                                     <Link href={`/reel?channelid=${channelID}`} style={{...linkStyle, color: '#007bff'}} rel="noopener noreferrer" target="_blank">
                                         <strong style={{fontSize: 'x-large'}}>Share</strong>
-                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your slideshow</p>
+                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your gallery</p>
                                     </Link>
                                 </CardBody>
                             </Card>
                         </div>
                     ) : (
-                        <ChannelEditor onSubmit={handleAddChannel} />
+                        <div style={{width: '100%', maxWidth: '400px', margin: '0 auto', padding: '20px'}}>
+                            <StyledInput 
+                                type="text" 
+                                placeholder="Enter channel name" 
+                                value={channelName}
+                                onChange={(e) => setChannelName(e.target.value)}
+                                style={{marginBottom: '10px'}}
+                            />
+                            <Button color="primary" onClick={handleAddChannel} block>
+                                Create Channel
+                            </Button>
+                            {/*<ChannelEditor onSubmit={handleAddChannel} />*/}
+                        </div>
                     )}
                 </div>
             </RecorderWrapper>

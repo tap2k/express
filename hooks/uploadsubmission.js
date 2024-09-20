@@ -34,26 +34,28 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
       myFormData.append('long', long);
   }
 
-  if (title)
+  if (title != undefined)
     myFormData.append("title", title);
-  if (description)
+  if (description != undefined)
     myFormData.append("description", description);
-  if (name)
+  if (name != undefined)
     myFormData.append("name", name);
-  if (email)
+  if (email != undefined)
     myFormData.append("email", email);
-  if (location)
+  if (location != undefined)
     myFormData.append("location", location);
-  if (ext_url)
+  if (ext_url != undefined)
     myFormData.append("ext_url", ext_url);
   // TODO: FIX THIS!
-  // if (published)
-  myFormData.append("published", "true");
-  if (textAlignment)
+  if (published != undefined)
+    myFormData.append("published", published);
+  else
+    myFormData.append("published", true);
+  if (textAlignment != undefined)
     myFormData.append("textalignment", textAlignment);
-  if (backgroundColor)
+  if (backgroundColor != undefined)
     myFormData.append("background_color", backgroundColor);
-  if (foregroundColor)
+  if (foregroundColor != undefined)
     myFormData.append("foreground_color", foregroundColor);
 
   let url = getBaseURL() + "/api/uploadSubmission";

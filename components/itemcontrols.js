@@ -14,7 +14,7 @@ import MediaPicker from './mediapicker';
 
 const Voiceover = dynamic(() => import("../components/voiceover"), { ssr: false });
 
-export default function ItemControls ({ contentItem, privateID, jwt, dragRef, moveSlide, setIsModalOpen, iconSize=20, flex="row" }) {
+export default function ItemControls ({ contentItem, privateID, jwt, dragRef, moveSlide, setIsModalOpen, publish, iconSize=20, flex="row" }) {
 
   if (!contentItem || (!privateID && !jwt))
     return;
@@ -152,14 +152,14 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaEdit size={iconSize} />
         </IconButton>
-        {/* <IconButton 
+        { publish && <IconButton 
           onClick={handlePublish} 
         >
           {contentItem.publishedAt ? 
             <FaTimes size={iconSize} /> : 
             <FaCheck size={iconSize} />
           }
-        </IconButton> */}
+        </IconButton> }
         <IconButton 
           onClick={handleDelete} 
         >

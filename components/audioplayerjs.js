@@ -185,7 +185,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
           />
         </div>
       )}
-      <div style={{ height: oscilloscope ? '20px' : 'auto', width: '100%', zIndex: 100}}>
+      <div style={{ height: oscilloscope ? '20px' : 'auto', width: '100%', zIndex: 10}}>
         <audio 
           ref={mediaRef}
           style={{ 

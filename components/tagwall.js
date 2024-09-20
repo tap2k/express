@@ -42,7 +42,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
 
   return (
     <>
-      <div style={{
+      { myTags?.length > 0 && <div style={{
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
@@ -62,7 +62,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
           combine
           jwt={jwt}
         />
-      </div>
+      </div> }
       <div ref={containerRef} {...props}>
         <Grid columns={columns}>
         {channel.contents.map((contentItem, index) => {
@@ -91,6 +91,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
                   contentItem={contentItem} 
                   privateID={privateID}
                   jwt={jwt}
+                  publish
                 />
               </div>
               <ContentTagger 
