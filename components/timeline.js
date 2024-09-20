@@ -32,8 +32,8 @@ function formatTime (time) {
 };
 
 export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
-    const [currentTime, setCurrentTime] = useState(0);
-    const [endTime, setEndTime] = useState(contentItem.duration ? contentItem.start_time + contentItem.duration : interval);
+    const [currentTime, setCurrentTime] = useState(0.0);
+    const [endTime, setEndTime] = useState();
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
 
     const timelineRef = useRef(null);
@@ -41,8 +41,17 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
 
     useEffect(() => {
         const type = getMediaInfo(contentItem).type;
-        if (contentItem.duration || !type || type.startsWith("image"))
+        if (!type || type.startsWith("image"))
+        {
+            setDuration(20.0);
+            setEndTime(5.0);
             return;
+        }
+        if (contentItem.duration)
+        {
+            setEndTime(contentItem.duration);
+            return;
+        }
         setEndTime(duration);
     }, [mediaRef, duration]);
 
@@ -68,6 +77,12 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             let audioDuration = player ? player.duration() : mediaRef.current.duration;            
             const src = player ? player.currentSrc() : mediaRef.current.src;
 
+            if (src && src.toLowerCase().endsWith('.mp3'))
+            {
+                console.log(src);
+                console.log(audioDuration);
+            }
+
             if (src && src.toLowerCase().endsWith('.mp3') && (audioDuration === Infinity)) {
                 console.error("No audio duration found for: " + src);
                 try {
@@ -78,6 +93,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 }
             }
             setDuration(audioDuration);
+            setEndTime(audioDuration);
         }
 
         const handleLoadedMetadata = () => {

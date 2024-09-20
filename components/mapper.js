@@ -194,6 +194,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               {
                channel.tags && channel.tags.map(tag => {
                   let url = getTagURL(tag);
+                  // TODO: inefficient?
                   const tagExists = channel.contents.some(content => 
                     content.tags && content.tags[0] && content.tags[0].id === tag.id
                   );

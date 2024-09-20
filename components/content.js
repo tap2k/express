@@ -103,7 +103,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
 
   const mediaRef = useRef();
   const [player, setPlayer] = useState();
-  const [duration, setDuration] = useState(20.0);
+  const [duration, setDuration] = useState();
   const { isPlaying, toggle, play, pause } = useMediaControl({mediaRef, player, index, autoPlay});
   const { url, type, videotype } = getMediaInfo(contentItem, thumbnail);
   const is360 = url.indexOf("360") != -1 || url.indexOf("180") != -1 || contentItem.is360;
