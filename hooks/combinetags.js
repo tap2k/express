@@ -6,15 +6,19 @@ import setError, { setErrorText } from "./seterror";
 
 export default async function combineTags({channelID, tagsourceID, tagdestID, jwt, privateID}) 
 {
-  if (!tagsourceID || !tagdestID)
+  if (!tagsourceID || !tagdestID || (!privateID && !jwt))
   {
     setErrorText("No tags provided");
     return null;
   }
-  const url = getBaseURL() + "/api/combineTags";
+  
+  let url = getBaseURL() + "/api/combineSubmissionTags";
   let headerclause = {};
-  if (jwt)
+  if (!privateID)
+  {
+    url = getBaseURL() + "/api/combineTags";
     headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
 
   try {
     return await axios.post(url, { uniqueID: channelID ? channelID : null, privateID: privateID ? privateID : null, tagsourceID: tagsourceID, tagdestID: tagdestID },    

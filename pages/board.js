@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import nookies from 'nookies';
-import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import AddMenu from "../components/addmenu";
@@ -8,7 +7,7 @@ import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Board from "../components/board";
 
-export default ({ channel, privateID, jwt }) => {
+export default ({ channel, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -34,19 +33,17 @@ export default ({ channel, privateID, jwt }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                <PageMenu loggedIn={privateID || jwt} /> 
+                <PageMenu loggedIn={jwt} /> 
                 <Banner 
                     channel={channel}
                     foregroundColor={!channel.picture?.url && channel.foreground_color}
-                    privateID={privateID}
                     jwt={jwt}
                 />
                 <Board 
                     channel={channel}
-                    privateID={privateID}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
             </div>
         </div>
     );
@@ -56,18 +53,10 @@ export async function getServerSideProps(ctx) {
     let { channelid, edit } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
-    let privateID = null;
-
-    const publicID = getPublicID(channelid);
-    if (publicID)
-    {
-        privateID = channelid;
-        channelid = publicID;
-    }
 
     try {
         // TODO: Hack for testing
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: edit });
+        const channel = await getChannel({ channelID: channelid, jwt: jwt, edit: edit });
         
         if (!channel) {
             return {
@@ -81,7 +70,6 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateID,
                 jwt: channel.canedit && edit ? jwt : null
             } 
         };

@@ -6,15 +6,19 @@ import setError, { setErrorText } from "./seterror";
 
 export default async function removeTag({ contentID, tagID, jwt, privateID } ) 
 {  
-  if (!contentID)
+  if (!contentID || !tagID || (!privateID && !jwt))
   {
-    setErrorText("Error no contentprovided");
+    setErrorText("Error no content provided");
     return null;
   }
-  const url = getBaseURL() + "/api/removeTag";
+
+  let url = getBaseURL() + "/api/removeSubmissionTag";
   let headerclause = {};
-  if (jwt)
+  if (!privateID)
+  {
+    url = getBaseURL() + "/api/removeTag";
     headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
 
   try {
     const resp = await axios.post(url, { contentID: contentID, tagID: tagID, privateID: privateID ? privateID : null },

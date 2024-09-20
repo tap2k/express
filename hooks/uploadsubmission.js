@@ -50,7 +50,8 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
   if (published != undefined)
     myFormData.append("published", published);
   else
-    myFormData.append("published", true);
+    if (privateID || jwt)
+      myFormData.append("published", true);
   if (textAlignment != undefined)
     myFormData.append("textalignment", textAlignment);
   if (backgroundColor != undefined)

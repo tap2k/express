@@ -1,6 +1,6 @@
 import { StyledInput } from './recorderstyles';
 
-export default function ContentInputs({ contentItem, titleRef, nameRef, emailRef, locationRef, extUrlRef, textAlignmentRef, ...props }) {
+export default function ContentInputs({ contentItem, titleRef, nameRef, descriptionRef, emailRef, locationRef, extUrlRef, textAlignmentRef, ...props }) {
 
   // TODO: Add some of these inputs back in
   
@@ -10,8 +10,18 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, emailRef
         <StyledInput
           type="textarea"
           innerRef={titleRef}
-          placeholder="Enter caption here"
+          placeholder="Enter title here"
           defaultValue={contentItem?.title}
+          rows={2}
+        />
+      )}
+
+      {descriptionRef && (
+        <StyledInput
+          type="textarea"
+          innerRef={descriptionRef}
+          placeholder="Enter description here"
+          defaultValue={contentItem?.description}
           rows={2}
         />
       )}

@@ -32,7 +32,7 @@ export default function Home({ jwt }) {
         if (email) {
             try {
                 if (!jwt)
-                    await updateChannel({email: email, privateID: privateID, jwt: jwt});
+                    await updateChannel({email: email, jwt: jwt});
                 await sendEmailLinks({channelID: channelID, privateID: privateID, channelName: channelName, email: email, jwt: jwt});
                 alert('Email sent successfully!');
             } catch (error) {
@@ -93,7 +93,7 @@ export default function Home({ jwt }) {
                             </Card>
                             <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                 <CardBody style={{padding: '15px'}}>
-                                    <Link href={`/tagger?channelid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                    <Link href={`/tagger?privateid=${privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
                                         <strong style={{fontSize: 'x-large'}}>Tag</strong>
                                         <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Edit and tag your probe data</p>
                                     </Link>

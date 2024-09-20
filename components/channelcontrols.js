@@ -128,7 +128,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
             >
             <FaEdit size={iconSize} />
         </IconButton>
-        { channel.owned && <IconButton 
+        { channel.owned && jwt && <IconButton 
             onClick={handleDeleteChannel} 
             >
             <FaTrash size={iconSize} />

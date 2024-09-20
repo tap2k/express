@@ -57,6 +57,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
           currTag={currTag}
           setCurrTag={setCurrTag}
           combine
+          privateID={privateID}
           jwt={jwt}
         />
       </div> }
@@ -88,7 +89,6 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
                   contentItem={contentItem} 
                   privateID={privateID}
                   jwt={jwt}
-                  publish
                 />
               </div>
               <ContentTagger 

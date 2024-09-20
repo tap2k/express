@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import nookies from 'nookies';
-import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import AddMenu from "../components/addmenu";
@@ -51,33 +50,14 @@ export default ({ channel, privateID, jwt }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    let { channelid } = ctx.query;
+    let { channelid, privateid } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
-    let privateID = null;
-
-    const publicID = getPublicID(channelid);
-    if (publicID)
-    {
-        privateID = channelid;
-        channelid = publicID;
-    }
-
-    // TODO: Cant edit if not logged in
-    if (!privateID && !jwt)
-    {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false,
-            },
-        };
-    }
 
     try {
 
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
-        
+        const channel = await getChannel({ channelID: channelid, privateID: privateid, jwt: jwt, edit: true });
+
         if (!channel) {
             return {
                 redirect: {
@@ -90,8 +70,8 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateID,
-                jwt: channel.canedit ? jwt : null
+                privateID: privateid,
+                jwt: channel.canedit && jwt ? jwt : null
             } 
         };
     } catch (err) {

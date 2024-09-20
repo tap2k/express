@@ -7,17 +7,12 @@ import setError, {setErrorText} from "./seterror";
 export default async function updateTag( {myFormData, tagID, tag, markercolor, deletePic, jwt, privateID} ) 
 {  
 
-  if (!tagID)
+  if (!tagID || (!jwt && !privateID))
   {
     setErrorText("Error no tag provided");
     return null;
   }
       
-  const url = getBaseURL() + "/api/updateTag";
-  let headerclause = {};
-  if (jwt)
-    headerclause = {'Authorization': 'Bearer ' + jwt};
-  
   if (!myFormData)
     myFormData = new FormData();
   myFormData.append("tagID", tagID);
@@ -27,9 +22,17 @@ export default async function updateTag( {myFormData, tagID, tag, markercolor, d
     myFormData.append("markercolor", markercolor);
   if (deletePic != undefined)
     myFormData.append("deletepic", deletePic);
+  
+  let url = getBaseURL() + "/api/updateSubmissionTag";
+  let headerclause = {};
   if (privateID != undefined)
     myFormData.append("privateID", privateID);
-  
+  else
+  {
+    url = getBaseURL() + "/api/updateTag";
+    headerclause = {'Authorization': 'Bearer ' + jwt};
+  }
+
   try {
     return await axios.post(url, myFormData,
     {

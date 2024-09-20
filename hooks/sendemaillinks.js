@@ -6,7 +6,7 @@ const formatEmailContent = (channelID, privateID, channelName) => {
   return `
   Your channel ${channelName} has been created successfully. Here are your channel links:
 
-  Tagging Link: ${baseUrl}/tagger?channelid=${privateID}
+  Tagging Link: ${baseUrl}/tagger?privateid=${privateID}
   Upload Link: ${baseUrl}/upload?channelid=${channelID}
   Gallery Link: ${baseUrl}/reel?channelid=${channelID}
 

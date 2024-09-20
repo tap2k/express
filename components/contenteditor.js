@@ -15,6 +15,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
     return;
 
   const titleRef = useRef();
+  const descriptionRef = useRef();
   const nameRef = useRef();
   const emailRef = useRef();
   const locationRef = useRef();
@@ -33,6 +34,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
         privateID,
         jwt,
         title: titleRef?.current?.value,
+        description: descriptionRef?.current?.value,
         name: nameRef?.current?.value,
         email: emailRef?.current?.value,
         location: locationRef?.current?.value,
@@ -83,7 +85,8 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           style={{marginBottom: '15px'}} 
           contentItem={contentItem} 
           titleRef={titleRef} 
-          //nameRef={nameRef} 
+          descriptionRef={descriptionRef}
+          nameRef={nameRef} 
           //emailRef={emailRef} 
           locationRef={locationRef} 
           //extUrlRef={extUrlRef} 

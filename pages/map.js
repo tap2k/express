@@ -2,7 +2,6 @@ import { useState } from 'react';
 import nookies from 'nookies';
 import dynamic from "next/dynamic";
 import { use100vh } from 'react-div-100vh';
-import { getPublicID } from '../hooks/seed';
 import getTags from "../hooks/gettags";
 import PageMenu from '../components/pagemenu';
 //import Banner from "../components/banner";
@@ -12,7 +11,7 @@ import getTilesets from "../hooks/gettilesets";
 
 const Mapper = dynamic(() => import("../components/mapper.js"), { ssr: false });
 
-export default ({ channel, tilesets, tags, privateID, jwt }) => {
+export default ({ channel, tilesets, tags, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const width = "100vw";
@@ -22,16 +21,15 @@ export default ({ channel, tilesets, tags, privateID, jwt }) => {
     return (
         <>
             <div style={{ position: 'absolute', width: width}}>
-                <PageMenu loggedIn={privateID || jwt} /> 
+                <PageMenu loggedIn={jwt} /> 
                 {/*<Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}
-                    privateID={privateID}
                     jwt={jwt}
                 />*/}
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} privateID={privateID} tilesets={tilesets} tags={tags} jwt={jwt} tour legend />
-            <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} tags={tags} jwt={jwt} tour legend />
+            <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
         </>
     );
 }
@@ -40,17 +38,9 @@ export async function getServerSideProps(ctx) {
     let { channelid, edit } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
-    let privateID = null;
-
-    const publicID = getPublicID(channelid);
-    if (publicID)
-    {
-        privateID = channelid;
-        channelid = publicID;
-    }
 
     try {
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: edit });
+        const channel = await getChannel({ channelID: channelid, jwt: jwt, edit: edit });
         
         if (!channel) {
             return {
@@ -67,7 +57,6 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateID,
                 jwt: channel.canedit && edit ? jwt : null,
                 tags: tags,
                 tilesets: tilesets

@@ -56,7 +56,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, combine, jwt,
         buttons: [
             {
                 label: 'Yes',
-                onClick: async () => {await purgeTags({channelID: channel.uniqueID, jwt: jwt}); router.reload()}
+                onClick: async () => {await purgeTags({channelID: channel.uniqueID, jwt, privateID}); router.reload()}
             },
             {
                 label: 'No'

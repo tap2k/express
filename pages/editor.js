@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import nookies from 'nookies';
-import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import getUser from "../hooks/getuser";
@@ -9,7 +8,7 @@ import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
-export default ({ channel, privateID, jwt, user }) => {
+export default ({ channel, jwt, user }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -35,20 +34,18 @@ export default ({ channel, privateID, jwt, user }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                <PageMenu loggedIn={privateID || jwt} editor />
+                <PageMenu loggedIn={jwt} editor />
                 <Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}
-                    privateID={privateID}
                     jwt={jwt}
                     user={user}
                 />
                 <Wall 
                     channel={channel}
-                    privateID={privateID}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} user={user} download />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} user={user} download />
             </div>
         </div>
     );
@@ -58,17 +55,9 @@ export async function getServerSideProps(ctx) {
     let { channelid } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
-    let privateID = null;
-
-    const publicID = getPublicID(channelid);
-    if (publicID)
-    {
-        privateID = channelid;
-        channelid = publicID;
-    }
 
     // TODO: Cant edit if not logged in
-    if (!privateID && !jwt)
+    if (!jwt)
     {
         return {
             redirect: {
@@ -82,7 +71,7 @@ export async function getServerSideProps(ctx) {
         let user = null;
         if (cookies?.jwt)
             user = await getUser(cookies.jwt) || null;
-        const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
+        const channel = await getChannel({ channelID: channelid, jwt: jwt, edit: true });
         
         if (!channel) {
             return {
@@ -96,7 +85,6 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateID,
                 jwt: channel.canedit ? jwt : null,
                 user: user,
             } 
