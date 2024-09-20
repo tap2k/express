@@ -32,26 +32,25 @@ function formatTime (time) {
 
 export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
     const [currentTime, setCurrentTime] = useState(0.0);
-    const [endTime, setEndTime] = useState();
+    const [endTime, setEndTime] = useState(interval);
     const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
 
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
 
     useEffect(() => {
-        if (!mediaRef)
-        {
-            setDuration(20.0);
-            setEndTime(5.0);
-            return;
-        }
         if (contentItem.duration)
         {
             setEndTime(contentItem.duration);
             return;
         }
+        if (!mediaRef.current && !player)
+        {
+            setEndTime(interval);
+            return;
+        }
         setEndTime(duration);
-    }, [mediaRef, duration]);
+    }, [duration]);
 
     useEffect(() => {
         if (!mediaRef?.current)
@@ -65,12 +64,17 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
     }, [startTime, mediaRef, player]);
 
     useEffect(() => {
-        if (!mediaRef?.current)
+        if (!mediaRef?.current && !player)
+        {
+            if (!duration)
+            {
+                setDuration(20.0);
+                setEndTime(5.0);
+            }
             return;
+        }
 
         const updateDuration = async () => {
-            if (!mediaRef?.current)
-                return;
 
             let audioDuration = player ? player.duration() : mediaRef.current.duration;            
             const src = player ? player.currentSrc() : mediaRef.current.src;
@@ -84,6 +88,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                     console.error('Error getting audio duration:', error);
                 }
             }
+
             setDuration(audioDuration);
         }
 
