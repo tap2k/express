@@ -12,6 +12,8 @@ import updateChannel from "../hooks/updatechannel";
 import ContentMarker from "./contentmarker";
 import getTagURL from "../hooks/gettagurl";
 
+const defaultInterval = 3000;
+
 export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, legend, isPlaying, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
@@ -100,7 +102,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     if (isPlaying && tour && channel.contents.length > 0) {
       tourTimer = setInterval(() => {
         gotoSlide((currSlide + 1) % channel.contents.length);
-      }, channel.interval ? channel.interval : 5000);
+      }, channel.interval ? channel.interval : defaultInterval);
     }
     return () => {
       if (tourTimer) clearInterval(tourTimer);

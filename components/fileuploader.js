@@ -66,15 +66,15 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
   }
   return (
     <RecorderWrapper  {...props}>
-      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
+      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple={jwt ? true : false} />
       <Progress value={progress} />
       <ContentInputs 
         style={{marginTop: '15px', marginBottom: '20px'}} 
         titleRef={jwt ? null : titleRef} 
         nameRef={jwt ? null : nameRef} 
-        emailRef={true ? null : emailRef} 
+        emailRef={jwt ? null : emailRef} 
         locationRef={jwt ? null : locationRef} 
-        extUrlRef={true ? null : extUrlRef} 
+        extUrlRef={extUrlRef} 
         />
       <Button
         color="success"

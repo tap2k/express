@@ -22,7 +22,7 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, descript
           innerRef={descriptionRef}
           placeholder="Enter description here"
           defaultValue={contentItem?.description}
-          rows={2}
+          rows={4}
         />
       )}
 
@@ -57,7 +57,7 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, descript
         <StyledInput
           type="text"
           innerRef={extUrlRef}
-          placeholder="Enter URL"
+          placeholder="Enter URL (youtube, vimeo, dropbox)"
           defaultValue={contentItem?.ext_url}
         />
       )}
