@@ -3,13 +3,11 @@ import nookies from 'nookies';
 import { getPublicID } from '../hooks/seed';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
-import getUser from "../hooks/getuser";
 import AddMenu from "../components/addmenu";
-import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
-import Wall from "../components/wall";
+import TagWall from "../components/tagwall";
 
-export default ({ channel, privateID, jwt, user }) => {
+export default ({ channel, privateID, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -35,20 +33,18 @@ export default ({ channel, privateID, jwt, user }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                <PageMenu loggedIn={privateID || jwt} editor />
                 <Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}
                     privateID={privateID}
                     jwt={jwt}
-                    user={user}
                 />
-                <Wall 
+                <TagWall
                     channel={channel}
                     privateID={privateID}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} user={user} download />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} privateID={privateID} jwt={jwt} />
             </div>
         </div>
     );
@@ -79,9 +75,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        let user = null;
-        if (cookies?.jwt)
-            user = await getUser(cookies.jwt) || null;
+
         const channel = await getChannel({ channelID: channelid, privateID: privateID, jwt: jwt, edit: true });
         
         if (!channel) {
@@ -97,8 +91,7 @@ export async function getServerSideProps(ctx) {
             props: { 
                 channel: channel,
                 privateID: privateID,
-                jwt: channel.canedit ? jwt : null,
-                user: user,
+                jwt: channel.canedit ? jwt : null
             } 
         };
     } catch (err) {

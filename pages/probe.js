@@ -92,9 +92,9 @@ export default function Home({ jwt }) {
                             {(privateID || jwt) && (
                                 <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                     <CardBody style={{padding: '15px'}}>
-                                        <Link href={`/editor?channelid=${jwt ? channelID + "&edit=1" : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
+                                        <Link href={`/tagger?channelid=${jwt ? channelID + "&edit=1" : privateID}`} style={{...linkStyle, color: '#28a745'}} rel="noopener noreferrer" target="_blank">
                                             <strong style={{fontSize: 'x-large'}}>Edit</strong>
-                                            <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Manage and edit your reel</p>
+                                            <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Tag your probe data</p>
                                         </Link>
                                     </CardBody>
                                 </Card>
@@ -103,7 +103,7 @@ export default function Home({ jwt }) {
                                 <CardBody style={{padding: '15px'}}>
                                     <Link href={`/upload?channelid=${channelID}`} style={{...linkStyle, color: '#ff9800'}} rel="noopener noreferrer" target="_blank">
                                         <strong style={{fontSize: 'x-large'}}>Upload</strong>
-                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Upload videos to your reel</p>
+                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>Submit content to your probe</p>
                                     </Link>
                                 </CardBody>
                             </Card>
@@ -111,7 +111,7 @@ export default function Home({ jwt }) {
                                 <CardBody style={{padding: '15px'}}>
                                     <Link href={`/reel?channelid=${channelID}`} style={{...linkStyle, color: '#007bff'}} rel="noopener noreferrer" target="_blank">
                                         <strong style={{fontSize: 'x-large'}}>Share</strong>
-                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your reel</p>
+                                        <p style={{margin: '5px 0 0', fontSize: 'medium', color: '#6c757d'}}>View and share your slideshow</p>
                                     </Link>
                                 </CardBody>
                             </Card>
