@@ -62,7 +62,7 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
       interval = currentContent.duration * 1000;
 
     const mediaType = getMediaInfo(currentContent).type;
-    if (mediaType.startsWith("image") || !mediaType) {
+    if ((mediaType.startsWith("image") || !mediaType) && !currentContent.audiofile?.url) {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(advanceSlide, interval);
     } else {
