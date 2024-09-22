@@ -259,7 +259,9 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       { !buttons && <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
-        bottom: '30px', 
+        //bottom: '30px', 
+        // TODO: controls?
+        bottom: '10px',
         left: '50%', 
         transform: 'translateX(-50%)', 
         gap: '25px'
@@ -360,7 +362,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
                     index={index}
                     cover={contentItem.mediafile?.url?.includes("maustrocard")}
                     caption={!hideTitle || contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
-                    controls
+                    //controls
                     thumbnail={thumbnail}
                   />}
                 </Slide>

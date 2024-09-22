@@ -31,8 +31,8 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
     const captionStyleBottom = { ...captionStyleBase, bottom: '4vh' };
     const captionStyleCenter = { ...captionStyleBase, top: '50%', transform: 'translate(-50%, -50%)' };
     const captionStyle = 
-        textAlignment === 'top' ? captionStyleTop :
-        textAlignment === 'bottom' ? captionStyleBottom : captionStyleCenter;
+        textAlignment === 'center' ? captionStyleCenter :
+        textAlignment === 'bottom' ? captionStyleBottom : captionStyleTop;
     
     const linkStyleBase = {
         position: 'absolute',
