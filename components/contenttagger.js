@@ -18,9 +18,10 @@ export default function ContentTagger({ contentItem, tags, jwt, privateID, ...pr
 
     const router = useRouter();
     const myTags = convertArray(tags);
+    const currTags = convertArray(contentItem.tags);
 
     const handleDelete = async (i) => {
-        const err = await removeTag({contentID: contentItem.id, tagID: myTags[i].id, jwt, privateID});
+        const err = await removeTag({contentID: contentItem.id, tagID: currTags[i].id, jwt, privateID});
         router.replace(router.asPath, undefined, { scroll: false });
     }
 
@@ -30,10 +31,11 @@ export default function ContentTagger({ contentItem, tags, jwt, privateID, ...pr
         router.replace(router.asPath, undefined, { scroll: false });
     }
 
+
     return ( 
         <ReactTags 
             inputFieldPosition="top"
-            tags={convertArray(contentItem.tags)}
+            tags={currTags}
             suggestions={myTags}
             handleDelete={handleDelete}
             handleAddition={handleAddition}

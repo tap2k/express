@@ -26,9 +26,9 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
         tagger
       />
       
-      {contentItem.title && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
+      {(contentItem.title || contentItem.description || contentItem.name) && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
         <div style={{position: 'relative'}}>
-          <div 
+        {contentItem.title && <div 
             style={{ 
               padding: '10px 15px', 
               fontSize: '16px',
@@ -38,10 +38,10 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
             }}
           >
             {contentItem.title}
-          </div>
-          <div 
+          </div>}
+          {contentItem.description && <div 
             style={{ 
-              padding: '0px 15px', 
+              padding: '5px 15px 10px', 
               fontSize: '14px',
               lineHeight: '1.2',
               color: '#333333',
@@ -49,7 +49,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
             }}
           >
             {contentItem.description}
-          </div>
+          </div>}
           {contentItem.name &&
             <div 
               style={{ 
