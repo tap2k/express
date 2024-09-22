@@ -65,8 +65,8 @@ export function getMediaInfo(contentItem, thumbnail) {
   
     if (url.startsWith("https://www.dropbox.com")) {
       if (url.endsWith("?dl=0") || url.endsWith("?dl=1"))
-        url = ext_url.substring(0, url.length - 5);
-      url = ext_url.replace("https://www.dropbox.com", "https://dl.dropboxusercontent.com");
+        url = url.substring(0, url.length - 5);
+      url = url.replace("https://www.dropbox.com", "https://dl.dropboxusercontent.com");
     }
     else
       url = getMediaURL() + url;

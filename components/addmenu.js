@@ -100,13 +100,13 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   return (
     <>
       <div style={containerStyle}>
-        { jwt && download && <CircularMenuButton onClick={handleSaveChannel} >
+        { jwt && download && false && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
         { jwt && download && <CircularMenuButton onClick={handleDownload}>
           <FaDownload  />
         </CircularMenuButton> }
-        {channel.audiofile?.url && 
+        {channel.audiofile?.url && false && 
           <>
             <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
             <CircularMenuButton onClick={togglePlayPause}>
