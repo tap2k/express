@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { FaGripLinesVertical } from 'react-icons/fa';
 
 function getAudioDurationFromFile(file) {
@@ -30,56 +30,43 @@ function formatTime (time) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export default function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
-    const [currentTime, setCurrentTime] = useState(0.0);
-    const [endTime, setEndTime] = useState(interval);
-    const [startTime, setStartTime] = useState(contentItem.start_time ? contentItem.start_time : 0);
+export function Timeline({ contentItem, mediaRef, player, interval, pause, duration, setDuration, privateID, jwt, ...props }) {
+    const currentTimeRef = useRef(0.0);
+    const startTimeRef = useRef(contentItem.start_time || 0);
+    const endTimeRef = useRef(contentItem.duration || duration || 5.0);
+    const [, forceUpdate] = useState({});
 
     const timelineRef = useRef(null);
     const currentHandleRef = useRef(null);
 
     useEffect(() => {
-        if (contentItem.duration)
-        {
-            setEndTime(contentItem.duration);
-            return;
+        if (contentItem.duration) {
+            endTimeRef.current = contentItem.duration;
+        } else if (duration && endTimeRef.current !== duration) {
+            endTimeRef.current = duration;
         }
-        if (!mediaRef.current && !player)
-        {
-            setEndTime(interval);
-            return;
-        }
-        setEndTime(duration);
-    }, [duration]);
+        forceUpdate({});
+    }, [duration, mediaRef, player]);
 
     useEffect(() => {
-        if (!mediaRef?.current)
-            return;
+        if (!mediaRef?.current) return;
         if (player) {
-            player.currentTime(startTime);
+            player.currentTime(startTimeRef.current);
         } else {
-            mediaRef.current.currentTime = startTime;
+            mediaRef.current.currentTime = startTimeRef.current;
         }
-        setCurrentTime(startTime);
-    }, [startTime, mediaRef, player]);
+        currentTimeRef.current = startTimeRef.current;
+        forceUpdate({});
+    }, [mediaRef, player]);
 
     useEffect(() => {
-        if (!mediaRef?.current && !player)
-        {
-            if (!duration)
-            {
-                setDuration(20.0);
-                setEndTime(5.0);
-            }
-            return;
-        }
 
         const updateDuration = async () => {
 
-            let audioDuration = player ? player.duration() : mediaRef.current.duration;            
-            const src = player ? player.currentSrc() : mediaRef.current.src;
+            let audioDuration = player ? player.duration() : mediaRef.current?.duration;            
+            const src = player ? player.currentSrc() : mediaRef.current?.src;
 
-            if (src && src.toLowerCase().endsWith('.mp3') && (audioDuration === Infinity)) {
+            if (src && src.toLowerCase().endsWith('.mp3') && (audioDuration === Infinity || audioDuration === NaN)) {
                 console.error("No audio duration found for: " + src);
                 try {
                     const file = await fetch(src).then(r => r.blob());
@@ -89,7 +76,14 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 }
             }
 
-            setDuration(audioDuration);
+            if (audioDuration && !isNaN(audioDuration) && audioDuration !== Infinity) 
+                setDuration(audioDuration);
+            else
+            {
+                setDuration(20.0);
+                if (!contentItem.duration)
+                    endTimeRef.current = 5.0;
+            }
         }
 
         const handleLoadedMetadata = () => {
@@ -101,11 +95,10 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 this.on('loadedmetadata', handleLoadedMetadata);
                 this.on('timeupdate', updateTime);
             });
-        } else if (typeof mediaRef.current.addEventListener === 'function') {
+        } else if (mediaRef.current && typeof mediaRef.current.addEventListener === 'function') {
             mediaRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
         }
     
-        // Initial call in case the metadata is already loaded
         updateDuration();
     
         return () => {
@@ -113,7 +106,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 if (player) {
                     player.off('loadedmetadata', handleLoadedMetadata);
                     player.off('timeupdate', updateTime);
-                } else if (typeof mediaRef.current.removeEventListener === 'function') {
+                } else if (mediaRef.current && typeof mediaRef.current.removeEventListener === 'function') {
                     mediaRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 }
             }
@@ -121,6 +114,8 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
     }, [mediaRef, player]);
 
     const updateTime = useCallback(() => {
+        console.log("current Time = " + mediaRef.current.currentTime);
+        console.log("end time = " + endTimeRef.current);
         if (!mediaRef?.current && !player) return;
         let newCurrentTime;
         if (player) {
@@ -131,18 +126,19 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             return;
         }
 
-        if (newCurrentTime >= endTime) {
+        if (newCurrentTime >= endTimeRef.current) {
             pause();
             if (player) {
-                player.currentTime(startTime);
+                player.currentTime(startTimeRef.current);
             } else {
-                mediaRef.current.currentTime = startTime;
+                mediaRef.current.currentTime = startTimeRef.current;
             }
-            setCurrentTime(startTime);
+            currentTimeRef.current = startTimeRef.current;
         } else {
-            setCurrentTime(newCurrentTime);
+            currentTimeRef.current = newCurrentTime;
         }
-    }, [mediaRef, player, startTime, endTime]);
+        forceUpdate({});
+    }, [mediaRef, player, pause]);
 
     useEffect(() => {
         if (!mediaRef?.current && !player) return;
@@ -151,24 +147,25 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             if (!mediaRef?.current && !player) return;
 
             if (player) {
-                if (player.currentTime() < startTime) {
-                    player.currentTime(startTime);
-                    setCurrentTime(startTime);
+                if (player.currentTime() < startTimeRef.current) {
+                    player.currentTime(startTimeRef.current);
+                    currentTimeRef.current = startTimeRef.current;
                 }
                 player.on('timeupdate', updateTime);
             } else {
-                if (mediaRef.current.currentTime < startTime) {
-                    mediaRef.current.currentTime = startTime;
-                    setCurrentTime(startTime);
+                if (mediaRef.current.currentTime < startTimeRef.current) {
+                    mediaRef.current.currentTime = startTimeRef.current;
+                    currentTimeRef.current = startTimeRef.current;
                 }
                 mediaRef.current.addEventListener('timeupdate', updateTime);
             }
+            forceUpdate({});
         };
     
         const handlePause = () => {
             if (player) {
                 player.off('timeupdate', updateTime);
-            } else if (typeof mediaRef.current.removeEventListener === 'function') {
+            } else if (mediaRef.current && typeof mediaRef.current.removeEventListener === 'function') {
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
             }
         };
@@ -177,7 +174,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             player.on('play', handlePlay);
             player.on('pause', handlePause);
         } else {
-            if (typeof mediaRef.current.addEventListener === 'function') {
+            if (mediaRef.current && typeof mediaRef.current.addEventListener === 'function') {
                 mediaRef.current.addEventListener('play', handlePlay);
                 mediaRef.current.addEventListener('pause', handlePause);
             }
@@ -188,7 +185,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             if (!player.paused()) {
                 player.on('timeupdate', updateTime);
             }
-        } else if (!mediaRef.current.paused && typeof mediaRef.current.addEventListener === 'function') {
+        } else if (mediaRef.current && !mediaRef.current.paused && typeof mediaRef.current.addEventListener === 'function') {
             mediaRef.current.addEventListener('timeupdate', updateTime);
         }
     
@@ -198,7 +195,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
                 player.off('play', handlePlay);
                 player.off('pause', handlePause);
                 player.off('timeupdate', updateTime);
-            } else if (typeof mediaRef.current.removeEventListener === 'function') {
+            } else if (mediaRef.current && typeof mediaRef.current.removeEventListener === 'function') {
                 mediaRef.current.removeEventListener('play', handlePlay);
                 mediaRef.current.removeEventListener('pause', handlePause);
                 mediaRef.current.removeEventListener('timeupdate', updateTime);
@@ -220,26 +217,24 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
         const clientX = e.clientX || e.touches[0].clientX;
         const newTime = calculateTimelineClick({ clientX });
         if (currentHandleRef.current === 'start') {
-            if (!mediaRef?.current)
-                return;
-            const newStartTime = Math.min(newTime, endTime - 1.0);
-            setStartTime(newStartTime);
+            if (!mediaRef?.current) return;
+            const newStartTime = Math.min(newTime, endTimeRef.current - 1.0);
+            startTimeRef.current = newStartTime;
             contentItem.start_time = newStartTime;
-            contentItem.duration = endTime - newStartTime;
+            contentItem.duration = endTimeRef.current - newStartTime;
         } else if (currentHandleRef.current === 'end') {
-            const newEndTime = Math.max(newTime, startTime + 1.0);
-            if (!startTime)
-                setStartTime(0);
-            setEndTime(newEndTime);
-            if (mediaRef?.current)
-            {
+            const newEndTime = Math.max(newTime, startTimeRef.current + 1.0);
+            //if (!startTimeRef.current) startTimeRef.current = 0;
+            endTimeRef.current = newEndTime;
+            if (mediaRef?.current) {
                 pause();
                 mediaRef.current.currentTime = newEndTime;
-                setCurrentTime(newEndTime);
+                currentTimeRef.current = newEndTime;
             }
             contentItem.duration = newEndTime - contentItem.start_time;
         }
-    }, [startTime, endTime, mediaRef, player]);
+        forceUpdate({});
+    }, [calculateTimelineClick, mediaRef, pause, contentItem]);
 
     const handleMouseDown = useCallback((handle) => (e) => {
         e.preventDefault();
@@ -287,12 +282,12 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
         const clickPosition = (clientX - rect.left) / rect.width;
         const clickTime = clickPosition * duration;
 
-        if (clickTime >= startTime && clickTime <= endTime) 
-        {
+        if (clickTime >= startTimeRef.current && clickTime <= endTimeRef.current) {
             mediaRef.current.currentTime = clickTime;
-            setCurrentTime(clickTime);
+            currentTimeRef.current = clickTime;
+            forceUpdate({});
         }
-    }, [startTime, endTime, duration, mediaRef, player]);
+    }, [duration, mediaRef]);
 
 
     const styles = useMemo(() => ({
@@ -312,8 +307,8 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
         },
         currWindowStyle: {
             position: 'absolute',
-            left: `${(startTime / duration) * 100}%`,
-            width: `${((endTime - startTime) / duration) * 100}%`,
+            left: `${(startTimeRef.current / duration) * 100}%`,
+            width: `${((endTimeRef.current - startTimeRef.current) / duration) * 100}%`,
             height: '100%',
             backgroundColor: privateID || jwt ? '#999' : 'rgba(100, 100, 100, 0.2)'
         },
@@ -330,7 +325,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
         },
         currTimeStyle: {
             position: 'absolute',
-            left: `${(currentTime / duration) * 100}%`,
+            left: `${(currentTimeRef.current / duration) * 100}%`,
             width: '2px',
             height: '100%',
             backgroundColor: privateID || jwt ? 'red' : 'rgba(255, 0, 0, 0.6)',
@@ -344,7 +339,7 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             color: 'white',
             whiteSpace: 'nowrap',
         }
-    }), [startTime, endTime, currentTime, duration]);
+    }), [startTimeRef.current, endTimeRef.current, currentTimeRef.current, duration]);
     
     return (
         <div 
@@ -355,30 +350,39 @@ export default function Timeline({ contentItem, mediaRef, player, interval, paus
             key={duration}
             className="hide-on-inactive"
         >
-            <div style={styles.currWindowStyle} />
+            <div style={{
+                ...styles.currWindowStyle,
+                left: `${(startTimeRef.current / duration) * 100}%`,
+                width: `${((endTimeRef.current - startTimeRef.current) / duration) * 100}%`,
+            }} />
             {(privateID || jwt) && <div
                 className="timeline-handle"
                 onMouseDown={handleMouseDown('start')}
                 onTouchStart={handleTouchStart('start')}
-                style={{...styles.handleStyle, left: `${(startTime / duration) * 100}%`}}
+                style={{...styles.handleStyle, left: `${(startTimeRef.current / duration) * 100}%`}}
             >
                 <FaGripLinesVertical color="white" size={12} />
                 <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
-                    {formatTime(startTime)}
+                    {formatTime(startTimeRef.current)}
                 </span>
             </div>}
             {(privateID || jwt) && <div
                 className="timeline-handle"
                 onMouseDown={handleMouseDown('end')}
                 onTouchStart={handleTouchStart('end')}
-                style={{...styles.handleStyle, left: `calc(${(endTime / duration) * 100}% - 20px)`}}
+                style={{...styles.handleStyle, left: `calc(${(endTimeRef.current / duration) * 100}% - 20px)`}}
             >
                 <FaGripLinesVertical color="white" size={12} />
                 <span style={{ ...styles.timeIndicatorStyle, left: '50%', transform: 'translateX(-50%)' }}>
-                    {formatTime(endTime)}
+                    {formatTime(endTimeRef.current)}
                 </span>
             </div>}
-            {mediaRef?.current?.youtube ? "" : <div style={styles.currTimeStyle} />}
+            {mediaRef?.current?.youtube ? "" : <div style={{
+                ...styles.currTimeStyle,
+                left: `${(currentTimeRef.current / duration) * 100}%`,
+            }} />}
         </div>
     );
 }
+
+export default memo(Timeline);
