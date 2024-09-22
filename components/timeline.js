@@ -114,8 +114,6 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
     }, [mediaRef, player]);
 
     const updateTime = useCallback(() => {
-        console.log("current Time = " + mediaRef.current.currentTime);
-        console.log("end time = " + endTimeRef.current);
         if (!mediaRef?.current && !player) return;
         let newCurrentTime;
         if (player) {
