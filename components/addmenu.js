@@ -26,6 +26,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   const audioRef = useRef(null);
 
   const handleDownload = async () => {
+    await saveChannel({channel, privateID, jwt});
     confirmAlert({
       title: 'Create Video',
       message: 'Are you sure you want to create this video?',
@@ -51,7 +52,6 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   const handleEmailSubmit = async (email) => {
     if (email)
     {
-      await saveChannel({channel, privateID, jwt});
       const response = await axios.post('/api/makevideo', 
         {
           channelid: channel.uniqueID, // Assuming channelID is in cleanedData
