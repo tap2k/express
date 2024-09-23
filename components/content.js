@@ -260,7 +260,10 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           duration={duration} 
           setDuration={setDuration} 
           privateID={privateID} 
-          jwt={jwt} /> }
+          jwt={jwt} 
+          //style={{visibility: timeline ? 'block' : 'visible'}}
+        /> 
+      }
     </>
   );
 }

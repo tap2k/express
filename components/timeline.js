@@ -42,7 +42,7 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
     useEffect(() => {
         if (contentItem.duration) {
             endTimeRef.current = contentItem.duration;
-        } else if (duration && endTimeRef.current !== duration) {
+        } else if (duration && endTimeRef.current !== duration && (mediaRef.current || player)) {
             endTimeRef.current = duration;
         }
         forceUpdate({});
