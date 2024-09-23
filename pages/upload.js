@@ -36,8 +36,8 @@ export async function getServerSideProps(ctx) {
           props: { 
               channel: channel,
               jwt: channel.canedit ? jwt : null,
-              //useLocation: uselocation ? uselocation : false
-              useLocation: true
+              useLocation: uselocation ? uselocation : false
+              //useLocation: true
           } 
       };
   } catch (err) {
