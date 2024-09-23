@@ -16,12 +16,12 @@ const VideoPlayer = dynamic(() => import("./videoplayerjs.js"), { ssr: false });
 const AudioPlayer = dynamic(() => import("./audioplayerjs.js"), { ssr: false });
 const Timeline = dynamic(() => import("./timeline.js"), { ssr: false });
 
-function validateYouTubeUrl(urlToParse){
+function validateYouTubeUrl(urlToParse) {
   if (urlToParse) {
-      var regExp = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-      if (urlToParse.match(regExp)) {
-          return true;
-      }
+    var regExp = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))(([\w-]{11})(?:\S+)?)?$/;
+    if (urlToParse.match(regExp)) {
+      return true;
+    }
   }
   return false;
 }
