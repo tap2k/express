@@ -63,7 +63,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
                 color: '#aaaaaa'
               }}
             >
-              {contentItem.name}{contentItem.location ? ', ' + contentItem.location : ""}
+              {contentItem.name}{/*contentItem.location ? ', ' + contentItem.location : ""*/}
             </div>
           }
         </div>
