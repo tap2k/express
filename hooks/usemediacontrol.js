@@ -13,7 +13,7 @@ export default function useMediaControl({mediaRef, player, index, autoPlay}) {
     const player = getPlayer();
     if (player) {
       setIsPlaying(true);
-      player.play().catch(error => console.error('Playback failed:', error));
+      player.play();
     }
   }, [getPlayer]);
 
