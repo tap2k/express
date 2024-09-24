@@ -164,7 +164,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
             })
           }
         </MarkerClusterGroup>
-        { tour  && channel.contents.length ? 
+        { tour && channel.contents.length ? 
           <span>
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
             <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
@@ -187,7 +187,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           </button>
         </div>
       </MapContainer>
-      { legend && channel.tags && channel.tags.length && 
+      { (legend && channel.tags?.length) ? 
         <div style={{position: 'absolute', left: 10, bottom: 90, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
           <table>
             <tbody>
@@ -213,8 +213,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               }
             </tbody>
           </table>
-        </div>
-      }
+        </div> : "" }
     </div>
   );
 }
