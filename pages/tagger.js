@@ -70,7 +70,7 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                privateID: privateid,
+                privateID: privateid ? privateid : null,
                 jwt: channel.canedit && jwt ? jwt : null
             } 
         };

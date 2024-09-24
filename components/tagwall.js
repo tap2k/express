@@ -81,7 +81,7 @@ export default function TagWall ({ channel, privateID, jwt, ...props }) {
                 <Content 
                   contentItem={contentItem}
                   width="100%" 
-                  height="400px"
+                  height={400}
                   caption
                   thumbnail
                 />

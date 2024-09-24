@@ -412,7 +412,9 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
               iconSize={'calc(0.8vmin + 1.0em)'} 
               moveSlide={moveSlide}
               setIsModalOpen={setIsModalOpen} 
-              jwt={jwt} /> }
+              jwt={jwt} 
+              publisher /> 
+            }
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from 'next/link';
 import { useRef } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
@@ -162,6 +163,37 @@ export default function TagSearch ({ channel, currTag, setCurrTag, combine, jwt,
         >
           Purge Tags
         </button>
+        {channel.allowsubmissions && (
+          <Link 
+              href={`/upload?channelid=${channel.uniqueID}`}
+              passHref
+              legacyBehavior
+            >
+              <a 
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  backgroundColor: '#ff6b6b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  marginLeft: '5px',
+                  padding: '10px 18px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#ff5252'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}
+              >
+                Upload
+              </a>
+            </Link>
+        )}
       </div>
     </div>
   )

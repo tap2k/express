@@ -89,7 +89,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           nameRef={nameRef} 
           //emailRef={emailRef} 
           locationRef={locationRef} 
-          //extUrlRef={extUrlRef} 
+          extUrlRef={extUrlRef} 
           textAlignmentRef={textAlignmentRef} 
         />
         <ButtonGroup>

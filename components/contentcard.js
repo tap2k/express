@@ -24,6 +24,7 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
         privateID={privateID}
         jwt={jwt}
         tagger
+        publisher
       />
       
       {(contentItem.title || contentItem.description || contentItem.name) && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
