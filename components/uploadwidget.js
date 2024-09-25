@@ -74,10 +74,10 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
         onDrop={handleDrop}
         style={{width: '100%', minHeight: '300px', backgroundColor: isDragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent', border: `2px solid ${isDragging ? '#007bff' : '#ddd'}`, display: 'flex', justifyContent: 'center', alignItems: 'center', ...props.style}}
       >
-        {uploadedFiles.length > 0 && !dontShowFiles ? (
+        {uploadedFiles?.length > 0 && !dontShowFiles ? (
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(120, Math.min(200, 750 / (uploadedFiles.length)))}px, 1fr))` : '100%',
+            gridTemplateColumns: multiple ? `repeat(auto-fill, minmax(${Math.max(120, Math.min(200, 750 / (uploadedFiles?.length)))}px, 1fr))` : '100%',
             gap: '12px', 
             width: '100%',
             height: '100%',
