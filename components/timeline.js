@@ -211,18 +211,19 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
         return newTime;
     }, [timelineRef, duration]);
 
-    const handleDrag = useCallback((e) => {
-        const clientX = e.clientX || e.touches[0].clientX;
-        const newTime = calculateTimelineClick({ clientX });
+    const handleDrag = useCallback((clientX) => {
+        if (!timelineRef.current) return;
+        const rect = timelineRef.current.getBoundingClientRect();
+        const position = (clientX - rect.left) / rect.width;
+        const newTime = Math.min(Math.max(position * duration, 0), duration);
+    
         if (currentHandleRef.current === 'start') {
-            if (!mediaRef?.current) return;
             const newStartTime = Math.min(newTime, endTimeRef.current - 1.0);
             startTimeRef.current = newStartTime;
             contentItem.start_time = newStartTime;
             contentItem.duration = endTimeRef.current - newStartTime;
         } else if (currentHandleRef.current === 'end') {
             const newEndTime = Math.max(newTime, startTimeRef.current + 1.0);
-            //if (!startTimeRef.current) startTimeRef.current = 0;
             endTimeRef.current = newEndTime;
             if (mediaRef?.current) {
                 pause();
@@ -232,54 +233,51 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
             contentItem.duration = newEndTime - contentItem.start_time;
         }
         forceUpdate({});
-    }, [calculateTimelineClick, mediaRef, pause, contentItem]);
+    }, [duration, mediaRef, pause, contentItem]);
 
-    const handleMouseDown = useCallback((handle) => (e) => {
+    const handleStart = useCallback((handle) => (e) => {
         e.preventDefault();
         e.stopPropagation();
         currentHandleRef.current = handle;
-
-        document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('mouseup', handleMouseUp);
+        
+        const handleMove = (moveEvent) => {
+            moveEvent.preventDefault();
+            const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX;
+            handleDrag(clientX);
+        };
+        
+        const handleEnd = () => {
+            currentHandleRef.current = null;
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            document.removeEventListener('touchend', handleEnd);
+        };
+        
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('mouseup', handleEnd);
+        document.addEventListener('touchend', handleEnd);
     }, [handleDrag]);
-
-    const handleMouseUp = useCallback(() => {
-        currentHandleRef.current = null;
-        document.removeEventListener('mousemove', handleDrag);
-        document.removeEventListener('mouseup', handleMouseUp);
-    }, [handleDrag]);
-
-    const handleTouchStart = useCallback((handle) => (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        currentHandleRef.current = handle;
-
-        document.addEventListener('touchmove', handleTouchMove, { passive: false });
-        document.addEventListener('touchend', handleTouchEnd);
-    }, []);
-
-    const handleTouchMove = useCallback((e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        handleDrag({ clientX: touch.clientX });
-    }, [handleDrag]);
-
-    const handleTouchEnd = useCallback(() => {
-        currentHandleRef.current = null;
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-    }, [handleTouchMove]);
 
     const handleTimelineClick = useCallback((e) => {
         if (currentHandleRef.current || !timelineRef.current || !mediaRef?.current) return;
         
         if (e.target.closest('.timeline-handle')) return;
-
+    
         const rect = timelineRef.current.getBoundingClientRect();
-        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        let clientX;
+        
+        if (e.type === 'touchstart') {
+            e.preventDefault(); // Prevent default only for touch events
+            clientX = e.touches[0].clientX;
+        } else {
+            clientX = e.clientX;
+        }
+    
         const clickPosition = (clientX - rect.left) / rect.width;
         const clickTime = clickPosition * duration;
-
+    
         if (clickTime >= startTimeRef.current && clickTime <= endTimeRef.current) {
             mediaRef.current.currentTime = clickTime;
             currentTimeRef.current = clickTime;
@@ -319,7 +317,8 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
             borderRadius: '5px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            touchAction: 'none'
         },
         currTimeStyle: {
             position: 'absolute',
@@ -355,8 +354,8 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
             }} />
             {(privateID || jwt) && <div
                 className="timeline-handle"
-                onMouseDown={handleMouseDown('start')}
-                onTouchStart={handleTouchStart('start')}
+                onMouseDown={handleStart('start')}
+                onTouchStart={handleStart('start')}
                 style={{...styles.handleStyle, left: `${(startTimeRef.current / duration) * 100}%`}}
             >
                 <FaGripLinesVertical color="white" size={12} />
@@ -366,8 +365,8 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
             </div>}
             {(privateID || jwt) && <div
                 className="timeline-handle"
-                onMouseDown={handleMouseDown('end')}
-                onTouchStart={handleTouchStart('end')}
+                onMouseDown={handleStart('end')}
+                onTouchStart={handleStart('end')}
                 style={{...styles.handleStyle, left: `calc(${(endTimeRef.current / duration) * 100}% - 20px)`}}
             >
                 <FaGripLinesVertical color="white" size={12} />
