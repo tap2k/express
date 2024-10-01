@@ -57,7 +57,7 @@ export default function ContentInputs({ contentItem, titleRef, nameRef, descript
         <StyledInput
           type="text"
           innerRef={extUrlRef}
-          placeholder="Enter URL (youtube, vimeo, dropbox, link)"
+          placeholder="Enter URL (google photos, youtube, vimeo, dropbox)"
           defaultValue={contentItem?.ext_url}
         />
       )}
