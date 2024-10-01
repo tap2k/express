@@ -5,25 +5,33 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
 {
     if (!title && !url) return null;
 
+    const textOutlineStyle = {
+        textShadow: `
+            -1px -1px 0 #333,  
+             1px -1px 0 #333,
+            -1px  1px 0 #333,
+             1px  1px 0 #333
+        `,
+        color: '#fff'
+    };
+
     const captionStyleBase = {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: foregroundColor ? foregroundColor : 'rgba(150,150,150,0.4)',
-        color: 'rgba(255,255,255,0.9)',
         borderRadius: '10px',
-        padding: '20px',
-        backdropFilter: 'blur(5px)',
+        padding: '30px 50px',
+        backdropFilter: 'blur(10px)',
         width: 'max-content',
         maxWidth: '80%',
         boxSizing: 'border-box',
         textAlign: 'center',
-        pointerEvents: 'none',
-        whiteSpace: 'normal',
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
         mixBlendMode: inverted ? 'difference' : 'normal',
+        pointerEvents: 'none',
         ...props.style
     };
     
@@ -58,21 +66,11 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
     const linkStyleTop = { ...linkStyleBase, top: 'clamp(50px, 2.5vh, 120px)' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
-    const textOutlineStyle = {
-        textShadow: `
-            -1px -1px 0 #333,  
-             1px -1px 0 #333,
-            -1px  1px 0 #333,
-             1px  1px 0 #333
-        `,
-        color: '#fff'
-    };
-    
     const titleStyle = {
         fontSize: size === "small" ? '18px' : 
                   size === "big" ? 'clamp(48px, 6vh, 64px)' : 
                   'clamp(24px, 4vh, 48px)',
-        lineHeight: size === "big" ? 1.1 : 1.2,
+        lineHeight: size === "big" ? 1.2 : 1.3,
         fontWeight: 'bold',
         ...textOutlineStyle
     };
@@ -85,22 +83,20 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
     };
     
     const nameStyle = {
-        fontSize: size === "small" ? '18px' : 
-                    size === "big" ? 'clamp(20px, 3.5vh, 28px)' : 
-                    'clamp(18px, 2.5vh, 24px)',
+        fontSize: size === "big" ? 'clamp(20px, 3.5vh, 28px)' : 'clamp(18px, 2.5vh, 24px)',
         lineHeight: size === "big" ? 1.2 : 1.3,
         textAlign: 'right',
         marginTop: '25px',
         ...textOutlineStyle
-    };
+    }
 
     return (
         <>
             {(title || subtitle) && (
                 <div style={captionStyle}>
                     {title && <div style={titleStyle}>{title}</div>}
-                    {subtitle && !size === "small" && <div style={subtitleStyle}>{subtitle}</div>}
-                    {name && <div style={nameStyle}>{name}</div>}
+                    {subtitle && !size === "small" && textAlignment === "center" && <div style={subtitleStyle}>{subtitle}</div>}
+                    {name && !size === "small" && textAlignment === "center" && <div style={nameStyle}>{name}</div>}
                 </div>
             )}
             {url && !(size === "small") && !isMediaFile(url) && (

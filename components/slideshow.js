@@ -224,24 +224,25 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      backgroundColor: channel.picture?.url ? '#32323266' : channel.foreground_color ? channel.foreground_color : '#32323200',
+      backgroundColor: channel.picture?.url ? 'rgba(100,100,100,0.4)' : channel.foreground_color ? channel.foreground_color : 'rgba(50, 50, 50, 0)',
       borderRadius: '20px',
-      padding: '50px',
-      backdropFilter: 'blur(5px)',
+      padding: '30px 70px',
+      backdropFilter: 'blur(15px)',
       width: 'max-content',
       maxWidth: '80%',
+      minWidth: '30%',
+      boxSizing: 'border-box',
       textAlign: 'center',
       overflowWrap: 'break-word',
       wordWrap: 'break-word',
-      hyphens: 'auto',
-      minWidth: '200px'
+      hyphens: 'auto'
   };
 
   const titleStyle = {
-      fontSize: thumbnail ? '24px' : 'clamp(32px, 6vh, 64px)',
-      lineHeight: '1.1',
-      fontWeight: 'bold',
-      ...textOutlineStyle
+    fontSize: thumbnail ? '24px' : 'clamp(32px, 4.5vh, 64px)',
+    lineHeight: '1.2',
+    fontWeight: 'bold',
+    ...textOutlineStyle
   };
 
   const descriptionStyle = {
@@ -249,7 +250,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
       lineHeight: '1.2',
       marginTop: '10px',
       ...textOutlineStyle
-  };
+  };  
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
