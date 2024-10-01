@@ -108,8 +108,8 @@ export default function MyReels ({ channels, user, jwt }) {
                             thumbnail /> : 
                             <Slideshow 
                               channel={channel} 
-                              width={200} 
-                              height={250} 
+                              width={300} 
+                              height={400} 
                               buttons 
                               thumbnail
                               hideTitle
