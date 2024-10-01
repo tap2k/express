@@ -62,7 +62,7 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
         mixBlendMode: inverted ? 'difference' : 'normal'
     };
     
-    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 8vh, 120px)' };
+    const linkStyleBottom = { ...linkStyleBase, bottom: 'clamp(70px, 8.5vh, 120px)' };
     const linkStyleTop = { ...linkStyleBase, top: 'clamp(50px, 2.5vh, 120px)' };
     const linkStyle = textAlignment === 'top' ? linkStyleBottom : linkStyleTop;
 
