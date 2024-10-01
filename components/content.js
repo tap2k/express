@@ -77,8 +77,8 @@ export function getMediaInfo(contentItem, thumbnail) {
     if (type === 'video/ogg' || type === 'video/mp4' || type === 'video/webm')
       videotype = type;
 
-    if (type.startsWith("image") && thumbnail && contentItem.mediafile?.formats?.large?.url)
-      url = getMediaURL() + contentItem.mediafile.formats.large.url;
+    //if (type.startsWith("image") && thumbnail && contentItem.mediafile?.formats?.large?.url)
+    //url = getMediaURL() + contentItem.mediafile.formats.large.url;
 
     if (type && (type.startsWith("video") || type.startsWith("image") || type.startsWith("audio")))
       return { url, type, videotype };
