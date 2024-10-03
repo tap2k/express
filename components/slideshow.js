@@ -11,6 +11,7 @@ import ItemControls from "./itemcontrols"
 import FullImage from "./fullimage";
 import Content, { getMediaInfo } from "./content";
 import Uploader from "./uploader";
+//import FileUploader from "./uploader";
 //import SlideButton from "./slidebutton";
 
 const defaultInterval = 5000;

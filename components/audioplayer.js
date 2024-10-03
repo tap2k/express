@@ -152,7 +152,8 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         position: 'relative',
         width,
         height,
-        minHeight: '200px',
+        minHeight: '150px',
+        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         ...props.style

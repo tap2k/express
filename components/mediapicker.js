@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import mime from 'mime-types';
 import { ButtonGroup, StyledButton } from './recorderstyles';
 import { imageOptions, audioOptions, colorOptions } from './fileoptions';
 import AudioGrid from './audiogrid';
@@ -29,7 +30,11 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
     if (setUploadedFiles)
       setUploadedFiles([]);
     if (setDeleteMedia)
-      setDeleteMedia(true);
+    {
+      const mimeType = mime.lookup(mediaUrl);
+      if (mimeType && mimeType.startsWith("image"))
+        setDeleteMedia(true);
+    }
   }, [selectedBackgroundColor]);
 
   return (

@@ -9,6 +9,7 @@ import saveChannel from "../hooks/savechannel";
 import getMediaURL from "../hooks/getmediaurl";
 import { MenuButton } from '../components/recorderstyles';
 import Uploader from "../components/uploader";
+//import FileUploader from "../components/fileuploader";
 import EmailModal from './emailmodal'; 
 
 const CircularMenuButton = styled(MenuButton)`
