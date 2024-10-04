@@ -152,15 +152,13 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
         position: 'relative',
         width,
         height,
-        minHeight: '150px',
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         ...props.style
       }} 
     >
       {oscilloscope && (
-        <div style={{ flex: 1, position: 'relative', paddingTop: '56.25%' }}>
+        <div style={{ flex: 1, position: 'relative', minHeight: '150px', paddingTop: '56.25%' }}>
           <canvas 
             ref={canvasRef} 
             style={{

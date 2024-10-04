@@ -217,7 +217,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
           src={url} 
           width={width} 
           height={height} 
-          cover={cover}
+          //cover={cover}
           controls={controls}
           style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
         />
