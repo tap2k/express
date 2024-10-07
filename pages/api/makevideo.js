@@ -8,7 +8,7 @@ async function processVideoAndSendEmail(channelid, email, mvcurl) {
     try {
         const url = `${baseUrl}/mvc_video`;
         //const resp = await axios.post(url, {
-        const resp = axios.post(url, {
+        axios.post(url, {
             channelid: channelid,
             url: mvcurl,
             email: email
