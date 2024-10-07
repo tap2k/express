@@ -7,12 +7,13 @@ async function processVideoAndSendEmail(channelid, email, mvcurl) {
 
     try {
         const url = `${baseUrl}/mvc_video`;
-        //const resp = await axios.post(url, {
-        axios.post(url, {
+        const resp = await axios.post(url, {
+        //axios.post(url, {
             channelid: channelid,
             url: mvcurl,
             email: email
-        }, {timeout: 3600000});
+        });
+        //}, {timeout: 3600000});
         
         /*const data = resp.data;
         const videourl = data["video_url"];
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
         }
 
         // Send immediate response
-        res.status(202).json({ message: 'Request accepted, processing started' });
+        //res.status(202).json({ message: 'Request accepted, processing started' });
         const mvcurl = process.env.NEXT_PUBLIC_STRAPI_HOST ? process.env.NEXT_PUBLIC_STRAPI_HOST : "http://localhost:1337";
 
         // Continue processing in the background
@@ -55,6 +56,8 @@ export default async function handler(req, res) {
             console.error('Background processing error:', error);
             setError(error);
         });
+
+        res.status(202).json({ message: 'Request accepted, processing started' });
     } catch (error) {
         console.error('Handler error:', error);
         setError(error);
