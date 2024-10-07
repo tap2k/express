@@ -221,6 +221,11 @@ export function Timeline({ contentItem, mediaRef, player, interval, pause, durat
             const newStartTime = Math.min(newTime, endTimeRef.current - 1.0);
             startTimeRef.current = newStartTime;
             contentItem.start_time = newStartTime;
+            if (mediaRef?.current) {
+                pause();
+                mediaRef.current.currentTime = newStartTime;
+                currentTimeRef.current = newStartTime;
+            }
             contentItem.duration = endTimeRef.current - newStartTime;
         } else if (currentHandleRef.current === 'end') {
             const newEndTime = Math.max(newTime, startTimeRef.current + 1.0);
