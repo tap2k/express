@@ -7,12 +7,14 @@ async function processVideoAndSendEmail(channelid, email, mvcurl) {
 
     try {
         const url = `${baseUrl}/mvc_video`;
-        const resp = await axios.post(url, {
+        //const resp = await axios.post(url, {
+        const resp = axios.post(url, {
             channelid: channelid,
-            url: mvcurl
+            url: mvcurl,
+            email: email
         }, {timeout: 3600000});
         
-        const data = resp.data;
+        /*const data = resp.data;
         const videourl = data["video_url"];
 
         const subject = "EXPRESS VIDEO";
@@ -20,7 +22,7 @@ async function processVideoAndSendEmail(channelid, email, mvcurl) {
         const body = `Your video is ready. Please access it at ${videourl}`;
         await sendEmail(subject, body, recipient);
 
-        console.log('Video processed and email sent successfully');
+        console.log('Video processed and email sent successfully');*/
     } catch (error) {
         console.error('Error in background processing:', error);
         setError(error);
