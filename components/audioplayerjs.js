@@ -164,6 +164,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
     <div 
       ref={containerRef}
       style={{
+        position: 'relative',
         width,
         height,
         display: 'flex',
@@ -172,7 +173,7 @@ export default function AudioPlayer({ src, width, height, oscilloscope, controls
       }} 
     >
       {oscilloscope && (
-        <div style={{ flex: 1, position: 'relative', minHeight: '200px', paddingTop: '56.25%' }}>
+        <div style={{ flex: 1, position: 'relative', minHeight: '150px', paddingTop: '56.25%' }}>
           <canvas 
             ref={canvasRef} 
             style={{

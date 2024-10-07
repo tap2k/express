@@ -131,7 +131,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
             <FaArrowRight size={iconSize} />
           </IconButton>
         </> }
-        { (type.startsWith("image") || type.startsWith("text")) && <IconButton 
+        { (type.startsWith("image") || type.startsWith("text") || !type) && <IconButton 
           onClick={() => {
             setIsVoiceModalOpen(true);
           }} 
