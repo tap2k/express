@@ -129,7 +129,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
 
   const copyUrlToClipboard = () => {
     const baseurl = new URL(window.location.href);
-    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${privateID ? 0 : currSlide}`;  
+    const url = `${baseurl.origin}${baseurl.pathname}?channelid=${channel.uniqueID}&currslide=${currSlide}`;  
     navigator.clipboard.writeText(url)
       .then(() => alert('URL copied to clipboard!'))
       .catch(err => console.error('Failed to copy URL: ', err));

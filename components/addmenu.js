@@ -101,7 +101,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   return (
     <>
       <div style={containerStyle}>
-        { jwt && download && false && <CircularMenuButton onClick={handleSaveChannel} >
+        { jwt && download && <CircularMenuButton onClick={handleSaveChannel} >
           <FaSave  />
         </CircularMenuButton> }
         { jwt && download && <CircularMenuButton onClick={handleDownload}>

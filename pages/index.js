@@ -17,7 +17,7 @@ export default ({ user, jwt, channels }) => {
 }
 
 export const getServerSideProps = async (ctx) => {
-  const cookies = nookies.get(ctx);    
+  const cookies = nookies.get(ctx);  
   if (!cookies?.jwt)
   {
     let channels = await getPublicChannels();
