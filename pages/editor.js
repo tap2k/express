@@ -68,9 +68,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        let user = null;
-        if (cookies?.jwt)
-            user = await getUser(cookies.jwt) || null;
+        const user = await getUser(jwt);
         const channel = await getChannel({ channelID: channelid, jwt: jwt, edit: true });
         
         if (!channel) {

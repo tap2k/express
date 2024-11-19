@@ -5,6 +5,11 @@ import logout from "../hooks/logout";
 import { MenuButton } from './recorderstyles';
 
 export default function LoginButton({ jwt, ...props }) {
+
+  // TODO: This is hacky
+  if (process.env.NEXT_PUBLIC_BASE_URL.toLowerCase().includes('ux4'))
+    return;
+
   const router = useRouter();
 
   const handleLogoutClick = async (e) => {

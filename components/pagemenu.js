@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaPaperclip, FaFilm, FaMap, FaTh, FaImages, FaHome, FaShareAlt } from 'react-icons/fa';
+import { FaFilm, FaMap, FaTh, FaImages, FaHome, FaShareAlt } from 'react-icons/fa';
 import setError from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 

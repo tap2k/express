@@ -3,7 +3,9 @@ import { isMediaFile } from './content';
 
 export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
 {
-    if (!title && !url) return null;
+    // TODO: What about produce links?
+    // if (!title && !url) return null;
+    if (!title) return null;
 
     const textOutlineStyle = {
         textShadow: `

@@ -45,12 +45,13 @@ export default function MyReels ({ channels, user, jwt }) {
       router.push(`/editor?channelid=${newChannel.uniqueID}`);
   };
 
+  // TODO: hacky with supabase username hiding
   return (
     <Container className="py-3">
       {user && <Row className="mb-4 p-2 align-items-center">
         <Col>
         <div className="d-flex justify-content-between align-items-center">
-          <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.username} || {user.email}</h5>
+          <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}</h5>
           <button
             onClick={handleAddChannel}
             className="btn btn-primary btn-sm d-flex align-items-center"

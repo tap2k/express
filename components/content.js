@@ -45,7 +45,9 @@ export function getMediaInfo(contentItem, thumbnail) {
     return { url: "", type: "" };
 
   let url = contentItem.mediafile?.url;
-  if (!url)
+  if (url)
+    url = getMediaURL() + url;
+  else
     url = contentItem.ext_url;
 
   if (url)
@@ -68,8 +70,6 @@ export function getMediaInfo(contentItem, thumbnail) {
         url = url.substring(0, url.length - 5);
       url = url.replace("https://www.dropbox.com", "https://dl.dropboxusercontent.com");
     }
-    else
-      url = getMediaURL() + url;
 
     const type = mime.lookup(url);
 
