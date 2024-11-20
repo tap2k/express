@@ -116,10 +116,11 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
   };
 
   let mediaElement;
+  // TODO: Oscilloscope + FullImage dont work right together
   if (type.startsWith("audio")) {
     mediaElement = (
       <>
-        { contentItem.title && 
+        { contentItem.title && false &&
           <FullImage 
             width={width} 
             height={height} 
@@ -135,7 +136,7 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
             setPlayer={setPlayer}
             mediaRef={mediaRef}
             style={{backgroundColor: contentItem.background_color ? contentItem.background_color : 'black'}}
-            oscilloscope={!contentItem.title}
+            oscilloscope={true || !contentItem.title}
           />
       </>
     );
