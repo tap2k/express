@@ -4,10 +4,10 @@ import getBaseURL from "../hooks/getbaseurl";
 import logout from "../hooks/logout";
 import { MenuButton } from './recorderstyles';
 
-export default function LoginButton({ jwt, ...props }) {
+export default function LoginButton({ user, jwt, ...props }) {
 
   // TODO: This is hacky
-  if (process.env.NEXT_PUBLIC_BASE_URL.toLowerCase().includes('ux4'))
+  if (user?.provider === "supabase")
     return;
 
   const router = useRouter();

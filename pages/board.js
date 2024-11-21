@@ -2,12 +2,13 @@ import { useState } from 'react';
 import nookies from 'nookies';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
+import getUser from "../hooks/getuser";
 import AddMenu from "../components/addmenu";
 import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Board from "../components/board";
 
-export default ({ channel, jwt }) => {
+export default ({ channel, user, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -37,6 +38,7 @@ export default ({ channel, jwt }) => {
                 <Banner 
                     channel={channel}
                     foregroundColor={!channel.picture?.url && channel.foreground_color}
+                    user={user}
                     jwt={jwt}
                 />
                 <Board 
@@ -53,6 +55,7 @@ export async function getServerSideProps(ctx) {
     let { channelid, edit } = ctx.query;
     const cookies = nookies.get(ctx);
     const jwt = cookies?.jwt || null;
+    const user = jwt ? await getUser(jwt) : null;
 
     try {
         // TODO: Hack for testing
@@ -70,7 +73,8 @@ export async function getServerSideProps(ctx) {
         return { 
             props: { 
                 channel: channel,
-                jwt: channel.canedit && edit ? jwt : null
+                jwt: channel.canedit && edit ? jwt : null,
+                user: user
             } 
         };
     } catch (err) {

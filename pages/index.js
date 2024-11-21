@@ -10,7 +10,7 @@ export default ({ user, jwt, channels }) => {
 
   return (
     <RecorderWrapper>
-      <BannerTwo jwt={jwt} />
+      <BannerTwo user={user} jwt={jwt} />
       <MyReels channels={channels} user={user} jwt={jwt} />
     </RecorderWrapper>
   )

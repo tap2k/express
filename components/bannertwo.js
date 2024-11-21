@@ -2,7 +2,7 @@ import React from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import LoginButton from './loginbutton';
 
-export default function BannerTwo({ jwt, nologin }) {
+export default function BannerTwo({ user, jwt, nologin }) {
     return (
         <Navbar style={{ 
             backgroundColor: 'rgba(26, 95, 122, 0.9)', 
@@ -35,7 +35,7 @@ export default function BannerTwo({ jwt, nologin }) {
                 top: '50%',
                 transform: 'translateY(-50%)'
             }}>
-                <LoginButton jwt={jwt} />
+                <LoginButton user={user} jwt={jwt} />
             </div> }
         </Navbar>
     );

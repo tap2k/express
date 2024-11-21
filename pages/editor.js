@@ -8,7 +8,7 @@ import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
-export default ({ channel, jwt, user }) => {
+export default ({ channel, user, jwt }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -38,8 +38,8 @@ export default ({ channel, jwt, user }) => {
                 <Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}
-                    jwt={jwt}
                     user={user}
+                    jwt={jwt}
                 />
                 <Wall 
                     channel={channel}
