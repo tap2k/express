@@ -6,9 +6,10 @@ import { MenuButton } from './recorderstyles';
 
 export default function LoginButton({ user, jwt, ...props }) {
 
+  let uxme = false;
   // TODO: This is hacky
   if (user?.provider === "supabase")
-    return;
+    uxme = true;
 
   const router = useRouter();
 
@@ -20,14 +21,16 @@ export default function LoginButton({ user, jwt, ...props }) {
     }
   };
 
+  let link = uxme ? "http://dev.ux4.me/admin" : jwt ? "#" : getBaseURL() + "/api/connect/google";
+
   return (
     <div {...props}>
       {/*<Link href="/login">*/}
-      <a href={jwt ? "#" : getBaseURL() + "/api/connect/google"} >
+      <a href={link} >
         <MenuButton
-          onClick={jwt ? handleLogoutClick : null}
+          onClick={(jwt && !uxme) ? handleLogoutClick : null}
         >
-          {jwt ? "Logout"
+          {uxme ? "UX4ME" : jwt ? "Logout"
             : "Login"
           }
         </MenuButton> 
