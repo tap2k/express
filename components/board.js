@@ -5,12 +5,10 @@ import Masonry from 'react-masonry-css';
 import updateSubmission from '../hooks/updatesubmission';
 import setError from '../hooks/seterror';
 import ContentCard from './contentcard';
-import Zoomed from './zoomed';
 
 export default function Board({ channel, privateID, jwt, ...props }) {
   const [contents, setContents] = useState(channel.contents);
   const [prevContents, setPrevContents] = useState([...channel.contents]);
-  const [zoomedContent, setZoomedContent] = useState(null);
   const router = useRouter();
 
   const breakpointColumnsObj = {
@@ -59,15 +57,6 @@ export default function Board({ channel, privateID, jwt, ...props }) {
     }
   };
 
-  // TODO: Get this to work
-  const handleContentClick = (contentItem) => {
-    //setZoomedContent(contentItem);
-  };
-
-  const handleCloseZoom = () => {
-    setZoomedContent(null);
-  };
-
   return (
     <>
       <DragArea>
@@ -106,9 +95,6 @@ export default function Board({ channel, privateID, jwt, ...props }) {
           `}</style>
         </div>
       </DragArea>
-      {zoomedContent && (
-        <Zoomed contentItem={zoomedContent} onClose={handleCloseZoom} />
-      )}
     </>
   );
 }
