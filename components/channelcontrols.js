@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useRef, useEffect } from "react";
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
-import { FaEdit, FaTrash, FaImage, FaMusic, FaUserPlus, FaTags } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaImage, FaMusic, FaUserPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import updateChannel from '../hooks/updatechannel';
@@ -11,7 +11,6 @@ import { IconButton } from './recorderstyles';
 import ChannelInputs from "./channelinputs";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
-import TagEditor from './tageditor';
 
 export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row" }) {
   const [progress, setProgress] = useState(0);
@@ -27,7 +26,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   const [selectedAudio, setSelectedAudio] = useState(null);
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+
   const titleRef = useRef();
   const subtitleRef = useRef();
   const emailRef = useRef();
@@ -42,14 +41,14 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
 
   useEffect(() => {
     if (setIsModalOpen)
-      setIsModalOpen(isImageModalOpen || isAudioModalOpen || isChannelModalOpen || isUserModalOpen || isTagModalOpen)
+      setIsModalOpen(isImageModalOpen || isAudioModalOpen || isChannelModalOpen || isUserModalOpen)
     setUploading(false);
     setDeletePic(false);
     setSelectedImage(null);
     setSelectedAudio(null);
     setUploadedFiles([]);
     setProgress(0);
-  }, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isUserModalOpen, isTagModalOpen]);
+  }, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isUserModalOpen]);
 
   const closeBtn = (toggle) => (
     <button className="close" onClick={toggle}>&times;</button>
@@ -123,11 +122,6 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           >
           <FaUserPlus size={iconSize} />
         </IconButton> }
-        { channel.tags?.length > 0 && <IconButton
-            onClick={() => setIsTagModalOpen(true)}
-            >
-            <FaTags size={iconSize} />
-        </IconButton> }
         <IconButton
             onClick={() => {
                 setIsChannelModalOpen(true);
@@ -199,19 +193,5 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
       </ModalBody>
     </Modal>
 
-    <Modal isOpen={isTagModalOpen} toggle={() => setIsTagModalOpen(false)}>
-      <ModalHeader close={closeBtn(() => setIsTagModalOpen(false))}></ModalHeader>
-      <ModalBody>
-        <TagEditor
-          tags={channel.tags}
-          privateID={privateID}
-          jwt={jwt}
-          onSave={() => {
-            setIsTagModalOpen(false);
-            router.replace(router.asPath);
-          }}
-        />
-      </ModalBody>
-    </Modal>
-  </>
+</>
 );};

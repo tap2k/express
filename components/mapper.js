@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback } from 'react';
-import { Input } from "reactstrap";
-import { FaUndo } from 'react-icons/fa';
+import { Input, Modal, ModalHeader, ModalBody } from "reactstrap";
+import { FaUndo, FaTags } from 'react-icons/fa';
+import TagEditor from './tageditor';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -20,6 +21,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   const [currSlide, setCurrSlide] = useState(-1);
   //  TODO: to make sure it loads
   const [mapKey, setMapKey] = useState(0);
+  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const router = useRouter();
 
   const markerRefs = [];
@@ -129,29 +131,59 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
 
   return (
     <div {...props}>
-      {tilesets && tilesets.length && (privateID || jwt) && <Input 
-        type="select" 
-        defaultValue={channel.tileset?.id}
-        onChange={handleTilesetChange}
-        style={{
-          position: 'absolute',
-          top: '7px',
-          right: '10px',
-          zIndex: 10,
-          width: '95px',
-          height: '40px',
-          backgroundColor: 'rgba(92, 131, 156, 0.6)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-        }}
-      >
-        {tilesets.map(tileset => (
-          <option key={tileset.id} value={tileset.id}>{tileset.name}</option>
-        ))}
-      </Input>}
+      {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
+        {channel.tags?.length > 0 && <button
+          onClick={() => setIsTagModalOpen(true)}
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(92, 131, 156, 0.6)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <FaTags size={18} />
+        </button>}
+        {tilesets && tilesets.length > 0 && <Input
+          type="select"
+          defaultValue={channel.tileset?.id}
+          onChange={handleTilesetChange}
+          style={{
+            width: '95px',
+            height: '40px',
+            backgroundColor: 'rgba(92, 131, 156, 0.6)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          {tilesets.map(tileset => (
+            <option key={tileset.id} value={tileset.id}>{tileset.name}</option>
+          ))}
+        </Input>}
+      </div>}
+      <Modal isOpen={isTagModalOpen} toggle={() => setIsTagModalOpen(false)}>
+        <ModalHeader toggle={() => setIsTagModalOpen(false)}></ModalHeader>
+        <ModalBody>
+          <TagEditor
+            tags={channel.tags}
+            privateID={privateID}
+            jwt={jwt}
+            onSave={() => {
+              setIsTagModalOpen(false);
+              router.replace(router.asPath, undefined, { scroll: false });
+            }}
+          />
+        </ModalBody>
+      </Modal>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
         <MarkerClusterGroup
