@@ -2,17 +2,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
-import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import deleteChannel from '../hooks/deletechannel';
 import addChannel from '../hooks/addchannel';
 import Content from './content';
 import Slideshow from './slideshow';
+import EditorTable from './editortable';
 
 export default function MyReels ({ channels, user, jwt }) {
 
   const [uploading, setUploading] = useState(false);
+  const [editorChannel, setEditorChannel] = useState(null);
   const router = useRouter();
 
   const handleDeleteChannel = (uniqueID) => {
@@ -81,14 +84,22 @@ export default function MyReels ({ channels, user, jwt }) {
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />
                     </Link>
-                    { (user.id == channel.owner.id) && <button 
+                    { (user.id == channel.owner.id) && <button
+                        onClick={() => setEditorChannel(channel)}
+                        className="btn btn-outline-primary m-1"
+                        style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }}
+                        title="Manage Editors"
+                      >
+                        <FaUserPlus className="me-1" />
+                    </button> }
+                    { (user.id == channel.owner.id) && <button
                         onClick={() => handleDeleteChannel(channel.uniqueID)}
                         className="btn btn-outline-primary m-1"
-                        style={{ 
-                          flexGrow: 1, 
+                        style={{
+                          flexGrow: 1,
                           color: '#d9534f',
                           borderColor: '#d9534f',
-                          borderRadius: '10px' 
+                          borderRadius: '10px'
                         }}
                         disabled={uploading}
                         >
@@ -97,9 +108,9 @@ export default function MyReels ({ channels, user, jwt }) {
                     {false && <Link href={`/upload?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#ff9800', borderColor: '#ff9800', borderRadius: '10px' }} title="Upload">
                       <FaUpload className="me-1" />
                     </Link>}
-                    <Link href={`/reel?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }} title="Share Project">
+                    {/* <Link href={`/reel?channelid=${channel.uniqueID}`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }} title="Share Project">
                       <FaShare className="me-1" />
-                    </Link>
+                    </Link> */}
                   </div> : 
                       channel.contents?.length ? <div style={{position: 'relative'}}>
                           {true ? <Content 
@@ -123,6 +134,13 @@ export default function MyReels ({ channels, user, jwt }) {
           </Col>
         ))}
       </Row>
+
+      <Modal isOpen={!!editorChannel} toggle={() => setEditorChannel(null)}>
+        <ModalHeader toggle={() => setEditorChannel(null)}>Project Editors</ModalHeader>
+        <ModalBody>
+          {editorChannel && <EditorTable channel={editorChannel} maxHeight={450} jwt={jwt} />}
+        </ModalBody>
+      </Modal>
     </Container>
   );
 };

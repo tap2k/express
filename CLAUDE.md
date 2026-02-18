@@ -17,6 +17,10 @@ Frontend (this repo)          Backend (/Users/parikh/dev/mvcweb/strapi)
 
 **Data flow:** UI Components → Custom Hooks → Next.js API Routes → Strapi API → Database/File Storage
 
+### Sibling Client: Admin (`/Users/parikh/dev/mvcweb/admin`)
+
+A separate Next.js 13 app sharing the same Strapi backend and nearly identical tech stack. Admin is the full management interface (24 pages, 48 hooks) with deeper CRUD for channels, content, tags, and tilesets. Express is the lighter public-facing client. Features may exist in one but not the other — check the admin codebase when adding capabilities.
+
 ## Tech Stack
 
 - **Framework:** Next.js 13.5.5 (Pages Router, SSR via `getServerSideProps`)
