@@ -170,7 +170,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
         style={buttonStyle}
         disabled={updating}
       >
-        {channel ? 'Update Reel' : 'Make a New Reel'}
+        {channel ? 'Update Channel' : 'Make a New Channel'}
       </Button>
     </div>
   );

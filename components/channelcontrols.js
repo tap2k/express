@@ -55,8 +55,8 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
 
   const handleDeleteChannel = () => {
     confirmAlert({
-      title: 'Delete reel?',
-      message: 'Are you sure you want to delete this reel?',
+      title: 'Delete channel?',
+      message: 'Are you sure you want to delete this channel?',
       buttons: [
         {
           label: 'Yes',
@@ -148,7 +148,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           showTitleRef={showTitleRef} 
         />
         <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}}>
-          <b>Update Reel</b>
+          <b>Update Channel</b>
         </Button>
       </ModalBody>
     </Modal>
@@ -164,7 +164,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           color="success"
           style={{marginTop: '10px'}}
         >
-          <b>Update Reel</b>
+          <b>Update Channel</b>
         </Button>
       </ModalBody>
     </Modal>
@@ -180,7 +180,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           color="success"
           style={{marginTop: '10px'}}
         >
-          <b>Update Reel</b>
+          <b>Update Channel</b>
         </Button>
       </ModalBody>
     </Modal>

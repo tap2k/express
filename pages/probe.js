@@ -81,7 +81,7 @@ export default function Home({ jwt }) {
                     {channelID ? (
                         <div style={{width: '100%', maxWidth: '600px', margin: '0 auto', padding: '20px', textAlign: 'center'}}>
                             <p style={{fontSize: 'large', color: '#6c757d', marginBottom: '40px'}}>
-                                Your new reel <strong>{channelName}</strong> has been created. You can manage or share your reel using the links below
+                                Your new channel <strong>{channelName}</strong> has been created. You can manage or share your channel using the links below
                             </p>
                             <Card style={{...linkCardStyle, marginBottom: '20px'}}>
                                 <CardBody style={{padding: '15px'}}>
@@ -129,7 +129,7 @@ export default function Home({ jwt }) {
                 toggle={toggleEmailModal}
                 onSubmit={handleEmailSubmit}
                 headerText="Send Email"
-                bodyText="Your channel has been created successfully. Please enter your email address below to receive links to manage and view your reel."
+                bodyText="Your channel has been created successfully. Please enter your email address below to receive links to manage and view your channel."
             />
         </>
     );

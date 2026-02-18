@@ -17,8 +17,8 @@ export default function MyReels ({ channels, user, jwt }) {
 
   const handleDeleteChannel = (uniqueID) => {
     confirmAlert({
-      title: 'Delete reel?',
-      message: 'Are you sure you want to delete this reel?',
+      title: 'Delete channel?',
+      message: 'Are you sure you want to delete this channel?',
       buttons: [
         {
           label: 'Yes',

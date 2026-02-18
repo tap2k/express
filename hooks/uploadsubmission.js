@@ -105,7 +105,7 @@ export default async function uploadSubmission({ myFormData, contentID, title, d
 
       if (router.asPath.includes('upload') && response.data?.[0]?.channel?.public) {
         buttons.push({
-          label: 'Go to Reel',
+          label: 'Go to Channel',
           onClick: () => {
             const currentQuery = router.query;
             router.push({
