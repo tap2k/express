@@ -123,10 +123,11 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 ### Key Environment Variables
 - `NEXT_PUBLIC_STRAPI_HOST` - Strapi backend URL
 - `NEXT_PUBLIC_BASE_URL` - Frontend URL
-- `NEXT_PUBLIC_AI_ENABLED` - Toggle AI features
+- `NEXT_PUBLIC_CLOUD_STORAGE` - When set (truthy), media URLs are served directly from cloud storage (DigitalOcean Spaces, Backblaze B2, Supabase) instead of proxied through Strapi. Leave unset for local dev. See `hooks/getmediaurl.js`.
+- `NEXT_PUBLIC_AI_ENABLED` - Toggle AI features (ChatGPT + DALL-E)
 - `VIDEO_SERVER_URL` - Video generation service (`~/dev/mahabot/mahabot`)
 - `OPENAI_API_KEY` - OpenAI API key
-- `PRIVATE_SEED` - Secret for XOR channel ID encryption
+- `PRIVATE_SEED` - Secret for XOR channel ID encryption (must match Strapi backend)
 
 ## Important Notes
 
