@@ -91,6 +91,7 @@ export default function RegisterComponent({...props})
               type="submit"
               style={buttonStyle}
               disabled={updating}
+              title="Register"
             >
               Register
             </Button>
@@ -100,6 +101,7 @@ export default function RegisterComponent({...props})
                 type="submit"
                 style={buttonStyle}
                 disabled={updating}
+                title="Register with Google"
               >
                 Register with Google
               </Button>

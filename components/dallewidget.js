@@ -64,6 +64,7 @@ export default function DalleWidget({ selectedImage, setSelectedImage, generatin
                 onClick={handleDalleGeneration}
                 disabled={generating}
                 style={{ width: '100%' }}
+                title="Generate AI image"
             >
                 {generating ? 'Generating...' : 'Generate AI Image'}
             </StyledButton>

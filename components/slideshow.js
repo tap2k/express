@@ -254,7 +254,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
   };  
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
+    <button className="close" onClick={toggle} title="Close">&times;</button>
   );
 
   return (
@@ -268,16 +268,17 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
         transform: 'translateX(-50%)', 
         gap: '25px'
       }}>
-        { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle}>
+        { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle} title="Add content">
           <FaPlus />
         </button> }
-        <button onClick={toggleFullScreen} style={iconButtonStyle}>
+        <button onClick={toggleFullScreen} style={iconButtonStyle} title="Toggle fullscreen">
           <FaExpandArrowsAlt />
         </button>
-        <button onClick={togglePlayPause} style={iconButtonStyle}>
+        <button onClick={togglePlayPause} style={iconButtonStyle} title={isPlaying ? "Pause" : "Play"}>
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
-        <button 
+        <button
+          title="Download"
           onClick={async () => {
             if (showTitle && currSlide == 0) {
               await downloadURL(channel.picture?.url);
@@ -377,12 +378,12 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
             <SlideButton increment={1} style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
             </>*/
             buttons ? <>
-              <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle2, left: '1%'}}><FaChevronLeft /></ButtonBack>
-              <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle2, right: '1%'}}><FaChevronRight /></ButtonNext>
+              <ButtonBack key={1} className="hide-on-inactive" style={{...slideButtonStyle2, left: '1%'}} title="Previous slide"><FaChevronLeft /></ButtonBack>
+              <ButtonNext key={2} className="hide-on-inactive" style={{...slideButtonStyle2, right: '1%'}} title="Next slide"><FaChevronRight /></ButtonNext>
             </> :
             <>
-              <ButtonBack style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} />
-              <ButtonNext style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} />
+              <ButtonBack style={{left: 0, cursor: 'w-resize', ...slideButtonStyle}} title="Previous slide" />
+              <ButtonNext style={{right: 0, cursor: 'e-resize', ...slideButtonStyle}} title="Next slide" />
             </>
           )}
         </CarouselProvider>

@@ -126,11 +126,11 @@ export default function TagEditor({ tags, privateID, jwt, onSave }) {
           />
 
           <div style={{ display: 'flex', gap: '5px', marginTop: '20px' }}>
-            <Button onClick={handleSaveTag} block color="success">
+            <Button onClick={handleSaveTag} block color="success" title="Save tag">
               <b>Save Tag</b>
             </Button>
             {jwt && (
-              <Button onClick={confirmDeleteTag} block color="danger">
+              <Button onClick={confirmDeleteTag} block color="danger" title="Delete tag">
                 <b>Delete Tag</b>
               </Button>
             )}

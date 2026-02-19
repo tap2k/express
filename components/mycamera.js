@@ -238,6 +238,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
             <button
               onClick={startCountdown}
               disabled={countdown !== null || uploading}
+              title="Take photo"
               style={{
                 position: 'absolute',
                 bottom: '20px',
@@ -261,6 +262,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
             </button>
             {hasMultipleCameras && (
               <button onClick={handleFlipCamera}
+                title="Flip camera"
                 style={{
                   position: 'absolute',
                   top: '10px',
@@ -295,11 +297,12 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
       />
 
       <ButtonGroup style={{marginBottom: '10px' }}>
-        <StyledButton 
-          color="secondary" 
+        <StyledButton
+          color="secondary"
           size="lg"
-          onClick={handleRetake} 
+          onClick={handleRetake}
           disabled={!dataUri || uploading}
+          title="Retake photo"
         >
           Retake
         </StyledButton>
@@ -308,6 +311,7 @@ export default function MyCamera({ channelID, privateID, jwt, uploading, setUplo
           size="lg"
           onClick={handleUpload}
           disabled={!dataUri || uploading}
+          title="Submit photo"
         >
           Submit
         </StyledButton>

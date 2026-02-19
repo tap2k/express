@@ -53,30 +53,35 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
         <StyledButton
           color={activeComponent === 'upload' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('upload')}
+          title="Upload file"
         >
           <FaUpload />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'video' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('video')}
+          title="Record video"
         >
            <FaVideo />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'photo' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('photo')}
+          title="Take photo"
         >
           <FaCamera />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'audio' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('audio')}
+          title="Record audio"
         >
           <FaMicrophone />
         </StyledButton>
         <StyledButton
           color={activeComponent === 'card' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('card')}
+          title="Greeting card"
         >
           <FaFont />
         </StyledButton>

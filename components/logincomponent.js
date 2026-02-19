@@ -113,6 +113,7 @@ export default function LoginComponent({ loginPath }) {
           onClick={forgotPasswordMode ? forgotPassword : handleSubmit}
           style={buttonStyle}
           disabled={updating}
+          title={forgotPasswordMode ? "Reset password" : "Login"}
         >
           {forgotPasswordMode ? 'Reset Password' : 'Login'}
         </Button>
@@ -123,7 +124,7 @@ export default function LoginComponent({ loginPath }) {
           {forgotPasswordMode ? 'Back to Login' : 'Forgot Password'}
         </Button> */}
         {!forgotPasswordMode && <a href={getBaseURL() + "/api/connect/google"} >
-          <Button style={{...buttonStyle, marginTop: '5px'}} disabled={updating}>
+          <Button style={{...buttonStyle, marginTop: '5px'}} disabled={updating} title="Sign in with Google">
             Sign in with Google
           </Button>
         </a>}

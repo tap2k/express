@@ -51,7 +51,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   }, [isImageModalOpen, isAudioModalOpen, isChannelModalOpen, isUserModalOpen]);
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
+    <button className="close" onClick={toggle} title="Close">&times;</button>
   );
 
   const handleDeleteChannel = () => {
@@ -101,24 +101,27 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   return (
     <>
       <div style={iconBarStyle} className="hide-on-inactive">
-        <IconButton 
+        <IconButton
           onClick={() => {
               setIsAudioModalOpen(true);
-          }} 
+          }}
+          title="Change audio"
           >
           <FaMusic size={iconSize} />
         </IconButton>
-        <IconButton 
+        <IconButton
           onClick={() => {
               setIsImageModalOpen(true);
-          }} 
+          }}
+          title="Change image"
           >
           <FaImage size={iconSize} />
         </IconButton>
-        { channel.owned && <IconButton 
+        { channel.owned && <IconButton
           onClick={() => {
               setIsUserModalOpen(true);
-          }} 
+          }}
+          title="Manage editors"
           >
           <FaUserPlus size={iconSize} />
         </IconButton> }
@@ -126,11 +129,13 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
             onClick={() => {
                 setIsChannelModalOpen(true);
             }}
+            title="Edit channel"
             >
             <FaEdit size={iconSize} />
         </IconButton>
-        { channel.owned && jwt && <IconButton 
-            onClick={handleDeleteChannel} 
+        { channel.owned && jwt && <IconButton
+            onClick={handleDeleteChannel}
+            title="Delete channel"
             >
             <FaTrash size={iconSize} />
         </IconButton> }
@@ -148,7 +153,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           allowRef={allowRef} 
           showTitleRef={showTitleRef} 
         />
-        <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}}>
+        <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}} title="Update channel">
           <b>Update Channel</b>
         </Button>
       </ModalBody>
@@ -164,6 +169,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           block
           color="success"
           style={{marginTop: '10px'}}
+          title="Update channel"
         >
           <b>Update Channel</b>
         </Button>
@@ -180,6 +186,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
           block
           color="success"
           style={{marginTop: '10px'}}
+          title="Update channel"
         >
           <b>Update Channel</b>
         </Button>

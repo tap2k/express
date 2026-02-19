@@ -36,7 +36,7 @@ export default function EditorTable({ channel, maxHeight, jwt }) {
                 <tr key={editor.email}>
                   <td>{editor.email}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <Button color="link" onClick={() => myRemoveEditor(editor.email)} style={{ color: '#dc3545', padding: '0' }}>
+                    <Button color="link" onClick={() => myRemoveEditor(editor.email)} style={{ color: '#dc3545', padding: '0' }} title="Remove editor">
                       <FaTrash />
                     </Button>
                   </td>
@@ -54,7 +54,7 @@ export default function EditorTable({ channel, maxHeight, jwt }) {
           placeholder="Add editor email"
           style={{ flexGrow: 1, padding: '5px' }}
         />
-        <Button color="primary" onClick={addNewEditor} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <Button color="primary" onClick={addNewEditor} style={{ display: 'flex', alignItems: 'center', gap: '5px' }} title="Add editor">
           <FaPlus /> Add
         </Button>
       </div>

@@ -54,7 +54,7 @@ export default function GoogleCallback({ error, jwt }) {
         }}>
           {error}
         </p>
-        <Button 
+        <Button
           color="primary"
           onClick={() => router.push('/')}
           style={{
@@ -63,6 +63,7 @@ export default function GoogleCallback({ error, jwt }) {
             borderRadius: '8px',
             fontWeight: 'bold',
           }}
+          title="Return to home"
         >
           Return to Home Page
         </Button>

@@ -82,6 +82,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         onClick={handleUpload}
         block
         disabled={uploading}
+        title="Submit"
       >
         Submit
       </Button>

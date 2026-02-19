@@ -74,7 +74,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
   };
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
+    <button className="close" onClick={toggle} title="Close">&times;</button>
   );
 
   return (
@@ -94,18 +94,20 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
         />
         <ButtonGroup>
           {url && type.startsWith("image") && process.env.NEXT_PUBLIC_AI_ENABLED == "true" && (
-            <StyledButton 
-              onClick={generateCaption} 
-              color="secondary" 
+            <StyledButton
+              onClick={generateCaption}
+              color="secondary"
               disabled={updating}
+              title="Generate caption"
             >
               {updating ? 'Updating...' : 'Generate Caption'}
             </StyledButton>
           )}
-          <StyledButton 
-            onClick={handleSave} 
-            color="primary" 
+          <StyledButton
+            onClick={handleSave}
+            color="primary"
             disabled={updating}
+            title="Update slide"
           >
             {updating ? 'Updating...' : 'Update Slide'}
           </StyledButton>

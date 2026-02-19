@@ -15,7 +15,7 @@ export default function SlideButton({ increment, children, ...props }) {
   };
 
   return (
-    <button onClick={handleClick} {...props}>
+    <button onClick={handleClick} title={increment > 0 ? "Next slide" : "Previous slide"} {...props}>
       {children}
     </button>
   );

@@ -95,9 +95,10 @@ export default function AudioWidget({ onStop, mediaBlobUrl, setRecording, fileEx
   return (
     <>
       <ButtonGroup style={{marginBottom: '10px'}}>
-        <StyledButton 
-          color="primary" 
+        <StyledButton
+          color="primary"
           onClick={handleRecordingAction}
+          title={status === "recording" ? "Stop recording" : "Start recording"}
         >
           {status === "recording" ? "Stop" : "Start"}
         </StyledButton>

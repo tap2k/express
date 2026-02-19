@@ -102,6 +102,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
         onClick={handleUpload}
         block
         disabled={uploading || generating || (!selectedImage && !titleRef.current?.value)}
+        title="Submit greeting card"
       >
         Submit
       </Button>

@@ -276,8 +276,9 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
           </div>
         )}
         {hasMultipleCameras && status !== 'stopped' && (
-          <button 
+          <button
             onClick={flipCamera}
+            title="Flip camera"
             style={{
               position: 'absolute',
               top: '10px',
@@ -323,20 +324,22 @@ export default function VideoRecorder({ channelID, privateID, jwt, uploading, se
       />      
 
       <ButtonGroup style={{marginBottom: '10px' }}>
-        <StyledButton 
-          color="secondary" 
-          size="lg" 
-          onClick={startRecording} 
+        <StyledButton
+          color="secondary"
+          size="lg"
+          onClick={startRecording}
           disabled={status !== "stopped"}
+          title="Retake video"
         >
           Retake
         </StyledButton>
-        <StyledButton 
-          color="success" 
-          size="lg" 
-          block 
+        <StyledButton
+          color="success"
+          size="lg"
+          block
           onClick={handleUpload}
           disabled={status !== "stopped" || !blob || uploading}
+          title="Submit video"
         >
           {status === "recording" ? `Recording (${formatTime(recordingTime)})` : "Submit"}
         </StyledButton>

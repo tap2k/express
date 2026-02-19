@@ -116,7 +116,7 @@ export default function Home({ jwt }) {
                                 onChange={(e) => setChannelName(e.target.value)}
                                 style={{marginBottom: '10px'}}
                             />
-                            <Button color="primary" onClick={handleAddChannel} block>
+                            <Button color="primary" onClick={handleAddChannel} block title="Create channel">
                                 Create Channel
                             </Button>
                             {/*<ChannelEditor onSubmit={handleAddChannel} />*/}

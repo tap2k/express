@@ -29,6 +29,7 @@ export default function LoginButton({ user, jwt, ...props }) {
       <a href={link} >
         <MenuButton
           onClick={(jwt && !uxme) ? handleLogoutClick : null}
+          title={uxme ? "UX4ME" : jwt ? "Logout" : "Login"}
         >
           {uxme ? "UX4ME" : jwt ? "Logout"
             : "Login"

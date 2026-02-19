@@ -14,7 +14,7 @@ export default function EmailModal ({isOpen, onSubmit, toggle, headerText, bodyT
   };
 
   const closeBtn = (
-    <button className="close" onClick={toggle}>
+    <button className="close" onClick={toggle} title="Close">
       &times;
     </button>
   );
@@ -33,8 +33,8 @@ export default function EmailModal ({isOpen, onSubmit, toggle, headerText, bodyT
               />
           </ModalBody>
           <ModalFooter>
-              <Button color="primary" onClick={handleSubmit}>Submit</Button>
-              <Button color="secondary" onClick={toggle}>Cancel</Button>
+              <Button color="primary" onClick={handleSubmit} title="Submit">Submit</Button>
+              <Button color="secondary" onClick={toggle} title="Cancel">Cancel</Button>
           </ModalFooter>
         </Modal>
   );

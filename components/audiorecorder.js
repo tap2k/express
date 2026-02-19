@@ -93,12 +93,13 @@ export default function AudioRecorder({ channelID, privateID, jwt, uploading, se
         locationRef={locationRef} 
       />
       
-      <Button 
-        color="success" 
-        size="lg" 
-        block 
+      <Button
+        color="success"
+        size="lg"
+        block
         onClick={handleUpload}
         disabled={!blob || uploading || recording}
+        title="Submit recording"
       >
         Submit
       </Button>

@@ -41,21 +41,21 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
     <div {...props}>
       <ButtonGroup>
         {gallery && (
-          <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(true); setShowDalle(false); setShowUpload(false)}}>
+          <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(true); setShowDalle(false); setShowUpload(false)}} title="Gallery">
             Gallery
           </StyledButton>
         )}
         {dalle && process.env.NEXT_PUBLIC_AI_ENABLED === "true" && (
-          <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(true); setShowUpload(false)}}>
+          <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(true); setShowUpload(false)}} title="AI Image">
             AI Image
           </StyledButton>
         )}
         {setSelectedBackgroundColor && (
-          <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(false)}}>
+          <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(false)}} title="Colors">
             Colors
           </StyledButton>
         )}
-        {setUploadedFiles && <StyledButton color="primary" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(false); setShowUpload(true)}}>
+        {setUploadedFiles && <StyledButton color="primary" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(false); setShowUpload(true)}} title="Upload">
           Upload
         </StyledButton>}
       </ButtonGroup>

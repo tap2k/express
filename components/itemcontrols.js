@@ -112,56 +112,62 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
   };
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
+    <button className="close" onClick={toggle} title="Close">&times;</button>
   );
 
   return (
     <>
       <div style={iconBarStyle}>
-        { dragRef && <IconButton 
+        { dragRef && <IconButton
           ref={dragRef}
+          title="Drag to reorder"
         >
           <FaGripVertical size={iconSize} />
         </IconButton> }
         { moveSlide && <>
-          <IconButton onClick={() => moveSlide(-1)}>
+          <IconButton onClick={() => moveSlide(-1)} title="Move left">
             <FaArrowLeft size={iconSize} />
           </IconButton>
-          <IconButton onClick={() => moveSlide(1)}>
+          <IconButton onClick={() => moveSlide(1)} title="Move right">
             <FaArrowRight size={iconSize} />
           </IconButton>
         </> }
-        { (type.startsWith("image") || type.startsWith("text") || !type) && <IconButton 
+        { (type.startsWith("image") || type.startsWith("text") || !type) && <IconButton
           onClick={() => {
             setIsVoiceModalOpen(true);
-          }} 
+          }}
+          title="Add voiceover"
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && <IconButton 
+        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && <IconButton
           onClick={() => {
             setIsImageModalOpen(true);
-          }} 
+          }}
+          title="Change image"
         >
           <FaImage size={iconSize} />
         </IconButton> }
         <IconButton
           onClick={() => {
             setisEditModalOpen(true);
-          }} 
+          }}
+          title="Edit item"
         >
           <FaEdit size={iconSize} />
         </IconButton>
-        {publisher && <IconButton 
-          onClick={handlePublish} 
+        {publisher && <IconButton
+          onClick={handlePublish}
+          title={contentItem.publishedAt ? "Unpublish" : "Publish"}
         >
-          {contentItem.publishedAt ? 
-            <FaTimes size={iconSize} /> : 
+          {contentItem.publishedAt ?
+            <FaTimes size={iconSize} /> :
             <FaCheck size={iconSize} />
           }
         </IconButton>}
-        {jwt && <IconButton 
-          onClick={handleDelete} 
+        {jwt && <IconButton
+          onClick={handleDelete}
+          title="Delete item"
         >
           <FaTrash size={iconSize} />
         </IconButton>}
@@ -178,6 +184,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
             block
             color="success"
             style={{marginTop: '10px'}}
+            title="Update item"
           >
             <b>Update Item</b>
           </Button>

@@ -144,7 +144,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, combine, jwt,
         display: 'flex',
         justifyContent: 'flex-end',
       }}>
-        <button 
+        <button
           style={{
             backgroundColor: '#ff6b6b',
             color: 'white',
@@ -157,6 +157,7 @@ export default function TagSearch ({ channel, currTag, setCurrTag, combine, jwt,
             transition: 'all 0.2s ease',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           }}
+          title="Purge unused tags"
           onClick={confirmPurgeTags}
           onMouseEnter={(e) => e.target.style.backgroundColor = '#ff5252'}
           onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}

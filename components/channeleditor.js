@@ -169,6 +169,7 @@ export default function ChannelEditor({ channel, onSubmit }) {
         onClick={handleSubmit}
         style={buttonStyle}
         disabled={updating}
+        title={channel ? "Update channel" : "Create new channel"}
       >
         {channel ? 'Update Channel' : 'Make a New Channel'}
       </Button>

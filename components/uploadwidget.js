@@ -120,6 +120,7 @@ export default function UploadWidget({ mediaUrl, progress, uploadedFiles, setUpl
             <StyledButton
               color="secondary"
               onClick={() => fileInputRef.current.click()}
+              title="Select files"
             >
               Select Files
             </StyledButton>

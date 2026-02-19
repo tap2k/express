@@ -75,7 +75,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   }
 
   const closeBtn = (toggle) => (
-    <button className="close" onClick={toggle}>&times;</button>
+    <button className="close" onClick={toggle} title="Close">&times;</button>
   );
 
   const togglePlayPause = () => {
@@ -101,24 +101,24 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
   return (
     <>
       <div style={containerStyle}>
-        { jwt && download && <CircularMenuButton onClick={handleSaveChannel} >
+        { jwt && download && <CircularMenuButton onClick={handleSaveChannel} title="Save channel">
           <FaSave  />
         </CircularMenuButton> }
-        { jwt && download && <CircularMenuButton onClick={handleDownload}>
+        { jwt && download && <CircularMenuButton onClick={handleDownload} title="Download video">
           <FaDownload  />
         </CircularMenuButton> }
-        {channel.audiofile?.url && false && 
+        {channel.audiofile?.url && false &&
           <>
             <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />
-            <CircularMenuButton onClick={togglePlayPause}>
+            <CircularMenuButton onClick={togglePlayPause} title={isPlaying ? "Pause" : "Play"}>
                 {isPlaying ? (
                     <FaPause />
                 ) : (
                     <FaPlay />
                 )}
-            </CircularMenuButton> 
+            </CircularMenuButton>
           </> }
-        { (privateID || jwt || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)}>
+        { (privateID || jwt || channel.allowsubmissions) && <CircularMenuButton onClick={() => setIsUploadModalOpen(true)} title="Add content">
           <FaPlus />
         </CircularMenuButton> }
       </div>

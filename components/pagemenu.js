@@ -84,7 +84,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
   return (
       <div style={rowStyle} className="hide-on-inactive" {...props}>
         <Link href="/">
-          <MenuButton>
+          <MenuButton title="Home">
             <FaHome />
           </MenuButton>
         </Link>
@@ -94,7 +94,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             query: router.query,
           }}
         >
-          <MenuButton>
+          <MenuButton title="Slideshow">
             <FaImages />
           </MenuButton>
         </Link>
@@ -104,7 +104,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             query: router.query,
           }}
         >
-          <MenuButton>
+          <MenuButton title="Map">
             <FaMap />
           </MenuButton>
         </Link>
@@ -114,23 +114,23 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
             query: router.query,
           }}
         >
-          <MenuButton>
+          <MenuButton title="Board">
             <FaTh />
           </MenuButton>
         </Link>
-        { loggedIn && 
+        { loggedIn &&
             <Link
               href={{
                 pathname: `./editor`,
                 query: router.query,
               }}
             >
-              <MenuButton>
+              <MenuButton title="Editor">
                 <FaFilm />
               </MenuButton>
-            </Link> 
+            </Link>
         }
-        <MenuButton onClick={shareUrl}>
+        <MenuButton onClick={shareUrl} title="Share">
           <FaShareAlt />
         </MenuButton>
       </div>

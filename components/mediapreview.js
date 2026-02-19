@@ -48,7 +48,7 @@ export default function MediaPreview({ url, type, onRemove }) {
   return (
     <div style={containerStyle}>
       {mediaElement}
-      <button onClick={onRemove} style={deleteStyle}>
+      <button onClick={onRemove} style={deleteStyle} title="Remove">
         ✕
       </button>
     </div>

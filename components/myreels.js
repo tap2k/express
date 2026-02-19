@@ -60,6 +60,7 @@ export default function MyReels ({ channels, user, jwt }) {
             className="btn btn-primary btn-sm d-flex align-items-center"
             style={{ borderRadius: '20px', padding: '8px 16px', marginBottom: '10px' }}
             disabled={uploading}
+            title="Create new channel"
           >
             <FaPlus size={16} style={{ marginRight: '8px' }} />
             <span>NEW</span>
@@ -102,6 +103,7 @@ export default function MyReels ({ channels, user, jwt }) {
                           borderRadius: '10px'
                         }}
                         disabled={uploading}
+                        title="Delete channel"
                         >
                         <FaTrash className="me-1" />
                     </button> }

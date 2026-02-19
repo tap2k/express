@@ -24,7 +24,7 @@ export default function GoogleLogin ({ ...props }) {
       };
     
       return (
-          <Button style={buttonStyle} {...props}>
+          <Button style={buttonStyle} title="Sign in with Google" {...props}>
             <span style={logoStyle}>
               <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
                 <g fill="#000" fillRule="evenodd">

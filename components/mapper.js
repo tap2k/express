@@ -154,6 +154,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
         {channel.tags?.length > 0 && <button
           onClick={() => setIsTagModalOpen(true)}
+          title="Edit tags"
           style={{
             width: '40px',
             height: '40px',
@@ -228,7 +229,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         <ModalHeader toggle={toggleOverlay}>Add Overlay</ModalHeader>
         <ModalBody>
           <UploadWidget uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" text="Drop overlay image here, or" />
-          <Button color="success" block style={{marginTop: 10}} disabled={!uploadedFiles.length} onClick={handleOverlayUpload}>Upload</Button>
+          <Button color="success" block style={{marginTop: 10}} disabled={!uploadedFiles.length} onClick={handleOverlayUpload} title="Upload overlay">Upload</Button>
         </ModalBody>
       </Modal>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
@@ -261,8 +262,8 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         })}
         { tour && channel.contents.length ? 
           <span>
-            <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
-            <button style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
+            <button title="Previous slide" style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
+            <button title="Next slide" style={{position: 'absolute', top: '45%', right:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={nextSlide}><b>&gt;</b></button>
           </span> : ""}
         <ZoomControl position="bottomleft" /> 
         <div className="leaflet-bottom leaflet-left" style={{ margin: '0 0 0px 35px' }}>

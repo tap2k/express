@@ -103,7 +103,7 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
       };
 
     const closeBtn = (toggle) => (
-        <button className="close" onClick={toggle}>&times;</button>
+        <button className="close" onClick={toggle} title="Close">&times;</button>
     );
 
     return (
@@ -128,22 +128,24 @@ export default function Voiceover({ contentItem, privateID, jwt, isModalOpen, se
                     />
                     <Progress value={progress} style={{marginBottom: '20px'}} />
 
-                    <StyledButton 
-                        color="danger" 
-                        size="lg" 
-                        block 
+                    <StyledButton
+                        color="danger"
+                        size="lg"
+                        block
                         onClick={handleDelete}
                         disabled={!!(recording || uploading || !contentItem.audiofile?.url || uploadedFiles.length || blob)}
                         style={{marginBottom: '10px'}}
+                        title="Delete voiceover"
                     >
                         Delete
                     </StyledButton>
-                    <StyledButton 
-                        color="success" 
-                        size="lg" 
-                        block 
+                    <StyledButton
+                        color="success"
+                        size="lg"
+                        block
                         onClick={handleUpload}
                         disabled={!!(recording || uploading || (!blob && uploadedFiles.length === 0))}
+                        title="Submit voiceover"
                     >
                         Submit
                     </StyledButton>
