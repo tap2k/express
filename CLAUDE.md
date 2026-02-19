@@ -124,7 +124,7 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 - `NEXT_PUBLIC_STRAPI_HOST` - Strapi backend URL
 - `NEXT_PUBLIC_BASE_URL` - Frontend URL
 - `NEXT_PUBLIC_AI_ENABLED` - Toggle AI features
-- `VIDEO_SERVER_URL` - Video generation service
+- `VIDEO_SERVER_URL` - Video generation service (`~/dev/mahabot/mahabot`)
 - `OPENAI_API_KEY` - OpenAI API key
 - `PRIVATE_SEED` - Secret for XOR channel ID encryption
 
