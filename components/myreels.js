@@ -12,11 +12,22 @@ import Content from './content';
 import Slideshow from './slideshow';
 import EditorTable from './editortable';
 
+function formatFileSize(bits, decimalPoint) {
+  let bytes = bits * 1000;
+  if(bytes == 0) return '0 Bytes';
+  var k = 1000,
+      dm = decimalPoint || 2,
+      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 export default function MyReels ({ channels, user, jwt }) {
 
   const [uploading, setUploading] = useState(false);
   const [editorChannel, setEditorChannel] = useState(null);
   const router = useRouter();
+  const totalSize = channels.reduce((sum, ch) => sum + (ch.size || 0), 0);
 
   const handleDeleteChannel = (uniqueID) => {
     confirmAlert({
@@ -54,7 +65,10 @@ export default function MyReels ({ channels, user, jwt }) {
       {user && <Row className="mb-4 p-2 align-items-center">
         <Col>
         <div className="d-flex justify-content-between align-items-center">
-          <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}</h5>
+          <h5 style={{color: '#6c757d', marginBottom: 0}}>
+            {user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}
+            {totalSize > 0 && <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#999', marginLeft: '10px' }}>Total Data: {formatFileSize(totalSize)}</span>}
+          </h5>
           <button
             onClick={handleAddChannel}
             className="btn btn-primary btn-sm d-flex align-items-center"
@@ -80,7 +94,10 @@ export default function MyReels ({ channels, user, jwt }) {
               }}
             >
               <CardBody className="d-flex flex-column">
-                <CardTitle tag="h2" className="p-2 d-flex align-items-center" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold', height: '60px' }}><Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link></CardTitle>
+                <CardTitle tag="h2" className="p-2 d-flex align-items-center justify-content-between" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold', height: '60px' }}>
+                  <Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link>
+                  {channel.size ? <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#999' }}>{formatFileSize(channel.size)}</span> : null}
+                </CardTitle>
                   { jwt ? <div className="mt-auto d-flex flex-wrap justify-content-between">
                     <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
                       <FaEdit className="me-1" />

@@ -2,6 +2,7 @@ import nookies, { destroyCookie } from 'nookies';
 import getUser from "../hooks/getuser";
 import getMyChannels from "../hooks/getmychannels";
 import getPublicChannels from "../hooks/getpublicchannels";
+import getChannelSize from "../hooks/getchannelsize";
 import { RecorderWrapper } from '../components/recorderstyles';
 import BannerTwo from '../components/bannertwo';
 import MyReels from "../components/myreels";
@@ -33,12 +34,17 @@ export const getServerSideProps = async (ctx) => {
   let user = await getUser(cookies.jwt);
   let channels = await getMyChannels(cookies.jwt);
 
-  if (!user)
+  if (!user || !channels)
   { 
     destroyCookie(ctx, 'jwt', { path: '/' });
     return {
       redirect: { permanent: false, destination: '/' }
     }
+  }
+
+  for (const channel of channels) {
+    if (channel.owner?.id == user.id)
+      channel.size = await getChannelSize({ channelID: channel.uniqueID, jwt: cookies.jwt });
   }
 
   return {

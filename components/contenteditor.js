@@ -9,6 +9,15 @@ import ContentInputs from "./contentinputs";
 import ContentTagger from "./contenttagger";
 
 
+function formatFileSize(bits) {
+  let bytes = bits * 1000;
+  if (bytes == 0) return '0 Bytes';
+  var k = 1000,
+      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, tagger, privateID, jwt }) {
   
   if (!contentItem)
@@ -79,7 +88,12 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
 
   return (
     <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
-      <ModalHeader close={closeBtn(() => setIsModalOpen(false))}></ModalHeader>
+      <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>
+        {(contentItem.mediafile?.size || contentItem.audiofile?.size) &&
+          <span style={{ fontSize: '0.8rem', fontWeight: 'normal', color: '#999' }}>
+            {formatFileSize((contentItem.mediafile?.size || 0) + (contentItem.audiofile?.size || 0))}
+          </span>}
+      </ModalHeader>
       <ModalBody>
         <ContentInputs 
           style={{marginBottom: '15px'}} 
