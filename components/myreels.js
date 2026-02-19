@@ -1,16 +1,19 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Button } from 'reactstrap';
 import deleteChannel from '../hooks/deletechannel';
 import addChannel from '../hooks/addchannel';
+import updateChannel from '../hooks/updatechannel';
 import Content from './content';
 import Slideshow from './slideshow';
 import EditorTable from './editortable';
+import ChannelInputs from './channelinputs';
 
 function formatFileSize(bits, decimalPoint) {
   let bytes = bits * 1000;
@@ -26,8 +29,32 @@ export default function MyReels ({ channels, user, jwt }) {
 
   const [uploading, setUploading] = useState(false);
   const [editorChannel, setEditorChannel] = useState(null);
+  const [editChannel, setEditChannel] = useState(null);
   const router = useRouter();
   const totalSize = channels.reduce((sum, ch) => sum + (ch.size || 0), 0);
+
+  const titleRef = useRef();
+  const subtitleRef = useRef();
+  const publicRef = useRef();
+  const allowRef = useRef();
+  const showTitleRef = useRef();
+
+  const handleSaveChannel = async () => {
+    if (!editChannel) return;
+    setUploading(true);
+    await updateChannel({
+      name: titleRef.current?.value,
+      description: subtitleRef.current?.value,
+      ispublic: publicRef.current?.checked,
+      allowsubmissions: allowRef.current?.checked,
+      showtitle: showTitleRef.current?.checked,
+      channelID: editChannel.uniqueID,
+      jwt
+    });
+    setEditChannel(null);
+    setUploading(false);
+    router.replace(router.asPath, undefined, { scroll: false });
+  };
 
   const handleDeleteChannel = (uniqueID) => {
     confirmAlert({
@@ -62,22 +89,22 @@ export default function MyReels ({ channels, user, jwt }) {
   // TODO: hacky with supabase username hiding
   return (
     <Container className="py-3">
-      {user && <Row className="mb-4 p-2 align-items-center">
+      {user && <Row className="mb-3 px-2 align-items-center">
         <Col>
         <div className="d-flex justify-content-between align-items-center">
-          <h5 style={{color: '#6c757d', marginBottom: 0}}>
-            {user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}
-            {totalSize > 0 && <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#999', marginLeft: '10px' }}>Total Data: {formatFileSize(totalSize)}</span>}
-          </h5>
+          <div>
+            <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}</h5>
+            {totalSize > 0 && <span style={{ fontSize: '0.75rem', color: '#999' }}>Total Data: {formatFileSize(totalSize)}</span>}
+          </div>
           <button
             onClick={handleAddChannel}
-            className="btn btn-primary btn-sm d-flex align-items-center"
-            style={{ borderRadius: '20px', padding: '8px 16px', marginBottom: '10px' }}
+            className="btn btn-outline-primary btn-sm d-flex align-items-center"
+            style={{ borderRadius: '20px', padding: '6px 16px', whiteSpace: 'nowrap' }}
             disabled={uploading}
             title="Create new channel"
           >
-            <FaPlus size={16} style={{ marginRight: '8px' }} />
-            <span>NEW</span>
+            <FaPlus size={14} style={{ marginRight: '6px' }} />
+            New
           </button>
         </div>
         </Col>
@@ -95,13 +122,18 @@ export default function MyReels ({ channels, user, jwt }) {
             >
               <CardBody className="d-flex flex-column">
                 <CardTitle tag="h2" className="p-2 d-flex align-items-center justify-content-between" style={{ fontSize: '1.2rem', color: '#6c757d', fontWeight: 'bold', height: '60px' }}>
-                  <Link href={`/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link>
+                  <Link href={jwt ? `/editor?channelid=${channel.uniqueID}&edit=1` : `/reel?channelid=${channel.uniqueID}`} style={{textDecoration: 'none'}}>{channel.name}</Link>
                   {channel.size ? <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#999' }}>{formatFileSize(channel.size)}</span> : null}
                 </CardTitle>
                   { jwt ? <div className="mt-auto d-flex flex-wrap justify-content-between">
-                    <Link href={`/editor?channelid=${channel.uniqueID}&edit=1`} className="btn btn-outline-primary m-1" style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }} title="Edit Project">
+                    <button
+                        onClick={() => setEditChannel(channel)}
+                        className="btn btn-outline-primary m-1"
+                        style={{ flexGrow: 1, color: '#28a745', borderColor: '#28a745', borderRadius: '10px' }}
+                        title="Edit Channel"
+                      >
                       <FaEdit className="me-1" />
-                    </Link>
+                    </button>
                     { (user.id == channel.owner.id) && <button
                         onClick={() => setEditorChannel(channel)}
                         className="btn btn-outline-primary m-1"
@@ -158,6 +190,23 @@ export default function MyReels ({ channels, user, jwt }) {
         <ModalHeader toggle={() => setEditorChannel(null)}>Project Editors</ModalHeader>
         <ModalBody>
           {editorChannel && <EditorTable channel={editorChannel} maxHeight={450} jwt={jwt} />}
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={!!editChannel} toggle={() => setEditChannel(null)}>
+        <ModalHeader toggle={() => setEditChannel(null)}>{editChannel?.name}</ModalHeader>
+        <ModalBody>
+          {editChannel && <ChannelInputs
+            channel={editChannel}
+            titleRef={titleRef}
+            subtitleRef={subtitleRef}
+            publicRef={publicRef}
+            allowRef={allowRef}
+            showTitleRef={showTitleRef}
+          />}
+          <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}} disabled={uploading} title="Update channel">
+            <b>{uploading ? 'Updating...' : 'Update Channel'}</b>
+          </Button>
         </ModalBody>
       </Modal>
     </Container>
