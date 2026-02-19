@@ -46,8 +46,12 @@ export default async function handler(req, res) {
         });
     }
 
+    const baseUrl = process.env.VIDEO_SERVER_URL;
+    if (!baseUrl) {
+        return res.status(503).json({ error: 'Video generation is not available' });
+    }
+
     const mvcurl = process.env.NEXT_PUBLIC_STRAPI_HOST || "http://localhost:1337";
-    const baseUrl = process.env.VIDEO_SERVER_URL || 'https://video.mahabot.in';
 
     try {
         // Video server spawns a background thread and returns 202 immediately.
