@@ -10,10 +10,10 @@ export default function BannerTwo({ user, jwt, nologin }) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '60px',
+            position: 'relative',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             marginBottom: '15px',
-            padding: '0 16px'
+            padding: '8px 16px'
         }}>
             <NavbarBrand style={{ margin: 0, padding: 0 }}>
                 <b style={{
@@ -24,9 +24,10 @@ export default function BannerTwo({ user, jwt, nologin }) {
                     EXPRESS
                 </b>
             </NavbarBrand>
-            {!nologin && <div style={{ position: 'absolute', right: '20px' }}>
-                <LoginButton user={user} jwt={jwt} />
-            </div>}
+            {!nologin &&
+                <LoginButton user={user} jwt={jwt}
+                    style={{ position: 'absolute', right: '16px' }}
+                />}
         </Navbar>
     );
 }

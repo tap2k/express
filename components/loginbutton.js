@@ -2,18 +2,7 @@ import { useRouter } from 'next/router';
 import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import getBaseURL from "../hooks/getbaseurl";
 import logout from "../hooks/logout";
-
-const buttonStyle = {
-  color: '#fff',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textDecoration: 'none',
-  padding: '8px',
-  borderRadius: '50%',
-  transition: 'all 0.2s ease',
-};
+import { MenuButton } from './recorderstyles';
 
 export default function LoginButton({ user, jwt, ...props }) {
 
@@ -42,9 +31,11 @@ export default function LoginButton({ user, jwt, ...props }) {
         href={link}
         onClick={(jwt && !uxme) ? handleLogoutClick : null}
         title={label}
-        style={buttonStyle}
+        style={{ textDecoration: 'none' }}
       >
-        <Icon size={20} />
+        <MenuButton>
+          <Icon />
+        </MenuButton>
       </a>
     </div>
   );
