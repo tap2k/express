@@ -1,16 +1,20 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback } from 'react';
-import { Input, Modal, ModalHeader, ModalBody } from "reactstrap";
-import { FaUndo, FaTags } from 'react-icons/fa';
+import { Input, Button, Modal, ModalHeader, ModalBody } from "reactstrap";
+import { FaUndo, FaTags, FaLayerGroup } from 'react-icons/fa';
 import TagEditor from './tageditor';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ImageOverlay, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
+import uploadOverlay from "../hooks/uploadoverlay";
 import ContentMarker from "./contentmarker";
+import EditableOverlay from "./editableoverlay";
+import UploadWidget from "./uploadwidget";
+import getMediaURL from "../hooks/getmediaurl";
 import getTagURL from "../hooks/gettagurl";
 
 const defaultInterval = 3000;
@@ -22,6 +26,10 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   //  TODO: to make sure it loads
   const [mapKey, setMapKey] = useState(0);
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  const [mapBounds, setMapBounds] = useState(null);
+  const [overlayModal, setOverlayModal] = useState(false);
+  const toggleOverlay = () => setOverlayModal(!overlayModal);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const router = useRouter();
 
   const markerRefs = [];
@@ -68,9 +76,13 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     {
       const bounds = L.latLngBounds(locationArray);
       mapRef.fitBounds(bounds, {padding: [150, 150]});
+      setMapBounds(bounds);
     }
     else
+    {
       mapRef.setView({lat: channel.lat? channel.lat : 40.7736, lng: channel.long ? channel.long : -73.941}, channel.zoom ? channel.zoom : 11.2);
+      setMapBounds(mapRef.getBounds());
+    }
   }
 
   const gotoSlide = useCallback((goSlide) => {
@@ -125,13 +137,41 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     await updateChannel({tileset: event.target.value, channelID: channel.uniqueID, privateID: privateID, jwt: jwt});
     router.replace(router.asPath, undefined, { scroll: false });
     resetMap();
-    //setMapKey(prevKey => prevKey + 1);
-    //router.reload();
+  }
+
+  async function handleOverlayUpload() {
+    if (!uploadedFiles.length) return;
+    const formData = new FormData();
+    formData.append(uploadedFiles[0].name, uploadedFiles[0], uploadedFiles[0].name);
+    await uploadOverlay({myFormData: formData, channelID: channel.uniqueID, jwt});
+    setUploadedFiles([]);
+    toggleOverlay();
+    router.replace(router.asPath, null, { scroll: false });
   }
 
   return (
     <div {...props}>
       {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
+        {jwt && <button
+          onClick={toggleOverlay}
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(92, 131, 156, 0.6)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '20px',
+          }}
+          title="Add overlay"
+        >
+          <FaLayerGroup size={18} />
+        </button>}
         {channel.tags?.length > 0 && <button
           onClick={() => setIsTagModalOpen(true)}
           style={{
@@ -184,6 +224,13 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           />
         </ModalBody>
       </Modal>
+      <Modal isOpen={overlayModal} toggle={toggleOverlay}>
+        <ModalHeader toggle={toggleOverlay}>Add Overlay</ModalHeader>
+        <ModalBody>
+          <UploadWidget uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" text="Drop overlay image here, or" />
+          <Button color="success" block style={{marginTop: 10}} disabled={!uploadedFiles.length} onClick={handleOverlayUpload}>Upload</Button>
+        </ModalBody>
+      </Modal>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
         <MarkerClusterGroup
@@ -196,6 +243,22 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
             })
           }
         </MarkerClusterGroup>
+        {channel.overlays && channel.overlays.map((overlay) => {
+          if (!mapBounds || !overlay.image) return null;
+          let overlayBounds = mapBounds.pad(-0.1);
+          if (overlay.tl_lat)
+            overlayBounds = new L.LatLngBounds(
+              [overlay.tl_lat, overlay.tl_long],
+              [overlay.br_lat, overlay.br_long]
+            );
+          return jwt ?
+            <EditableOverlay key={overlay.id} overlayID={overlay.id}
+              url={getMediaURL() + overlay.image.url}
+              bounds={overlayBounds} zIndex={100} jwt={jwt} />
+            : <ImageOverlay key={overlay.id}
+              url={getMediaURL() + overlay.image.url}
+              bounds={overlayBounds} zIndex={100} />
+        })}
         { tour && channel.contents.length ? 
           <span>
             <button style={{position: 'absolute', top: '45%', left:'1%', opacity:'0.5', width: 30, height: 30, zIndex: 500, border: '1px solid gray'}} onClick={prevSlide}><b>&lt;</b></button>
