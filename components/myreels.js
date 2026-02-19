@@ -42,18 +42,32 @@ export default function MyReels ({ channels, user, jwt }) {
   const handleSaveChannel = async () => {
     if (!editChannel) return;
     setUploading(true);
-    await updateChannel({
-      name: titleRef.current?.value,
-      description: subtitleRef.current?.value,
-      ispublic: publicRef.current?.checked,
-      allowsubmissions: allowRef.current?.checked,
-      showtitle: showTitleRef.current?.checked,
-      channelID: editChannel.uniqueID,
-      jwt
-    });
-    setEditChannel(null);
-    setUploading(false);
-    router.replace(router.asPath, undefined, { scroll: false });
+    if (editChannel.uniqueID) {
+      await updateChannel({
+        name: titleRef.current?.value,
+        description: subtitleRef.current?.value,
+        ispublic: publicRef.current?.checked,
+        allowsubmissions: allowRef.current?.checked,
+        showtitle: showTitleRef.current?.checked,
+        channelID: editChannel.uniqueID,
+        jwt
+      });
+      setEditChannel(null);
+      setUploading(false);
+      router.replace(router.asPath, undefined, { scroll: false });
+    } else {
+      const newChannel = await addChannel({
+        name: titleRef.current?.value,
+        description: subtitleRef.current?.value,
+        ispublic: publicRef.current?.checked,
+        allowsubmissions: allowRef.current?.checked,
+        showtitle: showTitleRef.current?.checked,
+        jwt
+      });
+      setEditChannel(null);
+      setUploading(false);
+      router.replace(router.asPath, undefined, { scroll: false });
+    }
   };
 
   const handleDeleteChannel = (uniqueID) => {
@@ -78,12 +92,8 @@ export default function MyReels ({ channels, user, jwt }) {
     });
   };
 
-  const handleAddChannel = async () => {
-    setUploading(true);
-    const newChannel = await addChannel({ name: "New Channel", jwt });
-    setUploading(false);
-    if (newChannel)
-      router.push(`/editor?channelid=${newChannel.uniqueID}`);
+  const handleAddChannel = () => {
+    setEditChannel({});
   };
 
   // TODO: hacky with supabase username hiding
@@ -98,7 +108,7 @@ export default function MyReels ({ channels, user, jwt }) {
           </div>
           <button
             onClick={handleAddChannel}
-            className="btn btn-outline-primary btn-sm d-flex align-items-center"
+            className="btn btn-primary btn-sm d-flex align-items-center"
             style={{ borderRadius: '20px', padding: '6px 16px', whiteSpace: 'nowrap' }}
             disabled={uploading}
             title="Create new channel"
@@ -194,7 +204,7 @@ export default function MyReels ({ channels, user, jwt }) {
       </Modal>
 
       <Modal isOpen={!!editChannel} toggle={() => setEditChannel(null)}>
-        <ModalHeader toggle={() => setEditChannel(null)}>{editChannel?.name}</ModalHeader>
+        <ModalHeader toggle={() => setEditChannel(null)}>{editChannel?.name || 'New Channel'}</ModalHeader>
         <ModalBody>
           {editChannel && <ChannelInputs
             channel={editChannel}
@@ -204,8 +214,8 @@ export default function MyReels ({ channels, user, jwt }) {
             allowRef={allowRef}
             showTitleRef={showTitleRef}
           />}
-          <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}} disabled={uploading} title="Update channel">
-            <b>{uploading ? 'Updating...' : 'Update Channel'}</b>
+          <Button onClick={handleSaveChannel} block color="success" style={{marginTop: '20px'}} disabled={uploading}>
+            <b>{uploading ? 'Saving...' : editChannel?.uniqueID ? 'Update Channel' : 'Create Channel'}</b>
           </Button>
         </ModalBody>
       </Modal>

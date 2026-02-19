@@ -1,18 +1,17 @@
-//import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import getBaseURL from "../hooks/getbaseurl";
 import logout from "../hooks/logout";
 
 const buttonStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.15)',
   color: '#fff',
-  border: '1px solid rgba(255, 255, 255, 0.3)',
-  borderRadius: '20px',
   cursor: 'pointer',
-  fontSize: '0.85rem',
-  padding: '6px 18px',
-  fontWeight: 600,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   textDecoration: 'none',
+  padding: '8px',
+  borderRadius: '50%',
   transition: 'all 0.2s ease',
 };
 
@@ -35,6 +34,7 @@ export default function LoginButton({ user, jwt, ...props }) {
 
   let link = uxme ? "http://dev.ux4.me/admin" : jwt ? "#" : getBaseURL() + "/api/connect/google";
   const label = uxme ? "UX4ME" : jwt ? "Logout" : "Login";
+  const Icon = jwt ? FaSignOutAlt : FaSignInAlt;
 
   return (
     <div {...props}>
@@ -44,7 +44,7 @@ export default function LoginButton({ user, jwt, ...props }) {
         title={label}
         style={buttonStyle}
       >
-        {label}
+        <Icon size={20} />
       </a>
     </div>
   );

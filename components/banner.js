@@ -7,10 +7,9 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
 
   const makeStyle = {
     position: 'absolute',
-    top: '0.1rem',
-    right: '0px',
+    top: '10px',
+    right: '16px',
     zIndex: 1,
-    padding: '0.25rem'
   };
 
   return (
