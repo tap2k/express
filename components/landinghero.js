@@ -1,19 +1,19 @@
 import { Container, Row, Col } from 'reactstrap';
-import { FaMap, FaImages, FaPhotoVideo, FaUsers, FaMapMarkedAlt, FaBoxOpen, FaCameraRetro, FaMicrophoneAlt, FaGithub } from 'react-icons/fa';
+import { FaMap, FaImages, FaPhotoVideo, FaUsers, FaMapMarkedAlt, FaBoxOpen, FaCameraRetro, FaMicrophoneAlt } from 'react-icons/fa';
 import getBaseURL from '../hooks/getbaseurl';
 
 const features = [
   { icon: FaMap, title: 'Maps', desc: 'Pin content to locations with custom markers and map overlays' },
-  { icon: FaImages, title: 'Slideshows', desc: 'Organize photos, video, and 360 content to construct beautiful narratives' },
-  { icon: FaPhotoVideo, title: 'Rich Media', desc: 'Support for images, video, audio, 360 videos and panoramas, and external links' },
-  { icon: FaUsers, title: 'Collaboration', desc: 'Invite contributors, editors and share channels with private or public links' },
+  { icon: FaImages, title: 'Slideshows', desc: 'Organize photos, video, and 360 content to construct interactive narratives' },
+  { icon: FaPhotoVideo, title: 'Rich Media', desc: 'Support for images, video, audio, 360 videos, panoramas, and external links' },
+  { icon: FaUsers, title: 'Collaboration', desc: 'Invite contributors, editors and share channels with private links' },
 ];
 
 const useCases = [
-  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Collect local knowledge, resources, and stories into shared interactive maps.' },
-  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Document user experiences through photos, video, and audio.' },
-  { icon: FaCameraRetro, title: 'Photovoice', desc: 'Understand community combining images with rich community narratives.' },
-  { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Record and preserve spoken narratives, linking audio and video testimony.' },
+  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on shared interactive maps.' },
+  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture and share their experiences in context.' },
+  { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and narrative.' },
+  { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to the places where it happened.' },
 ];
 
 const CardGrid = ({ items }) => (
@@ -40,40 +40,6 @@ const Divider = () => (
   <hr style={{ border: 'none', borderTop: '2px solid #ccc', margin: '12px 24px' }} />
 );
 
-export function LandingFooter() {
-  return (
-    <div style={{
-      textAlign: 'center',
-      padding: '24px 16px 16px',
-      marginTop: '8px',
-      borderTop: '1px solid #e9ecef',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', columnGap: '20px', rowGap: '6px', fontSize: '0.85rem', flexWrap: 'wrap' }}>
-        <a
-          href="https://github.com/tap2k/express"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#555', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}
-        >
-          <FaGithub size={16} /> Frontend
-        </a>
-        <a
-          href="https://github.com/tap2k/MVCbackend"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#555', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}
-        >
-          <FaGithub size={16} /> Backend
-        </a>
-        <div style={{ flexBasis: '100%', height: 0 }} className="d-block d-md-none" />
-        <a href="/privacy" style={{ color: '#999', textDecoration: 'none' }}>Privacy</a>
-        <a href="/terms" style={{ color: '#999', textDecoration: 'none' }}>Terms</a>
-        <a href="mailto:express@represent.org" style={{ color: '#999', textDecoration: 'none' }}>Contact</a>
-      </div>
-    </div>
-  );
-}
-
 export default function LandingHero() {
   return (
     <>
@@ -99,7 +65,7 @@ export default function LandingHero() {
           fontWeight: 400,
           lineHeight: 1.6,
         }}>
-          Share your world through maps, slideshows, and media.
+          Share your world with maps, slideshows, and multimedia.
         </p>
         <a href={getBaseURL() + "/api/connect/google"} style={{
           display: 'inline-block',

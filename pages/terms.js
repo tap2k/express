@@ -1,5 +1,5 @@
 import { Container } from 'reactstrap';
-import { LandingFooter } from '../components/landinghero';
+import LandingFooter from '../components/landingfooter';
 
 const sectionStyle = { marginBottom: '28px' };
 const headingStyle = { fontWeight: 600, color: '#333', marginBottom: '8px', fontSize: '1.1rem' };

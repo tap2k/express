@@ -10,7 +10,8 @@ import BannerTwo from '../components/bannertwo';
 import MyReels from "../components/myreels";
 import UsageBanner from "../components/usagebanner";
 import PricingTable from "../components/pricingtable";
-import LandingHero, { LandingFooter } from "../components/landinghero";
+import LandingHero from "../components/landinghero";
+import LandingFooter from "../components/landingfooter";
 
 export default ({ user, jwt, channels, planData }) => {
   const [pricingOpen, setPricingOpen] = useState(false);
@@ -20,7 +21,7 @@ export default ({ user, jwt, channels, planData }) => {
       {user ? (
         <>
           <BannerTwo user={user} jwt={jwt} />
-          <div style={{ marginBottom: '8px' }}>
+          <div style={{ marginTop: '16px', marginBottom: '8px' }}>
             {planData && <UsageBanner planData={planData} onUpgrade={() => setPricingOpen(true)} />}
           </div>
           <MyReels channels={channels} user={user} jwt={jwt} planData={planData} />

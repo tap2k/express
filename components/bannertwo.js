@@ -21,7 +21,7 @@ export default function BannerTwo({ user, jwt, nologin }) {
                     color: '#ffffff',
                     letterSpacing: '0.06em',
                 }}>
-                    Express
+                    Express.
                 </span>
             </NavbarBrand>
             {!nologin &&
