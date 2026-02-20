@@ -12,7 +12,6 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
   const [progress, setProgress] = useState(0);
   const [generating, setGenerating] = useState(false);
   const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(null);
-  const [selectedForegroundColor, setSelectedForegroundColor] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const titleRef = useRef();
   const nameRef = useRef();
@@ -54,7 +53,6 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
         ext_url: extUrlRef.current?.value,
         textAlignment: 'center', 
         backgroundColor: selectedBackgroundColor,
-        foregroundColor: selectedForegroundColor,
         privateID,
         jwt,
         setProgress, 
@@ -86,7 +84,7 @@ export default function GreetingCard({ channelID, privateID, jwt, uploading, set
 
   return (
     <RecorderWrapper  {...props}>
-      <MediaPicker generating={generating} setGenerating={setGenerating} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} gallery="image" dalle setProgress={setProgress} />
+      <MediaPicker generating={generating} setGenerating={setGenerating} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} gallery="image" dalle setProgress={setProgress} />
       <Progress value={progress} />
       <ContentInputs 
         style={{marginTop: '20px', marginBottom: '20px'}} 

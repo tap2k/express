@@ -5,6 +5,10 @@ import ChannelControls from "./channelcontrols";
 export default function Banner({ channel, foregroundColor, privateID, user, jwt }) {
   if (!channel) return null;
 
+  const overlayHex = (foregroundColor || '#E6F0FF').replace('#', '').substring(0, 6);
+  const lightOverlay = (parseInt(overlayHex.substr(0,2),16)*299 + parseInt(overlayHex.substr(2,2),16)*587 + parseInt(overlayHex.substr(4,2),16)*114) / 1000 > 128;
+  const textColor = lightOverlay ? '#0a4f6a' : '#fff';
+
   const makeStyle = {
     position: 'absolute',
     top: '10px',
@@ -37,7 +41,7 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
             minWidth: '300px'
           }}>
             <h1 style={{
-              color: '#0a4f6a',
+              color: textColor,
               fontSize: '2.5rem',
               fontWeight: 'bold'
             }}>
@@ -45,14 +49,14 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
             </h1>
             {channel.description && (
               <h3 style={{
-                color: '#24394e',
+                color: textColor,
                 fontSize: '1.25rem',
                 fontWeight: 'normal'
               }}>
                 {channel.description}
               </h3>
             )}
-            {(privateID || jwt) && 
+            {(privateID || jwt) &&
               <div style={{
                 position: 'absolute',
                 top: 0,

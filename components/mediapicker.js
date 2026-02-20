@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import mime from 'mime-types';
 import { ButtonGroup, StyledButton } from './recorderstyles';
-import { imageOptions, audioOptions, colorOptions } from './fileoptions';
+import { imageOptions, audioOptions } from './fileoptions';
 import AudioGrid from './audiogrid';
 import ColorGrid from './colorgrid';
 import ImageGrid from './imagegrid';
 import UploadWidget from "./uploadwidget";
 import DalleWidget from "./dallewidget";
 
-export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, ...props }) {
+export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, compact, ...props }) {
   const [showGallery, setShowGallery] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showDalle, setShowDalle] = useState(false);
@@ -29,12 +28,6 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
       setSelectedMedia(null);
     if (setUploadedFiles)
       setUploadedFiles([]);
-    if (setDeleteMedia)
-    {
-      const mimeType = mime.lookup(mediaUrl);
-      if (mimeType && mimeType.startsWith("image"))
-        setDeleteMedia(true);
-    }
   }, [selectedBackgroundColor]);
 
   return (
@@ -82,12 +75,13 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
           setProgress={setProgress}
         />
       ) : showColors ? (
-        <ColorGrid  
-          colorOptions={colorOptions}           
+        <ColorGrid
           selectedBackgroundColor={selectedBackgroundColor}
           setSelectedBackgroundColor={setSelectedBackgroundColor}
           selectedForegroundColor={selectedForegroundColor}
           setSelectedForegroundColor={setSelectedForegroundColor}
+          hasImage={(!deleteMedia && !!mediaUrl) || !!selectedMedia || !!(uploadedFiles?.length)}
+          compact={compact}
         />
       ) : showUpload && (
         <UploadWidget

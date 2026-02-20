@@ -1,20 +1,19 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
-
-export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", ...props }) 
+export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", ...props })
 {
     // TODO: What about produce links?
     // if (!title && !url) return null;
     if (!title) return null;
 
+    const overlayHex = (foregroundColor || '').replace('#', '').substring(0, 6);
+    const lightOverlay = overlayHex.length === 6 && (parseInt(overlayHex.substr(0,2),16)*299 + parseInt(overlayHex.substr(2,2),16)*587 + parseInt(overlayHex.substr(4,2),16)*114) / 1000 > 128;
+    const textColor = lightOverlay ? '#222' : '#fff';
     const textOutlineStyle = {
-        textShadow: `
-            -1px -1px 0 #333,  
-             1px -1px 0 #333,
-            -1px  1px 0 #333,
-             1px  1px 0 #333
-        `,
-        color: '#fff'
+        textShadow: lightOverlay
+            ? '0 1px 3px rgba(0,0,0,0.3)'
+            : '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333',
+        color: textColor
     };
 
     const captionStyleBase = {
@@ -97,8 +96,8 @@ export default function Caption({ title, subtitle, name, url, foregroundColor, t
             {(title || subtitle) && (
                 <div style={captionStyle}>
                     {title && <div style={titleStyle}>{title}</div>}
-                    {subtitle && !size === "small" && textAlignment === "center" && <div style={subtitleStyle}>{subtitle}</div>}
-                    {name && !size === "small" && textAlignment === "center" && <div style={nameStyle}>{name}</div>}
+                    {subtitle && size !== "small" && textAlignment === "center" && <div style={subtitleStyle}>{subtitle}</div>}
+                    {name && size !== "small" && textAlignment === "center" && <div style={nameStyle}>{name}</div>}
                 </div>
             )}
             {url && !(size === "small") && !isMediaFile(url) && (

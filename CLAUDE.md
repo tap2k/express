@@ -137,3 +137,16 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 - `@/*` path alias configured in `jsconfig.json`
 - Video generation is async: request is acknowledged immediately, result is emailed
 - Permission checks are recursive up the channel hierarchy (can be expensive for deep nesting)
+
+## TODO
+
+- **Loading/error states**: Replace `alert()` and `console.error` with proper UI feedback (toast notifications, button spinners, error banners) for client-side mutations (save, delete, upload, reorder)
+- **Slideshow transitions**: Add configurable transition effects (fade, slide, zoom) to the reel — currently slides change instantly via `pure-react-carousel`
+- **Caption/text styling**: Add font choice, caption text color picker, and per-slide font size control. Banner title color is hardcoded to `#0a4f6a` in `components/banner.js`
+- **Content paging**: Paginate content loading in editor/board/map for channels with many items — currently all content loads at once via `getServerSideProps`
+- **Multi-select delete**: Add checkbox selection and bulk delete for content items on editor/board views
+- **Mute control**: Add a mute/unmute button for audio and video playback across reel, map, and editor views
+- **Clone channel**: Allow users to duplicate an existing channel (structure + settings, optionally content) as a starting point
+- **Keyboard shortcuts**: Add keyboard navigation to reel (arrow keys for prev/next, space for play/pause) and map
+- **Analytics/view tracking**: Add view counts for reels, per-slide view stats, map marker click counts
+- **Dark mode**: All views use light backgrounds; only the reel has a dark (black) background

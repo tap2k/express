@@ -32,16 +32,28 @@ export const audioOptions = [
   //"plucky.mp3"
 ];
 
-export const colorOptions = [
-  ["#FFFFFFAA", "#000000AA"], // White on Black (grayscale)
-  ["#E6F3FFAA", "#0047ABAA"], // Light Blue on Cobalt Blue
-  ["#F1FFF0AA", "#228B22AA"], // Mint Cream on Forest Green
-  ["#FFFFD4AA", "#8B4513AA"], // Light Yellow on Saddle Brown
-  ["#F0E6FFAA", "#4B0082AA"], // Lavender on Indigo
-  ["#FFE5B4AA", "#8B0000AA"], // Peach on Dark Red
-  ["#87CEEBAA", "#191970AA"], // Sky Blue on Midnight Blue
-  ["#F08080AA", "#006400AA"], // Light Coral on Dark Green
-  ["#FFDAB9AA", "#2F4F4FAA"], // Peach Puff on Dark Slate Gray
-  ["#E0FFFFAA", "#8B008BAA"], // Light Cyan on Dark Magenta
-  ["#FFFACDAA", "#B8860BAA"]  // Lemon Chiffon on Dark Goldenrod
+export const backgroundColorOptions = [
+  "#FFFFFF", // White
+  "#000000", // Black
+  "#0047AB", // Cobalt Blue
+  "#228B22", // Forest Green
+  "#8B4513", // Saddle Brown
+  "#4B0082", // Indigo
+  "#8B0000", // Dark Red
+  "#191970", // Midnight Blue
+  "#006400", // Dark Green
+  "#2F4F4F", // Dark Slate Gray
+];
+
+export const overlayColorOptions = [
+  "#FFFFFFAA", // White
+  "#000000AA", // Black
+  "#E6F0FFAA", // Light Blue
+  "#F1FFF0AA", // Mint Cream
+  "#FFFFD4AA", // Light Yellow
+  "#F0E6FFAA", // Lavender
+  "#FFE5B4AA", // Peach
+  "#87CEEBAA", // Sky Blue
+  "#F08080AA", // Light Coral
+  "#E0FFFFAA", // Light Cyan
 ];

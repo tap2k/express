@@ -17,8 +17,8 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [deletePic, setDeletePic] = useState(false);
-  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(null);
-  const [selectedForegroundColor, setSelectedForegroundColor] = useState(null);
+  const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(channel.background_color || '');
+  const [selectedForegroundColor, setSelectedForegroundColor] = useState(channel.foreground_color || '');
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [deleteAudio, setDeleteAudio] = useState(false);
@@ -182,7 +182,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
         <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle />
         <Button
           onClick={handleSaveChannel}
-          disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && !selectedBackgroundColor)}
+          disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && selectedBackgroundColor === (channel.background_color || '') && selectedForegroundColor === (channel.foreground_color || ''))}
           block
           color="success"
           style={{marginTop: '10px'}}

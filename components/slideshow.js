@@ -210,14 +210,23 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
     fontSize: 'calc(clamp(30px, 5%, 50px) * 0.5)'
   }
 
-  const textOutlineStyle = {
-    textShadow: `
-        -1px -1px 0 #333,  
-         1px -1px 0 #333,
-        -1px  1px 0 #333,
-         1px  1px 0 #333
-    `,
-    color: '#fff'
+  const hasImage = !!channel.picture?.url;
+  const overlayColor = channel.foreground_color || '#E6F0FF99';
+  const overlayHex = (channel.foreground_color || '#E6F0FF').replace('#', '').substring(0, 6);
+  const bgHex = (channel.background_color || '#FFFFFF').replace('#', '').substring(0, 6);
+  const lightOverlay = (parseInt(overlayHex.substr(0,2),16)*299 + parseInt(overlayHex.substr(2,2),16)*587 + parseInt(overlayHex.substr(4,2),16)*114) / 1000 > 128;
+  const lightBg = (parseInt(bgHex.substr(0,2),16)*299 + parseInt(bgHex.substr(2,2),16)*587 + parseInt(bgHex.substr(4,2),16)*114) / 1000 > 128;
+  const fgAsTextColor = channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : null;
+  const textColor = hasImage
+    ? (lightOverlay ? '#0a4f6a' : '#fff')
+    : (fgAsTextColor || (lightBg ? '#0a4f6a' : '#fff'));
+  const textOutlineStyle = hasImage ? {
+    textShadow: lightOverlay
+        ? '0 1px 3px rgba(0,0,0,0.3)'
+        : '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333',
+    color: textColor
+  } : {
+    color: textColor
   };
 
   const containerStyle = {
@@ -225,10 +234,13 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      backgroundColor: channel.picture?.url ? 'rgba(100,100,100,0.4)' : channel.foreground_color ? channel.foreground_color : 'rgba(50, 50, 50, 0)',
-      borderRadius: '20px',
+      ...(hasImage ? {
+        backgroundColor: overlayColor,
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backdropFilter: 'blur(5px)',
+      } : {}),
       padding: '30px 70px',
-      backdropFilter: 'blur(15px)',
       width: 'max-content',
       maxWidth: '80%',
       minWidth: '30%',
@@ -317,7 +329,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
           <Slider style={{height: height, width: width}}>
             {showTitle && (
               <Slide style={{height: height, width: width}}>
-                <div style={{position: 'relative', height: '100%', width: '100%', backgroundColor: channel.background_color}}>
+                <div style={{position: 'relative', height: '100%', width: '100%', backgroundColor: channel.background_color || 'white'}}>
                   <FullImage 
                     src={channel.picture?.url ? getMediaURL() + channel.picture?.url : ""} 
                     width={width} 

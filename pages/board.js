@@ -3,12 +3,13 @@ import nookies from 'nookies';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import getUser from "../hooks/getuser";
+import getUserPlan from "../hooks/getuserplan";
 import AddMenu from "../components/addmenu";
 import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Board from "../components/board";
 
-export default ({ channel, user, jwt }) => {
+export default ({ channel, user, jwt, planData }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -37,7 +38,7 @@ export default ({ channel, user, jwt }) => {
                 {jwt && <PageMenu loggedIn={jwt} />}
                 <Banner 
                     channel={channel}
-                    foregroundColor={!channel.picture?.url && channel.foreground_color}
+                    foregroundColor={channel.foreground_color}
                     user={user}
                     jwt={jwt}
                 />
@@ -45,7 +46,7 @@ export default ({ channel, user, jwt }) => {
                     channel={channel}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} planData={planData} />
                 {!jwt && <a href="/" style={{
                     position: 'fixed', bottom: 8, right: 12,
                     color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem',
@@ -75,12 +76,15 @@ export async function getServerSideProps(ctx) {
             };
         }
 
-        return { 
-            props: { 
+        const planData = jwt ? await getUserPlan(jwt) : null;
+
+        return {
+            props: {
                 channel: channel,
                 jwt: channel.canedit && edit ? jwt : null,
-                user: user
-            } 
+                user: user,
+                planData: planData,
+            }
         };
     } catch (err) {
         console.error(err);

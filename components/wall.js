@@ -51,7 +51,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
   }, []);
 
   const moveItem = (dragIndex, hoverIndex) => {
-    if (!privateID)
+    if (!privateID && !jwt)
       return;
     const newContents = [...contents];
     const [removed] = newContents.splice(dragIndex, 1);
@@ -60,7 +60,7 @@ export default function Wall ({ channel, privateID, jwt, ...props }) {
   };
 
   const handleDragStart = () => {
-    if (!privateID)
+    if (!privateID && !jwt)
       return;
     setPrevContents([...contents])
   };

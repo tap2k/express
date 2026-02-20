@@ -186,7 +186,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           alignItems: 'center',
           gap: '10px',
           maxWidth: '40%',
-          backgroundColor: channel.foreground_color || 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: channel.background_color || 'rgba(255, 255, 255, 0.9)',
           backdropFilter: 'blur(10px)',
           borderRadius: '10px',
           padding: '8px 14px',
@@ -210,7 +210,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               fontSize: 'clamp(14px, 1.8vw, 20px)',
               fontWeight: 'bold',
               lineHeight: '1.2',
-              color: '#222',
+              color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#222',
             }}>
               {channel.name}
             </div>
@@ -219,7 +219,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
                 fontSize: 'clamp(11px, 1.3vw, 14px)',
                 lineHeight: '1.3',
                 marginTop: '2px',
-                color: '#555',
+                color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#555',
               }}>
                 {channel.description}
               </div>

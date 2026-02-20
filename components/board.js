@@ -76,9 +76,7 @@ export default function Board({ channel, privateID, jwt, ...props }) {
                 onDragEnd={handleDragEnd}
               >
                 {({ dragRef }) => (
-                  <div onDoubleClick={() => handleContentClick(contentItem)}>
-                    <ContentCard contentItem={contentItem} privateID={privateID} jwt={jwt} dragRef={dragRef} controls tags />
-                  </div>
+                  <ContentCard contentItem={contentItem} privateID={privateID} jwt={jwt} dragRef={dragRef} controls tags />
                 )}
               </Draggable>
             ))}

@@ -241,14 +241,13 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
       <div style={containerStyle}>
         {mediaElement}
       </div>
-      { caption && type != "youtube" && <Caption 
+      { caption && type != "youtube" && <Caption
         title={contentItem.title}
         subtitle={contentItem.description}
         name={contentItem.name}
-        url={contentItem.ext_url} 
-        textAlignment={contentItem.textalignment} 
+        url={contentItem.ext_url}
+        textAlignment={contentItem.textalignment}
         size={thumbnail ? "small" : "medium"}
-        foregroundColor={!type || type === "text" ? contentItem.foreground_color : null}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       {/* TODO: Have the timeline? */}
