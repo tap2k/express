@@ -16,6 +16,11 @@ export default ({ channel, currslide, jwt }) => {
         <div className={isInactive ? 'inactive-ui' : ''}>
             {jwt && <PageMenu loggedIn={jwt} />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} jwt={jwt} style={{backgroundColor: 'black'}} />
+            {!jwt && <a href="/" style={{
+                position: 'fixed', bottom: 8, right: 12,
+                color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem',
+                textDecoration: 'none', zIndex: 1000,
+            }}>Powered by Express</a>}
         </div>
     );
 }

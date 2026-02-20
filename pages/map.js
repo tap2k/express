@@ -30,6 +30,13 @@ export default ({ channel, tilesets, jwt, planData }) => {
             </div>
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} jwt={jwt} tour legend planData={planData} />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
+            {!jwt && <a href="/" style={{
+                position: 'fixed', bottom: 26, right: 12,
+                color: 'rgba(0,0,0,0.6)', fontSize: '0.75rem',
+                textDecoration: 'none', zIndex: 1000,
+                backgroundColor: 'rgba(255,255,255,0.7)',
+                padding: '2px 6px', borderRadius: '4px',
+            }}>Powered by Express</a>}
         </>
     );
 }

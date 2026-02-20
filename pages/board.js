@@ -46,6 +46,11 @@ export default ({ channel, user, jwt }) => {
                     jwt={jwt}
                 />
                 <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
+                {!jwt && <a href="/" style={{
+                    position: 'fixed', bottom: 8, right: 12,
+                    color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem',
+                    textDecoration: 'none', zIndex: 1000,
+                }}>Powered by Express</a>}
             </div>
         </div>
     );
