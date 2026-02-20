@@ -55,6 +55,8 @@ export default function App({
   return (
     <>
     <Head>
+      <title>Express — Maps, Slideshows & Video for Participatory Mapping and Research</title>
+      <meta name="description" content="Create interactive maps, slideshows, and videos from photos, video, audio, and 360 content. Built for participatory mapping, photovoice, oral history, and qualitative GIS." />
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     </Head>
     {loading && (
