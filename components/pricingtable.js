@@ -22,7 +22,7 @@ const tiers = [
     price: { monthly: '$9', annual: '$5.85' },
     features: [
       '25 channels, 5 GB storage',
-      'Custom markers, tilesets, and overlays',
+      'Custom markers and overlays',
       'Collaboration with editors',
     ],
   },
@@ -45,7 +45,7 @@ const tiers = [
     features: [
       'Custom limits',
       'Everything in Pro',
-      'API access, SSO, custom domains',
+      'API access, SSO, custom domains, local hosting, etc.',
     ],
   },
 ];
