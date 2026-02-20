@@ -11,7 +11,7 @@ const tiers = [
     price: { monthly: '$0', annual: '$0' },
     features: [
       '5 channels, 250 MB storage',
-      'Maps, slideshows, and media',
+      'Maps, 360 media, and slideshows',
       'Default markers and tilesets',
     ],
   },

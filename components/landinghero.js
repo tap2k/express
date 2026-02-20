@@ -1,18 +1,19 @@
 import { Container, Row, Col } from 'reactstrap';
-import { FaMap, FaImages, FaPhotoVideo, FaUsers, FaMapMarkedAlt, FaBoxOpen, FaCameraRetro, FaMicrophoneAlt } from 'react-icons/fa';
+import { FaMap, FaImages, FaPhotoVideo, FaUsers, FaVideo, FaMapMarkedAlt, FaBoxOpen, FaCameraRetro, FaMicrophoneAlt } from 'react-icons/fa';
 import getBaseURL from '../hooks/getbaseurl';
 
 const features = [
   { icon: FaMap, title: 'Maps', desc: 'Pin content to locations with custom markers and map overlays' },
   { icon: FaImages, title: 'Slideshows', desc: 'Organize photos, video, and 360 content to construct interactive narratives' },
+  { icon: FaVideo, title: 'Video', desc: 'Edit and create videos from video clips, images, text, and audio' },
   { icon: FaPhotoVideo, title: 'Rich Media', desc: 'Support for images, video, audio, 360 videos, panoramas, and external links' },
-  { icon: FaUsers, title: 'Collaboration', desc: 'Invite contributors, editors and share channels with private links' },
+  // { icon: FaUsers, title: 'Collaboration', desc: 'Invite contributors, editors and share channels with public links' },
 ];
 
 const useCases = [
-  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on shared interactive maps.' },
-  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture and share their experiences in context.' },
-  { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and narrative.' },
+  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on a qualitative GIS.' },
+  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture their experiences in context.' },
+  { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and text.' },
   { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to the places where it happened.' },
 ];
 
@@ -65,7 +66,7 @@ export default function LandingHero() {
           fontWeight: 400,
           lineHeight: 1.6,
         }}>
-          Share your world with maps, slideshows, and multimedia.
+          Create maps, slideshows, and videos from your media.
         </p>
         <a href={getBaseURL() + "/api/connect/google"} style={{
           display: 'inline-block',
