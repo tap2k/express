@@ -31,8 +31,8 @@ const questions = [
     a: 'Yes. Express is open source. Clone the repo, run the frontend and backend. Contact us if you have any issues.',
   },
   {
-    q: 'What AI features are there?',
-    a: 'None.',
+    q: 'What about AI?',
+    a: "We don't have any AI features, but you can upload your own AI-generated content.",
   },
 ];
 

@@ -56,7 +56,7 @@ export default function LandingHero() {
           marginBottom: '14px',
           letterSpacing: '0.06em',
         }}>
-          Express
+          Express.
         </h1>
         <p style={{
           fontSize: '1.15rem',
@@ -80,6 +80,18 @@ export default function LandingHero() {
         }}>
           Get Started Free
         </a>
+        <div style={{ marginTop: '32px', padding: '0 20px' }}>
+          <img
+            src="/express.png"
+            alt="Express map view with media markers"
+            style={{
+              maxWidth: '720px',
+              width: '100%',
+              borderRadius: '10px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            }}
+          />
+        </div>
       </div>
 
       <Container style={{ padding: '20px 16px 0' }}>
