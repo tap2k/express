@@ -24,16 +24,20 @@ const questions = [
   },*/
   {
     q: 'What is Express built with?',
-    a: 'Next.js and React on the frontend, Strapi headless CMS on the backend, Bootstrap for UI, and Leaflet for maps.',
+    a: 'Next.js and React on the front, Strapi in the back, Bootstrap for UI, and Leaflet for maps.',
   },
   {
     q: 'Can I self-host Express?',
-    a: 'Yes. Express is open source. Clone the repo, run the frontend and backend. Contact us if you have any issues.',
+    a: 'Yes. Express is open source. Clone the repo, run the frontend and backend.',
   },
   {
+    q: 'Do you take requests?',
+    a: 'We would love to hear from you if you have ideas for how to make Express better.',
+  },
+  /*{
     q: 'What about AI?',
     a: "We don't have any AI features, but you can upload your own AI-generated content.",
-  },
+  },*/
 ];
 
 function FAQItem({ q, a }) {
