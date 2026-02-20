@@ -31,7 +31,7 @@ export default ({ channel, tilesets, jwt, planData }) => {
             <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} jwt={jwt} tour legend planData={planData} />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
             {!jwt && <a href="/" style={{
-                position: 'fixed', bottom: 26, right: 12,
+                position: 'fixed', bottom: 20, right: 0,
                 color: 'rgba(0,0,0,0.6)', fontSize: '0.75rem',
                 textDecoration: 'none', zIndex: 1000,
                 backgroundColor: 'rgba(255,255,255,0.7)',

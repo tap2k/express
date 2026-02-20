@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback } from 'react';
 import { Input, Button, Modal, ModalHeader, ModalBody } from "reactstrap";
-import { FaUndo, FaTags, FaLayerGroup } from 'react-icons/fa';
+import { FaUndo, FaTags, FaLayerGroup, FaSave } from 'react-icons/fa';
 import TagEditor from './tageditor';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ImageOverlay, ZoomControl } from 'react-leaflet';
@@ -14,6 +14,7 @@ import uploadOverlay from "../hooks/uploadoverlay";
 import ContentMarker from "./contentmarker";
 import EditableOverlay from "./editableoverlay";
 import UploadWidget from "./uploadwidget";
+import ChannelControls from "./channelcontrols";
 import getMediaURL from "../hooks/getmediaurl";
 import getTagURL from "../hooks/gettagurl";
 
@@ -64,14 +65,11 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     attribution = tilesets[0].attribution;
   }
 
-  function resetMap()
+  function fitMarkerBounds()
   {
-    if (!mapRef)
-      return;
-    
+    if (!mapRef) return;
     markerRefs.map((marker)=>marker.closePopup());
     const locationArray = markerRefs.map(marker => marker.getLatLng());
-
     if (locationArray.length)
     {
       const bounds = L.latLngBounds(locationArray);
@@ -80,8 +78,26 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     }
     else
     {
-      mapRef.setView({lat: channel.lat? channel.lat : 40.7736, lng: channel.long ? channel.long : -73.941}, channel.zoom ? channel.zoom : 11.2);
+      mapRef.setView({lat: 40.7736, lng: -73.941}, 11.2);
       setMapBounds(mapRef.getBounds());
+    }
+  }
+
+  function resetMap()
+  {
+    if (!mapRef)
+      return;
+
+    markerRefs.map((marker)=>marker.closePopup());
+
+    if (channel.lat && channel.long && channel.zoom)
+    {
+      mapRef.setView({lat: channel.lat, lng: channel.long}, channel.zoom);
+      setMapBounds(mapRef.getBounds());
+    }
+    else
+    {
+      fitMarkerBounds();
     }
   }
 
@@ -149,8 +165,73 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     router.replace(router.asPath, null, { scroll: false });
   }
 
+  const saveMap = async () => {
+    if (!mapRef) return;
+    const zoom = mapRef.getZoom();
+    const center = mapRef.getCenter();
+    await updateChannel({ channelID: channel.uniqueID, zoom, lat: center.lat, long: center.lng, privateID, jwt });
+  };
+
+  const showTitle = channel.showtitle;
+
   return (
     <div {...props}>
+      {showTitle && (
+        <div style={{
+          position: 'absolute',
+          top: (privateID || jwt) ? '65px' : '10px',
+          left: '10px',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          maxWidth: '40%',
+          backgroundColor: channel.foreground_color || 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '10px',
+          padding: '8px 14px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+        }}>
+          {channel.picture?.url && (
+            <img
+              src={getMediaURL() + channel.picture.url}
+              alt=""
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '8px',
+                objectFit: 'cover',
+                flexShrink: 0,
+              }}
+            />
+          )}
+          <div style={{ overflow: 'hidden' }}>
+            <div style={{
+              fontSize: 'clamp(14px, 1.8vw, 20px)',
+              fontWeight: 'bold',
+              lineHeight: '1.2',
+              color: '#222',
+            }}>
+              {channel.name}
+            </div>
+            {channel.description && (
+              <div style={{
+                fontSize: 'clamp(11px, 1.3vw, 14px)',
+                lineHeight: '1.3',
+                marginTop: '2px',
+                color: '#555',
+              }}>
+                {channel.description}
+              </div>
+            )}
+          </div>
+          {(privateID || jwt) && (
+            <div style={{ flexShrink: 0 }}>
+              <ChannelControls channel={channel} privateID={privateID} iconSize={16} jwt={jwt} />
+            </div>
+          )}
+        </div>
+      )}
       {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
         {channel.tags?.length > 0 && <button
           onClick={() => setIsTagModalOpen(true)}
@@ -268,24 +349,30 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           </span> : ""}
         <ZoomControl position="bottomleft" /> 
         <div className="leaflet-bottom leaflet-left" style={{ margin: '0 0 0px 35px' }}>
-          <button
-            onClick={resetMap}
-            title="Reset map"
-            className="leaflet-control leaflet-bar"
-            style={{
-              width: '33px',
-              height: '33px',
-              border: '1px solid #aaaaaa',
-              backgroundColor: 'white',
-              cursor: 'pointer',
-            }}
-          >
-            <FaUndo />
-          </button>
+          <div className="leaflet-control leaflet-bar">
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); fitMarkerBounds(); }}
+              title="Reset map"
+              role="button"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <FaUndo size={12} />
+            </a>
+            {(privateID || jwt) && <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); saveMap(); }}
+              title="Save map view"
+              role="button"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <FaSave size={12} />
+            </a>}
+          </div>
         </div>
       </MapContainer>
       { (legend && channel.tags?.length) ? 
-        <div style={{position: 'absolute', left: 10, bottom: 90, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+        <div style={{position: 'absolute', right: 5, bottom: 55, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
           <table>
             <tbody>
               {

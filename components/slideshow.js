@@ -88,12 +88,12 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
   const audioRef = useRef(null);
   const router = useRouter();
   
-  const getCurrentContent = () => {
+  const showTitle = (channel.showtitle || privateID || jwt) && !hideTitle;
+
+  const getCurrentContent = useCallback(() => {
     const index = showTitle ? currSlide - 1 : currSlide;
     return (index >= 0 && index < channel.contents.length) ? channel.contents[index] : null;
-  };  
-
-  const showTitle = (channel.showtitle || privateID || jwt) && !hideTitle;
+  }, [showTitle, currSlide, channel.contents]);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
