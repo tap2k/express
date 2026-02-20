@@ -45,7 +45,7 @@ const tiers = [
     features: [
       'Custom limits',
       'Everything in Pro',
-      'API access, SSO, custom domains, local hosting, etc.',
+      'API access, SSO, custom domains, priority support, local hosting, etc.',
     ],
   },
 ];
@@ -58,21 +58,6 @@ export default function PricingTable({ currentPlan, onSelectPlan }) {
 
   return (
     <Container id="pricing" className="py-4">
-      <div className="text-center mb-4">
-        <span
-          style={{ cursor: 'pointer', fontWeight: !annual ? 'bold' : 'normal', color: !annual ? 'rgba(26, 95, 122, 0.9)' : '#999', fontSize: '0.9rem' }}
-          onClick={() => setAnnual(false)}
-        >
-          Monthly
-        </span>
-        <span style={{ margin: '0 8px', color: '#ccc' }}>|</span>
-        <span
-          style={{ cursor: 'pointer', fontWeight: annual ? 'bold' : 'normal', color: annual ? 'rgba(26, 95, 122, 0.9)' : '#999', fontSize: '0.9rem' }}
-          onClick={() => setAnnual(true)}
-        >
-          Annual <span style={{ fontSize: '0.75rem', color: '#198754' }}>Save 35%</span>
-        </span>
-      </div>
       <Row>
         {tiers.map(({ key, name, accent, price, features }) => {
           const tierPrice = annual ? price.annual : price.monthly;
@@ -153,6 +138,21 @@ export default function PricingTable({ currentPlan, onSelectPlan }) {
           );
         })}
       </Row>
+      <div className="text-center mt-2">
+        <span
+          style={{ cursor: 'pointer', fontWeight: !annual ? 'bold' : 'normal', color: !annual ? 'rgba(26, 95, 122, 0.9)' : '#999', fontSize: '0.9rem' }}
+          onClick={() => setAnnual(false)}
+        >
+          Monthly
+        </span>
+        <span style={{ margin: '0 8px', color: '#ccc' }}>|</span>
+        <span
+          style={{ cursor: 'pointer', fontWeight: annual ? 'bold' : 'normal', color: annual ? 'rgba(26, 95, 122, 0.9)' : '#999', fontSize: '0.9rem' }}
+          onClick={() => setAnnual(true)}
+        >
+          Annual <span style={{ fontSize: '0.75rem', color: '#198754' }}>Save 35%</span>
+        </span>
+      </div>
     </Container>
   );
 }

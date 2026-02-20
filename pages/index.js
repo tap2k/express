@@ -11,6 +11,7 @@ import MyReels from "../components/myreels";
 import UsageBanner from "../components/usagebanner";
 import PricingTable from "../components/pricingtable";
 import LandingHero from "../components/landinghero";
+import FAQ from "../components/faq";
 import LandingFooter from "../components/landingfooter";
 
 export default ({ user, jwt, channels, planData }) => {
@@ -41,6 +42,7 @@ export default ({ user, jwt, channels, planData }) => {
         <>
           <LandingHero />
           <PricingTable />
+          <FAQ />
           <LandingFooter />
         </>
       )}
