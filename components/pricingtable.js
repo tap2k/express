@@ -19,7 +19,7 @@ const tiers = [
     key: 'starter',
     name: 'Starter',
     accent: '#0d6efd',
-    price: { monthly: '$9', annual: '$5.85' },
+    price: { monthly: '$5', annual: '$4' },
     features: [
       '25 channels, 5 GB storage',
       'Custom markers and overlays',
@@ -30,7 +30,7 @@ const tiers = [
     key: 'pro',
     name: 'Pro',
     accent: '#198754',
-    price: { monthly: '$32', annual: '$20.80' },
+    price: { monthly: '$20', annual: '$16' },
     features: [
       'Unlimited channels, 50 GB storage',
       'Everything in Starter',
@@ -150,7 +150,7 @@ export default function PricingTable({ currentPlan, onSelectPlan }) {
           style={{ cursor: 'pointer', fontWeight: annual ? 'bold' : 'normal', color: annual ? 'rgba(26, 95, 122, 0.9)' : '#999', fontSize: '0.9rem' }}
           onClick={() => setAnnual(true)}
         >
-          Annual <span style={{ fontSize: '0.75rem', color: '#198754' }}>Save 35%</span>
+          Annual <span style={{ fontSize: '0.75rem', color: '#198754' }}>Save 20%</span>
         </span>
       </div>
     </Container>

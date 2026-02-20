@@ -2,7 +2,7 @@
 
 ## Tier Structure
 
-| | Free | Starter $9/mo | Pro $32/mo | Enterprise |
+| | Free | Starter $5/mo | Pro $20/mo | Enterprise |
 |--|------|------------------|---------------|------------|
 | **Storage** | 250MB | 5GB | 50GB | Custom |
 | **Channels** | 5 | 25 | Unlimited | Unlimited |
@@ -18,7 +18,7 @@
 | **Custom domains** | No | No | No | Yes |
 | **SSO** | No | No | No | Yes |
 | **Support** | Email | Email | Email (priority) | Email (SLA) |
-| **Annual discount** | — | 35% ($5.85/mo) | 35% ($20.80/mo) | Custom |
+| **Annual discount** | — | 20% ($4/mo) | 20% ($16/mo) | Custom |
 
 ---
 
@@ -112,8 +112,8 @@
 | Plan | Monthly | Annual (per month) | Annual (total) |
 |------|---------|-------------------|----------------|
 | Free | 0 | 0 | 0 |
-| Starter | 900 | 585 | 7020 |
-| Pro | 3200 | 2080 | 24960 |
+| Starter | 500 | 400 | 4800 |
+| Pro | 2000 | 1600 | 19200 |
 | Enterprise | Custom | Custom | Custom |
 
 ### Stripe Integration Points
@@ -204,14 +204,14 @@ In the Stripe Dashboard → Products → Add Product:
 
 **Starter Plan:**
 - Name: "Starter"
-- Monthly price: $9/month (recurring)
-- Annual price: $70.20/year ($5.85/month equivalent, recurring)
+- Monthly price: $5/month (recurring)
+- Annual price: $48/year ($4/month equivalent, recurring)
 - Copy both Price IDs (`price_...`) → set as `STRIPE_STARTER_MONTHLY_PRICE_ID` and `STRIPE_STARTER_ANNUAL_PRICE_ID`
 
 **Pro Plan:**
 - Name: "Pro"
-- Monthly price: $32/month (recurring)
-- Annual price: $249.60/year ($20.80/month equivalent, recurring)
+- Monthly price: $20/month (recurring)
+- Annual price: $192/year ($16/month equivalent, recurring)
 - Copy both Price IDs → set as `STRIPE_PRO_MONTHLY_PRICE_ID` and `STRIPE_PRO_ANNUAL_PRICE_ID`
 
 ### 3. Get API Keys
