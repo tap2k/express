@@ -73,34 +73,18 @@ export default function GoogleCallback({ error, jwt }) {
 
   return (
     <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px',
-      height: '100vh',
-      backgroundColor: '#f8f9fa',
+      backgroundColor: 'rgba(255, 255, 255, 0.85)',
+      zIndex: 9999,
     }}>
-      <h2 style={{
-        fontSize: '1.8rem',
-        color: '#34495e',
-        textAlign: 'center',
-        marginBottom: '20px',
-        fontWeight: '500',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        Processing Login
-      </h2>
-      <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      <p style={{
-        fontSize: '1rem',
-        color: '#7f8c8d',
-        textAlign: 'center',
-        marginTop: '20px',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        Please wait while we log you in...
-      </p>
+      <Spinner color="dark" style={{ width: '3rem', height: '3rem' }} />
     </div>
   );
 }
