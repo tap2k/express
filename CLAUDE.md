@@ -5,7 +5,7 @@ Multimedia content sharing platform using Maps, Slideshows, and Grids. Built wit
 ## Architecture
 
 ```
-Frontend (this repo)          Backend (/Users/parikh/dev/mvcweb/strapi)
+Frontend (this repo)          Backend (../strapi)
 ├── components/  (58 React)   ├── src/api/channel/
 ├── hooks/       (32 custom)  ├── src/api/content/
 ├── pages/       (routes)     ├── src/api/tag/
@@ -17,9 +17,9 @@ Frontend (this repo)          Backend (/Users/parikh/dev/mvcweb/strapi)
 
 **Data flow:** UI Components → Custom Hooks → Next.js API Routes → Strapi API → Database/File Storage
 
-### Sibling Client: Admin (`/Users/parikh/dev/mvcweb/admin`)
+### Sibling Client: Admin (`../admin`)
 
-A separate Next.js 13 app sharing the same Strapi backend and nearly identical tech stack. Admin is the full management interface (24 pages, 48 hooks) with deeper CRUD for channels, content, tags, and tilesets. Express is the lighter public-facing client. Features may exist in one but not the other — check the admin codebase when adding capabilities.
+An older separate Next.js 13 app sharing the same Strapi backend and nearly identical tech stack. Features may exist in one but not the other. Only refer to this codebase if asked.
 
 ## Tech Stack
 
@@ -135,6 +135,5 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 - **`reactStrictMode: false`** in next.config.js (intentional)
 - Image domains are whitelisted in `next.config.js` for `next/image`
 - `@/*` path alias configured in `jsconfig.json`
-- The Strapi backend is a separate codebase at `/Users/parikh/dev/mvcweb/strapi`
 - Video generation is async: request is acknowledged immediately, result is emailed
 - Permission checks are recursive up the channel hierarchy (can be expensive for deep nesting)

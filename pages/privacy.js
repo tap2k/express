@@ -70,8 +70,7 @@ export default function Privacy() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Self-Hosted Instances</h3>
           <p style={textStyle}>
-            Express is open source. If you run your own instance, your data stays entirely on your own
-            infrastructure. This policy applies only to the hosted version at the domain you accessed it from.
+            Express is open source. If you run your own instance, you are responsible for securing your data. This policy applies only to the hosted version at the domain you accessed it from.
           </p>
         </div>
 

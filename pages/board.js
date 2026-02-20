@@ -34,7 +34,7 @@ export default ({ channel, user, jwt }) => {
                 minHeight: '100vh',
                 padding: '4rem',
             }}>
-                <PageMenu loggedIn={jwt} /> 
+                {jwt && <PageMenu loggedIn={jwt} />}
                 <Banner 
                     channel={channel}
                     foregroundColor={!channel.picture?.url && channel.foreground_color}

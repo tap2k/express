@@ -11,10 +11,10 @@ const features = [
 ];
 
 const useCases = [
-  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on a qualitative GIS.' },
-  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture their experiences in context.' },
+  { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on a multimedia map.' },
   { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and text.' },
   { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to the places where it happened.' },
+  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture their experiences in context.' },
 ];
 
 const CardGrid = ({ items }) => (
@@ -81,9 +81,22 @@ export default function LandingHero() {
           Get Started Free
         </a>
         <div style={{ marginTop: '32px', padding: '0 20px' }}>
-          <img
+          {/*<img
             src="/express.png"
             alt="Express map view with media markers"
+            style={{
+              maxWidth: '720px',
+              width: '100%',
+              borderRadius: '10px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            }}
+          />*/}
+          <iframe
+            src="https://express.represent.org/map?channelid=bihar"
+            width="800"
+            height="600"
+            frameBorder="0"
+            allowFullScreen
             style={{
               maxWidth: '720px',
               width: '100%',

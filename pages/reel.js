@@ -14,7 +14,7 @@ export default ({ channel, currslide, jwt }) => {
 
     return (
         <div className={isInactive ? 'inactive-ui' : ''}>
-            <PageMenu loggedIn={jwt} />
+            {jwt && <PageMenu loggedIn={jwt} />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} jwt={jwt} style={{backgroundColor: 'black'}} />
         </div>
     );

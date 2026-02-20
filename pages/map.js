@@ -21,7 +21,7 @@ export default ({ channel, tilesets, jwt, planData }) => {
     return (
         <>
             <div style={{ position: 'absolute', width: width}}>
-                <PageMenu loggedIn={jwt} /> 
+                {jwt && <PageMenu loggedIn={jwt} />}
                 {/*<Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}

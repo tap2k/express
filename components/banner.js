@@ -14,7 +14,7 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
 
   return (
     <>
-      <LoginButton style={makeStyle} user={user} jwt={jwt} />
+      {jwt && <LoginButton style={makeStyle} user={user} jwt={jwt} />}
       <Alert style={{
         backgroundColor: 'transparent',
         padding: '1.5rem',

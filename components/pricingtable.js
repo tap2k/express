@@ -23,7 +23,7 @@ const tiers = [
     features: [
       '25 channels, 5 GB storage',
       'Custom markers and overlays',
-      'Collaboration with editors',
+      'Invite other editors',
     ],
   },
   {

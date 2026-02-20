@@ -302,7 +302,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
                           <small>{tag.tag}</small>
                         </td>
                         <td style={{paddingRight:15}}>
-                          <img width={25} src={url}/> 
+                          <img width={25} src={url}/>
                         </td>
                       </tr>
                   )
