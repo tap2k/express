@@ -22,7 +22,7 @@ export default ({ user, jwt, channels, planData }) => {
         <>
           <BannerTwo user={user} jwt={jwt} />
           <div style={{ marginTop: '16px', marginBottom: '8px' }}>
-            {planData && <UsageBanner planData={planData} onUpgrade={() => setPricingOpen(true)} />}
+            {planData?.tierConfig && <UsageBanner planData={planData} onUpgrade={() => setPricingOpen(true)} />}
           </div>
           <MyReels channels={channels} user={user} jwt={jwt} planData={planData} />
           <div style={{ marginTop: '24px' }} />

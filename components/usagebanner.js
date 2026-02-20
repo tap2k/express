@@ -56,7 +56,7 @@ export default function UsageBanner({ planData, onUpgrade }) {
             {(plan || 'free').charAt(0).toUpperCase() + (plan || 'free').slice(1)}
           </Badge>
         </Col>
-        {storageLimit && <Col>
+        {storageLimit ? <Col>
           <div style={{ position: 'relative' }}>
             <Progress
               value={storagePercent}
@@ -79,6 +79,10 @@ export default function UsageBanner({ planData, onUpgrade }) {
               {storageText}
             </span>
           </div>
+        </Col> : <Col xs="auto">
+          <span style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+            {formatStorage(storageMB)} used
+          </span>
         </Col>}
         <Col xs="auto">
           <span style={{ fontSize: '0.85rem', color: '#6c757d' }}>
