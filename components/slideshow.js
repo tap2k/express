@@ -34,7 +34,7 @@ const downloadURL = async (dlurl) => {
   }
 }
 
-const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) => {
+const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval, togglePlayPause, toggleFullScreen}) => {
   const carouselContext = useContext(CarouselContext);
   const timerRef = useRef(null);
 
@@ -43,6 +43,27 @@ const SlideTracker = ({ setCurrSlide, getCurrentContent, isPlaying, interval}) =
     const nextSlideIndex = (carouselContext.state.currentSlide + 1) % carouselContext.state.totalSlides;
     carouselContext.setStoreState({ currentSlide: nextSlideIndex });
   }, [carouselContext]);
+
+  const retreatSlide = useCallback(() => {
+    if (!carouselContext) return;
+    const total = carouselContext.state.totalSlides;
+    const prevSlideIndex = (carouselContext.state.currentSlide - 1 + total) % total;
+    carouselContext.setStoreState({ currentSlide: prevSlideIndex });
+  }, [carouselContext]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+      switch (e.key) {
+        case 'ArrowRight': advanceSlide(); break;
+        case 'ArrowLeft': retreatSlide(); break;
+        case ' ': e.preventDefault(); togglePlayPause(); break;
+        case 'f': toggleFullScreen(); break;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [advanceSlide, retreatSlide, togglePlayPause, toggleFullScreen]);
 
   useEffect(() => {
     const onChange = () => {
@@ -325,7 +346,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
           infinite 
           currentSlide={currSlide}
         >
-          <SlideTracker setCurrSlide={setCurrSlide} getCurrentContent={getCurrentContent} isPlaying={isPlaying} interval={channel.interval || defaultInterval}  />
+          <SlideTracker setCurrSlide={setCurrSlide} getCurrentContent={getCurrentContent} isPlaying={isPlaying} interval={channel.interval || defaultInterval} togglePlayPause={togglePlayPause} toggleFullScreen={toggleFullScreen} />
           <Slider style={{height: height, width: width}}>
             {showTitle && (
               <Slide style={{height: height, width: width}}>
