@@ -2,12 +2,15 @@
 
 ## Tier Structure
 
-| | Free | Starter $29.99/mo | Pro $59.99/mo | Enterprise |
-|--|------|-------------------|---------------|------------|
-| **Storage** | 100MB | 5GB | 50GB | Custom |
-| **Channels** | 3 | 25 | Unlimited | Unlimited |
+| | Free | Starter $9/mo | Pro $32/mo | Enterprise |
+|--|------|------------------|---------------|------------|
+| **Storage** | 250MB | 5GB | 50GB | Custom |
+| **Channels** | 5 | 25 | Unlimited | Unlimited |
 | **Per-file limit** | 20MB | 100MB | 1GB | Custom |
 | **Tileset picker** | Default only | Yes | Yes | Yes |
+| **Custom marker colors** | No | Yes | Yes | Yes |
+| **Custom marker icons** | No | Yes | Yes | Yes |
+| **Map overlays** | No | Yes | Yes | Yes |
 | **Collaboration** | View-only | Owner + editors | Owner + editors | Owner + editors |
 | **Video generation** | No | No | Yes | Yes |
 | **API access** | No | No | No | Yes |
@@ -15,7 +18,7 @@
 | **Custom domains** | No | No | No | Yes |
 | **SSO** | No | No | No | Yes |
 | **Support** | Email | Email | Email (priority) | Email (SLA) |
-| **Annual discount** | — | ~20% ($23.99/mo) | ~20% ($47.99/mo) | Custom |
+| **Annual discount** | — | 35% ($5.85/mo) | 35% ($20.80/mo) | Custom |
 
 ---
 
@@ -37,6 +40,7 @@
 - New uploads and channel creation blocked until usage is under the new limit
 - Users can delete content themselves to get under the limit, or re-upgrade
 - Over-limit banner shown with upgrade CTA
+- *Note: Over-limit content on downgraded accounts is preserved indefinitely. If storage abuse becomes material, add a 90-day retention policy (content archived, not deleted, restorable on re-upgrade).*
 
 ---
 
@@ -59,6 +63,24 @@
 - Free users get the default tileset only (no dropdown in map view)
 - Starter+ users see the tileset selection dropdown
 - Server-side enforcement prevents tileset changes via API for Free users
+
+### Custom Marker Colors
+- Free users get default marker colors only (color dropdown hidden in tag editor)
+- Starter+ users can set marker colors per tag
+- Server-side enforcement strips markercolor changes from tag update requests for Free users
+- Existing custom colors remain visible on downgrade — only editing is blocked
+
+### Custom Marker Icons
+- Free users cannot upload custom marker icons (thumbnail upload hidden in tag editor)
+- Starter+ users can upload custom icon thumbnails per tag
+- Server-side enforcement strips thumbnail uploads from tag update requests for Free users
+- Existing custom icons remain visible on downgrade — only uploading new ones is blocked
+
+### Map Overlays
+- Free users cannot upload overlays (overlay button hidden in map view)
+- Starter+ users see the overlay button and can upload/manage overlays
+- Server-side enforcement blocks overlay upload requests for Free users
+- Existing overlays remain visible on downgrade — only new uploads are blocked
 
 ### Collaboration
 - Free: view-only access via public links (uniqueID)
@@ -90,8 +112,8 @@
 | Plan | Monthly | Annual (per month) | Annual (total) |
 |------|---------|-------------------|----------------|
 | Free | 0 | 0 | 0 |
-| Starter | 2999 | 2399 | 28788 |
-| Pro | 5999 | 4799 | 57588 |
+| Starter | 900 | 585 | 7020 |
+| Pro | 3200 | 2080 | 24960 |
 | Enterprise | Custom | Custom | Custom |
 
 ### Stripe Integration Points
@@ -121,7 +143,7 @@ New fields added to `users-permissions` user:
 Single source of truth at `strapi/config/tiers.js` — defines all limits, prices, and feature flags per tier.
 
 ### Client Config (Express)
-Display-friendly copy at `express/data/tiers.js` — human-readable limits and prices for the pricing table UI.
+Tier display data is defined inline in `express/components/pricingtable.js` — human-readable limits and prices for the pricing table UI.
 
 ---
 
@@ -131,9 +153,11 @@ Display-friendly copy at `express/data/tiers.js` — human-readable limits and p
 The default. Users sign up on the hosted platform, tiers enforced per-user via Stripe billing.
 
 ### Self-Hosted (GitHub)
-Anyone can clone the repo and run it. **All features are unlocked with no tier enforcement** when Stripe is not configured. If `STRIPE_SECRET_KEY` is not set, all tier checks are skipped and every user gets full access.
+Anyone can clone the repo and run it. **All features are unlocked with no tier enforcement** when Stripe is not configured. Each app checks its own env var:
+- **Strapi:** `TIER_ENFORCEMENT` — when unset, `checkTierLimit()` returns null and all server-side limits are skipped
+- **Express:** `STRIPE_SECRET_KEY` — when unset, the video generation tier check is skipped
 
-**Implementation:** Enforcement code checks `if (!process.env.STRIPE_SECRET_KEY) → allow` before any tier check. No license keys, no deployment modes, no extra env vars.
+**Implementation:** No license keys, no deployment modes. Self-hosters simply don't set these env vars.
 
 ### Enterprise (Cloud)
 Enterprise is manually managed:
@@ -147,37 +171,131 @@ Deferred until first customer requests it. Would use a license key instead of St
 
 ---
 
+## Environment Variables
+
+### Strapi (`strapi/.env`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `TIER_ENFORCEMENT` | Cloud only | Set to `true` to enable tier limit checks. Omit for self-hosted (all features unlocked). |
+
+### Express (`express/.env`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `STRIPE_SECRET_KEY` | Cloud only | Stripe secret key (`sk_test_...` or `sk_live_...`). Used for checkout, portal, and webhooks. Also gates the video generation tier check. |
+| `STRIPE_WEBHOOK_SECRET` | Cloud only | Stripe webhook signing secret (`whsec_...`). Used to verify webhook payloads. |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Cloud only | Stripe publishable key (`pk_test_...` or `pk_live_...`). Exposed to the browser for Stripe.js. |
+| `STRIPE_STARTER_MONTHLY_PRICE_ID` | Cloud only | Stripe Price ID for Starter monthly plan. |
+| `STRIPE_STARTER_ANNUAL_PRICE_ID` | Cloud only | Stripe Price ID for Starter annual plan. |
+| `STRIPE_PRO_MONTHLY_PRICE_ID` | Cloud only | Stripe Price ID for Pro monthly plan. |
+| `STRIPE_PRO_ANNUAL_PRICE_ID` | Cloud only | Stripe Price ID for Pro annual plan. |
+
+---
+
+## Stripe Setup
+
+### 1. Create a Stripe Account
+- Sign up at [dashboard.stripe.com](https://dashboard.stripe.com)
+- Use **Test Mode** during development (toggle in top-right of dashboard)
+
+### 2. Create Products and Prices
+In the Stripe Dashboard → Products → Add Product:
+
+**Starter Plan:**
+- Name: "Starter"
+- Monthly price: $9/month (recurring)
+- Annual price: $70.20/year ($5.85/month equivalent, recurring)
+- Copy both Price IDs (`price_...`) → set as `STRIPE_STARTER_MONTHLY_PRICE_ID` and `STRIPE_STARTER_ANNUAL_PRICE_ID`
+
+**Pro Plan:**
+- Name: "Pro"
+- Monthly price: $32/month (recurring)
+- Annual price: $249.60/year ($20.80/month equivalent, recurring)
+- Copy both Price IDs → set as `STRIPE_PRO_MONTHLY_PRICE_ID` and `STRIPE_PRO_ANNUAL_PRICE_ID`
+
+### 3. Get API Keys
+- Dashboard → Developers → API keys
+- Copy the **Secret key** → `STRIPE_SECRET_KEY`
+- Copy the **Publishable key** → `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+
+### 4. Set Up Webhooks
+- Dashboard → Developers → Webhooks → Add endpoint
+- Endpoint URL: `https://your-domain.com/api/stripeWebhook`
+- Events to listen for:
+  - `checkout.session.completed`
+  - `customer.subscription.updated`
+  - `customer.subscription.deleted`
+  - `invoice.payment_failed`
+- Copy the **Signing secret** (`whsec_...`) → `STRIPE_WEBHOOK_SECRET`
+
+### 5. Configure Customer Portal
+- Dashboard → Settings → Billing → Customer portal
+- Enable: subscription cancellation, plan switching, payment method updates
+- This powers the `/api/createPortal` endpoint
+
+### 6. Test Cards
+Use these in test mode:
+- `4242 4242 4242 4242` — successful payment
+- `4000 0000 0000 0341` — payment declined
+- Any future expiry, any 3-digit CVC, any billing ZIP
+
+---
+
 ## Implementation Phases
 
-### Phase 1: Tier Configuration & Data Model
-- Create tier config files (Strapi + Express)
-- Extend user schema with plan/billing fields
-- Add helper functions to Strapi (getUserTierConfig, calculateUserTotalStorage, etc.)
+### Phase 1: Tier Configuration & Data Model — DONE
+- [x] Tier config: `strapi/config/tiers.js` (server), inline in `components/pricingtable.js` (client)
+- [x] User schema extended: plan, stripeCustomerId, stripeSubscriptionId, billingInterval, planOverrides
+- [x] Helper functions: getUserTierConfig, calculateUserTotalStorage, countUserChannels, getUserWithPlan, checkTierLimit
 
-### Phase 2: Server-Side Enforcement
-- getUserPlan API endpoint
-- Enforce limits on: channel creation, uploads (storage + file size), video generation, editor management, tileset selection
+### Phase 2: Server-Side Enforcement — DONE
+- [x] `getUserPlan` endpoint (`strapi/src/api/user/`)
+- [x] Channel creation limit (maxChannels check)
+- [x] Upload enforcement (storage limit + per-file size limit)
+- [x] Video generation gating (Pro+ only, checked in `express/pages/api/makevideo.js`)
+- [x] Collaboration gating (addEditor blocked for Free)
+- [x] Tileset picker gating (stripped for Free in updateChannel)
+- [x] Custom marker colors/icons gating (stripped for Free in tag updates)
 
-### Phase 3: Stripe Integration
-- Install Stripe, configure env vars
-- Create checkout, webhook, and portal API routes
-- Strapi endpoints for plan management (called by webhooks)
+### Phase 3: Stripe Integration — TODO
+- [ ] Install Stripe, configure env vars
+- [ ] `POST /api/createCheckout` — Stripe checkout session
+- [ ] `POST /api/createPortal` — Stripe customer portal
+- [ ] `POST /api/stripeWebhook` — handle subscription events
+- [ ] Strapi endpoints: updateUserPlan, called by webhook handler
+- [ ] Wire PricingTable `onSelectPlan` to checkout flow
 
-### Phase 4: Frontend — Marketing Page, Pricing & Usage Display
-- Marketing landing page replaces logged-out index (hero, features, sample maps, pricing table, links to github for frontend and backend, footer)
-- Pricing table component with monthly/annual toggle
-- Usage banner on logged-in dashboard (storage bar, channel count)
-- Checkout/portal hooks
+### Phase 4: Frontend — Marketing Page, Pricing & Usage Display — PARTIAL
+- [x] Pricing table with monthly/annual toggle (`components/pricingtable.js`)
+- [x] Usage banner on dashboard (`components/usagebanner.js`) — plan badge opens pricing modal
+- [x] Landing hero + features grid for logged-out users (`components/landinghero.js`)
+- [x] Pricing table shown below hero for logged-out users
+- [x] Google OAuth CTA on hero and pricing table (logged-out "Get Started" buttons)
+- [x] Use cases section on marketing page (participatory mapping, design probes, photovoice, oral history)
+- [x] Footer with GitHub links (frontend + backend repos), privacy, terms, contact
+- [x] Favicon (teal "E" on rounded square)
+- [x] Privacy policy page (`pages/privacy.js`)
+- [x] Terms of service page (`pages/terms.js`)
+- [ ] Checkout/portal hooks (blocked on Phase 3)
 
-### Phase 5: Frontend Feature Gating
-- Gate tileset picker, video generation button, editor management, channel creation in UI
-- Client-side file size validation
-- Upgrade prompts at limit boundaries
+### Phase 5: Frontend Feature Gating — DONE
+- [x] Tileset picker hidden for Free (`components/mapper.js`)
+- [x] Overlay button hidden for Free (`components/mapper.js`)
+- [x] Video generation button hidden below Pro (`components/addmenu.js`)
+- [x] Custom marker colors hidden for Free (`components/tageditor.js`)
+- [x] Custom marker icons hidden for Free (`components/tageditor.js`)
+- [x] Channel creation disabled at limit (`components/myreels.js`)
+- [x] Client-side file size validation (`components/fileuploader.js`)
 
-### Phase 6: Navigation & Polish
-- Pricing/upgrade link in navbar
-- Over-limit display for downgrades
-- Webhook edge cases and idempotency
+### Phase 6: Navigation & Polish — DONE
+- [x] Pricing modal triggered from UsageBanner plan badge
+- [x] Over-limit warnings (storage + channels) in UsageBanner
+- [x] Contact email: express@represent.org (Enterprise)
+
+### Still TODO (in priority order)
+1. **Stripe integration** (Phase 3) — payment flow, webhooks, subscription management
+2. **Marketing page: examples** — link to live sample channels/maps users can explore
 
 ---
 

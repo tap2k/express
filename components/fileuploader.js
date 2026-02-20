@@ -7,7 +7,7 @@ import { RecorderWrapper } from './recorderstyles';
 import UploadWidget from "./uploadwidget";
 import ContentInputs from "./contentinputs";
 
-export default function FileUploader({ channelID, privateID, jwt, uploading, setUploading, lat, long, ...props }) {
+export default function FileUploader({ channelID, privateID, jwt, uploading, setUploading, lat, long, planData, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -21,6 +21,15 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
     e.preventDefault();
     if (!titleRef.current?.value && !uploadedFiles.length && !extUrlRef.current?.value)
       return;
+    if (planData?.tierConfig?.maxFileSizeMB) {
+      const maxBytes = planData.tierConfig.maxFileSizeMB * 1024 * 1024;
+      for (const file of uploadedFiles) {
+        if (file.size > maxBytes) {
+          alert(`File "${file.name}" exceeds the ${planData.tierConfig.maxFileSizeMB} MB limit for your plan.`);
+          return;
+        }
+      }
+    }
     if (setUploading)
       setUploading(true);
     try {

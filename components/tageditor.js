@@ -20,7 +20,7 @@ const colors = [
   { label: "green", value: "green" }
 ];
 
-export default function TagEditor({ tags, privateID, jwt, onSave }) {
+export default function TagEditor({ tags, privateID, jwt, planData, onSave }) {
   const [currTag, setCurrTag] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [deletePic, setDeletePic] = useState(false);
@@ -92,7 +92,7 @@ export default function TagEditor({ tags, privateID, jwt, onSave }) {
             defaultValue={currTag.tag}
           />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 10 }}>
+          {(planData?.tierConfig?.customMarkerColors !== false) && <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 10 }}>
             <span style={{ fontSize: 'large' }}>Marker Color</span>
             <Input
               key={`color-${currTag.id}`}
@@ -113,9 +113,9 @@ export default function TagEditor({ tags, privateID, jwt, onSave }) {
                 height={32}
               />
             )}
-          </div>
+          </div>}
 
-          <UploadWidget
+          {(planData?.tierConfig?.customMarkerIcons !== false) && <UploadWidget
             mediaUrl={currTag.thumbnail?.url}
             uploadedFiles={uploadedFiles}
             setUploadedFiles={setUploadedFiles}
@@ -123,7 +123,7 @@ export default function TagEditor({ tags, privateID, jwt, onSave }) {
             accept="image/*"
             text="Drop custom icon here, or"
             style={{ minHeight: '150px' }}
-          />
+          />}
 
           <div style={{ display: 'flex', gap: '5px', marginTop: '20px' }}>
             <Button onClick={handleSaveTag} block color="success" title="Save tag">

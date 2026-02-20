@@ -3,12 +3,13 @@ import nookies from 'nookies';
 import getMediaURL from "../hooks/getmediaurl";
 import getChannel from "../hooks/getchannel";
 import getUser from "../hooks/getuser";
+import getUserPlan from "../hooks/getuserplan";
 import AddMenu from "../components/addmenu";
 import PageMenu from '../components/pagemenu';
 import Banner from '../components/banner';
 import Wall from "../components/wall";
 
-export default ({ channel, user, jwt }) => {
+export default ({ channel, user, jwt, planData }) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const backgroundStyle = channel.picture?.url 
@@ -45,7 +46,7 @@ export default ({ channel, user, jwt }) => {
                     channel={channel}
                     jwt={jwt}
                 />
-                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} user={user} download />
+                <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} user={user} download planData={planData} />
             </div>
         </div>
     );
@@ -80,12 +81,15 @@ export async function getServerSideProps(ctx) {
             };
         }
 
-        return { 
-            props: { 
+        const planData = await getUserPlan(jwt);
+
+        return {
+            props: {
                 channel: channel,
                 jwt: channel.canedit ? jwt : null,
                 user: user,
-            } 
+                planData: planData,
+            }
         };
     } catch (err) {
         console.error(err);

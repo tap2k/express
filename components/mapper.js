@@ -19,7 +19,7 @@ import getTagURL from "../hooks/gettagurl";
 
 const defaultInterval = 3000;
 
-export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, legend, isPlaying, ...props }) 
+export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, animate, tour, legend, isPlaying, planData, ...props }) 
 {  
   const [mapRef, setMapRef] = useState();
   const [currSlide, setCurrSlide] = useState(-1);
@@ -171,7 +171,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         >
           <FaTags size={18} />
         </button>}
-        {jwt && <button
+        {jwt && (planData?.tierConfig?.overlays !== false) && <button
           onClick={toggleOverlay}
           style={{
             width: '40px',
@@ -191,7 +191,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         >
           <FaLayerGroup size={18} />
         </button>}
-        {tilesets && tilesets.length > 0 && <Input
+        {tilesets && tilesets.length > 0 && (planData?.tierConfig?.tilesetPicker !== false) && <Input
           type="select"
           defaultValue={channel.tileset?.id}
           onChange={handleTilesetChange}
@@ -218,6 +218,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
             tags={channel.tags}
             privateID={privateID}
             jwt={jwt}
+            planData={planData}
             onSave={() => {
               setIsTagModalOpen(false);
               router.replace(router.asPath, undefined, { scroll: false });

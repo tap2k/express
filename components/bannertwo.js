@@ -5,29 +5,30 @@ import LoginButton from './loginbutton';
 export default function BannerTwo({ user, jwt, nologin }) {
     return (
         <Navbar style={{
-            backgroundColor: 'rgba(26, 95, 122, 0.9)',
+            background: 'linear-gradient(160deg, #1a5f7a 0%, #2a7a94 100%)',
             color: 'white',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             position: 'relative',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             marginBottom: '15px',
-            padding: '8px 16px'
+            padding: '14px 20px'
         }}>
             <NavbarBrand style={{ margin: 0, padding: 0 }}>
-                <b style={{
-                    fontSize: 'xx-large',
+                <span style={{
+                    fontSize: '1.9rem',
+                    fontWeight: 700,
                     color: '#ffffff',
-                    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'
+                    letterSpacing: '0.06em',
                 }}>
-                    EXPRESS
-                </b>
+                    Express
+                </span>
             </NavbarBrand>
             {!nologin &&
-                <LoginButton user={user} jwt={jwt}
-                    style={{ position: 'absolute', right: '16px' }}
-                />}
+                <div style={{ position: 'absolute', right: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {user?.email && <span className="d-none d-md-inline" style={{ fontSize: '1.0rem', color: 'rgba(255,255,255,0.7)' }}>{user.email}</span>}
+                    <LoginButton user={user} jwt={jwt} />
+                </div>}
         </Navbar>
     );
 }

@@ -10,7 +10,7 @@ import AudioRecorder from '../components/audiorecorder';
 
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
 
-export default function Uploader ({ channelID, privateID, jwt, toggle, useLocation=false }) {
+export default function Uploader ({ channelID, privateID, jwt, toggle, useLocation=false, planData }) {
   const [activeComponent, setActiveComponent] = useState('upload');
   const [uploading, setUploading] = useState();
 
@@ -33,7 +33,7 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
   const renderComponent = () => {
     switch(activeComponent) {
       case 'upload':
-        return <FileUploader channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
+        return <FileUploader channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} planData={planData} />;
       case 'video':
         return <VideoRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'photo':

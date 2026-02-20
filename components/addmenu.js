@@ -18,7 +18,7 @@ const CircularMenuButton = styled(MenuButton)`
   border-radius: 50%;
 `;
 
-export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, jwt, user, download }) {
+export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, jwt, user, download, planData }) {
   if (!channel)
     return;
 
@@ -104,7 +104,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
         { jwt && download && <CircularMenuButton onClick={handleSaveChannel} title="Save channel">
           <FaSave  />
         </CircularMenuButton> }
-        { jwt && download && <CircularMenuButton onClick={handleDownload} title="Download video">
+        { jwt && download && (planData?.tierConfig?.videoGeneration !== false) && <CircularMenuButton onClick={handleDownload} title="Download video">
           <FaDownload  />
         </CircularMenuButton> }
         {channel.audiofile?.url && false &&
@@ -130,6 +130,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
                 privateID={privateID}
                 jwt={jwt}
                 toggle={() => setIsUploadModalOpen(false)}
+                planData={planData}
             />
           </ModalBody>
         </Modal>

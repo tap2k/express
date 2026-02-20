@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import { FaUpload, FaEdit, FaShare, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa';
+
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -25,14 +26,12 @@ function formatFileSize(bits, decimalPoint) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export default function MyReels ({ channels, user, jwt }) {
+export default function MyReels ({ channels, user, jwt, planData }) {
 
   const [uploading, setUploading] = useState(false);
   const [editorChannel, setEditorChannel] = useState(null);
   const [editChannel, setEditChannel] = useState(null);
   const router = useRouter();
-  const totalSize = channels.reduce((sum, ch) => sum + (ch.size || 0), 0);
-
   const titleRef = useRef();
   const subtitleRef = useRef();
   const publicRef = useRef();
@@ -93,33 +92,39 @@ export default function MyReels ({ channels, user, jwt }) {
   };
 
   const handleAddChannel = () => {
+    if (planData?.tierConfig?.maxChannels !== null && planData?.tierConfig?.maxChannels !== undefined) {
+      const ownedCount = channels.filter(ch => ch.owner?.id === user?.id).length;
+      if (ownedCount >= planData.tierConfig.maxChannels) {
+        alert(`Channel limit reached. Your plan allows ${planData.tierConfig.maxChannels} channels.`);
+        return;
+      }
+    }
     setEditChannel({});
   };
 
-  // TODO: hacky with supabase username hiding
   return (
-    <Container className="py-3">
-      {user && <Row className="mb-3 px-2 align-items-center">
-        <Col>
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h5 style={{color: '#6c757d', marginBottom: 0}}>{user.provider != "supabase" ? `${user.username} || ${user.email}` : user.email}</h5>
-            {totalSize > 0 && <span style={{ fontSize: '0.75rem', color: '#999' }}>Total Data: {formatFileSize(totalSize)}</span>}
-          </div>
-          <button
-            onClick={handleAddChannel}
-            className="btn btn-primary btn-sm d-flex align-items-center"
-            style={{ borderRadius: '20px', padding: '6px 16px', whiteSpace: 'nowrap' }}
-            disabled={uploading}
-            title="Create new channel"
-          >
-            <FaPlus size={14} style={{ marginRight: '6px' }} />
-            New
-          </button>
-        </div>
-        </Col>
-      </Row> }
+    <Container className="pt-4 pb-2">
       <Row>
+        <Col xs="12" sm="6" lg="4" className="mb-4">
+          <Card
+            className="h-100"
+            onClick={handleAddChannel}
+            style={{
+              borderRadius: '10px',
+              border: '2px dashed #ccc',
+              cursor: uploading ? 'not-allowed' : 'pointer',
+              minHeight: '140px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <CardBody className="d-flex flex-column align-items-center justify-content-center" style={{ color: '#999' }}>
+              <FaPlus size={28} style={{ marginBottom: '8px', color: '#bbb' }} />
+              <span style={{ fontSize: '1rem', fontWeight: 500 }}>New Channel</span>
+            </CardBody>
+          </Card>
+        </Col>
         {channels.map((channel) => (
           <Col key={channel.uniqueID} xs="12" sm="6" lg="4" className="mb-4">
             <Card 
@@ -144,7 +149,7 @@ export default function MyReels ({ channels, user, jwt }) {
                       >
                       <FaEdit className="me-1" />
                     </button>
-                    { (user.id == channel.owner.id) && <button
+                    { (user.id == channel.owner.id) && (planData?.tierConfig?.collaboration !== false) && <button
                         onClick={() => setEditorChannel(channel)}
                         className="btn btn-outline-primary m-1"
                         style={{ flexGrow: 1, color: '#007bff', borderColor: '#007bff', borderRadius: '10px' }}
@@ -219,6 +224,7 @@ export default function MyReels ({ channels, user, jwt }) {
           </Button>
         </ModalBody>
       </Modal>
+
     </Container>
   );
 };

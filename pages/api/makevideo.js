@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { parseCookies } from 'nookies';
 //import sendEmail from "../../hooks/sendemail";
 //import setError from "../../hooks/seterror";
 
@@ -52,6 +53,24 @@ export default async function handler(req, res) {
     }
 
     const mvcurl = process.env.NEXT_PUBLIC_STRAPI_HOST || "http://localhost:1337";
+
+    // Tier enforcement: video generation is Pro+ only
+    if (process.env.STRIPE_SECRET_KEY) {
+        const cookies = parseCookies({ req });
+        if (cookies.jwt) {
+            try {
+                const planRes = await axios.get(`${mvcurl}/getUserPlan`, {
+                    headers: { Authorization: `Bearer ${cookies.jwt}` },
+                });
+                if (!planRes.data?.tierConfig?.videoGeneration)
+                    return res.status(403).json({ error: 'Video generation requires a Pro or Enterprise plan.' });
+            } catch (err) {
+                return res.status(403).json({ error: 'Unable to verify plan. Please log in.' });
+            }
+        } else {
+            return res.status(401).json({ error: 'Authentication required for video generation.' });
+        }
+    }
 
     try {
         // Video server spawns a background thread and returns 202 immediately.
