@@ -75,10 +75,15 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   };
 
   const handleSaveChannel = async ( ) => {
+    if ((deletePic || deleteAudio) && !window.confirm(`Remove existing ${deletePic && deleteAudio ? 'image and audio' : deletePic ? 'image' : 'audio'}?`)) {
+      setIsImageModalOpen(false);
+      setIsAudioModalOpen(false);
+      return;
+    }
     setUploading(true);
     const myFormData = new FormData();
     uploadedFiles.forEach(file => myFormData.append(file.name, file, file.name));
-    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedBackgroundColor, foregroundColor: selectedForegroundColor, deletePic: deletePic, deleteAudio: deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID, jwt});
+    await updateChannel({myFormData: myFormData, name: titleRef.current?.value, description: subtitleRef.current?.value, email: emailRef.current?.value, ispublic: publicRef.current?.checked, allowsubmissions: allowRef.current?.checked, showtitle: showTitleRef.current?.checked, interval: intervalRef.current?.value, picturefile: selectedImage, audiofile: selectedAudio, backgroundColor: selectedBackgroundColor, foregroundColor: selectedForegroundColor, deletePic, deleteAudio, setProgress: setProgress, channelID: channel.uniqueID, privateID, jwt});
     if (emailRef.current?.value != channel.email) {
       await sendEmailLinks({channelID: channel.uniqueID, privateID: privateID, channelName: channel.name, email: emailRef.current?.value});
     }

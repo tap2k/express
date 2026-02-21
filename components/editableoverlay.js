@@ -28,13 +28,13 @@ const moveIcon = new L.DivIcon({
   iconAnchor: [10, 10],
 });
 
-const trashHtml = renderToString(<FaTrash size={18} color="rgba(220,53,69,0.9)" style={{cursor: 'pointer', filter: 'drop-shadow(0 0 2px white)'}} />);
+/*const trashHtml = renderToString(<FaTrash size={18} color="rgba(220,53,69,0.9)" style={{cursor: 'pointer', filter: 'drop-shadow(0 0 2px white)'}} />);
 const deleteIcon = new L.DivIcon({
   className: '',
   html: trashHtml,
   iconSize: [18, 18],
   iconAnchor: [9, -16],
-});
+});*/
 
 function OverlayMarker({ latlng, setCorner, icon })
 {
@@ -115,7 +115,7 @@ export default function EditableOverlay({ overlayID, url, bounds, jwt, ...props 
     ));
   }
 
-  const confirmDelete = () => {
+  /*const confirmDelete = () => {
     confirmAlert({
       title: 'Confirm to delete',
       message: 'Are you sure you want to delete this overlay?',
@@ -130,7 +130,7 @@ export default function EditableOverlay({ overlayID, url, bounds, jwt, ...props 
         { label: 'No' }
       ]
     });
-  };
+  };*/
 
   return (
     [
@@ -140,7 +140,7 @@ export default function EditableOverlay({ overlayID, url, bounds, jwt, ...props 
       <OverlayMarker key={4} latlng={myBounds.getNorthEast()} setCorner={setNorthEast} />,
       <OverlayMarker key={5} latlng={myBounds.getSouthEast()} setCorner={setSouthEast} />,
       <OverlayMarker key={6} latlng={myBounds.getCenter()} setCorner={moveOverlay} icon={moveIcon} />,
-      <Marker key={7} position={myBounds.getNorthEast()} icon={deleteIcon} eventHandlers={{ click: confirmDelete }} />,
+      /*<Marker key={7} position={myBounds.getNorthEast()} icon={deleteIcon} eventHandlers={{ click: confirmDelete }} />,*/
     ]
   )
 }

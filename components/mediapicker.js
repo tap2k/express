@@ -30,20 +30,19 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
       setUploadedFiles([]);
   }, [selectedBackgroundColor]);
 
+  const hasDalle = dalle && process.env.NEXT_PUBLIC_AI_ENABLED === "true";
+  const hasColors = !!setSelectedBackgroundColor;
+  const hasMultipleTabs = hasDalle || hasColors;
+
   return (
     <div {...props}>
-      <ButtonGroup>
-        {/*gallery && (
-          <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(true); setShowDalle(false); setShowUpload(false)}} title="Gallery">
-            Gallery
-          </StyledButton>
-        )*/}
-        {dalle && process.env.NEXT_PUBLIC_AI_ENABLED === "true" && (
+      {hasMultipleTabs && <ButtonGroup>
+        {hasDalle && (
           <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(true); setShowUpload(false)}} title="AI Image">
             AI Image
           </StyledButton>
         )}
-        {setSelectedBackgroundColor && (
+        {hasColors && (
           <StyledButton color="info" onClick={() => {setShowGallery(false); setShowColors(true); setShowDalle(false);  setShowUpload(false)}} title="Colors">
             Colors
           </StyledButton>
@@ -51,7 +50,7 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
         {setUploadedFiles && <StyledButton color="primary" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(false); setShowUpload(true)}} title="Upload">
           Upload
         </StyledButton>}
-      </ButtonGroup>
+      </ButtonGroup>}
       {showGallery ? (
         gallery === "image" ? (
           <ImageGrid 

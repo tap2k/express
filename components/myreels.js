@@ -209,7 +209,7 @@ export default function MyReels ({ channels, user, jwt, planData }) {
       </Modal>
 
       <Modal isOpen={!!editChannel} toggle={() => setEditChannel(null)}>
-        <ModalHeader toggle={() => setEditChannel(null)}>{editChannel?.name || 'New Channel'}</ModalHeader>
+        <ModalHeader toggle={() => setEditChannel(null)}></ModalHeader>
         <ModalBody>
           {editChannel && <ChannelInputs
             channel={editChannel}

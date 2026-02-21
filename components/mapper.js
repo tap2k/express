@@ -11,6 +11,7 @@ import 'leaflet-defaulticon-compatibility';
 import * as L from 'leaflet';
 import updateChannel from "../hooks/updatechannel";
 import uploadOverlay from "../hooks/uploadoverlay";
+import deleteOverlay from "../hooks/deleteoverlay";
 import ContentMarker from "./contentmarker";
 import EditableOverlay from "./editableoverlay";
 import UploadWidget from "./uploadwidget";
@@ -30,6 +31,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   const [mapBounds, setMapBounds] = useState(null);
   const [overlayModal, setOverlayModal] = useState(false);
   const toggleOverlay = () => setOverlayModal(!overlayModal);
+  const [removeOverlay, setRemoveOverlay] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const router = useRouter();
 
@@ -155,12 +157,23 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     resetMap();
   }
 
-  async function handleOverlayUpload() {
-    if (!uploadedFiles.length) return;
-    const formData = new FormData();
-    formData.append(uploadedFiles[0].name, uploadedFiles[0], uploadedFiles[0].name);
-    await uploadOverlay({myFormData: formData, channelID: channel.uniqueID, jwt});
+  const existingOverlay = channel.overlays?.[0];
+
+  async function handleOverlaySave() {
+    if (removeOverlay && existingOverlay) {
+      if (!window.confirm('Remove existing overlay?')) {
+        toggleOverlay();
+        return;
+      }
+      await deleteOverlay({ overlayID: existingOverlay.id, jwt });
+    }
+    if (uploadedFiles.length) {
+      const formData = new FormData();
+      formData.append(uploadedFiles[0].name, uploadedFiles[0], uploadedFiles[0].name);
+      await uploadOverlay({ myFormData: formData, channelID: channel.uniqueID, jwt });
+    }
     setUploadedFiles([]);
+    setRemoveOverlay(false);
     toggleOverlay();
     router.replace(router.asPath, null, { scroll: false });
   }
@@ -176,7 +189,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
 
   return (
     <div {...props}>
-      {showTitle && (
+      {(showTitle || privateID || jwt) && (
         <div style={{
           position: 'absolute',
           top: (privateID || jwt) ? '65px' : '10px',
@@ -185,14 +198,16 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
+          minWidth: showTitle ? '250px' : '180px',
+          minHeight: showTitle ? '60px' : '40px',
           maxWidth: '40%',
-          backgroundColor: channel.background_color || 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: showTitle ? (channel.background_color || 'rgba(255, 255, 255, 0.9)') : 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(10px)',
           borderRadius: '10px',
-          padding: '8px 14px',
+          padding: showTitle ? '8px 14px' : '6px',
           boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         }}>
-          {channel.picture?.url && (
+          {showTitle && channel.picture?.url && (
             <img
               src={getMediaURL() + channel.picture.url}
               alt=""
@@ -205,26 +220,28 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               }}
             />
           )}
-          <div style={{ overflow: 'hidden' }}>
-            <div style={{
-              fontSize: 'clamp(14px, 1.8vw, 20px)',
-              fontWeight: 'bold',
-              lineHeight: '1.2',
-              color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#222',
-            }}>
-              {channel.name}
-            </div>
-            {channel.description && (
+          {showTitle && (
+            <div style={{ overflow: 'hidden' }}>
               <div style={{
-                fontSize: 'clamp(11px, 1.3vw, 14px)',
-                lineHeight: '1.3',
-                marginTop: '2px',
-                color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#555',
+                fontSize: 'clamp(14px, 1.8vw, 20px)',
+                fontWeight: 'bold',
+                lineHeight: '1.2',
+                color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#222',
               }}>
-                {channel.description}
+                {channel.name}
               </div>
-            )}
-          </div>
+              {channel.description && (
+                <div style={{
+                  fontSize: 'clamp(11px, 1.3vw, 14px)',
+                  lineHeight: '1.3',
+                  marginTop: '2px',
+                  color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#555',
+                }}>
+                  {channel.description}
+                </div>
+              )}
+            </div>
+          )}
           {(privateID || jwt) && (
             <div style={{ flexShrink: 0 }}>
               <ChannelControls channel={channel} privateID={privateID} iconSize={16} jwt={jwt} />
@@ -308,10 +325,10 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         </ModalBody>
       </Modal>
       <Modal isOpen={overlayModal} toggle={toggleOverlay}>
-        <ModalHeader toggle={toggleOverlay}>Add Overlay</ModalHeader>
+        <ModalHeader toggle={toggleOverlay}></ModalHeader>
         <ModalBody>
-          <UploadWidget uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*" text="Drop overlay image here, or" />
-          <Button color="success" block style={{marginTop: 10}} disabled={!uploadedFiles.length} onClick={handleOverlayUpload} title="Upload overlay">Upload</Button>
+          <UploadWidget mediaUrl={existingOverlay?.image?.url} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} setDeleteMedia={setRemoveOverlay} accept="image/*" text="Drop overlay image here, or" />
+          <Button color="success" block style={{marginTop: 10}} disabled={!uploadedFiles.length && !removeOverlay} onClick={handleOverlaySave} title="Update overlay">Update</Button>
         </ModalBody>
       </Modal>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
