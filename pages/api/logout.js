@@ -8,7 +8,7 @@ export default function handler(req, res) {
 
   // Destroy the JWT cookie
   destroyCookie({ res }, 'jwt', {
-    path: '/', // must be the same path as set in login
+    path: '/',
   });
 
   // Send a success response

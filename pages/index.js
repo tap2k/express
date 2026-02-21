@@ -83,6 +83,8 @@ export const getServerSideProps = async (ctx) => {
     }
   }
 
+  channels = channels.filter(channel => !channel.parent);
+
   for (const channel of channels) {
     if (channel.owner?.id == user.id)
       channel.size = await getChannelSize({ channelID: channel.uniqueID, jwt: cookies.jwt });

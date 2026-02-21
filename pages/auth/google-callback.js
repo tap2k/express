@@ -1,25 +1,11 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { Spinner, Button } from 'reactstrap';
 import axios from 'axios';
-import { setCookie } from 'nookies';
+import nookies from 'nookies';
 import getBaseURL from "../../hooks/getbaseurl";
 
-export default function GoogleCallback({ error, jwt }) {
+export default function GoogleCallback({ error }) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (jwt) {
-      setCookie(null, 'jwt', jwt, {
-        maxAge: 30 * 24 * 60 * 60, // 30 days
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
-
-      router.push('/');
-    }
-  }, [jwt, router]);
 
   if (error) {
     return (
@@ -106,8 +92,14 @@ export async function getServerSideProps(context) {
     });
 
     if (result.data && result.data.jwt) {
+      nookies.set(context, 'jwt', result.data.jwt, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      });
       return {
-        props: { jwt: result.data.jwt }
+        redirect: { permanent: false, destination: '/' }
       };
     } else {
       return {
