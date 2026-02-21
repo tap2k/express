@@ -43,7 +43,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
             <div style={{textAlign: 'center'}}><b>{contentItem.title}</b></div>
           </Tooltip>    
         }
-        <Popup closeOnClick={false}>
+        <Popup closeOnClick={false} autoPanPadding={[50, 150]}>
           <div style={{width: itemWidth}}>
             <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} controls tags />
           </div>
