@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import nookies from 'nookies';
-import { FaSave, FaDownload } from 'react-icons/fa';
+import { FaSave, FaFilm } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import styled from 'styled-components';
@@ -104,8 +104,8 @@ export default ({ channel, user, jwt, planData }) => {
                     {jwt && <CircularMenuButton onClick={handleSaveChannel} title="Save channel">
                         <FaSave />
                     </CircularMenuButton>}
-                    {jwt && (planData?.tierConfig?.videoGeneration !== false) && <CircularMenuButton onClick={handleDownload} title="Download video">
-                        <FaDownload />
+                    {jwt && (planData?.tierConfig?.videoGeneration !== false) && <CircularMenuButton onClick={handleDownload} title="Create video">
+                        <FaFilm />
                     </CircularMenuButton>}
                 </div>
                 <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} planData={planData} />
