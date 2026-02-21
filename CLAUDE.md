@@ -29,6 +29,7 @@ An older separate Next.js 13 app sharing the same Strapi backend and nearly iden
 - **Media:** Video.js, Photo Sphere Viewer (360), react-player (YouTube/Vimeo), RecordRTC
 - **Drag & Drop:** react-dnd (HTML5 + touch backends)
 - **HTTP:** axios
+- **Billing:** Stripe (Checkout, Customer Portal, Webhooks)
 - **Auth:** JWT in HTTP-only cookies (nookies), Google OAuth
 - **AI:** OpenAI (ChatGPT + DALL-E)
 - **Email:** nodemailer
@@ -108,6 +109,9 @@ An older separate Next.js 13 app sharing the same Strapi backend and nearly iden
 | `dalle.js` | DALL-E image generation |
 | `makevideo.js` | Async video generation request |
 | `sendemail.js` | Email notifications |
+| `createCheckout.js` | Stripe checkout session for new subscriptions |
+| `createPortal.js` | Stripe customer portal for billing management |
+| `stripeWebhook.js` | Stripe webhook handler (subscription events) |
 
 ## Development
 
@@ -122,12 +126,35 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 
 ### Key Environment Variables
 - `NEXT_PUBLIC_STRAPI_HOST` - Strapi backend URL
-- `NEXT_PUBLIC_BASE_URL` - Frontend URL
+- `NEXT_PUBLIC_BASE_URL` - Frontend URL (must match the domain users log in from — `localhost` and `127.0.0.1` are different for cookies)
 - `NEXT_PUBLIC_CLOUD_STORAGE` - When set (truthy), media URLs are served directly from cloud storage (DigitalOcean Spaces, Backblaze B2, Supabase) instead of proxied through Strapi. Leave unset for local dev. See `hooks/getmediaurl.js`.
 - `NEXT_PUBLIC_AI_ENABLED` - Toggle AI features (ChatGPT + DALL-E)
 - `VIDEO_SERVER_URL` - Video generation service (`~/dev/mahabot/mahabot`)
 - `OPENAI_API_KEY` - OpenAI API key
 - `PRIVATE_SEED` - Secret for XOR channel ID encryption (must match Strapi backend)
+
+### Stripe Environment Variables (Cloud only — omit for self-hosted)
+- `STRIPE_SECRET_KEY` - Stripe secret key (`sk_test_...` or `sk_live_...`)
+- `STRIPE_WEBHOOK_SECRET` - Stripe webhook signing secret (`whsec_...`)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable key (`pk_test_...` or `pk_live_...`)
+- `STRIPE_STARTER_MONTHLY_PRICE_ID` - Stripe Price ID for Starter monthly
+- `STRIPE_STARTER_ANNUAL_PRICE_ID` - Stripe Price ID for Starter annual
+- `STRIPE_PRO_MONTHLY_PRICE_ID` - Stripe Price ID for Pro monthly
+- `STRIPE_PRO_ANNUAL_PRICE_ID` - Stripe Price ID for Pro annual
+
+### Strapi Environment Variables
+- `TIER_ENFORCEMENT` - Set to `true` to enable tier limits and billing UI. When unset, all features are unlocked and no billing UI is shown. This is the single kill switch for the entire tier system.
+
+## Billing & Tiers
+
+Four tiers: Free, Starter ($5/mo), Pro ($20/mo), Enterprise (custom). 20% annual discount. Limits on storage, channels, per-file size. Feature gates for tileset picker, marker customization, overlays (Starter+), video generation (Pro+), collaboration (Starter+).
+
+- **Free → Paid:** Stripe Checkout (first-time card entry)
+- **Plan change / Cancel:** Stripe Customer Portal
+- **Plan updates:** Webhook → Strapi `updateUserPlan` (events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`)
+- **Enforcement:** Server-side via `checkTierLimit()` in `strapi/config/functions.js`, checks channel owner's plan. Tier config in `strapi/config/tiers.js`.
+- **Downgrade:** Read-only freeze, no data deletion
+- **Self-hosted:** Omit `TIER_ENFORCEMENT` + Stripe env vars → all features unlocked, no billing UI
 
 ## Important Notes
 
@@ -135,8 +162,10 @@ Requires a running Strapi instance (configured via `NEXT_PUBLIC_STRAPI_HOST` in 
 - **`reactStrictMode: false`** in next.config.js (intentional)
 - Image domains are whitelisted in `next.config.js` for `next/image`
 - `@/*` path alias configured in `jsconfig.json`
+- **`getBaseURL()`** returns Strapi URL — use relative paths for Express API calls from browser (e.g., `/api/createCheckout`)
 - Video generation is async: request is acknowledged immediately, result is emailed
 - Permission checks are recursive up the channel hierarchy (can be expensive for deep nesting)
+- **`npm install`** requires `--legacy-peer-deps` (react-dnd peer dep conflict)
 
 ## TODO
 

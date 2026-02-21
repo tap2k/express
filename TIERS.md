@@ -293,9 +293,6 @@ Use these in test mode:
 - [x] Over-limit warnings (storage + channels) in UsageBanner
 - [x] Contact email: express@represent.org (Enterprise)
 
-### Still TODO (in priority order)
-1. **Marketing page: examples** — link to live sample channels/maps users can explore
-
 ---
 
 ## Key Design Decisions

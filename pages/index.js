@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Modal, ModalBody } from 'reactstrap';
 import nookies, { destroyCookie } from 'nookies';
 import getUser from "../hooks/getuser";
@@ -18,12 +18,6 @@ import LandingFooter from "../components/landingfooter";
 
 export default ({ user, jwt, channels, planData }) => {
   const [pricingOpen, setPricingOpen] = useState(false);
-
-  useEffect(() => {
-    if (!user && document.cookie.includes('jwt=')) {
-      window.location.reload();
-    }
-  }, []);
 
   const handleSelectPlan = async (plan, interval) => {
     if (planData?.plan && planData.plan !== 'free') {
