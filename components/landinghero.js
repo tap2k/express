@@ -81,7 +81,7 @@ export default function LandingHero() {
           Get Started Free
         </a>
         <div style={{ marginTop: '32px', padding: '0 20px' }}>
-          {/*<img
+          <img
             src="/express.png"
             alt="Express map view with media markers"
             style={{
@@ -90,9 +90,9 @@ export default function LandingHero() {
               borderRadius: '10px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
             }}
-          />*/}
-          <iframe
-            src="http://127.0.0.1:3001/map?channelid=bihar"
+          />
+          {/*<iframe
+            src="https://express.represent.org/map?channelid=bihar"
             width="800"
             height="600"
             frameBorder="0"
@@ -103,7 +103,7 @@ export default function LandingHero() {
               borderRadius: '10px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
             }}
-          />
+          />*/}
         </div>
       </div>
 
