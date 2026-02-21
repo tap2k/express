@@ -63,7 +63,7 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
                 right: 0,
                 zIndex: 10,
               }}>
-                <ChannelControls channel={channel} privateID={privateID} jwt={jwt} />
+                <ChannelControls channel={channel} privateID={privateID} jwt={jwt} showBox />
               </div>}
           </div>
         </div>

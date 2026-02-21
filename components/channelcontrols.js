@@ -12,7 +12,7 @@ import ChannelInputs from "./channelinputs";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
-export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row" }) {
+export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row", showBox }) {
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -179,7 +179,7 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
     <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false); setDeletePic(false)}}>
       <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
       <ModalBody>
-        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle />
+        <MediaPicker mediaUrl={channel.picture?.url} progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} deleteMedia={deletePic} setDeleteMedia={setDeletePic} uploading={uploading} setUploading={setUploading} generating={uploading} setGenerating={setUploading} accept="image/*" gallery="image" dalle showBox={showBox} />
         <Button
           onClick={handleSaveChannel}
           disabled={uploading || (!uploadedFiles.length && !deletePic && !selectedImage && selectedBackgroundColor === (channel.background_color || '') && selectedForegroundColor === (channel.foreground_color || ''))}

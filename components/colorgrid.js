@@ -7,7 +7,8 @@ export default function ColorGrid({
   selectedForegroundColor,
   setSelectedForegroundColor,
   hasImage,
-  compact
+  compact,
+  showBox
 }) {
   const columns = 4;
   const maxOptions = compact ? 6 : undefined;
@@ -77,7 +78,7 @@ export default function ColorGrid({
   const previewFgLight = previewFgHex.length === 6 && (parseInt(previewFgHex.substr(0,2),16)*299 + parseInt(previewFgHex.substr(2,2),16)*587 + parseInt(previewFgHex.substr(4,2),16)*114) / 1000 > 128;
   const previewBgLight = (parseInt(previewBgHex.substr(0,2),16)*299 + parseInt(previewBgHex.substr(2,2),16)*587 + parseInt(previewBgHex.substr(4,2),16)*114) / 1000 > 128;
   const fgAsTextColor = selectedForegroundColor ? '#' + selectedForegroundColor.replace('#', '').substring(0, 6) : null;
-  const previewTextColor = hasImage
+  const previewTextColor = (hasImage || showBox)
     ? (previewFgLight ? '#0a4f6a' : '#fff')
     : (fgAsTextColor || (previewBgLight ? '#0a4f6a' : '#fff'));
 
@@ -145,7 +146,7 @@ export default function ColorGrid({
           border: '1px solid #ccc',
           minHeight: '60px',
         }}>
-          {hasImage ? (
+          {(hasImage || showBox) ? (
             <div style={{
               backgroundColor: previewFg,
               borderRadius: '8px',

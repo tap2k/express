@@ -3,7 +3,7 @@ import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { CarouselProvider, CarouselContext, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import '../node_modules/pure-react-carousel/dist/react-carousel.es.css';
-import { FaExpandArrowsAlt, FaPlus, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaExpandArrowsAlt, FaPlay, FaPause, FaDownload, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import getMediaURL from "../hooks/getmediaurl";
 import updateSubmission from '../hooks/updatesubmission';
 import ChannelControls from "./channelcontrols"
@@ -301,9 +301,6 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
         transform: 'translateX(-50%)', 
         gap: '25px'
       }}>
-        { (privateID || jwt || channel.allowsubmissions) && <button onClick={() => setIsUploadModalOpen(true)} style={iconButtonStyle} title="Add content">
-          <FaPlus />
-        </button> }
         <button onClick={toggleFullScreen} style={iconButtonStyle} title="Toggle fullscreen">
           <FaExpandArrowsAlt />
         </button>

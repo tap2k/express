@@ -7,7 +7,7 @@ import ImageGrid from './imagegrid';
 import UploadWidget from "./uploadwidget";
 import DalleWidget from "./dallewidget";
 
-export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, compact, ...props }) {
+export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedFiles, setUploadedFiles, selectedBackgroundColor, setSelectedBackgroundColor, selectedForegroundColor, setSelectedForegroundColor, selectedMedia, setSelectedMedia, deleteMedia, setDeleteMedia, generating, setGenerating, accept, multiple, gallery, dalle, compact, showBox, ...props }) {
   const [showGallery, setShowGallery] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showDalle, setShowDalle] = useState(false);
@@ -33,11 +33,11 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
   return (
     <div {...props}>
       <ButtonGroup>
-        {gallery && (
+        {/*gallery && (
           <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(true); setShowDalle(false); setShowUpload(false)}} title="Gallery">
             Gallery
           </StyledButton>
-        )}
+        )*/}
         {dalle && process.env.NEXT_PUBLIC_AI_ENABLED === "true" && (
           <StyledButton color="info" onClick={() => {setShowColors(false); setShowGallery(false); setShowDalle(true); setShowUpload(false)}} title="AI Image">
             AI Image
@@ -82,6 +82,7 @@ export default function MediaPicker({ mediaUrl, progress, setProgress, uploadedF
           setSelectedForegroundColor={setSelectedForegroundColor}
           hasImage={(!deleteMedia && !!mediaUrl) || !!selectedMedia || !!(uploadedFiles?.length)}
           compact={compact}
+          showBox={showBox}
         />
       ) : showUpload && (
         <UploadWidget

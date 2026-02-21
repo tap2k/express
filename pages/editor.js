@@ -100,7 +100,7 @@ export default ({ channel, user, jwt, planData }) => {
                     channel={channel}
                     jwt={jwt}
                 />
-                <div style={{ position: 'fixed', bottom: '10px', right: '10px', display: 'flex', zIndex: 1 }}>
+                <div style={{ position: 'fixed', bottom: '10px', right: '60px', display: 'flex', zIndex: 1 }}>
                     {jwt && <CircularMenuButton onClick={handleSaveChannel} title="Save channel">
                         <FaSave />
                     </CircularMenuButton>}

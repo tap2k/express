@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { use100vh } from 'react-div-100vh';
 import nookies from 'nookies';
 import getChannel from "../hooks/getchannel";
 import useInactive from '../hooks/useinactive';
 import Slideshow from "../components/slideshow";
+import AddMenu from "../components/addmenu";
+import LoginButton from "../components/loginbutton";
 import PageMenu from '../components/pagemenu';
 
 export default ({ channel, currslide, jwt }) => {
 
+    const [isPlaying, setIsPlaying] = useState(false);
     const width = "100vw";
     const height = use100vh();
     const isInactive = useInactive();
@@ -15,7 +19,9 @@ export default ({ channel, currslide, jwt }) => {
     return (
         <div className={isInactive ? 'inactive-ui' : ''}>
             {jwt && <PageMenu loggedIn={jwt} />}
+            {jwt && <LoginButton jwt={jwt} className="hide-on-inactive" style={{ position: 'absolute', top: '10px', right: '16px', zIndex: 5 }} />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} jwt={jwt} style={{backgroundColor: 'black'}} />
+            <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
             {!jwt && <a href="/" style={{
                 position: 'fixed', bottom: 8, right: 12,
                 color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem',

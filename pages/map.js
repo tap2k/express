@@ -28,7 +28,7 @@ export default ({ channel, tilesets, jwt, planData }) => {
                     jwt={jwt}
                 />*/}
             </div>
-            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} jwt={jwt} tour legend planData={planData} />
+            <Mapper style={{width: width, height: height}} channel={channel} itemWidth={250} isPlaying={isPlaying} tilesets={tilesets} jwt={jwt} legend planData={planData} />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
             {!jwt && <a href="/" style={{
                 position: 'fixed', bottom: 20, right: 0,
