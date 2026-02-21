@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useRef } from 'react';
 import { RecorderWrapper, StyledInput } from './recorderstyles';
@@ -5,6 +6,7 @@ import { Button } from 'reactstrap';
 import axios from 'axios';
 import getBaseURL from "../hooks/getbaseurl";
 import setError from "../hooks/seterror";
+import { FcGoogle } from 'react-icons/fc';
 
 export default function LoginComponent({ loginPath }) {
   const router = useRouter();
@@ -62,7 +64,7 @@ export default function LoginComponent({ loginPath }) {
     marginTop: '10px',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#5dade2', 
+    backgroundColor: '#1a5f7a',
     border: 'none',
     color: '#ffffff',
     fontWeight: 'bold',
@@ -78,13 +80,12 @@ export default function LoginComponent({ loginPath }) {
       }}>
         <h1 style={{
           fontSize: '2.5rem',
-          color: '#2c3e50',
+          color: '#1a5f7a',
           textAlign: 'center',
           marginBottom: '15px',
           fontWeight: '600',
           letterSpacing: '1px',
           paddingBottom: '10px',
-          fontFamily: 'Arial, sans-serif'
         }}>
           Login
         </h1>
@@ -117,20 +118,19 @@ export default function LoginComponent({ loginPath }) {
         >
           {forgotPasswordMode ? 'Reset Password' : 'Login'}
         </Button>
-        {/* <Button
-          onClick={() => setForgotPasswordMode(!forgotPasswordMode)}
-          style={{...buttonStyle, marginTop: '5px'}}
-        >
-          {forgotPasswordMode ? 'Back to Login' : 'Forgot Password'}
-        </Button> */}
-        {!forgotPasswordMode && <a href={getBaseURL() + "/api/connect/google"} >
-          <Button style={{...buttonStyle, marginTop: '5px'}} disabled={updating} title="Sign in with Google">
-            Sign in with Google
+        {!forgotPasswordMode && <a href={getBaseURL() + "/api/connect/google"} style={{ textDecoration: 'none' }}>
+          <Button style={{...buttonStyle, marginTop: '5px', backgroundColor: '#fff', color: '#444', border: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}} disabled={updating} title="Sign in with Google">
+            <FcGoogle size={20} /> Sign in with Google
           </Button>
         </a>}
-        {/* <p style={{ marginTop: '25px', textAlign: 'center' }}>
+        <p style={{ marginTop: '25px', textAlign: 'center' }}>
           Don't have an account? <Link href="/register">Register here</Link>
-        </p> */}
+        </p>
+        <p style={{ textAlign: 'center' }}>
+          <a onClick={() => setForgotPasswordMode(!forgotPasswordMode)} style={{ cursor: 'pointer', color: '#1a5f7a' }}>
+            {forgotPasswordMode ? 'Back to Login' : 'Forgot Password?'}
+          </a>
+        </p>
       </div>
       </RecorderWrapper>
   );

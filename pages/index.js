@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, ModalBody } from 'reactstrap';
 import nookies, { destroyCookie } from 'nookies';
 import getUser from "../hooks/getuser";
 import getMyChannels from "../hooks/getmychannels";
 import getChannelSize from "../hooks/getchannelsize";
 import getUserPlan from "../hooks/getuserplan";
+import createCheckout from "../hooks/createcheckout";
+import createPortal from "../hooks/createportal";
 import { RecorderWrapper } from '../components/recorderstyles';
 import BannerTwo from '../components/bannertwo';
 import MyReels from "../components/myreels";
@@ -16,6 +18,24 @@ import LandingFooter from "../components/landingfooter";
 
 export default ({ user, jwt, channels, planData }) => {
   const [pricingOpen, setPricingOpen] = useState(false);
+
+  useEffect(() => {
+    if (!user && document.cookie.includes('jwt=')) {
+      window.location.reload();
+    }
+  }, []);
+
+  const handleSelectPlan = async (plan, interval) => {
+    if (planData?.plan && planData.plan !== 'free') {
+      // Already subscribed — portal handles upgrades, downgrades, cancellation
+      const data = await createPortal({ jwt });
+      if (data?.url) window.location.href = data.url;
+      return;
+    }
+    // First subscription — Stripe Checkout
+    const data = await createCheckout({ plan, interval, jwt });
+    if (data?.url) window.location.href = data.url;
+  };
 
   return (
     <RecorderWrapper>
@@ -34,7 +54,10 @@ export default ({ user, jwt, channels, planData }) => {
                 onClick={() => setPricingOpen(false)}
                 style={{ position: 'absolute', top: '10px', right: '14px', fontSize: '1.5rem', cursor: 'pointer', color: '#999', zIndex: 1 }}
               >&times;</span>
-              <PricingTable currentPlan={planData?.plan} />
+              <PricingTable currentPlan={planData?.plan} onSelectPlan={handleSelectPlan} onManageBilling={async () => {
+                const data = await createPortal({ jwt });
+                if (data?.url) window.location.href = data.url;
+              }} />
             </ModalBody>
           </Modal>
         </>

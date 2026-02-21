@@ -52,7 +52,7 @@ const tiers = [
 
 const tierOrder = ['free', 'starter', 'pro', 'enterprise'];
 
-export default function PricingTable({ currentPlan, onSelectPlan }) {
+export default function PricingTable({ currentPlan, onSelectPlan, onManageBilling }) {
   const [annual, setAnnual] = useState(false);
   const currentIndex = tierOrder.indexOf(currentPlan || 'free');
 
@@ -127,8 +127,13 @@ export default function PricingTable({ currentPlan, onSelectPlan }) {
                       </Button>
                     )}
                     {isCurrent && (
-                      <Button block disabled style={{ borderRadius: '8px' }}>
-                        Current Plan
+                      <Button
+                        block
+                        disabled={key === 'free' || !onManageBilling}
+                        onClick={onManageBilling}
+                        style={{ borderRadius: '8px' }}
+                      >
+                        {key === 'free' ? 'Current Plan' : 'Manage'}
                       </Button>
                     )}
                   </div>

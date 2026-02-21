@@ -258,15 +258,15 @@ Use these in test mode:
 - [x] Tileset picker gating (stripped for Free in updateChannel)
 - [x] Custom marker colors/icons gating (stripped for Free in tag updates)
 
-### Phase 3: Stripe Integration — TODO
-- [ ] Install Stripe, configure env vars
-- [ ] `POST /api/createCheckout` — Stripe checkout session
-- [ ] `POST /api/createPortal` — Stripe customer portal
-- [ ] `POST /api/stripeWebhook` — handle subscription events
-- [ ] Strapi endpoints: updateUserPlan, called by webhook handler
-- [ ] Wire PricingTable `onSelectPlan` to checkout flow
+### Phase 3: Stripe Integration — DONE
+- [x] Install Stripe, configure env vars
+- [x] `POST /api/createCheckout` — Stripe checkout session (`express/pages/api/createCheckout.js`)
+- [x] `POST /api/createPortal` — Stripe customer portal (`express/pages/api/createPortal.js`)
+- [x] `POST /api/stripeWebhook` — handle subscription events (`express/pages/api/stripeWebhook.js`)
+- [x] Strapi endpoints: updateUserPlan (`strapi/src/api/user/`), called by webhook handler
+- [x] Wire PricingTable `onSelectPlan` to checkout flow
 
-### Phase 4: Frontend — Marketing Page, Pricing & Usage Display — PARTIAL
+### Phase 4: Frontend — Marketing Page, Pricing & Usage Display — DONE
 - [x] Pricing table with monthly/annual toggle (`components/pricingtable.js`)
 - [x] Usage banner on dashboard (`components/usagebanner.js`) — plan badge opens pricing modal
 - [x] Landing hero + features grid for logged-out users (`components/landinghero.js`)
@@ -277,7 +277,7 @@ Use these in test mode:
 - [x] Favicon (teal "E" on rounded square)
 - [x] Privacy policy page (`pages/privacy.js`)
 - [x] Terms of service page (`pages/terms.js`)
-- [ ] Checkout/portal hooks (blocked on Phase 3)
+- [x] Checkout/portal hooks (`hooks/createcheckout.js`, `hooks/createportal.js`)
 
 ### Phase 5: Frontend Feature Gating — DONE
 - [x] Tileset picker hidden for Free (`components/mapper.js`)
@@ -294,8 +294,7 @@ Use these in test mode:
 - [x] Contact email: express@represent.org (Enterprise)
 
 ### Still TODO (in priority order)
-1. **Stripe integration** (Phase 3) — payment flow, webhooks, subscription management
-2. **Marketing page: examples** — link to live sample channels/maps users can explore
+1. **Marketing page: examples** — link to live sample channels/maps users can explore
 
 ---
 

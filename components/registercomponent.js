@@ -5,6 +5,7 @@ import { Button } from "reactstrap";
 import axios from 'axios';
 import getBaseURL from "../hooks/getbaseurl";
 import setError from "../hooks/seterror";
+import { FcGoogle } from 'react-icons/fc';
 import { RecorderWrapper, StyledInput } from './recorderstyles';
 
 export default function RegisterComponent({...props}) 
@@ -41,7 +42,7 @@ export default function RegisterComponent({...props})
     marginTop: '10px',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#5dade2', 
+    backgroundColor: '#1a5f7a',
     border: 'none',
     color: '#ffffff',
     fontWeight: 'bold',
@@ -57,13 +58,12 @@ export default function RegisterComponent({...props})
       }}>
         <h1 style={{
           fontSize: '2.5rem',
-          color: '#2c3e50',
+          color: '#1a5f7a',
           textAlign: 'center',
           marginBottom: '15px',
           fontWeight: '600',
           letterSpacing: '1px',
           paddingBottom: '10px',
-          fontFamily: 'Arial, sans-serif'
         }}>
           Register
         </h1>
@@ -96,14 +96,13 @@ export default function RegisterComponent({...props})
               Register
             </Button>
 
-            <a href={getBaseURL() + "/api/connect/google"} >
+            <a href={getBaseURL() + "/api/connect/google"} style={{ textDecoration: 'none' }}>
               <Button
-                type="submit"
-                style={buttonStyle}
+                style={{...buttonStyle, backgroundColor: '#fff', color: '#444', border: '1px solid #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}
                 disabled={updating}
                 title="Register with Google"
               >
-                Register with Google
+                <FcGoogle size={20} /> Register with Google
               </Button>
             </a>
             <p style={{ marginTop: '25px', textAlign: 'center' }}>
