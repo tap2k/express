@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback } from 'react';
 import { Input, Button, Modal, ModalHeader, ModalBody } from "reactstrap";
-import { FaUndo, FaTags, FaLayerGroup, FaSave } from 'react-icons/fa';
+import { FaUndo, FaTags, FaLayerGroup, FaSave, FaMapMarkerAlt } from 'react-icons/fa';
 import TagEditor from './tageditor';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { MapContainer, TileLayer, ImageOverlay, ZoomControl } from 'react-leaflet';
@@ -18,6 +18,7 @@ import UploadWidget from "./uploadwidget";
 import ChannelControls from "./channelcontrols";
 import getMediaURL from "../hooks/getmediaurl";
 import getTagURL from "../hooks/gettagurl";
+import MapPlacer from "./mapplacer";
 
 const defaultInterval = 3000;
 
@@ -33,6 +34,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   const toggleOverlay = () => setOverlayModal(!overlayModal);
   const [removeOverlay, setRemoveOverlay] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [showUnlocated, setShowUnlocated] = useState(false);
   const router = useRouter();
 
   const markerRefs = [];
@@ -250,6 +252,25 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         </div>
       )}
       {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
+        <button
+          onClick={() => setShowUnlocated(!showUnlocated)}
+          title="Place items on map"
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(92, 131, 156, 0.6)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <FaMapMarkerAlt size={18} />
+        </button>
         {channel.tags?.length > 0 && <button
           onClick={() => setIsTagModalOpen(true)}
           title="Edit tags"
@@ -333,6 +354,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       </Modal>
       <MapContainer key={mapKey} ref={setMapRef} scrollWheelZoom={true} doubleClickZoom={false} zoomSnap={0.1} zoomControl={false} style={{height: '100%', width: '100%', zIndex: 1}}>
         <TileLayer attribution={attribution} url={tileset} />
+        {(privateID || jwt) && <MapPlacer show={showUnlocated} contents={channel.contents} privateID={privateID} jwt={jwt} />}
         <MarkerClusterGroup
           //chunkedLoading
           maxClusterRadius={15}
@@ -389,7 +411,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         </div>
       </MapContainer>
       { (legend && channel.tags?.length) ? 
-        <div style={{position: 'absolute', right: 5, bottom: 55, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+        <div style={{position: 'absolute', right: 5, bottom: 60, zIndex: 1000, backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
           <table>
             <tbody>
               {
