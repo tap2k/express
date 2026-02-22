@@ -57,7 +57,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                             defaultChecked={channel ? channel?.showtitle : true}
                             style={{ marginRight: '5px', fontSize: 'large'}}
                         />
-                        <span style={{fontSize: 'large'}}>Show title slide</span>
+                        <span style={{fontSize: 'large'}}>Show title</span>
                     </Label>
                 </FormGroup>}
 

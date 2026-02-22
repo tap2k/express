@@ -18,7 +18,7 @@ function formatFileSize(bits) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, tagger, slideshow, privateID, jwt }) {
+export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpen, tagger, noTextAlignment, privateID, jwt }) {
   
   if (!contentItem)
     return;
@@ -104,7 +104,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           //emailRef={emailRef} 
           locationRef={locationRef} 
           extUrlRef={extUrlRef} 
-          textAlignmentRef={slideshow ? textAlignmentRef : undefined}
+          textAlignmentRef={noTextAlignment ? undefined : textAlignmentRef}
         />
         <ButtonGroup>
           {url && type.startsWith("image") && process.env.NEXT_PUBLIC_AI_ENABLED == "true" && (

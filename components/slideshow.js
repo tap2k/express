@@ -446,8 +446,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
               moveSlide={moveSlide}
               setIsModalOpen={setIsModalOpen} 
               jwt={jwt}
-              publisher
-              slideshow />
+              publisher />
             }
         </div>
       )}

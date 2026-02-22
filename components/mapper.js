@@ -49,9 +49,9 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
     }
   }, []);
 
-  useEffect(() => {   
+  useEffect(() => {
     resetMap();
-  }, [mapRef, channel.contents]);
+  }, [mapRef]);
 
   let tileset = tilesets;
   let attribution = `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href= "https://carto.com/about-carto/">CARTO</a>`;
