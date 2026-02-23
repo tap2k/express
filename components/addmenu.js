@@ -44,7 +44,7 @@ export default function AddMenu({ channel, isPlaying, setIsPlaying, privateID, j
 
   return (
     <>
-      <div style={containerStyle}>
+      <div className="hide-on-inactive" style={containerStyle}>
         {channel.audiofile?.url && false &&
           <>
             <audio ref={audioRef} src={getMediaURL() + channel.audiofile.url} />

@@ -254,7 +254,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           )}
         </div>
       )}
-      {(privateID || jwt) && <div style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
+      {(privateID || jwt) && <div className="map-toolbar" style={{ position: 'absolute', top: '7px', right: '10px', zIndex: 10, display: 'flex', gap: '5px', alignItems: 'center' }}>
         <button
           onClick={() => setShowUnlocated(!showUnlocated)}
           title="Place items on map"

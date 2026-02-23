@@ -19,7 +19,7 @@ export default ({ channel, currslide, jwt }) => {
     return (
         <div className={isInactive ? 'inactive-ui' : ''}>
             {jwt && <PageMenu loggedIn={jwt} />}
-            {jwt && <LoginButton jwt={jwt} className="hide-on-inactive" style={{ position: 'absolute', top: '10px', right: '16px', zIndex: 5 }} />}
+            {jwt && <LoginButton jwt={jwt} className="hide-on-inactive" style={{ position: 'absolute', top: '0px', right: '0px', padding: '0.35rem', zIndex: 5 }} />}
             <Slideshow channel={channel} width={width} height={height} startSlide={currslide} jwt={jwt} style={{backgroundColor: 'black'}} />
             <AddMenu channel={channel} isPlaying={isPlaying} setIsPlaying={setIsPlaying} jwt={jwt} />
             {!jwt && <a href="/" style={{

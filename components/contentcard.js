@@ -2,22 +2,26 @@ import { Card, Badge } from 'reactstrap';
 import Content, { isMediaFile } from './content';
 import ItemControls from './itemcontrols';
 
-export default function ContentCard({ contentItem, privateID, jwt, controls, tags, autoPlay, dragRef, ...props }) 
+export default function ContentCard({ contentItem, privateID, jwt, controls, tags, autoPlay, dragRef, ...props })
 {
+  // TODO: this is a little hacky — relies on filename conventions to determine overlay behavior
+  const isCard = contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle-image");
+  const isOverlay = isCard || (!contentItem.mediafile && contentItem.background_color);
+
   return (
     <Card className="mb-2" style={{backgroundColor: '#fafafa'}}>
       <div style={{ position: 'relative', ...props.style }}>
-        <Content 
+        <Content
           contentItem={contentItem}
           height="auto"
           controls={controls}
           autoPlay={autoPlay}
-          caption={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
+          caption={isOverlay}
           thumbnail
           cover
         />
       </div>
-      
+
       <ItemControls
         contentItem={contentItem}
         dragRef={dragRef}
@@ -25,10 +29,10 @@ export default function ContentCard({ contentItem, privateID, jwt, controls, tag
         jwt={jwt}
         tagger
         publisher
-        noTextAlignment
+        noTextAlignment={!isOverlay}
       />
-      
-      {(contentItem.title || contentItem.description || contentItem.name) && !contentItem.mediafile?.url?.includes("maustrocard") && !contentItem.background_color &&
+
+      {(contentItem.title || contentItem.description || contentItem.name) && !isOverlay &&
         <div style={{position: 'relative'}}>
         {contentItem.title && <div 
             style={{ 

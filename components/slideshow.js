@@ -294,11 +294,9 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
     <div style={{width: width, display: "flex", flexDirection: "column", ...props.style}}>
       { !buttons && <div className="hide-on-inactive" style={{
         ...iconBarStyle, 
-        bottom: '20px', 
-        // TODO: controls?
-        //bottom: '10px',
-        left: '50%', 
-        transform: 'translateX(-50%)', 
+        bottom: '10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
         gap: '25px'
       }}>
         <button onClick={toggleFullScreen} style={iconButtonStyle} title="Toggle fullscreen">
@@ -434,7 +432,7 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
       {(privateID || jwt) && (
         <div className="hide-on-inactive" style={{
           position: 'absolute',
-          top: 5,
+          top: 55,
           right: 5
         }}>
           { !(showTitle && currSlide === 0) && 

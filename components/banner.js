@@ -11,8 +11,9 @@ export default function Banner({ channel, foregroundColor, privateID, user, jwt 
 
   const makeStyle = {
     position: 'absolute',
-    top: '10px',
-    right: '16px',
+    top: '0px',
+    right: '0px',
+    padding: '0.35rem',
     zIndex: 1,
   };
 

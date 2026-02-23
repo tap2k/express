@@ -89,12 +89,34 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
     else
     {
       if (uploadedFiles.length)
+      {
         myFormData.append("mediafile", uploadedFiles[0], uploadedFiles[0].name);
+        setSelectedBackgroundColor(null);
+      }
     }
-    await updateSubmission({contentID: contentItem.id, myFormData: myFormData, backgroundColor: selectedBackgroundColor, deleteMedia: deleteImage, setProgress, privateID, jwt});
-    setIsImageModalOpen(false);
-    setUploading(false);
-    router.replace(router.asPath);
+    const clearBackground = uploadedFiles.length;
+    const clearMedia = !uploadedFiles.length && !selectedImage && selectedBackgroundColor && !!contentItem.mediafile;
+
+    const doUpdate = async () => {
+      await updateSubmission({contentID: contentItem.id, myFormData: myFormData, backgroundColor: clearBackground ? null : selectedBackgroundColor, deleteMedia: deleteImage || clearMedia, setProgress, privateID, jwt});
+      setIsImageModalOpen(false);
+      setUploading(false);
+      router.replace(router.asPath);
+    };
+
+    if (clearMedia) {
+      setIsImageModalOpen(false);
+      confirmAlert({
+        title: 'Replace media?',
+        message: 'This will replace the existing media file with a background color.',
+        buttons: [
+          { label: 'Yes', onClick: doUpdate },
+          { label: 'No', onClick: () => { setUploading(false); setIsImageModalOpen(true); } }
+        ]
+      });
+    } else {
+      await doUpdate();
+    }
   };
 
   const iconBarStyle = {
@@ -139,7 +161,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && <IconButton
+        {/* ((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && */ <IconButton
           onClick={() => {
             setIsImageModalOpen(true);
           }}
@@ -176,10 +198,10 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} setProgress={setProgress} generating={uploading} setGenerating={setUploading} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*" gallery="image" dalle />
+          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} setProgress={setProgress} generating={uploading} setGenerating={setUploading} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*,audio/*,video/*" gallery="image" dalle />
           <Button
             onClick={handleUpload}
-            disabled={uploading || (!uploadedFiles.length && !selectedImage && !selectedBackgroundColor && !deleteImage)}
+            disabled={uploading || (!uploadedFiles.length && !selectedImage && selectedBackgroundColor === contentItem?.background_color && !deleteImage)}
             block
             color="success"
             style={{marginTop: '10px'}}

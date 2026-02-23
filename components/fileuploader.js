@@ -21,6 +21,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
   const emailRef = useRef();
   const locationRef = useRef();
   const extUrlRef = useRef();
+  const textAlignmentRef = useRef();
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -67,6 +68,7 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         email: emailRef.current?.value,
         location: locationRef.current?.value,
         ext_url: extUrlRef.current?.value,
+        textAlignment: textAlignmentRef.current?.value,
         backgroundColor: selectedBackgroundColor,
         foregroundColor: selectedForegroundColor,
         privateID,
@@ -107,7 +109,8 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         nameRef={jwt ? null : nameRef}
         emailRef={true ? null : emailRef}
         locationRef={locationRef}
-        extUrlRef={extUrlRef}
+        extUrlRef={(selectedBackgroundColor || selectedMedia) ? null : extUrlRef}
+        textAlignmentRef={textAlignmentRef}
       />
       <Button
         color="success"
