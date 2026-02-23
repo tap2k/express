@@ -249,7 +249,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           )}
           {(privateID || jwt) && (
             <div style={{ flexShrink: 0, marginLeft: 'auto' }}>
-              <ChannelControls channel={channel} privateID={privateID} iconSize={16} jwt={jwt} />
+              <ChannelControls channel={channel} privateID={privateID} iconSize={16} jwt={jwt} noMedia />
             </div>
           )}
         </div>
