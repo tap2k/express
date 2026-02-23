@@ -5,7 +5,7 @@ import { FaUpload, FaVideo, FaCamera, FaMicrophone, FaEnvelope, FaFont } from 'r
 import { ButtonGroup, StyledButton } from '../components/recorderstyles';
 import MyCamera from '../components/mycamera';
 import FileUploader from '../components/fileuploader';
-import GreetingCard from '../components/greetingcard';
+// import GreetingCard from '../components/greetingcard';
 import AudioRecorder from '../components/audiorecorder';
 
 const VideoRecorder = dynamic(() => import("../components/videorecorder"), { ssr: false });
@@ -40,8 +40,8 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
         return <MyCamera channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
       case 'audio':
         return <AudioRecorder channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
-      case 'card':
-        return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />;
+      /* case 'card':
+         return <GreetingCard channelID={channelID} privateID={privateID} jwt={jwt} uploading={uploading} setUploading={handleSetUploading} lat={lat} long={long} />; */
       default:
         return null;
     }
@@ -78,13 +78,13 @@ export default function Uploader ({ channelID, privateID, jwt, toggle, useLocati
         >
           <FaMicrophone />
         </StyledButton>
-        <StyledButton
+        {/* <StyledButton
           color={activeComponent === 'card' ? "primary" : "secondary"}
           onClick={() => setActiveComponent('card')}
           title="Greeting card"
         >
           <FaFont />
-        </StyledButton>
+        </StyledButton> */}
       </ButtonGroup>
 
       <div>
