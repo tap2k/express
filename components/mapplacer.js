@@ -44,8 +44,8 @@ export default function MapPlacer({ show, contents, privateID, jwt }) {
   if (!show) return null;
 
   return (
-    <div ref={panelRef} style={{
-      position: 'absolute', top: '55px', right: '10px', zIndex: 1001,
+    <div ref={panelRef} className="map-placer" style={{
+      position: 'absolute', top: '55px', right: '10px', zIndex: 1000,
       backgroundColor: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)',
       borderRadius: '8px', boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
       maxHeight: '50vh', width: '220px', overflowY: 'auto', padding: '8px',

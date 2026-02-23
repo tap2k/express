@@ -198,7 +198,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           position: 'absolute',
           top: isEditMode ? '65px' : '10px',
           left: '10px',
-          zIndex: 1000,
+          zIndex: 999,
           display: 'flex',
           alignItems: 'center',
           flexWrap: 'wrap',

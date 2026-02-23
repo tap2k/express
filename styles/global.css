@@ -21,4 +21,8 @@
     flex-direction: column-reverse;
     align-items: flex-end !important;
   }
+  .map-placer {
+    top: auto !important;
+    bottom: 60px !important;
+  }
 }
