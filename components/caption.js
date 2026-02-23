@@ -1,29 +1,45 @@
 import { FaShoppingBag } from 'react-icons/fa';
 import { isMediaFile } from './content';
-export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", ...props })
+export default function Caption({ title, subtitle, name, url, foregroundColor, textAlignment = 'center', inverted = false, size = "medium", showBox = true, ...props })
 {
     // TODO: What about produce links?
     // if (!title && !url) return null;
     if (!title) return null;
 
-    const overlayHex = (foregroundColor || '').replace('#', '').substring(0, 6);
-    const lightOverlay = overlayHex.length === 6 && (parseInt(overlayHex.substr(0,2),16)*299 + parseInt(overlayHex.substr(2,2),16)*587 + parseInt(overlayHex.substr(4,2),16)*114) / 1000 > 128;
-    const textColor = lightOverlay ? '#222' : '#fff';
-    const textOutlineStyle = {
-        textShadow: lightOverlay
-            ? '0 1px 3px rgba(0,0,0,0.3)'
-            : '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333',
-        color: textColor
-    };
+    let textColor, textOutlineStyle;
+    if (!showBox && foregroundColor) {
+        // Text directly on background color — foregroundColor IS the text color
+        textColor = foregroundColor.substring(0, 7);
+        const fgHex = foregroundColor.replace('#', '').substring(0, 6);
+        const lightFg = fgHex.length === 6 && (parseInt(fgHex.substr(0,2),16)*299 + parseInt(fgHex.substr(2,2),16)*587 + parseInt(fgHex.substr(4,2),16)*114) / 1000 > 128;
+        textOutlineStyle = {
+            textShadow: lightFg
+                ? '0 1px 3px rgba(0,0,0,0.3)'
+                : '-1px -1px 0 rgba(255,255,255,0.3), 1px -1px 0 rgba(255,255,255,0.3), -1px 1px 0 rgba(255,255,255,0.3), 1px 1px 0 rgba(255,255,255,0.3)',
+            color: textColor
+        };
+    } else {
+        const overlayHex = (foregroundColor || '').replace('#', '').substring(0, 6);
+        const lightOverlay = overlayHex.length === 6 && (parseInt(overlayHex.substr(0,2),16)*299 + parseInt(overlayHex.substr(2,2),16)*587 + parseInt(overlayHex.substr(4,2),16)*114) / 1000 > 128;
+        textColor = lightOverlay ? '#222' : '#fff';
+        textOutlineStyle = {
+            textShadow: lightOverlay
+                ? '0 1px 3px rgba(0,0,0,0.3)'
+                : '-1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333',
+            color: textColor
+        };
+    }
 
     const captionStyleBase = {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
-        backgroundColor: foregroundColor ? foregroundColor : 'rgba(150,150,150,0.4)',
-        borderRadius: '10px',
-        padding: '30px 50px',
-        backdropFilter: 'blur(10px)',
+        ...(showBox ? {
+            backgroundColor: foregroundColor ? foregroundColor : 'rgba(150,150,150,0.4)',
+            borderRadius: '10px',
+            padding: '30px 50px',
+            backdropFilter: 'blur(10px)',
+        } : {}),
         width: 'max-content',
         maxWidth: '80%',
         boxSizing: 'border-box',

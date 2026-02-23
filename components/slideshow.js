@@ -391,8 +391,8 @@ export default function Slideshow({ channel, height, width, buttons, thumbnail, 
                     autoPlay={isPlaying} 
                     interval={channel.interval || defaultInterval} 
                     index={index}
-                    cover={contentItem.mediafile?.url?.includes("maustrocard")}
-                    caption={!hideTitle || contentItem.mediafile?.url?.includes("maustrocard") || contentItem.background_color}
+                    cover={contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle-image")}
+                    caption={!hideTitle || contentItem.mediafile?.url?.includes("maustrocard") || contentItem.mediafile?.url?.includes("dalle-image") || contentItem.background_color}
                     controls
                     thumbnail={thumbnail}
                   />}

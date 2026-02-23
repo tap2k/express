@@ -25,6 +25,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedBackgroundColor, setSelectedBackgroundColor] = useState(contentItem?.background_color);
+  const [selectedForegroundColor, setSelectedForegroundColor] = useState(contentItem?.foreground_color);
   const [selectedImage, setSelectedImage] = useState(null);
   const [deleteImage, setDeleteImage] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -98,7 +99,7 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
     const clearMedia = !uploadedFiles.length && !selectedImage && selectedBackgroundColor && !!contentItem.mediafile;
 
     const doUpdate = async () => {
-      await updateSubmission({contentID: contentItem.id, myFormData: myFormData, backgroundColor: clearBackground ? null : selectedBackgroundColor, deleteMedia: deleteImage || clearMedia, setProgress, privateID, jwt});
+      await updateSubmission({contentID: contentItem.id, myFormData: myFormData, backgroundColor: clearBackground ? null : selectedBackgroundColor, foregroundColor: clearBackground ? null : selectedForegroundColor, deleteMedia: deleteImage || clearMedia, setProgress, privateID, jwt});
       setIsImageModalOpen(false);
       setUploading(false);
       router.replace(router.asPath);
@@ -198,10 +199,10 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
       <Modal isOpen={isImageModalOpen} toggle={() => {setIsImageModalOpen(false)}}>
         <ModalHeader close={closeBtn(() => setIsImageModalOpen(false))}></ModalHeader>
         <ModalBody>
-          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} setProgress={setProgress} generating={uploading} setGenerating={setUploading} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*,audio/*,video/*" gallery="image" dalle />
+          <MediaPicker mediaUrl={type.startsWith("image") && contentItem.mediafile?.url} progress={progress} setProgress={setProgress} generating={uploading} setGenerating={setUploading} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} selectedMedia={selectedImage} setSelectedMedia={setSelectedImage} deleteMedia={deleteImage} setDeleteMedia={setDeleteImage} accept="image/*,audio/*,video/*" gallery="image" dalle showBox={!!contentItem.mediafile} />
           <Button
             onClick={handleUpload}
-            disabled={uploading || (!uploadedFiles.length && !selectedImage && selectedBackgroundColor === contentItem?.background_color && !deleteImage)}
+            disabled={uploading || (!uploadedFiles.length && !selectedImage && selectedBackgroundColor === contentItem?.background_color && selectedForegroundColor === contentItem?.foreground_color && !deleteImage)}
             block
             color="success"
             style={{marginTop: '10px'}}

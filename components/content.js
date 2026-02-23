@@ -246,8 +246,10 @@ export function Content({ contentItem, width, height, autoPlay, interval, captio
         subtitle={contentItem.description}
         name={contentItem.name}
         url={contentItem.ext_url}
+        foregroundColor={contentItem.foreground_color}
         textAlignment={contentItem.textalignment}
         size={thumbnail ? "small" : "medium"}
+        showBox={!!contentItem.mediafile}
       /> } 
       { (type.startsWith("video") || type.startsWith("audio") || contentItem.audiofile?.url) && <PlayIcon isPlaying={isPlaying} toggle={toggle} /> }
       {/* TODO: Have the timeline? */}
