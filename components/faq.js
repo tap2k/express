@@ -8,7 +8,7 @@ const questions = [
   },
   {
     q: 'What media formats are supported?',
-    a: 'Images (JPEG, PNG, GIF, WebP), video (MP4, WebM), audio (MP3, WAV), 360 panoramas and video, plus YouTube, Vimeo, Google Photos, and Dropbox links.',
+    a: 'Images (JPEG, PNG, GIF, WebP), video (MP4, WebM), audio (MP3, WAV), 360 images and video, plus YouTube, Vimeo, Google Photos, and Dropbox links.',
   },
   /*{
     q: 'How does video generation work?',
@@ -16,7 +16,8 @@ const questions = [
   },*/
   {
     q: 'How does 360 content work?',
-    a: 'Add _360 or _180 to your filename and Express will auto-detect it as a 360 panorama. For stereo, add _lr (side-by-side) or _tb (top-bottom).',
+    a: 'Add _360 or _180 to your filename and Express will auto-detect it.',
+    // For stereo, add _lr (side-by-side) or _tb (top-bottom).
   },
   /*{
     q: 'Can I try it for free?',
