@@ -205,7 +205,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           gap: '10px',
           minWidth: showTitleContent ? '250px' : '180px',
           minHeight: showTitleContent ? '60px' : '40px',
-          maxWidth: 'min(40%, calc(100vw - 20px))',
+          maxWidth: 'min(60%, calc(100vw - 20px))',
           backgroundColor: showTitleContent ? (channel.background_color || 'rgba(255, 255, 255, 0.9)') : 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(10px)',
           borderRadius: '10px',

@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaFilm, FaMap, FaTh, FaImages, FaHome, FaShareAlt, FaCode } from 'react-icons/fa';
+import { FaFilm, FaMap, FaTh, FaImages, FaHome, FaShareAlt, FaCode, FaUpload } from 'react-icons/fa';
 import setError from "../hooks/seterror";
 import { MenuButton } from './recorderstyles';
 
-export default function PageMenu({ loggedIn, editor, ...props } ) {
+export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
   const router = useRouter();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef(null);
@@ -32,7 +32,7 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
     alignItems: 'center',
     padding: '0.35rem',
     backgroundColor: 'transparent',
-    zIndex: 50
+    zIndex: 1000
   };
 
   const getShareUrl = () => {
@@ -198,6 +198,24 @@ export default function PageMenu({ loggedIn, editor, ...props } ) {
               >
                 <FaCode /> Copy Embed Code
               </button>
+              {channel?.allowsubmissions && channel?.uniqueID && (
+                <button
+                  style={dropdownItemStyle}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(92, 131, 156, 0.5)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onClick={() => {
+                    const url = `${window.location.origin}/upload?channelid=${channel.uniqueID}`;
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(url)
+                        .then(() => alert('Upload link copied to clipboard!'))
+                        .catch(err => console.error('Failed to copy URL: ', err));
+                    }
+                    setShowShareMenu(false);
+                  }}
+                >
+                  <FaUpload /> Copy Upload Link
+                </button>
+              )}
             </div>
           )}
         </div>

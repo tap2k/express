@@ -4,11 +4,11 @@ import { Progress, Button } from "reactstrap";
 import uploadSubmission from "../hooks/uploadsubmission";
 import setError from '../hooks/seterror';
 import { RecorderWrapper } from './recorderstyles';
-// import UploadWidget from "./uploadwidget";
-import MediaPicker from "./mediapicker";
+import UploadWidget from "./uploadwidget";
+// import MediaPicker from "./mediapicker";
 import ContentInputs from "./contentinputs";
 
-export default function FileUploader({ channelID, privateID, jwt, uploading, setUploading, lat, long, planData, ...props }) {
+export default function FileUploader({ channelID, privateID, jwt, uploading, setUploading, lat, long, planData, showColors, dalle, ...props }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -100,8 +100,8 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
   }
   return (
     <RecorderWrapper  {...props}>
-      {/* <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple /> */}
-      <MediaPicker progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} selectedBackgroundColor={selectedBackgroundColor} setSelectedBackgroundColor={setSelectedBackgroundColor} selectedForegroundColor={selectedForegroundColor} setSelectedForegroundColor={setSelectedForegroundColor} generating={generating} setGenerating={setGenerating} accept="image/*,audio/*,video/*" multiple dalle />
+      <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
+      {/* <MediaPicker progress={progress} setProgress={setProgress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} generating={generating} setGenerating={setGenerating} accept="image/*,audio/*,video/*" multiple dalle /> */}
       <Progress value={progress} />
       <ContentInputs
         style={{marginTop: '15px', marginBottom: '20px'}}

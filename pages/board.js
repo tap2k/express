@@ -35,7 +35,7 @@ export default ({ channel, user, jwt, planData }) => {
                 minHeight: '100vh',
                 padding: '4rem clamp(0.5rem, 4vw, 4rem)',
             }}>
-                {jwt && <PageMenu loggedIn={jwt} />}
+                {jwt && <PageMenu loggedIn={jwt} channel={channel} />}
                 <Banner 
                     channel={channel}
                     foregroundColor={channel.foreground_color}

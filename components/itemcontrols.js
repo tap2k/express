@@ -162,14 +162,14 @@ export default function ItemControls ({ contentItem, privateID, jwt, dragRef, mo
         >
           <FaMicrophone size={iconSize} />
         </IconButton> }
-        {/* ((type.startsWith("image") && (contentItem.mediafile?.url.indexOf("maustrocard") != -1)) || !type || type.startsWith("text") || type.startsWith("audio")) && */ <IconButton
+        {/* <IconButton
           onClick={() => {
             setIsImageModalOpen(true);
           }}
           title="Change image"
         >
           <FaImage size={iconSize} />
-        </IconButton> }
+        </IconButton> */}
         <IconButton
           onClick={() => {
             setisEditModalOpen(true);

@@ -4,8 +4,8 @@ import getBaseURL from '../hooks/getbaseurl';
 
 const features = [
   { icon: FaMap, title: 'Maps', desc: 'Pin content to locations with custom markers and map overlays' },
-  { icon: FaImages, title: 'Slideshows', desc: 'Organize photos, video, and 360 content to construct interactive narratives' },
-  { icon: FaVideo, title: 'Video', desc: 'Edit and create videos from video clips, images, text, and audio' },
+  { icon: FaImages, title: 'Slideshows', desc: 'Organize photos, video, and 360 content to construct narratives' },
+  { icon: FaVideo, title: 'Video', desc: 'Create videos from video clips, images, text, and audio' },
   { icon: FaPhotoVideo, title: 'Rich Media', desc: 'Support for images, video, audio, 360 videos, panoramas, and external links' },
   // { icon: FaUsers, title: 'Collaboration', desc: 'Invite contributors, editors and share channels with public links' },
 ];
@@ -13,8 +13,8 @@ const features = [
 const useCases = [
   { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on a multimedia map.' },
   { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and text.' },
-  { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to the places where it happened.' },
-  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture their experiences in context.' },
+  { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to where it happened.' },
+  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture user experiences directly in context.' },
 ];
 
 const CardGrid = ({ items }) => (

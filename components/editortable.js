@@ -52,10 +52,10 @@ export default function EditorTable({ channel, maxHeight, jwt }) {
           type="email"
           ref={emailInputRef}
           placeholder="Add editor email"
-          style={{ flexGrow: 1, padding: '5px' }}
+          style={{ flexGrow: 1, minWidth: 0, padding: '5px' }}
         />
-        <Button color="primary" onClick={addNewEditor} style={{ display: 'flex', alignItems: 'center', gap: '5px' }} title="Add editor">
-          <FaPlus /> Add
+        <Button color="primary" onClick={addNewEditor} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }} title="Add editor">
+          <FaPlus />
         </Button>
       </div>
     </div>
