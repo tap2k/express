@@ -33,7 +33,7 @@ export default ({ channel, user, jwt, planData }) => {
             <div style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.3)',
                 minHeight: '100vh',
-                padding: '4rem',
+                padding: '4rem clamp(0.5rem, 4vw, 4rem)',
             }}>
                 {jwt && <PageMenu loggedIn={jwt} />}
                 <Banner 

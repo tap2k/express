@@ -76,7 +76,7 @@ function FAQItem({ q, a }) {
 export default function FAQ() {
   return (
     <>
-      <hr style={{ border: 'none', borderTop: '2px solid #ccc', margin: '12px 24px' }} />
+      {/* <hr style={{ border: 'none', borderTop: '2px solid #ccc', margin: '12px 24px' }} /> */}
       <Container style={{ maxWidth: '680px', padding: '24px 16px 32px' }}>
         {questions.map(({ q, a }) => (
           <FAQItem key={q} q={q} a={a} />

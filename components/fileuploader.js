@@ -19,7 +19,9 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!titleRef.current?.value && !uploadedFiles.length && !extUrlRef.current?.value)
+    // if (!titleRef.current?.value && !uploadedFiles.length && !extUrlRef.current?.value)
+    //   return;
+    if (!uploadedFiles.length && !extUrlRef.current?.value)
       return;
     if (planData?.tierConfig?.maxFileSizeMB) {
       const maxBytes = planData.tierConfig.maxFileSizeMB * 1024 * 1024;
@@ -36,12 +38,12 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
       const formData = new FormData();
       uploadedFiles.forEach(file => formData.append(file.name, file, file.name));
       setUploadedFiles([]);
-      
+
       await uploadSubmission({
-        myFormData: formData, 
-        channelID, 
-        lat, 
-        long, 
+        myFormData: formData,
+        channelID,
+        lat,
+        long,
         title: titleRef.current?.value,
         name: nameRef.current?.value,
         email: emailRef.current?.value,
@@ -49,10 +51,10 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
         ext_url: extUrlRef.current?.value,
         privateID,
         jwt,
-        setProgress, 
+        setProgress,
         router
-      }); 
-      
+      });
+
       if (titleRef.current)
         titleRef.current.value = "";
       if (nameRef.current)
@@ -77,13 +79,13 @@ export default function FileUploader({ channelID, privateID, jwt, uploading, set
     <RecorderWrapper  {...props}>
       <UploadWidget progress={progress} uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} accept="image/*,audio/*,video/*" multiple />
       <Progress value={progress} />
-      <ContentInputs 
-        style={{marginTop: '15px', marginBottom: '20px'}} 
-        titleRef={titleRef} 
-        nameRef={jwt ? null : nameRef} 
-        emailRef={true ? null : emailRef} 
-        locationRef={locationRef} 
-        extUrlRef={extUrlRef} 
+      <ContentInputs
+        style={{marginTop: '15px', marginBottom: '20px'}}
+        titleRef={titleRef}
+        nameRef={jwt ? null : nameRef}
+        emailRef={true ? null : emailRef}
+        locationRef={locationRef}
+        extUrlRef={extUrlRef}
       />
       <Button
         color="success"

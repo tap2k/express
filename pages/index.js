@@ -48,17 +48,17 @@ export default ({ user, jwt, channels, planData }) => {
                 onClick={() => setPricingOpen(false)}
                 style={{ position: 'absolute', top: '10px', right: '14px', fontSize: '1.5rem', cursor: 'pointer', color: '#999', zIndex: 1 }}
               >&times;</span>
-              <PricingTable currentPlan={planData?.plan} onSelectPlan={handleSelectPlan} onManageBilling={async () => {
+              {/* <PricingTable currentPlan={planData?.plan} onSelectPlan={handleSelectPlan} onManageBilling={async () => {
                 const data = await createPortal({ jwt });
                 if (data?.url) window.location.href = data.url;
-              }} />
+              }} /> */}
             </ModalBody>
           </Modal>
         </>
       ) : (
         <>
           <LandingHero />
-          <PricingTable />
+          {/* <PricingTable /> */}
           <FAQ />
           <LandingFooter />
         </>

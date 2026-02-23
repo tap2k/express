@@ -65,7 +65,8 @@ export default function MyReels ({ channels, user, jwt, planData }) {
       });
       setEditChannel(null);
       setUploading(false);
-      router.replace(router.asPath, undefined, { scroll: false });
+      await router.replace(router.asPath, undefined, { scroll: false });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
   };
 

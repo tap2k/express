@@ -188,28 +188,31 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   };
 
   const showTitle = channel.showtitle;
+  const isEditMode = !!(privateID || jwt);
+  const showTitleContent = showTitle || isEditMode;
 
   return (
     <div {...props}>
-      {(showTitle || privateID || jwt) && (
+      {(showTitle || isEditMode) && (
         <div style={{
           position: 'absolute',
-          top: (privateID || jwt) ? '65px' : '10px',
+          top: isEditMode ? '65px' : '10px',
           left: '10px',
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
+          flexWrap: 'wrap',
           gap: '10px',
-          minWidth: showTitle ? '250px' : '180px',
-          minHeight: showTitle ? '60px' : '40px',
-          maxWidth: '40%',
-          backgroundColor: showTitle ? (channel.background_color || 'rgba(255, 255, 255, 0.9)') : 'rgba(255, 255, 255, 0.6)',
+          minWidth: showTitleContent ? '250px' : '180px',
+          minHeight: showTitleContent ? '60px' : '40px',
+          maxWidth: 'min(40%, calc(100vw - 20px))',
+          backgroundColor: showTitleContent ? (channel.background_color || 'rgba(255, 255, 255, 0.9)') : 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(10px)',
           borderRadius: '10px',
-          padding: showTitle ? '8px 14px' : '6px',
+          padding: showTitleContent ? '8px 14px' : '6px',
           boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         }}>
-          {showTitle && channel.picture?.url && (
+          {showTitleContent && channel.picture?.url && (
             <img
               src={getMediaURL() + channel.picture.url}
               alt=""
@@ -222,7 +225,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               }}
             />
           )}
-          {showTitle && (
+          {showTitleContent && (
             <div style={{ overflow: 'hidden' }}>
               <div style={{
                 fontSize: 'clamp(14px, 1.8vw, 20px)',
@@ -245,7 +248,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
             </div>
           )}
           {(privateID || jwt) && (
-            <div style={{ flexShrink: 0 }}>
+            <div style={{ flexShrink: 0, marginLeft: 'auto' }}>
               <ChannelControls channel={channel} privateID={privateID} iconSize={16} jwt={jwt} />
             </div>
           )}

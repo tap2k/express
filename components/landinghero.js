@@ -56,7 +56,7 @@ export default function LandingHero() {
           marginBottom: '14px',
           letterSpacing: '0.06em',
         }}>
-          Express.
+          Express!
         </h1>
         <p style={{
           fontSize: '1.15rem',
@@ -66,7 +66,7 @@ export default function LandingHero() {
           fontWeight: 400,
           lineHeight: 1.6,
         }}>
-          Create maps, slideshows, and videos from your media.
+          Express yourself with Maps, Slideshows and Video
         </p>
         <a href={getBaseURL() + "/api/connect/google"} style={{
           display: 'inline-block',
@@ -78,7 +78,7 @@ export default function LandingHero() {
           fontWeight: 600,
           fontSize: '0.95rem',
         }}>
-          Get Started Free
+          Try now!
         </a>
         <div style={{ marginTop: '32px', padding: '0 20px' }}>
           <img

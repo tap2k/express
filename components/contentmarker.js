@@ -51,7 +51,7 @@ const ContentMarker = forwardRef(function ContentMarker(props, fwdRef)
           </Tooltip>    
         }
         <Popup closeOnClick={false} autoPanPadding={[50, 150]}>
-          <div style={{width: itemWidth}}>
+          <div style={{width: '80vw', maxWidth: itemWidth}}>
             <ContentCard contentItem={contentItem} autoPlay={autoPlay} privateID={privateID} jwt={jwt} controls tags />
             {(privateID || jwt) && (
               <button onClick={handleRemoveFromMap} title="Remove from map"

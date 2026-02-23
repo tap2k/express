@@ -87,7 +87,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
   );
 
   return (
-    <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)}>
+    <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)} centered>
       <ModalHeader close={closeBtn(() => setIsModalOpen(false))}>
         {(contentItem.mediafile?.size || contentItem.audiofile?.size) &&
           <span style={{ fontSize: '0.8rem', fontWeight: 'normal', color: '#999' }}>
@@ -130,7 +130,7 @@ export default function ContentEditor ({ contentItem, isModalOpen, setIsModalOpe
           contentItem={contentItem} 
           jwt={jwt} 
           privateID={privateID} 
-          style={{width: '450px', marginTop: '10px', marginBottom: '10px'}} 
+          style={{width: '100%', marginTop: '10px', marginBottom: '10px'}}
           /> }
       </ModalBody>
     </Modal>
