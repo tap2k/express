@@ -5,6 +5,7 @@ import { imageOptions, audioOptions } from './fileoptions';
 import ImageGrid from './imagegrid';
 import AudioGrid from './audiogrid';
 
+// Only used in pages/probe.js (currently commented out)
 export default function ChannelEditor({ channel, onSubmit }) {
   const titleRef = useRef();
   const subtitleRef = useRef();

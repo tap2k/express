@@ -33,7 +33,7 @@ export default function ChannelInputs({ channel, titleRef, subtitleRef, emailRef
                 }}
             >
 
-                {publicRef && <FormGroup check style={{ marginRight: '20px'}}>
+                {false && publicRef && <FormGroup check style={{ marginRight: '20px'}}>
                     <Label check>
                         <Input
                             type="checkbox"

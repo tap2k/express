@@ -1,5 +1,7 @@
 import { Container, Row, Col } from 'reactstrap';
 import { FaMap, FaImages, FaPhotoVideo, FaUsers, FaVideo, FaMapMarkedAlt, FaBoxOpen, FaCameraRetro, FaMicrophoneAlt } from 'react-icons/fa';
+import FAQ from "../components/faq";
+import PricingTable from "../components/pricingtable";
 import getBaseURL from '../hooks/getbaseurl';
 
 const features = [
@@ -66,7 +68,7 @@ export default function LandingHero() {
           fontWeight: 400,
           lineHeight: 1.6,
         }}>
-          Express yourself with Maps, Slideshows and Video
+          Tell your stories with maps, slideshows and multimedia
         </p>
         <a href={getBaseURL() + "/api/connect/google"} style={{
           display: 'inline-block',
@@ -121,6 +123,9 @@ export default function LandingHero() {
       </Container>
 
       <Divider />
+
+      {/* <PricingTable /> */}
+      <FAQ />
     </>
   );
 }

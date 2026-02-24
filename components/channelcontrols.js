@@ -12,7 +12,7 @@ import ChannelInputs from "./channelinputs";
 import EditorTable from "./editortable";
 import MediaPicker from './mediapicker';
 
-export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row", showBox, noMedia }) {
+export default function ChannelControls ({ channel, setIsModalOpen, privateID, jwt, iconSize=20, flex="row", showBox }) {
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -106,22 +106,22 @@ export default function ChannelControls ({ channel, setIsModalOpen, privateID, j
   return (
     <>
       <div style={iconBarStyle} className="hide-on-inactive">
-        { !noMedia && <IconButton
+        <IconButton
           onClick={() => {
               setIsAudioModalOpen(true);
           }}
           title="Change audio"
           >
           <FaMusic size={iconSize} />
-        </IconButton> }
-        { !noMedia && <IconButton
+        </IconButton>
+        <IconButton
           onClick={() => {
               setIsImageModalOpen(true);
           }}
           title="Change image"
           >
           <FaImage size={iconSize} />
-        </IconButton> }
+        </IconButton>
         { channel.owned && <IconButton
           onClick={() => {
               setIsUserModalOpen(true);

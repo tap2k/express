@@ -7,6 +7,10 @@ const questions = [
     a: 'Express is a platform for creating interactive maps, slideshows, and videos from your photos, video, audio, and 360 content.',
   },
   {
+    q: 'Does it cost money?',
+    a: 'We plan to offer Express for free as long as we can for a reasonable amount of use. If usage goes beyond that, we may need to charge some nominal fees.'
+  },
+  {
     q: 'What media formats are supported?',
     a: 'Images (JPEG, PNG, GIF, WebP), video (MP4, WebM), audio (MP3, WAV), 360 images and video, plus YouTube, Vimeo, Google Photos, and Dropbox links.',
   },
