@@ -58,6 +58,17 @@ export default function App({
       <title>Express — Maps, Slideshows & Video for Participatory Mapping and Research</title>
       <meta name="description" content="Create interactive maps, slideshows, and videos from photos, video, audio, and 360 content. Built for participatory mapping, photovoice, oral history, and qualitative GIS." />
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Express" />
+      <meta property="og:title" content="Express — Maps, Slideshows & Video for Participatory Mapping and Research" />
+      <meta property="og:description" content="Create interactive maps, slideshows, and videos from photos, video, audio, and 360 content. Built for participatory mapping, photovoice, oral history, and qualitative GIS." />
+      <meta property="og:image" content="https://express.represent.org/express.png" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Express — Maps, Slideshows & Video for Participatory Mapping and Research" />
+      <meta name="twitter:description" content="Create interactive maps, slideshows, and videos from photos, video, audio, and 360 content. Built for participatory mapping, photovoice, oral history, and qualitative GIS." />
+      <meta name="twitter:image" content="https://express.represent.org/express.png" />
     </Head>
     {loading && (
       <div style={{
