@@ -8,7 +8,7 @@ const questions = [
   },
   {
     q: 'Does it cost money?',
-    a: 'We plan to offer Express for free as long as we can for a reasonable amount of use. If usage goes beyond that, we may need to charge some nominal fees.'
+    a: 'We plan to offer Express for free as long as we can. If usage goes beyond what we can manage internally, we may need to charge some nominal fees.'
   },
   {
     q: 'What media formats are supported?',

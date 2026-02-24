@@ -16,7 +16,7 @@ const useCases = [
   { icon: FaMapMarkedAlt, title: 'Participatory Mapping', desc: 'Gather local knowledge and visualize it on a multimedia map.' },
   { icon: FaCameraRetro, title: 'Photovoice', desc: 'Let communities tell their own stories through photos, audio, and text.' },
   { icon: FaMicrophoneAlt, title: 'Oral History', desc: 'Preserve spoken testimony and connect it to where it happened.' },
-  { icon: FaBoxOpen, title: 'Design Probes', desc: 'Give participants a way to capture user experiences directly in context.' },
+  { icon: FaBoxOpen, title: 'Cultural Probes', desc: 'Give participants a way to capture user experiences in context.' },
 ];
 
 const CardGrid = ({ items }) => (
@@ -82,7 +82,7 @@ export default function LandingHero() {
         }}>
           Try now!
         </a>
-        <div style={{ marginTop: '32px', padding: '0 20px' }}>
+        <div style={{ marginTop: '32px' }}>
           <img
             src="/express.png"
             alt="Express map view with media markers"
