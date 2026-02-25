@@ -24,7 +24,7 @@ export default function Privacy() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>How We Use Your Data</h3>
           <p style={textStyle}>
-            Your data is used to provide the Express service — storing and displaying your content,
+            Your data is used to provide the Fotomap service — storing and displaying your content,
             managing channels, and enabling collaboration. We do not sell your data to third parties.
             We do not use your content for advertising or training AI models.
           </p>
@@ -55,7 +55,7 @@ export default function Privacy() {
           <p style={textStyle}>
             Your content is stored as long as your account is active. If you delete content, it is
             permanently removed from our servers and storage. If you wish to delete your entire account,
-            contact us at <a href="mailto:express@represent.org" style={{ color: '#1a5f7a' }}>express@represent.org</a>.
+            contact us at <a href="mailto:fotomap@represent.org" style={{ color: '#1a5f7a' }}>fotomap@represent.org</a>.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export default function Privacy() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Self-Hosted Instances</h3>
           <p style={textStyle}>
-            Express is open source. If you run your own instance, you are responsible for securing your data. This policy applies only to the hosted version at the domain you accessed it from.
+            Fotomap is open source. If you run your own instance, you are responsible for securing your data. This policy applies only to the hosted version at the domain you accessed it from.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export default function Privacy() {
           <h3 style={headingStyle}>Contact</h3>
           <p style={textStyle}>
             For privacy questions or data requests, email{' '}
-            <a href="mailto:express@represent.org" style={{ color: '#1a5f7a' }}>express@represent.org</a>.
+            <a href="mailto:fotomap@represent.org" style={{ color: '#1a5f7a' }}>fotomap@represent.org</a>.
           </p>
         </div>
       </Container>

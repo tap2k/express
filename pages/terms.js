@@ -15,7 +15,7 @@ export default function Terms() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Acceptance</h3>
           <p style={textStyle}>
-            By using Express, you agree to these terms. If you do not agree, do not use the service.
+            By using Fotomap, you agree to these terms. If you do not agree, do not use the service.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function Terms() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Your Content</h3>
           <p style={textStyle}>
-            You retain ownership of all content you upload. By uploading content to Express, you grant
+            You retain ownership of all content you upload. By uploading content to Fotomap, you grant
             us a limited license to store, display, and serve that content as part of the service. This
             license ends when you delete the content or your account.
           </p>
@@ -68,7 +68,7 @@ export default function Terms() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Service Availability</h3>
           <p style={textStyle}>
-            We aim to keep Express available but do not guarantee uninterrupted service. We may
+            We aim to keep Fotomap available but do not guarantee uninterrupted service. We may
             perform maintenance, updates, or changes that temporarily affect availability. We are
             not liable for any data loss, though we take reasonable measures to protect your content.
           </p>
@@ -77,7 +77,7 @@ export default function Terms() {
         <div style={sectionStyle}>
           <h3 style={headingStyle}>Open Source</h3>
           <p style={textStyle}>
-            Express is open-source software released under the MIT License. These terms apply to
+            Fotomap is open-source software released under the MIT License. These terms apply to
             the hosted service, not to self-hosted instances. If you run your own instance, you are
             responsible for your own terms and policies.
           </p>
@@ -88,7 +88,7 @@ export default function Terms() {
           <p style={textStyle}>
             We may suspend or terminate accounts that violate these terms. You may delete your account
             at any time by contacting{' '}
-            <a href="mailto:express@represent.org" style={{ color: '#1a5f7a' }}>express@represent.org</a>.
+            <a href="mailto:fotomap@represent.org" style={{ color: '#1a5f7a' }}>fotomap@represent.org</a>.
             On termination, your content will be permanently deleted.
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function Terms() {
           <h3 style={headingStyle}>Contact</h3>
           <p style={textStyle}>
             Questions about these terms? Email{' '}
-            <a href="mailto:express@represent.org" style={{ color: '#1a5f7a' }}>express@represent.org</a>.
+            <a href="mailto:fotomap@represent.org" style={{ color: '#1a5f7a' }}>fotomap@represent.org</a>.
           </p>
         </div>
       </Container>
