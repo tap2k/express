@@ -3,12 +3,12 @@ import { Container } from 'reactstrap';
 
 const questions = [
   {
-    q: 'What is Express?',
-    a: 'Express is a platform for creating interactive maps, slideshows, and videos from your photos, video, audio, and 360 content.',
+    q: 'What is Fotomap?',
+    a: 'Fotomap is a platform for creating interactive maps, slideshows, and videos from your photos, video, audio, and 360 content.',
   },
   {
     q: 'Does it cost money?',
-    a: 'We plan to offer Express for free as long as we can. If usage goes beyond what we can manage internally, we may need to charge some nominal fees.'
+    a: 'We plan to offer Fotomap for free as long as we can. If usage goes beyond what we can manage internally, we may need to charge some nominal fees.'
   },
   {
     q: 'What media formats are supported?',
@@ -16,11 +16,11 @@ const questions = [
   },
   /*{
     q: 'How does video generation work?',
-    a: 'Upload your media, arrange it in a channel, and Express generates a video with transitions and narration. Available on Pro plans and above.',
+    a: 'Upload your media, arrange it in a channel, and Fotomap generates a video with transitions and narration. Available on Pro plans and above.',
   },*/
   {
     q: 'How does 360 content work?',
-    a: 'Add _360 or _180 to your filename and Express will auto-detect it.',
+    a: 'Add _360 or _180 to your filename and Fotomap will auto-detect it.',
     // For stereo, add _lr (side-by-side) or _tb (top-bottom).
   },
   /*{
@@ -28,16 +28,16 @@ const questions = [
     a: 'Yes. The Free plan includes 5 channels and 250 MB of storage with full access to maps, slideshows, and 360 media.',
   },*/
   {
-    q: 'What is Express built with?',
+    q: 'What is Fotomap built with?',
     a: 'Next.js and React on the front, Strapi in the back, Bootstrap for UI, and Leaflet for maps.',
   },
   {
-    q: 'Can I self-host Express?',
-    a: 'Yes. Express is open source. Clone the repo, run the frontend and backend.',
+    q: 'Can I self-host Fotomap?',
+    a: 'Yes. Fotomap is open source. Clone the repo, run the frontend and backend.',
   },
   {
     q: 'Do you take requests?',
-    a: 'We would love to hear from you if you have ideas for how to make Express better.',
+    a: 'We would love to hear from you if you have ideas for how to make Fotomap better.',
   },
   /*{
     q: 'What about AI?',
