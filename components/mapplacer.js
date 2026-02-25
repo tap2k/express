@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useMapEvents } from 'react-leaflet';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaVideo, FaMusic } from 'react-icons/fa';
+import mime from 'mime-types';
 import * as L from 'leaflet';
 import updateSubmission from "../hooks/updatesubmission";
 import getMediaURL from "../hooks/getmediaurl";
@@ -77,7 +78,12 @@ export default function MapPlacer({ show, contents, privateID, jwt }) {
               width: '40px', height: '40px', borderRadius: '4px', backgroundColor: '#e9ecef',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#6c757d',
             }}>
-              <FaMapMarkerAlt />
+              {(() => {
+                const type = item.mediafile?.url && mime.lookup(item.mediafile.url);
+                if (type && type.startsWith('video')) return <FaVideo />;
+                if (type && type.startsWith('audio')) return <FaMusic />;
+                return <FaMapMarkerAlt />;
+              })()}
             </div>
           )}
           <div style={{ overflow: 'hidden', flex: 1 }}>

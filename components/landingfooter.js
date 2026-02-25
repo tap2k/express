@@ -26,6 +26,7 @@ export default function LandingFooter() {
           <FaGithub size={16} /> Backend
         </a>
         <div style={{ flexBasis: '100%', height: 0 }} className="d-block d-md-none" />
+        <a href="https://blog.represent.org" target="_blank" rel="noopener noreferrer" style={{ color: '#999', textDecoration: 'none' }}>Blog</a>
         <a href="/privacy" style={{ color: '#999', textDecoration: 'none' }}>Privacy</a>
         <a href="/terms" style={{ color: '#999', textDecoration: 'none' }}>Terms</a>
         <a href="mailto:express@represent.org" style={{ color: '#999', textDecoration: 'none' }}>Contact</a>
