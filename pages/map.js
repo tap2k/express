@@ -36,7 +36,7 @@ export default ({ channel, tilesets, jwt, planData }) => {
                 textDecoration: 'none', zIndex: 1000,
                 backgroundColor: 'rgba(255,255,255,0.7)',
                 padding: '2px 6px', borderRadius: '4px',
-            }}>Powered by Express</a>}
+            }}>Powered by Fotomap</a>}
         </>
     );
 }

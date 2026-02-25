@@ -58,7 +58,7 @@ export default function LandingHero() {
           marginBottom: '14px',
           letterSpacing: '0.06em',
         }}>
-          Express!
+          Fotomap
         </h1>
         <p style={{
           fontSize: '1.15rem',
@@ -84,8 +84,8 @@ export default function LandingHero() {
         </a>
         <div style={{ marginTop: '32px' }}>
           <img
-            src="/express.png"
-            alt="Express map view with media markers"
+            src="/fotomap.png"
+            alt="Fotomap map view with media markers"
             style={{
               maxWidth: '720px',
               width: '100%',
@@ -94,7 +94,7 @@ export default function LandingHero() {
             }}
           />
           {/*<iframe
-            src="https://express.represent.org/map?channelid=bihar"
+            src="https://fotomap.org/map?channelid=bihar"
             width="800"
             height="600"
             frameBorder="0"
