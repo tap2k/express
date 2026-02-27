@@ -30,10 +30,14 @@ export default async function handler(req, res) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-    const session = await stripe.billingPortal.sessions.create({
+    const portalParams = {
       customer: stripeCustomerId,
       return_url: baseUrl,
-    });
+    };
+    if (process.env.STRIPE_PORTAL_CONFIGURATION_ID) {
+      portalParams.configuration = process.env.STRIPE_PORTAL_CONFIGURATION_ID;
+    }
+    const session = await stripe.billingPortal.sessions.create(portalParams);
 
     return res.status(200).json({ url: session.url });
   } catch (err) {

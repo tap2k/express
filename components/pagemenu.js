@@ -58,7 +58,6 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
     if (navigator.share) {
       navigator.share({
         title: 'Share this channel',
-        text: 'Check out this channel!',
         url: url
       }).then(() => {
         console.log('Successfully shared');
