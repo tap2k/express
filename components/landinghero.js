@@ -70,18 +70,33 @@ export default function LandingHero() {
         }}>
           Tell your stories with maps, slideshows and multimedia
         </p>
-        <a href={getBaseURL() + "/api/connect/google"} style={{
-          display: 'inline-block',
-          padding: '11px 32px',
-          backgroundColor: '#1a5f7a',
-          color: 'white',
-          borderRadius: '8px',
-          textDecoration: 'none',
-          fontWeight: 600,
-          fontSize: '0.95rem',
-        }}>
-          Try now!
-        </a>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+          <a href={getBaseURL() + "/api/connect/google"} style={{
+            display: 'inline-block',
+            padding: '11px 32px',
+            backgroundColor: '#1a5f7a',
+            color: 'white',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '0.95rem',
+          }}>
+            Try now!
+          </a>
+          <a href="https://fotomap.org/reel?channelid=vPVttDna" target="_blank" rel="noopener noreferrer" style={{
+            display: 'inline-block',
+            padding: '11px 32px',
+            backgroundColor: 'transparent',
+            color: '#1a5f7a',
+            borderRadius: '8px',
+            border: '2px solid #1a5f7a',
+            textDecoration: 'none',
+            fontWeight: 600,
+            fontSize: '0.95rem',
+          }}>
+            See a demo
+          </a>
+        </div>
         <div style={{ marginTop: '32px' }}>
           <img
             src="/fotomap.png"
