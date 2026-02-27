@@ -196,20 +196,20 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
       {(showTitle || isEditMode) && (
         <div style={{
           position: 'absolute',
-          top: isEditMode ? '65px' : '10px',
+          top: '65px',
           left: '10px',
           zIndex: 999,
           display: 'flex',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '10px',
-          minWidth: showTitleContent ? '250px' : '180px',
-          minHeight: showTitleContent ? '60px' : '40px',
+          gap: 'clamp(6px, 1.5vw, 10px)',
+          minWidth: showTitleContent ? 'clamp(160px, 30vw, 250px)' : 'clamp(120px, 22vw, 180px)',
+          minHeight: showTitleContent ? 'clamp(40px, 8vw, 60px)' : 'clamp(28px, 5vw, 40px)',
           maxWidth: 'min(60%, calc(100vw - 20px))',
           backgroundColor: showTitleContent ? (channel.background_color || 'rgba(255, 255, 255, 0.9)') : 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(10px)',
-          borderRadius: '10px',
-          padding: showTitleContent ? '8px 14px' : '6px',
+          borderRadius: 'clamp(6px, 1.2vw, 10px)',
+          padding: showTitleContent ? 'clamp(5px, 1vw, 8px) clamp(8px, 1.5vw, 14px)' : 'clamp(4px, 0.8vw, 6px)',
           boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         }}>
           {showTitleContent && channel.picture?.url && (
@@ -217,9 +217,9 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               src={getMediaURL() + channel.picture.url}
               alt=""
               style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '8px',
+                width: 'clamp(32px, 6vw, 48px)',
+                height: 'clamp(32px, 6vw, 48px)',
+                borderRadius: 'clamp(5px, 1vw, 8px)',
                 objectFit: 'cover',
                 flexShrink: 0,
               }}
@@ -228,7 +228,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
           {showTitleContent && (
             <div style={{ overflow: 'hidden' }}>
               <div style={{
-                fontSize: 'clamp(14px, 1.8vw, 20px)',
+                fontSize: 'clamp(12px, 1.8vw, 20px)',
                 fontWeight: 'bold',
                 lineHeight: '1.2',
                 color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#222',
@@ -237,9 +237,9 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
               </div>
               {channel.description && (
                 <div style={{
-                  fontSize: 'clamp(11px, 1.3vw, 14px)',
+                  fontSize: 'clamp(10px, 1.3vw, 14px)',
                   lineHeight: '1.3',
-                  marginTop: '2px',
+                  marginTop: 'clamp(1px, 0.3vw, 2px)',
                   color: channel.foreground_color ? '#' + channel.foreground_color.replace('#', '').substring(0, 6) : '#555',
                 }}>
                   {channel.description}
