@@ -135,6 +135,16 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
         </Link>
         <Link
           href={{
+            pathname: `./board`,
+            query: router.query,
+          }}
+        >
+          <MenuButton title="Board">
+            <FaTh />
+          </MenuButton>
+        </Link>
+        <Link
+          href={{
             pathname: `./reel`,
             query: router.query,
           }}
@@ -151,16 +161,6 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
         >
           <MenuButton title="Map">
             <FaMap />
-          </MenuButton>
-        </Link>
-        <Link
-          href={{
-            pathname: `./board`,
-            query: router.query,
-          }}
-        >
-          <MenuButton title="Board">
-            <FaTh />
           </MenuButton>
         </Link>
         { loggedIn &&
