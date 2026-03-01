@@ -44,7 +44,7 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
     }
     let url = `${baseurl.origin}${baseurl.pathname}?channelid=${channelid}`;
     if (editor)
-      url = `${baseurl.origin}/reel?channelid=${channelid}`;
+      url = `${baseurl.origin}/map?channelid=${channelid}`;
     return url;
   };
 
@@ -126,6 +126,9 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
     whiteSpace: 'nowrap',
   };
 
+  const pageLabels = { '/map': 'Map', '/reel': 'Slideshow', '/board': 'Board', '/editor': 'Map' };
+  const currentPageLabel = pageLabels[router.pathname] || '';
+
   return (
       <div style={rowStyle} className="hide-on-inactive" {...props}>
         <Link href="/">
@@ -187,7 +190,7 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 onClick={shareUrl}
               >
-                <FaShareAlt /> Share Link
+                <FaShareAlt /> Share {currentPageLabel}
               </button>
               <button
                 style={dropdownItemStyle}
@@ -195,7 +198,7 @@ export default function PageMenu({ loggedIn, editor, channel, ...props } ) {
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 onClick={copyEmbedCode}
               >
-                <FaCode /> Copy Embed Code
+                <FaCode /> Embed {currentPageLabel}
               </button>
               {channel?.allowsubmissions && channel?.uniqueID && (
                 <button
