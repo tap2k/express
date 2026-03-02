@@ -29,7 +29,7 @@ export default function LandingFooter() {
         <a href="https://blog.represent.org" target="_blank" rel="noopener noreferrer" style={{ color: '#999', textDecoration: 'none' }}>Blog</a>
         <a href="/privacy" style={{ color: '#999', textDecoration: 'none' }}>Privacy</a>
         <a href="/terms" style={{ color: '#999', textDecoration: 'none' }}>Terms</a>
-        <a href="mailto:express@represent.org" style={{ color: '#999', textDecoration: 'none' }}>Contact</a>
+        <a href="mailto:fotomap@represent.org" style={{ color: '#999', textDecoration: 'none' }}>Contact</a>
       </div>
     </div>
   );
