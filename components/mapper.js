@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Input, Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import { FaUndo, FaTags, FaLayerGroup, FaSave, FaMapMarkerAlt } from 'react-icons/fa';
 import TagEditor from './tageditor';
@@ -37,7 +37,8 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
   const [showUnlocated, setShowUnlocated] = useState(false);
   const router = useRouter();
 
-  const markerRefs = [];
+  const markerRefsMap = useRef({});
+  const markerRefs = channel.contents ? channel.contents.map(item => markerRefsMap.current[item.id]).filter(Boolean) : [];
 
   useEffect(() => {
     setMapKey(prevKey => prevKey + 1);
@@ -116,18 +117,20 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
 
     setCurrSlide(goSlide);
     
-    if (!markerRefs[goSlide])
+    const contentId = channel.contents[goSlide]?.id;
+    const marker = contentId ? markerRefsMap.current[contentId] : null;
+    if (!marker)
       return;
-    
+
     if (animate)
     {
-      markerRefs[goSlide].openPopup();
-      mapRef.flyTo(markerRefs[goSlide].getLatLng(), 18);
+      marker.openPopup();
+      mapRef.flyTo(marker.getLatLng(), 18);
     }
     else
     {
-      mapRef.setView(markerRefs[goSlide].getLatLng(), 18);
-      markerRefs[goSlide].openPopup();
+      mapRef.setView(marker.getLatLng(), 18);
+      marker.openPopup();
     }
   }, [markerRefs, mapRef, animate, resetMap]);
 
@@ -364,7 +367,7 @@ export default function Mapper({ channel, itemWidth, privateID, tilesets, jwt, a
         >
           {
             channel.contents && channel.contents.map((contentItem) => {
-              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} jwt={jwt} ref={el => {if (el && markerRefs) markerRefs.push(el)}} />
+              return <ContentMarker key={contentItem.id} contentItem={contentItem} itemWidth={itemWidth} privateID={privateID} jwt={jwt} ref={el => {if (el) markerRefsMap.current[contentItem.id] = el;}} />
             })
           }
         </MarkerClusterGroup>
